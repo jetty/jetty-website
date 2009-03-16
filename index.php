@@ -30,8 +30,20 @@
 	# Paste your HTML content between the EOHTML markers!	
 	$html = <<<EOHTML
 
+<div id="rightcolumn">
+
+ <div class="sideitem">
+   <h6>Incubation</h6>
+   <div align="center"><a href="/projects/what-is-incubation.php"><img 
+        align="center" src="/images/egg-incubation.png" 
+        border="0" alt="Incubation" /></a></div>
+ </div>
+
+</div>
+
 	<div id="midcolumn">
-	  This project was just provisioned, so there is nothing here yet. Here is the original <a href="http://www.eclipse.org/proposals/jetty/">proposal</a>.
+	  <p>This project is being provisioned, so content is light here at the moment.</p>
+	  <p>Follow this url to access the original <a href="http://www.eclipse.org/proposals/jetty/">proposal</a>.</p>
 	</div>
 
 EOHTML;
