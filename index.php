@@ -40,6 +40,8 @@
     </div>
 
 	<div id="midcolumn">
+	  <p><image url="jetty/images/jetty-logo-80x22.png"/></p>
+	
 	  <p>Jetty is an open-source, standards-based, full-featured web server implemented entirely in Java. It is 
 	  released under the Apache 2.0 license and is therefore free for commercial use and distribution. Once 
 	  established as an Eclipse project, it will be dual-licensed, maintaining its Apache 2.0 license, and adding 
