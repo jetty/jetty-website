@@ -11,7 +11,7 @@
 	# these are optional
 	$Nav->setLinkList( array() );
     $Nav->addNavSeparator( "Jetty", "/jetty" );
-    $Nav->addCustomNav( "About This Project", "/projects/project_summary.php?projectid=rt.jetty", "", 1  );
+    $Nav->addCustomNav( "About", "/projects/project_summary.php?projectid=rt.jetty", "", 1  );
 	#$Nav->addCustomNav("Downloads", 		"downloads.php", 	"_self", 2);
 	#$Nav->addCustomNav("Installation", 		"install.php", 		"_self", 2);
 	#$Nav->addCustomNav("FAQ", 				"faq.php", 			"_self", 2);

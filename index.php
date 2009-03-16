@@ -15,7 +15,7 @@
 	#
 	# Begin: page-specific settings.  Change these. 
 	$pageTitle 		= "Jetty";
-	$pageKeywords	= "Type, page, keywords, here";
+	$pageKeywords	= "servlet-3.0 jetty cometd webserver";
 	$pageAuthor		= "jmcconnell";
 	
 	# Add page-specific Nav bars here
@@ -30,19 +30,24 @@
 	# Paste your HTML content between the EOHTML markers!	
 	$html = <<<EOHTML
 
-<div id="rightcolumn">
-
- <div class="sideitem">
-   <h6>Incubation</h6>
-   <div align="center"><a href="/projects/what-is-incubation.php"><img 
-        align="center" src="/images/egg-incubation.png" 
-        border="0" alt="Incubation" /></a></div>
- </div>
-
-</div>
+    <div id="rightcolumn">
+      <div class="sideitem">
+        <h6>Incubation</h6>
+        <div align="center">
+          <a href="/projects/what-is-incubation.php"><img align="center" src="/images/egg-incubation.png" border="0" alt="Incubation" /></a>
+        </div>
+      </div>
+    </div>
 
 	<div id="midcolumn">
-	  <p>This project is being provisioned, so content is light here at the moment.</p>
+	  <p>Jetty is an open-source, standards-based, full-featured web server implemented entirely in Java. It is 
+	  released under the Apache 2.0 license and is therefore free for commercial use and distribution. Once 
+	  established as an Eclipse project, it will be dual-licensed, maintaining its Apache 2.0 license, and adding 
+	  the Eclipse Public License. Beyond the license addition, which would not require any changes from the current 
+	  large number of users or consuming open source projects or commercial products with use of Jetty, the move is 
+	  seen as having numerous benefits for the projects and community...</p>
+	  <p>The target is for Jetty 7 to release under the auspices of the Eclipse Foundation, with Jetty 6 continuing
+	  on with maintenance releases at The Codehaus for the foreseeable future.</p>
 	  <p>Follow this url to access the original <a href="http://www.eclipse.org/proposals/jetty/">proposal</a>.</p>
 	</div>
 
