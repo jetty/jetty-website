@@ -1,21 +1,9 @@
 <?php  																														require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.php");	require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/nav.class.php"); 	require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/menu.class.php"); 	$App 	= new App();	$Nav	= new Nav();	$Menu 	= new Menu();		include($App->getProjectCommon());    # All on the same line to unclutter the user's desktop'
 
-	#*****************************************************************************
-	#
-	# template.php
-	#
-	# Author: 		Denis Roy
-	# Date:			2005-06-16
-	#
-	# Description: Type your page comments here - these are not sent to the browser
-	#
-	#
-	#****************************************************************************
-	
 	#
 	# Begin: page-specific settings.  Change these. 
 	$pageTitle 		= "Jetty";
-	$pageKeywords	= "servlet-3.0 jetty cometd webserver";
+	$pageKeywords	= "Jetty, Servlets, Async, Web Server, Web Client, Eclipse RT, Eclipse Runtime";
 	$pageAuthor		= "jmcconnell";
 	
 	# Add page-specific Nav bars here
@@ -30,14 +18,14 @@
 	# Paste your HTML content between the EOHTML markers!	
 	$html = <<<EOHTML
 
-    <div id="rightcolumn">
-      <div class="sideitem">
-        <h6>Incubation</h6>
-        <div align="center">
-          <a href="/projects/what-is-incubation.php"><img align="center" src="/images/egg-incubation.png" border="0" alt="Incubation" /></a>
-        </div>
-      </div>
-    </div>
+    #<div id="rightcolumn">
+    #  <div class="sideitem">
+    #    <h6>Incubation</h6>
+    #    <div align="center">
+    #      <a href="/projects/what-is-incubation.php"><img align="center" src="/images/egg-incubation.png" border="0" alt="Incubation" /></a>
+    #    </div>
+    # </div> 
+    #</div>
 
 	<div id="midcolumn">
 	  <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
@@ -52,15 +40,17 @@
 	  on with maintenance releases at The Codehaus for the foreseeable future.</p>
 	  <p>Follow this url to access the original <a href="http://www.eclipse.org/proposals/jetty/">proposal</a>.</p>
 	  
-	  <div class="homeitem">
-        <h3>Community News</h3>
-          <ul>
-             <li><a href="https://www.eclipsecon.org/submissions/2009/view_talk.php?id=753&search=jetty">Join the Jetty Crew @ EclipseCon  <span class="dates">2009-3-24</span></li>
-          </ul>
-      </div>
+	  #<div class="homeitem">
+      #  <h3>Community News</h3>
+      #    <ul>
+      #       <li><a href="https://www.eclipsecon.org/submissions/2009/view_talk.php?id=753&search=jetty">Join the Jetty Crew @ EclipseCon  <span class="dates">2009-3-24</span></li>
+      #    </ul>
+      #</div>
 	</div>
 	
-
+	<div id="rightcolumn">
+        $sidebar		
+	</div>
 
 EOHTML;
 

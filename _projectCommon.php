@@ -10,11 +10,11 @@
 	# Format is Link text, link URL (can be http://www.someothersite.com/), target (_self, _blank), level (1, 2 or 3)
 	# these are optional
 	$Nav->setLinkList( array() );
-    $Nav->addNavSeparator( "Jetty", "/jetty" );
-    $Nav->addCustomNav( "About", "/projects/project_summary.php?projectid=rt.jetty", "", 1  );
-	#$Nav->addCustomNav("Downloads", 		"downloads.php", 	"_self", 2);
-	#$Nav->addCustomNav("Installation", 		"install.php", 		"_self", 2);
-	#$Nav->addCustomNav("FAQ", 				"faq.php", 			"_self", 2);
+    $Nav->addNavSeparator( "Jetty Home", "/jetty" );
+    $Nav->addCustomNav("About", "/projects/project_summary.php?projectid=rt.jetty", "_self", 2  );
+	$Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
+	$Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
+
 
 
 
