@@ -4,7 +4,7 @@
 	# See the Committer Tools "How Do I" for list of themes
 	# https://dev.eclipse.org/committers/
 	# Optional: defaults to system theme 
-	$theme = "Phoenix";
+	$theme = "Nova"; # Nova looks so much better but About link is put on wrong lvl :/
 	include("sidebar.php");
 
 	# Define your project-wide Nav bars here.
@@ -12,6 +12,7 @@
 	# these are optional
 	$Nav->setLinkList( array() );
     $Nav->addNavSeparator( "Jetty Home", "/jetty" );
+    $Nav->addCustomNav("", "_blank",2);
     $Nav->addCustomNav("About This Project", "/projects/project_summary.php?projectid=rt.jetty", "_self", 2);
 	$Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
 	$Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
