@@ -30,7 +30,6 @@
 	  seen as having numerous benefits for the projects and community...</p>
 	  <p>The target is for Jetty 7 to release under the auspices of the Eclipse Foundation, with Jetty 6 continuing
 	  on with maintenance releases at The Codehaus for the foreseeable future.</p>
-	  <p>Follow this url to access the original <a href="http://www.eclipse.org/proposals/jetty/">proposal</a>.</p>
 	 
 	</div>
 	
