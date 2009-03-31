@@ -38,6 +38,9 @@
 	
     </div>
 
+    <div id="rightcolumn">
+        $sidebar		
+	</div>
 
 EOHTML;
 
