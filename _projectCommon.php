@@ -14,7 +14,7 @@
 	
     $Nav->addNavSeparator( "Jetty Home", "/jetty" );
     #$Nav->addCustomNav("About This Project", "http://www.eclipse.org/projects/project_summary.php?projectid=rt.jetty", "_self", 3);
-    $Nav->addCustomNav("About", "/jetty/mailinglists.php", "_self", 2);
+    $Nav->addCustomNav("About", "http://www.eclipse.org/projects/project_summary.php?projectid=rt.jetty", "_self", 2);
 	$Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
 	$Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
 	$Nav->addCustomNav("Wiki", "http://wiki.eclipse.org/Jetty", "_self", 2);
