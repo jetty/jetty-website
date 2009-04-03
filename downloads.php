@@ -42,7 +42,7 @@
 		<p>
 			Yes, Jetty still supports our maven based users to the same degree as previous, the location of artifacts have changed though.
 			<ul>
-			  <li>http://repo2.maven.org/maven2/org/eclipse/jetty</li>
+			  <li><a href="http://repo2.maven.org/maven2/org/eclipse/jetty">http://repo2.maven.org/maven2/org/eclipse/jetty</a></li>
 			</ul>
 		</p>
 		<br/>
