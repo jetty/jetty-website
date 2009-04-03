@@ -18,11 +18,8 @@
 		<div class="homeitem3col">	
 			<h3>Latest Milestone Build</h3>
             <ul>
-                <li>
-                    <b>Version</b>: 7.0.0.M0  |  <b>Date</b>: 3 April 2009  <br/>
-               </li>
                <li>
-                    <b>Jetty</b><br/>
+                    <b>Jetty</b>: 7.0.0.M0  |  <b>Date</b>: 3 April 2009  <br/>
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.zip">jetty-distribution-7.0.0.M0.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.zip.sha1"><i>SHA1</i></a><br/>
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.gz">jetty-distribution-7.0.0.M0.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.gz.sha1"><i>SHA1</i></a><br/>
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.bz2">jetty-distribution-7.0.0.M0.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/milestones/7.0.0.M0/jetty-distribution-7.0.0.M0.tar.bz2.sha1"><i>SHA1</i></a><br/>                   
