@@ -22,14 +22,12 @@
 	<div id="midcolumn">
 	  <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
 	
-	  <p>Jetty is an open-source, standards-based, full-featured web server implemented entirely in Java. It is 
-	  released under the Apache 2.0 license and is therefore free for commercial use and distribution. Once 
-	  established as an Eclipse project, it will be dual-licensed, maintaining its Apache 2.0 license, and adding 
-	  the Eclipse Public License. Beyond the license addition, which would not require any changes from the current 
-	  large number of users or consuming open source projects or commercial products with use of Jetty, the move is 
-	  seen as having numerous benefits for the projects and community...</p>
-	  <p>The target is for Jetty 7 to release under the auspices of the Eclipse Foundation, with Jetty 6 continuing
-	  on with maintenance releases at The Codehaus for the foreseeable future.</p>
+	  <p>Jetty is an open-source project providing a HTTP server, HTTP client and javax.servlet container.  
+	  These 100% java components are full-featured, standards based, small foot print, embeddable, 
+	  asynchronous and enterprise scalable.
+	  Jetty is dual licensed under the Apache License 2.0 and/or Eclipse Public License 1.0. Jetty is
+	  free for commercial use and distribution under the terms of either of those licenses.
+	  </p>
 	 
 	</div>
 	
