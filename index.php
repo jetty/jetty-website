@@ -22,13 +22,23 @@
 	<div id="midcolumn">
 	  <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
 	
-	  <p>Jetty is an open-source project providing a HTTP server, HTTP client and javax.servlet container.  
+	  <p>Jetty is an open-source project providing a HTTP server, HTTP client and <a href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container.  
 	  These 100% java components are full-featured, standards based, small foot print, embeddable, 
 	  asynchronous and enterprise scalable.
-	  Jetty is dual licensed under the Apache License 2.0 and/or Eclipse Public License 1.0. Jetty is
+	  Jetty is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> 
+	  and/or <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is
 	  free for commercial use and distribution under the terms of either of those licenses.
 	  </p>
-	 
+	  
+	  <p>Jetty is used in a wide variety of projects and products: embedded in <a href="http://code.google.com/p/i-jetty/">phones</a>; in tools like the the <a href="http://www.eclipse.org/">eclipse IDE</a>, in
+	  frameworks like <a href="http://code.google.com/webtoolkit/">GWT</a>, in application servers like <a href="http://geronimo.apache.org/">apache geronimo</a> and in huge clusters like 
+	  <a href="http://developer.yahoo.net/blogs/hadoop/2008/07/apache_hadoop_wins_terabyte_sort_benchmark.html">yahoo's hadoop cluster</a>. See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for 
+	  more uses of Jetty.</p>
+	  
+	  <p>The jetty project is split between the <a href="http://www.eclipse.org/jetty/">the eclipse foundation</a> where the latest core components are developed;
+	  and <a href="http://jetty.codehaus.org">the codehaus</a>, where older versions are maintained and the latest eclipse components are variously integrated, 
+	  extended and repackaged. See the <a href="about.php">about</a> page for more on the project structure.  
+	  
 	</div>
 	
 	<div id="rightcolumn">
