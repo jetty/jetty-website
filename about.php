@@ -30,12 +30,12 @@
 	  <b>Jetty</b> <br/> 
 	  Jetty was the name initially given to the HTTP server component from Mort Bay.  The name Jetty has now
 	  grown to encompass the suite of components which includes a HTTP server, HTTP client, javax.servlet container, the 
-	  hightide application server and many other related components and utilities.   Jetty is now the name of the 
+	  <a href="http://docs.codehaus.org/display/JETTY/Hightide+Documentation">hightide application server</a> and many other related components and utilities.   Jetty is now the name of the 
 	  encompassing projects at 
 	  <a href="http://jetty.mortbay.org">mortbay</a>(v1-v4), 
 	  <a href="http://sourceforge.net/projects/jetty">sourceforge</a>(v5), 
 	  <a href="http://xircles.codehaus.org/projects/jetty">codehaus</a>(v6-) and 
-	  <a href="http://eclipse.org/jetty">eclispe</a>(v7-).
+	  <a href="http://eclipse.org/jetty">eclipse</a>(v7-).
 	  </p>
 	  
 	  <p>
@@ -43,14 +43,14 @@
 	  The Java HTTP server that became jetty was originally developed in 1995 by
 	  Greg Wilkins of <a href="http://mortbay.com">Mort Bay Consulting</a> as part of an issue tracking application.
 	  Versions 1.x through to 6.1.x of jetty were developed under org.mortbay packaging and Mort Bay still holds 
-	  the major part of the copyright on the jetty code base.  Mort bay directly hosted the jetty project until version
-	  3.x and was the prime sponsor of development until 6.x 
+	  the major part of the copyright on the jetty code base.  Mort Bay directly hosted the jetty project until version
+	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
 	  
 	  <p>
 	  <b>Webtide</b><br/>
-	  The role of mortbay in leading the development of Jetty was taken over in 2006 by 
-	  <a href="http://www.webtide.com">Webtide LLC</a>, an open source services company that employ many of the 
+	  The role of Mort Bay in leading the development of Jetty was taken over in 2006 by 
+	  <a href="http://www.webtide.com">Webtide LLC</a>, an open source services company that employs many of the 
 	  jetty contributors.
 	  </p>
 	  
@@ -63,13 +63,13 @@
 	  <p>
 	  <b>Codehaus</b><br/>
 	  In 2005, the jetty project moved to <a href="http://codehaus.org">the codehaus</a> for its hosting services and 
-	  open source community.  In 2009, after the core components of Jetty moved to eclispe, the jetty @ codehaus project continues to provide
+	  open source community.  In 2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
 	  integrations, extensions and packaging of jetty.
 	  </p>
 	  
 	  <p>
 	  <b>Eclipse</b><br/>
-	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">eclipse foundation</a>,
+	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
 	  in order to improved IP processes and broaden the licensing and community of the project. 
 	  </p>
 	  
@@ -105,7 +105,7 @@
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.1 </td>
-<td> Stabalizing </td>
+<td> Stabilizing </td>
 </tr>
 
 

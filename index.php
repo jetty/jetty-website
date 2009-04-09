@@ -31,13 +31,13 @@
 	  </p>
 	  
 	  <p>Jetty is used in a wide variety of projects and products: embedded in <a href="http://code.google.com/p/i-jetty/">phones</a>; in tools like the the <a href="http://www.eclipse.org/">eclipse IDE</a>, in
-	  frameworks like <a href="http://code.google.com/webtoolkit/">GWT</a>, in application servers like <a href="http://geronimo.apache.org/">apache geronimo</a> and in huge clusters like 
-	  <a href="http://developer.yahoo.net/blogs/hadoop/2008/07/apache_hadoop_wins_terabyte_sort_benchmark.html">yahoo's hadoop cluster</a>. See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for 
+	  frameworks like <a href="http://code.google.com/webtoolkit/">GWT</a>, in application servers like <a href="http://geronimo.apache.org/">Apache Geronimo</a> and in huge clusters like 
+	  <a href="http://developer.yahoo.net/blogs/hadoop/2008/07/apache_hadoop_wins_terabyte_sort_benchmark.html">Yahoo's Hadoop cluster</a>. See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for 
 	  more uses of Jetty.</p>
 	  
-	  <p>The jetty project is coordinated between the <a href="http://www.eclipse.org/jetty/">the eclipse foundation</a> where the latest core components are developed;
-	  and <a href="http://jetty.codehaus.org">the codehaus</a>, where older versions are maintained and the latest eclipse components are variously integrated, 
-	  extended and repackaged. See the <a href="about.php">about</a> page for more on the project structure.  
+	  <p>The jetty project is coordinated between the <a href="http://www.eclipse.org/jetty/">the Eclipse Foundation</a> where the latest core components are developed;
+	  and <a href="http://jetty.codehaus.org">the Codehaus</a>, where older versions are maintained and the latest eclipse components are variously integrated, 
+	  extended and repackaged. See the <a href="about.php">about page</a> for more about the project structure.  
 	  
 	</div>
 	
