@@ -75,13 +75,6 @@
 	  
 	  </blockquote>
 	
-    </div>
-
-    <div id="rightcolumn">
-        $sidebar		
-	</div>
-	
-	
 	  
 	  <table border=1 cellpadding=2>
 <tr>
@@ -92,15 +85,14 @@
 <th><b>Servlet</b></th>
 <th><b>JSP</b></th>
 <th><b>Status</b></th>
-<th><b>Notes</b></th>
 
 </tr>
 
 <tr>
 <td> 8.x </td>
-<td> Eclipse & Codehaus </td>
+<td> Eclipse,<br/>Codehaus </td>
 <td> 1.6 </td>
-<td> HTTP/1.1 RFC2616 </td>
+<td> HTTP/1.1<br/>RFC2616 </td>
 <td> 3.0 </td>
 <td> 2.1 </td>
 <td> Experimental </td>
@@ -109,13 +101,12 @@
 
 <tr>
 <td> 7.x </td>
-<td> Eclipse & Codehaus </td>
+<td> Eclipse,<br/>Codehaus </td>
 <td> 1.5, J2ME CLDC </td>
-<td> HTTP/1.1 RFC2616 </td>
+<td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.1 </td>
 <td> Stabalizing </td>
-<td> IP audited, async client </td>
 </tr>
 
 
@@ -123,33 +114,30 @@
 <td> Jetty-6.x </td>
 <td> Codehaus </td>
 <td> 1.4-1.5</td>
-<td> HTTP/1.1 RFC2616 </td>
+<td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.0 </td>
 <td> Stable </td>
-<td> Async server, AJP, cometd </td>
 </tr>
 
 <tr>
 <td> Jetty-5.x </td>
 <td> Sourceforge </td>
 <td> 1.2-1.5 </td>
-<td> HTTP/1.1 RFC2616 </td>
+<td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.4 </td>
 <td> 2.0 </td>
 <td> Mature </td>
-<td> J2EE 1.4 Compliance tested</td>
 </tr>
 
 <tr>
 <td> Jetty-4.x </td>
 <td> Sourceforge </td>
 <td> 1.2 </td>
-<td> HTTP/1.1 RFC2616 </td>
+<td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.3 </td>
 <td> 1.2 </td>
 <td> Ancient </td>
-<td>JMX</td>
 </tr>
 
 
@@ -157,11 +145,10 @@
 <td> Jetty-3.x </td>
 <td> Sourceforge </td>
 <td> 1.2 </td>
-<td> HTTP/1.1 RFC2068 </td>
+<td> HTTP/1.1<br/>RFC2068 </td>
 <td> 2.2 </td>
 <td> 1.1 </td>
 <td> Fossilized </td>
-<td>AJP</td>
 </tr>
 
 
@@ -169,11 +156,10 @@
 <td> Jetty-2.x </td>
 <td> Mortbay </td>
 <td> 1.1 </td>
-<td> HTTP/1.0 RFC1945 </td>
+<td> HTTP/1.0<br/>RFC1945 </td>
 <td> 2.1 </td>
 <td> 1.0 </td>
 <td> Legendary </td>
-<td>Servlets</td>
 </tr>
 
 
@@ -181,13 +167,21 @@
 <td> Jetty-1.0 </td>
 <td> Mortbay </td>
 <td> 1.0 </td>
-<td> HTTP/1.0 RFC1945 </td>
+<td> HTTP/1.0<br/>RFC1945 </td>
 <td> &nbsp; </td>
 <td> &nbsp; </td>
 <td> Mythical </td>
-<td>HTTP, Open source</td>
 </tr>
 </table>
+
+
+	
+    </div>
+
+    <div id="rightcolumn">
+        $sidebar		
+	</div>
+	
 
 
 EOHTML;

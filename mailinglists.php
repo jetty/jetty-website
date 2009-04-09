@@ -30,11 +30,6 @@
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-dev/maillist.rss">RSS Feed</a><br/>
                 </li>
                 <li>
-                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-defects">jetty-defects@eclipse.org</a></b> - A mail list for defects reporting. If you found a defect, you can send report here. Nevertheless the preferred place for defects reporting is Bugzilla.<br/>
-                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-defects">Subscribe/unsubscribe instructions</a><br/>
-                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-defects/maillist.html">Mailing list archive</a>
-                </li>
-                <li>
                     <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-commit">jetty-commit@eclipse.org</a></b> - A mail list for svn commit messages.  Posts to this list will be ignored.<br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-commit">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-commit/maillist.html">Mailing list archive</a>
