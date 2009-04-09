@@ -101,7 +101,7 @@
 <tr>
 <td> 7.x </td>
 <td> Eclipse,<br/>Codehaus </td>
-<td> 1.5,<br/>J2ME CLDC </td>
+<td> 1.5,<br/>J2ME</td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.1 </td>
@@ -110,7 +110,7 @@
 
 
 <tr>
-<td> Jetty-6.x </td>
+<td> 6.x </td>
 <td> Codehaus </td>
 <td> 1.4-1.5</td>
 <td> HTTP/1.1<br/>RFC2616 </td>
@@ -120,7 +120,7 @@
 </tr>
 
 <tr>
-<td> Jetty-5.x </td>
+<td> 5.x </td>
 <td> Sourceforge </td>
 <td> 1.2-1.5 </td>
 <td> HTTP/1.1<br/>RFC2616 </td>
@@ -130,9 +130,9 @@
 </tr>
 
 <tr>
-<td> Jetty-4.x </td>
+<td> 4.x </td>
 <td> Sourceforge </td>
-<td> 1.2 </td>
+<td> 1.2,<br/>J2ME</td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.3 </td>
 <td> 1.2 </td>
@@ -141,7 +141,7 @@
 
 
 <tr>
-<td> Jetty-3.x </td>
+<td> 3.x </td>
 <td> Sourceforge </td>
 <td> 1.2 </td>
 <td> HTTP/1.1<br/>RFC2068 </td>
@@ -152,7 +152,7 @@
 
 
 <tr>
-<td> Jetty-2.x </td>
+<td> 2.x </td>
 <td> Mortbay </td>
 <td> 1.1 </td>
 <td> HTTP/1.0<br/>RFC1945 </td>
@@ -163,7 +163,7 @@
 
 
 <tr>
-<td> Jetty-1.0 </td>
+<td> 1.x </td>
 <td> Mortbay </td>
 <td> 1.0 </td>
 <td> HTTP/1.0<br/>RFC1945 </td>
