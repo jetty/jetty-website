@@ -78,13 +78,13 @@
 	  
 	  <table border=1 cellpadding=2>
 <tr>
-<th><b>Version</b></th>
-<th><b>Home</b></th>
-<th><b>Java</b></th>
-<th><b>HTTP</b></th>
-<th><b>Servlet</b></th>
-<th><b>JSP</b></th>
-<th><b>Status</b></th>
+<td><b>Version</b></td>
+<td><b>Home</b></td>
+<td><b>Java</b></td>
+<td><b>HTTP</b></td>
+<td><b>Servlet</b></td>
+<td><b>JSP</b></td>
+<td><b>Status</b></td>
 
 </tr>
 
@@ -96,7 +96,6 @@
 <td> 3.0 </td>
 <td> 2.1 </td>
 <td> Experimental </td>
-<td> Standardized async </td>
 </tr>
 
 <tr>
