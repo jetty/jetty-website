@@ -101,7 +101,7 @@
 <tr>
 <td> 7.x </td>
 <td> Eclipse,<br/>Codehaus </td>
-<td> 1.5, J2ME CLDC </td>
+<td> 1.5,<br/>J2ME CLDC </td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.1 </td>
