@@ -35,7 +35,7 @@
 	  <a href="http://developer.yahoo.net/blogs/hadoop/2008/07/apache_hadoop_wins_terabyte_sort_benchmark.html">yahoo's hadoop cluster</a>. See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for 
 	  more uses of Jetty.</p>
 	  
-	  <p>The jetty project is split between the <a href="http://www.eclipse.org/jetty/">the eclipse foundation</a> where the latest core components are developed;
+	  <p>The jetty project is coordinated between the <a href="http://www.eclipse.org/jetty/">the eclipse foundation</a> where the latest core components are developed;
 	  and <a href="http://jetty.codehaus.org">the codehaus</a>, where older versions are maintained and the latest eclipse components are variously integrated, 
 	  extended and repackaged. See the <a href="about.php">about</a> page for more on the project structure.  
 	  

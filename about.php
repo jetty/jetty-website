@@ -74,8 +74,16 @@
 	  </p>
 	  
 	  </blockquote>
+	
+    </div>
+
+    <div id="rightcolumn">
+        $sidebar		
+	</div>
+	
+	
 	  
-	  <table><tbody>
+	  <table border=1 cellpadding=2>
 <tr>
 <th><b>Version</b></th>
 <th><b>Home</b></th>
@@ -179,15 +187,8 @@
 <td> Mythical </td>
 <td>HTTP, Open source</td>
 </tr>
-</tbody></table>
+</table>
 
-	  
-	
-    </div>
-
-    <div id="rightcolumn">
-        $sidebar		
-	</div>
 
 EOHTML;
 
