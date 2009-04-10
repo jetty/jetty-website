@@ -18,7 +18,8 @@
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
 	$Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
 	$Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
-	$Nav->addCustomNav("Wiki", "http://wiki.eclipse.org/Jetty", "_self", 2);	
+	$Nav->addCustomNav("Wiki", "http://wiki.eclipse.org/Jetty", "_self", 2);
+	$Nav->addCustomNav("Source", "http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty", "_self", 2);
 	$Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);	
 	$Nav->addCustomNav("Bugs", "https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&short_desc_type=allwordssubstr&short_desc=&product=Jetty&long_desc_type=allwordssubstr&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&status_whiteboard_type=allwordssubstr&status_whiteboard=&keywords_type=allwords&keywords=&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED", "_self", 2);   
 	$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);	
