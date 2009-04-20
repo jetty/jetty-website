@@ -15,12 +15,6 @@
     ## required by eclipse guidelines
     $Nav->addNavSeparator("Jetty", "/jetty");
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
-    # custom links
-    $Nav->addCustom("jetty@Eclipse", "http://www.eclipse.org/jetty/", "_self", 2);
-    $Nav->addCustom("jetty@codehaus", "http://jetty.mortbay.org/jetty/", "_self", 2);
-    $Nav->addCustom("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
-    #FIXME: $Nav->addCustom("Licenses", "", "_self", 2);
-    
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
     $Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
