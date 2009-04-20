@@ -12,8 +12,9 @@
     # these are optional
     $Nav->setLinkList( array() );
     
-    $Nav->addNavSeparator( "Jetty Home", "/jetty" );
-    $Nav->addCustomNav("About", "/jetty/about.php", "_self", 2);
+    ## required by eclipse guidelines
+    $Nav->addNavSeparator("Jetty", "/jetty");
+    $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
     #
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
