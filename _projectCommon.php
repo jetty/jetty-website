@@ -15,13 +15,24 @@
     ## required by eclipse guidelines
     $Nav->addNavSeparator("Jetty", "/jetty");
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
+    # custom links
+    $Nav->addCustomNav("jetty@Eclipse", "/jetty", "_self", 2);
+    $Nav->addCustomNav("jetty@codehaus", "http://jetty.mortbay.org/jetty/", "_self", 2);
+    $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
+    #FIXME: $Nav->addCustomNav("Licenses", "", "_self", 2);
+
+    $Nav->addNavSeparator("Resources", null);
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
+    $Nav->addCustomNav("Documentation", "http://wiki.eclipse.org/Jetty", "_self", 2);
+    #FIXME: $Nav->addCustomNav("FAQ", "", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
-    $Nav->addCustomNav("Newsgroup", "/jetty/newsgroup.php", "_self", 2);
-    $Nav->addCustomNav("Wiki", "http://wiki.eclipse.org/Jetty", "_self", 2);
-    $Nav->addCustomNav("Source & Build", "http://wiki.eclipse.org/Jetty/Project/Building", "_self", 2);
-    $Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);  
-    $Nav->addCustomNav("Bugs", "https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&short_desc_type=allwordssubstr&short_desc=&product=Jetty&long_desc_type=allwordssubstr&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&status_whiteboard_type=allwordssubstr&status_whiteboard=&keywords_type=allwords&keywords=&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED", "_self", 2);   
-    $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);  
+    $Nav->addCustomNav("Jetty7 JavaDoc", "http://download.eclipse.org/jetty/7.0.0.M0/apidocs", "_self", 2);
+    #$Nav->addCustomNav("Jetty7 Source XRef", "http://download.eclipse.org/jetty/7.0.0.M0/xref", "_self", 2);
     
+    #FIXME: $Nav->addNavSeparator("Plugins", null);
+    
+    $Nav->addNavSeparator("Project Management", null);
+    $Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);
+    $Nav->addCustomNav("Bugs", "https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&short_desc_type=allwordssubstr&short_desc=&product=Jetty&long_desc_type=allwordssubstr&long_desc=&bug_file_loc_type=allwordssubstr&bug_file_loc=&status_whiteboard_type=allwordssubstr&status_whiteboard=&keywords_type=allwords&keywords=&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED", "_self", 2);
+    $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);
 ?>
