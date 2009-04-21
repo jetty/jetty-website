@@ -19,7 +19,7 @@
     $Nav->addCustomNav("jetty@Eclipse", "/jetty", "_self", 2);
     $Nav->addCustomNav("jetty@codehaus", "http://jetty.mortbay.org/jetty/", "_self", 2);
     $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
-    #FIXME: $Nav->addCustomNav("Licenses", "", "_self", 2);
+    $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
     $Nav->addNavSeparator("Resources", null);
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
