@@ -57,7 +57,7 @@
 		    <b>Are Maven2 artifacts still available?</b>
 		</p>
 		<p>
-			Yes, Jetty still supports our maven based users to the same degree as previous, the location of artifacts have changed though.
+			Yes, Jetty still supports our Maven based users to the same degree as previously. The location of artifacts has changed though.
 			<ul>
 			  <li><a href="http://repo2.maven.org/maven2/org/eclipse/jetty">http://repo2.maven.org/maven2/org/eclipse/jetty</a></li>
 			</ul>
