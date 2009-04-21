@@ -12,11 +12,11 @@
 
 	<div id="midcolumn">
 		<h1>Downloads</h1>
-		<p>
-			Jetty Milestone builds are now available.
-		</p>	        
 		<div class="homeitem3col">	
-			<h3>Latest Milestone Build</h3>
+			<h2>Jetty Releases from Eclipse</h2>
+            <p>
+                Jetty milestone builds are now available.
+            </p>            
             <ul>
                <li>
                     <b>Jetty</b>: 7.0.0.M0  |  <b>Date</b>: 3 April 2009  <br/>
@@ -28,10 +28,27 @@
 		</div>		
 		<p>
             All downloads are provided under the terms and conditions of the <a href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified. Please note that the use of the software you are about to access may be subject to third party terms and conditions and you are responsible for abiding by such terms and conditions.
-		</p>	
-		<h2>Frequently asked questions</h2>	
+		</p>
+		<div class="homeitem3col">
+		  <h2>Jetty Releases from Codehaus</h2>
+		  <p>
+		      Download Jetty accessories, integrations, extensions, or older versions of Jetty from the <a href="http://docs.codehaus.org/display/JETTY/Downloading+Jetty">Downloads</a> page at the Codehaus.
+		  </p>
+		</div>
+		<h2>Frequently asked questions</h2>
 		<p>
-		    <b>I have been using previous versions of Jetty from the Jetty6 line, is this a drop in replacement?</b>
+            <b>How do I unpack and install Jetty?</b>
+		</p>
+		<p>
+            To get started quickly:
+            <ol>
+                <li><a href="http://dist.codehaus.org/jetty/">Download from Codehaus</li>
+                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty-6</a> or <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-7.0.x">Jetty-7</a></li>
+                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty-6</a> or <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-7.0.x">Jetty-7</a></li>
+            </ol>
+		</p>
+		<p>
+            <b>I have been using previous versions of Jetty from the Jetty6 line, is this a drop in replacement?</b>
 		</p>
 		<p>
 			No, while Jetty7 has very much the same architecture as Jetty6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty7 milestones are not as full featured as Jetty6 in terms of 3rd part integrations being available by default with the distribution bundle.
