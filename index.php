@@ -48,15 +48,17 @@
             <td>
               <ul>
                 <li>Large clusters, such as the <a href="http://developer.yahoo.net/hadoop/">Yahoo Hadoop Cluster</a></li>
+                <li>Cloud computing and SaaS, such as the <a href="http://code.google.com/appengine/">Google AppEngine</a></li>
                 <li>Application Servers, such as <a href="http://geronimo.apache.org/">Apache Geronimo</a></li>
-                <li>Framework, such as <a href="http://code.google.com/webtoolkit/">GWT</a></li>
+                <li>Frameworks, such as <a href="http://code.google.com/webtoolkit/">GWT</a></li>
                 <li>Tools, such as the <a href="http://www.eclipse.org/">Eclipse IDE</a></li>
                 <li>Devices, such as <a href="http://code.google.com/p/i-jetty/">phones</a></li>
                 <li><a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">More...</a></li>
               </ul>
             </td>    
           </tr>
-        </table>      
+        </table>
+      
     </div>
     
     <div id="rightcolumn">
