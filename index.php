@@ -48,7 +48,8 @@
             <td>
               <ul>
                 <li>Large clusters, such as the <a href="http://developer.yahoo.net/hadoop/">Yahoo Hadoop Cluster</a></li>
-                <li>Cloud computing and SaaS, such as the <a href="http://code.google.com/appengine/">Google AppEngine</a></li>
+                <li>Cloud computing, such as the <a href="http://code.google.com/appengine/">Google AppEngine</a></li>
+                <li>SaaS, such as <a href="http://www.zimbra.com/">Yahoo! Zimbra</a></li> 
                 <li>Application Servers, such as <a href="http://geronimo.apache.org/">Apache Geronimo</a></li>
                 <li>Frameworks, such as <a href="http://code.google.com/webtoolkit/">GWT</a></li>
                 <li>Tools, such as the <a href="http://www.eclipse.org/">Eclipse IDE</a></li>
