@@ -13,13 +13,13 @@
     <div id="midcolumn">
         <h1>Licenses</h1>
         <p>
-            The Jetty project is coordinated between <a href="http://www.eclipse.org/jetty/">Eclipse</a> for the latest core components and the <a href="http://jetty.mortbay.org/jetty/">Codehaus</a> for Jetty accessories, extensions, and older versions of Jetty.            
+            The Jetty project is coordinated between <a href="http://www.eclipse.org/jetty/">Eclipse</a> for the latest core components and the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> for Jetty accessories, extensions, and older versions of Jetty.            
         </p>
         <p>
             Jetty7 is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> and <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is free for commercial use and distribution under the terms of either license. 
         </p>
         <p>
-            The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">Codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.
+            The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.
         </p>
         <p>
             Jetty 6 is distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.

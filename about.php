@@ -61,7 +61,7 @@
 	  </p>
 	  
 	  <p>
-	  <b>Codehaus</b><br/>
+	  <b>codehaus</b><br/>
 	  In 2005, the jetty project moved to <a href="http://codehaus.org">the codehaus</a> for its hosting services and 
 	  open source community.  In 2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
 	  integrations, extensions and packaging of jetty.
@@ -90,7 +90,7 @@
 
 <tr>
 <td> 8.x </td>
-<td> Eclipse,<br/>Codehaus </td>
+<td> Eclipse,<br/>codehaus </td>
 <td> 1.6 </td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 3.0 </td>
@@ -100,7 +100,7 @@
 
 <tr>
 <td> 7.x </td>
-<td> Eclipse,<br/>Codehaus </td>
+<td> Eclipse,<br/>codehaus </td>
 <td> 1.5,<br/>J2ME</td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
@@ -111,7 +111,7 @@
 
 <tr>
 <td> 6.x </td>
-<td> Codehaus </td>
+<td> codehaus </td>
 <td> 1.4-1.5</td>
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
