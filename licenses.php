@@ -19,7 +19,7 @@
             Jetty7 is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> and <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is free for commercial use and distribution under the terms of either license, with exceptions listed in the <a href="http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/NOTICE.txt">NOTICE</a> file. 
         </p>
         <p>
-            The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.
+            The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/trunk/NOTICE.txt">NOTICE</a> file.
         </p>
         <p>
             Jetty 6 is distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.
