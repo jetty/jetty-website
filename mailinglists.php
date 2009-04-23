@@ -16,7 +16,7 @@
 		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, then you can subscribe to one of the following mailing lists.  If you want to track the svn commits for the Jetty project then there is a list for this as well.
 		</p>
 		<div class="homeitem3col">	
-			<h3>Mailing Lists</h3>
+			<h3>Mailing Lists on Eclipse</h3>
             <ul>
                 <li>
                     <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a></b> - A mail list for announcement of new Jetty versions and events. It supposed that all announcements will come from development team, so if you are not Jetty committer, please don't post to this list.<br/>
@@ -34,7 +34,15 @@
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-commit">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-commit/maillist.html">Mailing list archive</a>
                 </li>
+                <li>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">jetty-users@eclipse.org</a></b> - A mail list for user discussion. <br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">Subscribe/unsubscribe instructions</a><br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">Mailing list archive</a>
+                </li>
             </ul>
+            
+            <h3>Mailing Lists on Codehaus</h3>
+            Mailing lists for Jetty extensions and for older versions of Jetty can be found at <a href="http://xircles.codehaus.org/projects/jetty/lists">codehaus</a>.
 		</div>
 		<h2>Frequently asked questions</h2>
 		<p>
