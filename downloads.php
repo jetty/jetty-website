@@ -43,7 +43,7 @@
 		      Download Jetty accessories, integrations, extensions, or older versions of Jetty from the <a href="http://docs.codehaus.org/display/JETTY/Downloading+Jetty">Downloads</a> page at the codehaus.
 		  </p>
 		</div>
-		<h2>Frequently asked questions</h2>
+		<h2>Frequently Asked Questions</h2>
 		<p>
             <b>How do I unpack and install Jetty?</b>
 		</p>
