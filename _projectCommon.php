@@ -29,8 +29,8 @@
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     #FIXME: $Nav->addCustomNav("FAQ", "", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
-    $Nav->addCustomNav("Jetty7 JavaDoc", "http://download.eclipse.org/jetty/7.0.0.M1/apidocs", "_self", 2);
-    $Nav->addCustomNav("Jetty7 Source XRef", "http://download.eclipse.org/jetty/7.0.0.M1/xref", "_self", 2);
+    $Nav->addCustomNav("Jetty7 JavaDoc", "http://download.eclipse.org/jetty/stable-7/apidocs/", "_self", 2);
+    $Nav->addCustomNav("Jetty7 Source XRef", "http://download.eclipse.org/jetty/stable-7/xref/", "_self", 2);
     
     #FIXME: $Nav->addNavSeparator("Plugins", null);
     
