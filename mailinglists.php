@@ -13,18 +13,18 @@
 	<div id="midcolumn">
 		<h1>Mailing Lists</h1>
 		<p>
-		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, then you can subscribe to one of the following mailing lists.  If you want to track the svn commits for the Jetty project then there is a list for this as well.
+		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, then you can subscribe to one of the following mailing lists.  You may also track svn commits for the Jetty project.
 		</p>
 		<div class="homeitem3col">	
 			<h3>Mailing Lists on Eclipse</h3>
             <ul>
                 <li>
-                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a></b> - A mail list for announcement of new Jetty versions and events. It supposed that all announcements will come from development team, so if you are not Jetty committer, please don't post to this list.<br/>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a></b> - A mail list for the Jetty development team to announce new Jetty versions and events related to Jetty. If you are interested in announcementsout new versions subscribe to this. Please be aware that only Jetty committers can make announcements, so all other subscribers please do not post to this list.<br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-announce/maillist.html">Mailing list archive</a>
                 </li>
                 <li>
-                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">jetty-dev@eclipse.org</a></b> - A mail list for developer discussion. It's a place, where Jetty committers, contributors and integrators discuss all topics related with project development.<br/>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">jetty-dev@eclipse.org</a></b> - A mail list for developer discussion. It's a place, where Jetty committers, contributors and integrators discuss all topics related to project development.<br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-dev/maillist.html">Mailing list archive</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-dev/maillist.rss">RSS Feed</a><br/>
@@ -41,38 +41,30 @@
                 </li>
             </ul>
             
-            <h3>Mailing Lists on Codehaus</h3>
+            <h3>Mailing Lists on codehaus</h3>
             Mailing lists for Jetty extensions and for older versions of Jetty can be found at <a href="http://xircles.codehaus.org/projects/jetty/lists">codehaus</a>.
 		</div>
-		<h2>Frequently asked questions</h2>
+		<h2>Frequently Asked Questions</h2>
 		<p>
-		    <b>What I need to do in order to use mailing lists?</b>
+		    <b>What I need to do to use mailing lists?</b>
 		</p>
 		<p>
-		    First of all you need to subscribe to the mailing list. Please follow subscribe instructions. As soon as you will complete subscription process, you will get posts from mailing list to your mailbox. You can also post to mailing list by sending e-mails to mailing list address.
+		    First, you need to subscribe the mailing list. To subscribe, follow these <a href="https://dev.eclipse.org/mailman/listinfo/jetty-commit">instructions</a>. When you complete the subscription process, you will receive email from the mailing list.
 		</p>
 		<p>
-		    <b>You have mailing lists and newsgroups. What is the difference and what should I use?</b>
-        </p>		    
-        <p>
-		    Mailing lists are mostly used for communication between Jetty committers, integrators, contributors and getting announcements from development team. Newsgroups are aimed to organize general discussions in wider community.
-		</p>
-		<p>
-		    Thus, if you use Jetty and need to get the support or ask questions, then you should post to the newsgroup.<br/>
-		    If you are Jetty committer, contributor or integrator, then post to the <a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">jetty-dev@eclipse.org</a> mailing list.<br/>
-		    If you want to get announcement about new Jetty versions, then subscribe to the <a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a> mailing list.
-		</p>
+            You can post to mailing list by sending e-mails to the list's email address.
+        </p>
 		<p>
 		    <b>Can I review mailing lists?</b>
 		</p>		
 		<p>
-		    Mailing list archives allows you to review all posts though simple web interface. You don't need to subscribe or register in order to have access to archives.
+		    Yes, the mailing list <a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">archives</a> allow you to review all posts through a simple web interface. You don't need to subscribe or register in order to have access to the archives. 
 		</p>
 		<p>
 		    <b>I subscribed to the mailing list, but receive only new posts. Where I can find old posts?</b>
 		</p>
 		<p>
-		    Please take a look to mailing list archive. There you can find all posts.
+		    You can find the old posts in the mailing list <a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">archive</a>.
 		</p>
 		<br/>
 		<br/>		
