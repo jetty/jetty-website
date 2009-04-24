@@ -35,8 +35,9 @@
           <tr>
             <td>
               <ul>
-                <li>Full-featured, standards-based, and open source</li>
-                <li>100% Java</li>
+                <li>Full-featured and standards-based</li>
+                <li>Open source and commercially usable</li>
+                <li>Flexible and extensible</li>
                 <li>Small footprint</li>
                 <li>Embeddable</li>
                 <li>Asynchronous</li>
