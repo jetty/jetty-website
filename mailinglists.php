@@ -19,7 +19,7 @@
 			<h3>Mailing Lists on Eclipse</h3>
             <ul>
                 <li>
-                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a></b> - A mail list for the Jetty development team to announce new Jetty versions and events related to Jetty. If you are interested in announcementsout new versions subscribe to this. Please be aware that only Jetty committers can make announcements, so all other subscribers please do not post to this list.<br/>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">jetty-announce@eclipse.org</a></b> - A mail list for the Jetty team to announce new versions of Jetty and events related to Jetty. Subscribe to this list if you are interested in this information. Please be aware that only Jetty committers can make announcements, so all other subscribers please do not post to this list.<br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-announce">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-announce/maillist.html">Mailing list archive</a>
                 </li>
