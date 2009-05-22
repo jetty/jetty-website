@@ -57,15 +57,15 @@
             To get started quickly:
             <ol>
                 <li><a href="http://dist.codehaus.org/jetty/">Download from codehaus</li>
-                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty-6</a> or <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-7.0.x">Jetty-7</a></li>
-                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty-6</a> or <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-7.0.x">Jetty-7</a></li>
+                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty 6</a> or <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-7.0.x">Jetty 7</a></li>
+                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty 6</a> or <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-7.0.x">Jetty 7</a></li>
             </ol>
 		</p>
 		<p>
-            <b>I have been using previous versions of Jetty from the Jetty6 line, is this a drop in replacement?</b>
+            <b>I have been using previous versions of Jetty from the Jetty 6 line, is this a drop in replacement?</b>
 		</p>
 		<p>
-			No, while Jetty7 has very much the same architecture as Jetty6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty7 milestones are not as full featured as Jetty6 in terms of 3rd part integrations being available by default with the distribution bundle.
+			No, while Jetty 7 has very much the same architecture as Jetty 6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty 7 milestones are not as full featured as Jetty 6 in terms of 3rd part integrations being available by default with the distribution bundle.
 		</p>
 		<p>
 		    <b>Are Maven2 artifacts still available?</b>
