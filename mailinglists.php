@@ -45,6 +45,7 @@
             Mailing lists for Jetty extensions and for older versions of Jetty can be found at <a href="http://xircles.codehaus.org/projects/jetty/lists">codehaus</a>.
 		</div>
 		<h2>Frequently Asked Questions</h2>
+		<div id="subscribe">
 		<p>
 		    <b>What I need to do to use mailing lists?</b>
 		</p>
@@ -54,18 +55,22 @@
 		<p>
             You can post to mailing list by sending e-mails to the list's email address.
         </p>
+        <div id="archives">
 		<p>
 		    <b>Can I review mailing lists?</b>
 		</p>		
 		<p>
 		    Yes, the mailing list <a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">archives</a> allow you to review all posts through a simple web interface. You don't need to subscribe or register in order to have access to the archives. 
 		</p>
+		</div>
+		<div id="oldposts">
 		<p>
-		    <b>I subscribed to the mailing list, but receive only new posts. Where I can find old posts?</b>
+		    <b>I subscribed to the mailing list, but receive only new posts. Where can I find old posts?</b>
 		</p>
 		<p>
 		    You can find the old posts in the mailing list <a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">archive</a>.
 		</p>
+		</div>
 		<br/>
 		<br/>		
 	</div>	
