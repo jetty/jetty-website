@@ -55,6 +55,7 @@
 		<p>
             You can post to mailing list by sending e-mails to the list's email address.
         </p>
+        </div>
         <div id="archives">
 		<p>
 		    <b>Can I review mailing lists?</b>
