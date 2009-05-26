@@ -13,7 +13,7 @@
 	<div id="midcolumn">
 		<h1>Mailing Lists</h1>
 		<p>
-		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, then you can subscribe to one of the following mailing lists.  You may also track svn commits for the Jetty project.
+		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, you can subscribe to one of the following mailing lists.  You may also track svn commits for the Jetty project.
 		</p>
 		<div class="homeitem3col">	
 			<h3>Mailing Lists on Eclipse</h3>
