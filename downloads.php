@@ -68,7 +68,7 @@
             <b>I have been using previous versions of Jetty from the Jetty 6 line, is this a drop in replacement?</b>
 		</p>
 		<p>
-			No, while Jetty 7 has very much the same architecture as Jetty 6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty 7 milestones are not as full featured as Jetty 6 in terms of 3rd part integrations being available by default with the distribution bundle.
+			No, while Jetty 7 has very much the same architecture as Jetty 6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty 7 milestones are not as full featured as Jetty 6 in terms of 3rd party integrations being available by default with the distribution bundle.
 		</p>
 		</div>
 		<div id="maven">
