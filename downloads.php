@@ -18,7 +18,13 @@
                 Jetty milestone builds are now available.
             </p>            
             <ul>
-				<li>
+               <li>
+                    <b>Jetty</b>: 7.0.0.M4  |  <b>Date</b>: 1 July 2009  <br/>
+                    <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.zip">jetty-distribution-7.0.0.M4.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.zip.sha1"><i>SHA1</i></a><br/>
+                    <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.gz">jetty-distribution-7.0.0.M4.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.gz.sha1"><i>SHA1</i></a><br/>
+                    <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.bz2">jetty-distribution-7.0.0.M4.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M4/dist/jetty-distribution-7.0.0.M4.tar.bz2.sha1"><i>SHA1</i></a><br/>
+               </li>
+				   <li>
                     <b>Jetty</b>: 7.0.0.M3  |  <b>Date</b>: 22 June 2009  <br/>
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.zip">jetty-distribution-7.0.0.M3.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.zip.sha1"><i>SHA1</i></a><br/>
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.gz">jetty-distribution-7.0.0.M3.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.gz.sha1"><i>SHA1</i></a><br/>
