@@ -31,8 +31,8 @@
                     <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.bz2">jetty-distribution-7.0.0.M3.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.M3/dist/jetty-distribution-7.0.0.M3.tar.bz2.sha1"><i>SHA1</i></a><br/>
                </li>            
             </ul>
-            <p>Historial releases are available on the <a href="/jetty/previousDownloads.php">previous downloads</a> page.</p>
-            <p>The <a href="http://wiki.eclipse.org/Jetty/Reference">index of the JavaDoc and Source XRef links</a> for each milestone build is also available. 
+            <p>Historical releases are available on the <a href="/jetty/previousDownloads.php">previous downloads</a> page.</p>
+            <p>The <a href="http://wiki.eclipse.org/Jetty/Reference/Index_of_Generated_Release_Documents">index of the JavaDoc and Source XRef links</a> for each milestone build is also available. 
 		</div>		
 		<p>
             All downloads are provided under the terms and conditions of the <a href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified. Please note that the use of the software you are about to access may be subject to third party terms and conditions and you are responsible for abiding by such terms and conditions.
