@@ -52,8 +52,8 @@
             To get started quickly:
             <ol>
                 <li><a href="http://dist.codehaus.org/jetty/">Download from codehaus</li>
-                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty 6</a> or <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-7.0.x">Jetty 7</a></li>
-                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty 6</a> or <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-7.0.x">Jetty 7</a></li>
+                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty 6</a> or <a href="http://wiki.eclipse.org/Jetty/Howto/Install_Jetty/Bundle">Jetty 7</a></li>
+                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty 6</a> or <a href="http://wiki.eclipse.org/Jetty/Howto/Run_Jetty">Jetty 7</a></li>
             </ol>
 		</p>
 		</div>
