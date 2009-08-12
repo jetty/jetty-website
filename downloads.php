@@ -14,21 +14,24 @@
 		<h1>Downloads</h1>
 		<div class="homeitem3col">	
 			<h2>Jetty Distributions from Eclipse</h2>
-            <p>
-                The Jetty@eclipse project is unable to make full distributions of Jetty available for download from the Eclipse servers until all our dependencies (e.g., JSP) have been put through the Eclipse IP process.
-            </p>            
-            <p>
-            	Jetty 7 JARs which have been through the Eclipse JAR conditioning process are available from the Jetty Eclipse OSGi update site:
-            </p>
-            <p>
-            	<a href=" http://download.eclipse.org/jetty/stable-7/update/">http://download.eclipse.org/jetty/stable-7/update/</a>
-            </p>
+			<p>
+				A Jetty distribution based on Jetty modules from Eclipse plus dependencies that have been through the Eclipse IP process and conditioning is available via:
+				<ul>
+					<li><a href="http://download.eclipse.org/jetty/stable-7/update/">http://download.eclipse.org/jetty/stable-7/update/</a></li>
+				</ul>
+			</p>
+			<p>
+				This distribution and its dependencies are provided under the terms and conditions of the Eclipse Foundation Software User Agreement unless otherwise specified. 
+			</p>
+			<p>
+				This distribution contains only the core functionality of a servlet server and the HTTP client. Some modules (e.g., annotations) are missing dependencies which may be discovered by using the command <code>mvn dependency:tree</code> within the source module. These dependencies should be placed in the lib/ext directory. 
+			</p>
 			<p>
 				The unconditioned Jetty 7 JARs and Maven artifacts are also available from the central Maven repository:
-			</p>
-			<p>
-				 <a href="http://repo2.maven.org/maven2/org/eclipse/jetty/">http://repo2.maven.org/maven2/org/eclipse/jetty/</a>
-			</p>
+				<ul>
+					<li><a href="http://repo2.maven.org/maven2/org/eclipse/jetty/">http://repo2.maven.org/maven2/org/eclipse/jetty/</a></li>
+				</ul>
+			</p>			
 		</div>
 		<div class="homeitem3col">
 			<h2>Jetty Distributions from codehaus</h2>
