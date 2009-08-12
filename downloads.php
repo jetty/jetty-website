@@ -15,23 +15,22 @@
 		<div class="homeitem3col">	
 			<h2>Jetty Distributions from Eclipse</h2>
 			<p>
-				A Jetty distribution based on Jetty modules from Eclipse plus dependencies that have been through the Eclipse IP process and conditioning is available via:
-				<ul>
-					<li><a href="http://download.eclipse.org/jetty/stable-7/update/">http://download.eclipse.org/jetty/stable-7/update/</a></li>
-				</ul>
+				A Jetty distribution based on Jetty modules from Eclipse plus dependencies that have been through the Eclipse IP process and conditioning.
 			</p>
-			<p>
-				This distribution and its dependencies are provided under the terms and conditions of the Eclipse Foundation Software User Agreement unless otherwise specified. 
-			</p>
+			<ul>
+				<li>
+                	<b>Jetty</b>: 7.0.0.RC3  |  <b>Date</b>: 12 August 2009  <br/>
+                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.zip">jetty-distribution-7.0.0.RC3.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.zip.sha1"><i>SHA1</i></a><br/>
+                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.gz">jetty-distribution-7.0.0.RC3.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.gz.sha1"><i>SHA1</i></a><br/>
+                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.bz2">jetty-distribution-7.0.0.RC3.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC3/dist/jetty-distribution-7.0.0.RC3.tar.bz2.sha1"><i>SHA1</i></a><br/>
+           		</li>
+			</ul>
 			<p>
 				This distribution contains only the core functionality of a servlet server and the HTTP client. Some modules (e.g., annotations) are missing dependencies which may be discovered by using the command <code>mvn dependency:tree</code> within the source module. These dependencies should be placed in the lib/ext directory. 
 			</p>
 			<p>
-				The unconditioned Jetty 7 JARs and Maven artifacts are also available from the central Maven repository:
-				<ul>
-					<li><a href="http://repo2.maven.org/maven2/org/eclipse/jetty/">http://repo2.maven.org/maven2/org/eclipse/jetty/</a></li>
-				</ul>
-			</p>			
+				This distribution and its dependencies are provided under the terms and conditions of the Eclipse Foundation Software User Agreement unless otherwise specified. 
+			</p>
 		</div>
 		<div class="homeitem3col">
 			<h2>Jetty Distributions from codehaus</h2>
