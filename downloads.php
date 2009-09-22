@@ -18,18 +18,18 @@
 				A Jetty distribution based on Jetty modules from Eclipse plus dependencies that have been through the Eclipse IP process.
 			</p>
 			<ul>
+              <li>
+                  <b>Jetty</b>: 7.0.0.RC6  |  <b>Date</b>: 22 September 2009  <br/>
+                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.zip">jetty-distribution-7.0.0.RC6.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.zip.sha1"><i>SHA1</i></a><br/>
+                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.gz">jetty-distribution-7.0.0.RC6.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.gz.sha1"><i>SHA1</i></a><br/>
+                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.bz2">jetty-distribution-7.0.0.RC6.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC6/dist/jetty-distribution-7.0.0.RC6.tar.bz2.sha1"><i>SHA1</i></a><br/>
+               </li>
 			   <li>
                   <b>Jetty</b>: 7.0.0.RC5  |  <b>Date</b>: 27 August 2009  <br/>
                   <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.zip">jetty-distribution-7.0.0.RC5.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.zip.sha1"><i>SHA1</i></a><br/>
                   <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.gz">jetty-distribution-7.0.0.RC5.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.gz.sha1"><i>SHA1</i></a><br/>
                   <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.bz2">jetty-distribution-7.0.0.RC5.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC5/dist/jetty-distribution-7.0.0.RC5.tar.bz2.sha1"><i>SHA1</i></a><br/>
-            </li>
-				<li>
-                	<b>Jetty</b>: 7.0.0.RC4  |  <b>Date</b>: 18 August 2009  <br/>
-                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.zip">jetty-distribution-7.0.0.RC4.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.zip.sha1"><i>SHA1</i></a><br/>
-                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.gz">jetty-distribution-7.0.0.RC4.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.gz.sha1"><i>SHA1</i></a><br/>
-                	<img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.bz2">jetty-distribution-7.0.0.RC4.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.0.RC4/dist/jetty-distribution-7.0.0.RC4.tar.bz2.sha1"><i>SHA1</i></a><br/>
-           	</li>			
+               </li>
 			</ul>
 			<p>
 				This distribution contains only the core functionality of a servlet server and the HTTP client. Some modules (e.g., annotations) are missing dependencies which may be discovered by using the command <code>mvn dependency:tree</code> within the source module. These dependencies should be placed in the lib/ext directory. 
@@ -41,10 +41,10 @@
 		<div class="homeitem3col">
 			<h2>Jetty Distributions from codehaus</h2>
 			<p>
-				A Jetty distribution that combines the Jetty@eclipse JARs with additional components (JSP, JTA, etc.) is available via:
+				The core Jetty 6 distribution is available from codehaus. Hightide, a Jetty distribution that combines the Jetty@eclipse JARs with additional components (JSP, JTA, etc.), is also available. Both distributions may be downloaded from here:
 				<ul>
 					<li><a href="http://dist.codehaus.org/jetty/">Jetty@codehaus project</a></li>
-					<li><a href="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-distribution/">Maven central repository</a></li>
+					<!--li><a href="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-distribution/">Maven central repository</a></li-->
 				</ul>
 			</p>		  
 			<p>
