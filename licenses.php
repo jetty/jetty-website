@@ -22,7 +22,7 @@
             The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/trunk/NOTICE.txt">NOTICE</a> file.
         </p>
         <p>
-            Jetty 6 is distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/LICENSES/NOTICE.txt">NOTICE</a> file.
+            Jetty 6 is distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/NOTICE.txt">NOTICE</a> file.
         </p>
     </div>
     <div id="rightcolumn">
