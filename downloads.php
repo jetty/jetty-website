@@ -22,6 +22,8 @@
 					<li><a href="http://download.eclipse.org/jetty/">Jetty@eclipse downloads & P2 update</a></li>
 					<li><a
 					href="http://www.eclipse.org/downloads/download.php?file=/jetty/index.html">Jetty@eclipse mirror sites</a></li> 
+					<li>Install <a href="http://wiki.eclipse.org/Jetty/Howto/Install_Jetty">Jetty 7</a>
+					Instructions</li>
 				</ul>
 			</p>
 			</p>
