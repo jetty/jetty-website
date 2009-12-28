@@ -15,30 +15,28 @@
 		<div class="homeitem3col">	
 			<h2>Jetty Distributions from Eclipse</h2>
 			<p>
-				A Jetty distribution based on Jetty modules from Eclipse plus dependencies that have been through the Eclipse IP process.
+			        The Jetty Web Server and core components such as Web Sockets, OSGi, JASPI, JMX, JNDI, AJP are
+				available from eclipse.  These distributions and its dependencies are provided under the terms and conditions of the <a
+				href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified: 
+				<ul>
+					<li><a href="http://download.eclipse.org/jetty/">Jetty@eclipse downloads & P2 update</a></li>
+					<li><a
+					href="http://www.eclipse.org/downloads/download.php?file=/jetty/index.html">Jetty@eclipse mirror sites</a></li> 
+				</ul>
 			</p>
-			<ul>
-              <li>
-                  <b>Jetty</b>: 7.0.1.v20091125 |  <b>Date</b>: 25 November 2009  <br/>
-                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.zip">jetty-distribution-7.0.1.v20091125.zip</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.zip.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.zip.sha1"><i>SHA1</i></a><br/>
-                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.tar.gz">jetty-distribution-7.0.1.v20091125.tar.gz</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.tar.gz.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.tar.gz.sha1"><i>SHA1</i></a><br/>
-                  <img src="images/arrow.gif"></img>&nbsp;&nbsp;<b><a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.tar.bz2">jetty-distribution-7.0.1.v20091125.tar.bz2</a></b>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.1.v20091125.tar.bz2.md5"><i>MD5</i></a>&nbsp;&nbsp;<a href="http://www.eclipse.org/downloads/download.php?file=/jetty/7.0.1.v20091125/dist/jetty-distribution-7.0.0.v20091125.tar.bz2.sha1"><i>SHA1</i></a><br/>
-               </li>
-			</ul>
-			<p>
-				This distribution contains only the core functionality of a servlet server and the HTTP client. Some modules (e.g., annotations) are missing dependencies which may be discovered by using the command <code>mvn dependency:tree</code> within the source module. These dependencies should be placed in the lib/ext directory. 
-			</p>
-			<p>
-				This distribution and its dependencies are provided under the terms and conditions of the Eclipse Foundation Software User Agreement unless otherwise specified. 
 			</p>
 		</div>
 		<div class="homeitem3col">
-			<h2>Jetty Distributions from codehaus</h2>
+			<h2>Jetty Distributions from Codehaus</h2>
 			<p>
 				The core Jetty 6 distribution is available from codehaus. Hightide, a Jetty distribution that combines the Jetty@eclipse JARs with additional components (JSP, JTA, etc.), is also available. Both distributions may be downloaded from here:
 				<ul>
-					<li><a href="http://dist.codehaus.org/jetty/">Jetty@codehaus project</a></li>
-					<!--li><a href="http://repo2.maven.org/maven2/org/mortbay/jetty/jetty-distribution/">Maven central repository</a></li-->
+					<li><a href="http://dist.codehaus.org/jetty/">Jetty@codehaus downloads</a></li>
+					
+					<li><a href="http://repo1.maven.org/maven2/org/eclipse/jetty/">Maven repository for
+					org.eclipse.jetty components</a></li>
+					<li><a href="http://repo1.maven.org/maven2/org/mortbay/jetty/">Maven repository for
+					org.mortbay.jetty components</a></li>
 				</ul>
 			</p>		  
 			<p>
@@ -67,18 +65,6 @@
 			No, while Jetty 7 has very much the same architecture as Jetty 6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty 7 milestones are not as full featured as Jetty 6 in terms of 3rd party integrations being available by default with the distribution bundle.
 		</p>
 		</div>
-		<div id="maven">
-		<p>
-		    <b>Are Maven2 artifacts still available?</b>
-		</p>
-		<p>
-			Yes, Jetty still supports our Maven based users to the same degree as previously. The location of artifacts has changed though.
-			<ul>
-			  <li><a href="http://repo2.maven.org/maven2/org/eclipse/jetty">http://repo2.maven.org/maven2/org/eclipse/jetty</a></li>
-			</ul>
-		</p>
-		</div>
-		<br/>
 		<br/>
 	</div>	
 

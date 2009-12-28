@@ -24,40 +24,47 @@
 	  
 	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:<dl>
 	  
-	  <blockquote>
-	  
+	  <big><b>Distributions</b></big> <br/> 
 	  <p>
 	  <b>Jetty</b> <br/> 
-	  Jetty was the name initially given to the HTTP server component from Mort Bay.  The name Jetty has now
-	  grown to encompass the suite of components which includes a HTTP server, HTTP client, javax.servlet container, the 
-	  <a href="http://docs.codehaus.org/display/JETTY/Hightide+Documentation">hightide application server</a> and many other related components and utilities.   Jetty is now the name of the 
-	  encompassing projects at 
-	  <a href="http://jetty.mortbay.org">mortbay</a>(v1-v4), 
-	  <a href="http://sourceforge.net/projects/jetty">sourceforge</a>(v5), 
-	  <a href="http://xircles.codehaus.org/projects/jetty">codehaus</a>(v6-) and 
-	  <a href="http://eclipse.org/jetty">eclipse</a>(v7-).
+	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides a HTTP server and Servlet container capable of
+	  serving static and dynamic contend either from a standalone or embedded instantiations.   From jetty-7, the jetty
+	  webserver and other core compoments are hosted by the eclipse foundation. The project provides:
+	  <ul>
+	    <li>Asynchronous HTTP Server</a>
+	    <li>Standard based Servlet Container</a>
+	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
+	    <li>Asynchronous HTTP Client</li>
+	    <li>OSGi, JNDI, JMX, JASPI, AJP support </li>
 	  </p>
-	  
+
 	  <p>
-	  <b>Mort Bay</b><br/>
-	  The Java HTTP server that became jetty was originally developed in 1995 by
-	  Greg Wilkins of <a href="http://mortbay.com">Mort Bay Consulting</a> as part of an issue tracking application.
-	  Versions 1.x through to 6.1.x of jetty were developed under org.mortbay packaging and Mort Bay still holds 
-	  the major part of the copyright on the jetty code base.  Mort Bay directly hosted the jetty project until version
-	  3.x and was the prime sponsor of development until 6.x.
+	  <b>Hightide</b> <br/> 
+	  The <a href="http://docs.codehaus.org/display/JETTY/Hightide+Documentation">Jetty Hightide</a> application 
+	  server is a distribution of the jetty Web Server assembled at codehaus with additional services like JNDI, 
+	  XA & JDBC preconfigured.  For jetty-hightide-6 is an optimized, patched rebuild if jetty-6, while from 
+	  jetty-hightide-7 it is distribution based on the standard jetty-7 artefacts.
 	  </p>
-	  
+
 	  <p>
-	  <b>Webtide</b><br/>
-	  The role of Mort Bay in leading the development of Jetty was taken over in 2006 by 
-	  <a href="http://www.webtide.com">Webtide LLC</a>, an open source services company that employs many of the 
-	  jetty contributors.
-	  </p>
-	  
+	  <b>Other distributions</b> <br/> 
+	  Jetty is available in many forms and distributions, including the jetty-maven-plugin, debian and RPMs from 
+	  <a href="http://jetty.codehaus.org">jetty@codehaus</a>
+	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
+
+
+	  <big><b>Homes</b></big> <br/> 
+
 	  <p>
 	  <b>Sourceforge</b><br/>
 	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty">sourceforge.net</a>
 	  where versions 3.x, 4.x and 5.x were produced.
+	  </p>
+
+	  <p>
+	  <b>Eclipse</b><br/>
+	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
+	  in order to improved IP processes and broaden the licensing and community of the project. 
 	  </p>
 	  
 	  <p>
@@ -67,13 +74,31 @@
 	  integrations, extensions and packaging of jetty.
 	  </p>
 	  
+
+	  <big><b>Sponsors</b></big> <br/> 
 	  <p>
-	  <b>Eclipse</b><br/>
-	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
-	  in order to improved IP processes and broaden the licensing and community of the project. 
+	  <b>Intalio</b><br/>
+	  The role of the development of Jetty was taken over in 2009 by 
+	  <a href="http://www.intalio.com">Webtide LLC</a>, who acquired both Webtide and Mort Bay. Intalio is a company that
+	  offers both products and services based on open source software and they employ many of the jetty contributors.
+	  </p>
+
+	  <p>
+	  <b>Webtide</b><br/>
+	  The role of leading the development of Jetty was taken over in 2006 by <a href="http://www.webtide.com">Webtide LLC</a>, 
+	  formed as a joint venture between Mort Bay and partners providing marketting, sales and strategic assistance.
+	  </p>
+
+	  <p>
+	  <b>Mort Bay</b><br/>
+	  The Java HTTP server that became jetty was originally developed in 1995 by
+	  Greg Wilkins of <a href="http://mortbay.com">Mort Bay Consulting</a> as part of an issue tracking application.
+	  Versions 1.x through to 6.1.x of jetty were developed under org.mortbay packaging and Mort Bay still holds 
+	  the major part of the copyright on the jetty code base.  Mort Bay directly hosted the jetty project until version
+	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
 	  
-	  </blockquote>
+	  
 	
 	  
 	  <table border=1 cellpadding=2>

@@ -22,7 +22,10 @@
     <div id="midcolumn">
         <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
     
-        <p>Jetty provides an HTTP server, HTTP client, and <a href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container. These components are open source and available for commercial use and distribution.</p> 
+        <p>Jetty provides an Web server and <a
+	href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container, plus support
+	for Web Sockets, OSGi, JMX, JNDI, JASPI, AJP and many other integrations. These components are open source and 
+	available for commercial use and distribution.</p> 
         <p>Jetty is used in a wide variety of projects and products. Jetty can be embedded in devices, tools,  frameworks, application servers, and clusters. See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for more uses of Jetty.</p>
         <p>The core Jetty project is hosted by the Eclipse Foundation. The <a href="http://jetty.mortbay.org/jetty/">codehaus</a> provides Jetty accessories , integrations, and extensions, as well as hosting older versions of Jetty. See the <a href="http://www.eclipse.org/jetty/about.php">About</a> page for information about the project structure.</p> 
       
