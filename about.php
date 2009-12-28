@@ -26,18 +26,19 @@
 	  
       <h2>Distribtions</h2>
       <br/>
+      <ul>
 	  <p>
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides a HTTP server and Servlet container capable of
 	  serving static and dynamic contend either from a standalone or embedded instantiations.   From jetty-7, the jetty
-	  webserver and other core compoments are hosted by the eclipse foundation. The project provides:
-	  <ul>
+	  webserver and other core compoments are hosted by the eclipse foundation. The project provides:<ul>
 	    <li>Asynchronous HTTP Server</a>
 	    <li>Standard based Servlet Container</a>
 	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
 	    <li>Asynchronous HTTP Client</li>
 	    <li>OSGi, JNDI, JMX, JASPI, AJP support </li>
 	  </ul>
+	  <br/>
 	  </p>
 
 	  <p>
@@ -55,9 +56,10 @@
 	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
 	  </p>
 
-
+      </ul>
       <h2>Homes</h2>
       <br/>
+      <ul>
 	  <p>
 	  <b>Eclipse</b><br/>
 	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
@@ -77,8 +79,10 @@
 	  where versions 3.x, 4.x and 5.x were produced.
 	  </p>
 
+      </ul>
       <h2>Sponsors</h2>
       <br/> 
+      <ul>
 	  <p>
 	  <b>Intalio</b><br/>
 	  The role of the development of Jetty was taken over in 2009 by 
@@ -101,8 +105,10 @@
 	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
 	  
+      </ul>
       <h2>Versions</h2>
       <br/>
+      <ul>
 	  <table border=1 cellpadding=2>
 <tr>
 <td><b>Version</b></td>
@@ -199,14 +205,17 @@
 <td> Mythical </td>
 </tr>
 </table>
+      </ul>
 
 
 	
     </div>
 
+<!--
     <div id="rightcolumn">
         $sidebar		
 	</div>
+	-->
 	
 
 
