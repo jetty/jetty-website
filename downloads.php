@@ -45,29 +45,6 @@
 				This distribution may include artifacts that are not covered by the terms and conditions of the Eclipse Foundation Software User Agreement. For details, please read the NOTICES file included in the distribution.
 			</p>		  
 		</div>
-		<h2>Frequently Asked Questions</h2>
-		<div id="install">
-		<p>
-            <b>How do I unpack and install Jetty?</b>
-		</p>
-		<p>
-            To get started quickly:
-            <ol>
-                <li><a href="http://dist.codehaus.org/jetty/">Download from codehaus</li>
-                <li>Install <a href="http://docs.codehaus.org/display/JETTY/Installing+Jetty-6.1.x">Jetty 6</a> or <a href="http://wiki.eclipse.org/Jetty/Howto/Install_Jetty/Bundle">Jetty 7</a></li>
-                <li>Run <a href="http://docs.codehaus.org/display/JETTY/Running+Jetty-6.1.x">Jetty 6</a> or <a href="http://wiki.eclipse.org/Jetty/Howto/Run_Jetty">Jetty 7</a></li>
-            </ol>
-		</p>
-		</div>
-		<div id="jetty6to7">
-		<p>
-            <b>I have been using previous versions of Jetty from the Jetty 6 line, is this a drop in replacement?</b>
-		</p>
-		<p>
-			No, while Jetty 7 has very much the same architecture as Jetty 6, there are packaging changes and other minor tweaks between the versions.  Also, the Jetty 7 milestones are not as full featured as Jetty 6 in terms of 3rd party integrations being available by default with the distribution bundle.
-		</p>
-		</div>
-		<br/>
 	</div>	
 
 	<div id="rightcolumn">
