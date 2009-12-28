@@ -209,13 +209,11 @@
 
 
 	
-    </div>
+</div>
 
-<!--
-    <div id="rightcolumn">
-        $sidebar		
-	</div>
-	-->
+<div id="rightcolumn">
+    $sidebar		
+</div>
 	
 
 
