@@ -24,7 +24,7 @@
 	  
 	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:<dl>
 	  
-	  <big><b>Distributions</b></big> <br/> 
+	  <h2>Distribtions</h2>
 	  <p>
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides a HTTP server and Servlet container capable of
@@ -36,6 +36,7 @@
 	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
 	    <li>Asynchronous HTTP Client</li>
 	    <li>OSGi, JNDI, JMX, JASPI, AJP support </li>
+	  </ul>
 	  </p>
 
 	  <p>
@@ -51,16 +52,10 @@
 	  Jetty is available in many forms and distributions, including the jetty-maven-plugin, debian and RPMs from 
 	  <a href="http://jetty.codehaus.org">jetty@codehaus</a>
 	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
-
-
-	  <big><b>Homes</b></big> <br/> 
-
-	  <p>
-	  <b>Sourceforge</b><br/>
-	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty">sourceforge.net</a>
-	  where versions 3.x, 4.x and 5.x were produced.
 	  </p>
 
+
+          <h2>Homes</h2>
 	  <p>
 	  <b>Eclipse</b><br/>
 	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
@@ -68,12 +63,17 @@
 	  </p>
 	  
 	  <p>
-	  <b>codehaus</b><br/>
+	  <b>Codehaus</b><br/>
 	  In 2005, the jetty project moved to <a href="http://codehaus.org">the codehaus</a> for its hosting services and 
 	  open source community.  In 2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
 	  integrations, extensions and packaging of jetty.
 	  </p>
 	  
+	  <p>
+	  <b>Sourceforge</b><br/>
+	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty">sourceforge.net</a>
+	  where versions 3.x, 4.x and 5.x were produced.
+	  </p>
 
 	  <big><b>Sponsors</b></big> <br/> 
 	  <p>
@@ -97,9 +97,6 @@
 	  the major part of the copyright on the jetty code base.  Mort Bay directly hosted the jetty project until version
 	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
-	  
-	  
-	
 	  
 	  <table border=1 cellpadding=2>
 <tr>
@@ -130,7 +127,7 @@
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.1 </td>
-<td> Stabilizing </td>
+<td> Stable </td>
 </tr>
 
 
@@ -141,7 +138,7 @@
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.5 </td>
 <td> 2.0 </td>
-<td> Stable </td>
+<td> Mature </td>
 </tr>
 
 <tr>
@@ -151,7 +148,7 @@
 <td> HTTP/1.1<br/>RFC2616 </td>
 <td> 2.4 </td>
 <td> 2.0 </td>
-<td> Mature </td>
+<td> Deprecated </td>
 </tr>
 
 <tr>
