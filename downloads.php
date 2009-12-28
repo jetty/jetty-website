@@ -31,7 +31,10 @@
 		<div class="homeitem3col">
 			<h2>Jetty Distributions from Codehaus</h2>
 			<p>
-				The core Jetty 6 distribution is available from codehaus. Hightide, a Jetty distribution that combines the Jetty@eclipse JARs with additional components (JSP, JTA, etc.), is also available. Both distributions may be downloaded from here:
+			The codehaus downloads provide additional jetty-7 modules and integrations, the jetty-hightide-7
+			applications server as well as the full jetty 6 downloads.    The Jetty hightide applications server 
+			is a distribution of the Jetty Web Server that is bundled with and preconfigured for EE style services
+			such as JSP, JNDI, JTA, XA etc.
 				<ul>
 					<li><a href="http://dist.codehaus.org/jetty/">Jetty@codehaus downloads</a></li>
 					
@@ -42,7 +45,7 @@
 				</ul>
 			</p>		  
 			<p>
-				This distribution may include artifacts that are not covered by the terms and conditions of the Eclipse Foundation Software User Agreement. For details, please read the NOTICES file included in the distribution.
+				These downloads may include artifacts that are not covered by the terms and conditions of the Eclipse Foundation Software User Agreement. For details, please read the NOTICES file included in the distribution.
 			</p>		  
 		</div>
 	</div>	
