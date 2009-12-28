@@ -24,7 +24,8 @@
 	  
 	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:<dl>
 	  
-	  <h2>Distribtions</h2>
+      <h2>Distribtions</h2>
+      <br/>
 	  <p>
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides a HTTP server and Servlet container capable of
@@ -55,7 +56,8 @@
 	  </p>
 
 
-          <h2>Homes</h2>
+      <h2>Homes</h2>
+      <br/>
 	  <p>
 	  <b>Eclipse</b><br/>
 	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
@@ -75,7 +77,8 @@
 	  where versions 3.x, 4.x and 5.x were produced.
 	  </p>
 
-	  <big><b>Sponsors</b></big> <br/> 
+      <h2>Sponsors</h2>
+      <br/> 
 	  <p>
 	  <b>Intalio</b><br/>
 	  The role of the development of Jetty was taken over in 2009 by 
@@ -98,6 +101,8 @@
 	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
 	  
+      <h2>Versions</h2>
+      <br/>
 	  <table border=1 cellpadding=2>
 <tr>
 <td><b>Version</b></td>
