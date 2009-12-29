@@ -20,7 +20,7 @@
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
     # custom links
     $Nav->addCustomNav("jetty@eclipse", "/jetty", "_self", 2);
-    $Nav->addCustomNav("jetty@codehaus", "http://jetty.mortbay.org/jetty/", "_self", 2);
+    $Nav->addCustomNav("jetty@codehaus", "http://jetty.codehaus.org/jetty/", "_self", 2);
     $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
     $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
