@@ -17,7 +17,7 @@
     
     ## required by eclipse guidelines
     $Nav->addNavSeparator("Jetty", "/jetty");
-    $Nav->addCustomNav("About", "/projects/project_summary.php?projectid=rt.jetty", "_self", 2); // required link for project :/
+    $Nav->addCustomNav("About This Project", "/projects/project_summary.php?projectid=rt.jetty", "_self", 1); // required link for project :/
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
     # custom links
     $Nav->addCustomNav("jetty@eclipse", "/jetty", "_self", 2);
