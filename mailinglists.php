@@ -39,6 +39,12 @@
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">Mailing list archive</a>
                 </li>
+                <li>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-build">jetty-build@eclipse.org</a></b>
+		    - A mail list for jetty build notifications. <br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-build">Subscribe/unsubscribe instructions</a><br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-build/maillist.html">Mailing list archive</a>
+                </li>
             </ul>
             
             <h3>Mailing Lists on codehaus</h3>
