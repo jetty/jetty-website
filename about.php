@@ -45,8 +45,9 @@
 	  <b>Hightide</b> <br/> 
 	  The <a href="http://docs.codehaus.org/display/JETTY/Hightide+Documentation">Jetty Hightide</a> application 
 	  server is a distribution of the jetty Web Server assembled at codehaus with additional services like JNDI, 
-	  XA & JDBC preconfigured.  For jetty-hightide-6 is an optimized, patched rebuild if jetty-6, while from 
-	  jetty-hightide-7 it is distribution based on the standard jetty-7 artefacts.
+	  XA & JDBC preconfigured.  For jetty-hightide-6 this is an optimized, patched rebuild of jetty-6, while for 
+	  jetty-hightide-7 it is distribution based on the standard jetty-7 artifacts combined with other third party
+	  integrations.
 	  </p>
 
 	  <p>
