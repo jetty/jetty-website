@@ -29,8 +29,8 @@
       <ul>
 	  <p>
 	  <b>Jetty</b> <br/> 
-	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides a HTTP server and Servlet container capable of
-	  serving static and dynamic contend either from a standalone or embedded instantiations.   From jetty-7, the jetty
+	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides an HTTP server and Servlet container capable of
+	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7, the jetty
 	  webserver and other core compoments are hosted by the eclipse foundation. The project provides:<ul>
 	    <li>Asynchronous HTTP Server</a>
 	    <li>Standard based Servlet Container</a>
@@ -63,8 +63,8 @@
       <ul>
 	  <p>
 	  <b>Eclipse</b><br/>
-	  In 2009, the Jetty project moved it's core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
-	  in order to improved IP processes and broaden the licensing and community of the project. 
+	  In 2009, the Jetty project moved its core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
+	  in order to improve the IP processes and broaden the licensing and community of the project. 
 	  </p>
 	  
 	  <p>
