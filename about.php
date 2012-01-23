@@ -123,20 +123,30 @@
 </tr>
 
 <tr>
-<td> 8.x </td>
-<td> Eclipse,<br/>codehaus </td>
-<td> 1.6 </td>
-<td> HTTP/1.1<br/>RFC2616 </td>
+<td> 8.2 </td>
+<td> Eclipse </td>
+<td> 1.7 </td>
+<td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)<br/>SPDY</td>
 <td> 3.0 </td>
 <td> 2.1 </td>
 <td> Experimental </td>
 </tr>
 
 <tr>
+<td> 8.x </td>
+<td> Eclipse,<br/>codehaus </td>
+<td> 1.6 </td>
+<td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)</td>
+<td> 3.0 </td>
+<td> 2.1 </td>
+<td> Stable </td>
+</tr>
+
+<tr>
 <td> 7.x </td>
 <td> Eclipse,<br/>codehaus </td>
 <td> 1.5,<br/>J2ME</td>
-<td> HTTP/1.1<br/>RFC2616 </td>
+<td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)</td>
 <td> 2.5 </td>
 <td> 2.1 </td>
 <td> Stable </td>
@@ -147,7 +157,7 @@
 <td> 6.x </td>
 <td> codehaus </td>
 <td> 1.4-1.5</td>
-<td> HTTP/1.1<br/>RFC2616 </td>
+<td> HTTP/1.1(RFC2616)</td>
 <td> 2.5 </td>
 <td> 2.0 </td>
 <td> Mature </td>
@@ -157,7 +167,7 @@
 <td> 5.x </td>
 <td> Sourceforge </td>
 <td> 1.2-1.5 </td>
-<td> HTTP/1.1<br/>RFC2616 </td>
+<td> HTTP/1.1(RFC2616)</td>
 <td> 2.4 </td>
 <td> 2.0 </td>
 <td> Deprecated </td>
@@ -167,7 +177,7 @@
 <td> 4.x </td>
 <td> Sourceforge </td>
 <td> 1.2,<br/>J2ME</td>
-<td> HTTP/1.1<br/>RFC2616 </td>
+<td> HTTP/1.1(RFC2616)</td>
 <td> 2.3 </td>
 <td> 1.2 </td>
 <td> Ancient </td>
@@ -178,7 +188,7 @@
 <td> 3.x </td>
 <td> Sourceforge </td>
 <td> 1.2 </td>
-<td> HTTP/1.1<br/>RFC2068 </td>
+<td> HTTP/1.1(RFC2068)</td>
 <td> 2.2 </td>
 <td> 1.1 </td>
 <td> Fossilized </td>
@@ -189,7 +199,7 @@
 <td> 2.x </td>
 <td> Mortbay </td>
 <td> 1.1 </td>
-<td> HTTP/1.0<br/>RFC1945 </td>
+<td> HTTP/1.0(RFC1945)</td>
 <td> 2.1 </td>
 <td> 1.0 </td>
 <td> Legendary </td>
@@ -200,7 +210,7 @@
 <td> 1.x </td>
 <td> Mortbay </td>
 <td> 1.0 </td>
-<td> HTTP/1.0<br/>RFC1945 </td>
+<td> HTTP/1.0(RFC1945)</td>
 <td> &nbsp; </td>
 <td> &nbsp; </td>
 <td> Mythical </td>
