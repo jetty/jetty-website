@@ -12,7 +12,7 @@
         collecting cannot occur for the webapp classloader.</p></li><li class="listitem"><p>When Jetty starts as a daemon thread and is outside the lifecycle of the webapp, threads have references
         to the context classloader that created them, leading to a memory leak if that classloader belongs to a webapp.
         For a good discussion of the issue see <a class="link" href="http://cdivilly.wordpress.com/tag/sun-awt-appcontext/" target="_top">
-        Anatomy of a PermGen Memory Leak.</a></p></li></ul></div><p>We provide a number of <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs//org/eclipse/jetty/util/preventers/package-summary.html" target="_top">
+        Anatomy of a PermGen Memory Leak.</a></p></li></ul></div><p>We provide a number of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs//org/eclipse/jetty/util/preventers/package-summary.html" target="_top">
     workaround classes</a> that preemptively invoke the problematic code with the Jetty classloader, thereby
     ensuring the webapp classloader is not pinned. Be aware that since some of the problematic code creates threads,
     you should be selective about which preventers you enable, and use only those that are specific to your

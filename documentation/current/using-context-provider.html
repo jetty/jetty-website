@@ -6,7 +6,7 @@
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
     </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="using-context-provider"></a>Using the Context Provider</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="using-context-provider.html#ucp-understanding-context-provider">Understanding the ContextProvider</a></span></dt><dt><span class="section"><a href="using-context-provider.html#ucp-substituting-property-value">Substituting a Property Value</a></span></dt><dt><span class="section"><a href="using-context-provider.html#ucp-deploying-contexts">Deploying Contexts</a></span></dt><dt><span class="section"><a href="using-context-provider.html#ucp-using-hot-deploy">Using Hot Deploy</a></span></dt><dt><span class="section"><a href="using-context-provider.html#d0e4066">Configuring Other Things</a></span></dt></dl></div><p>Jetty provides capability to deploy an arbitrary context or web application with Jetty-specific configuration.
   The ContextProvider mechanism, which is now an extension of the core deployment infrastructure, implements this
-  capability.</p><p>You can use the <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/deploy/providers/ContextProvider.html" target="_top">
+  capability.</p><p>You can use the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/deploy/providers/ContextProvider.html" target="_top">
     <code class="code">ContextProvider</code>
   </a> to (hot) deploy an arbitrary context or web application with Jetty-specific configuration. To statically
   deploy only standard web applications at startup, use the WebAppProvider (see <a class="xref" href="using-webapp-provider.html" title="Using the WebApp Provider">Using the WebApp Provider</a>).</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="ucp-understanding-context-provider"></a>Understanding the ContextProvider</h3></div></div></div><p>A <code class="filename">jetty.xml</code> file typically defines a <code class="code">ContextProvider</code>; within the stock
@@ -38,7 +38,7 @@
    <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default&lt;nowiki&gt;</span>=<span class="hl-value" style="color: #993300">&lt;</span><strong class="hl-tag" style="color: #000096">/n</strong>owiki&gt;"."/&gt;/webapps/test<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
  <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-      </pre></div><p>This example creates an instance of <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">
+      </pre></div><p>This example creates an instance of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">
       <code class="code">WebAppContext</code>
     </a> and sets the <code class="code">contextPath</code> to <code class="code">/test</code> and the <code class="code">resourceBase</code> to <code class="code">
     $jetty.home/webapps/test</code>. Because the context used is a standard web application context, when started it
@@ -83,16 +83,16 @@ foo = /funkyapp
  <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
       </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="ucp-deploying-contexts"></a>Deploying Contexts</h3></div></div></div><p>Because the class of the context is defined in the Configure clause, you can deploy any type of <code class="code">
-    ContextHandler</code> with this mechanism, including base <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">
+    ContextHandler</code> with this mechanism, including base <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">
       <code class="code">ContextHandler,</code>
-    </a> <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/servlet/ServletContextHandler.html" target="_top">
+    </a> <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/servlet/ServletContextHandler.html" target="_top">
       <code class="code">ServletContextHandler</code>
-    </a>, <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">
+    </a>, <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">
       <code class="code">WebAppContext</code>
     </a>, or any class derived from them.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="ucp-using-hot-deploy"></a>Using Hot Deploy</h3></div></div></div><p>If the scan interval is non-zero, the <code class="code">ContextProvider</code> scans the configuration directory at that
     interval (in seconds) for changes to the deployment descriptors. If you add a descriptor to the directory, it
     deploys the new context. If you touch or update a descriptor, the provider stops, reconfigures, and redeploys its
-    context. If you remove a descriptor, the provider stops and removes its context from the server.</p><p>If the scan interval is zero, the <code class="code">ContextProvider</code> scans the directory only at startup.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e4066"></a>Configuring Other Things</h3></div></div></div><p>This mechanism allows you to call most of the API available on <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">
+    context. If you remove a descriptor, the provider stops and removes its context from the server.</p><p>If the scan interval is zero, the <code class="code">ContextProvider</code> scans the directory only at startup.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e4066"></a>Configuring Other Things</h3></div></div></div><p>This mechanism allows you to call most of the API available on <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">
       <code class="code">ContextHandler</code>
     </a> or its derived classes to configure the web application. Useful things to configure include:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
           <code class="code">setAttribute</code>
