@@ -15,38 +15,16 @@
 		<div class="homeitem3col">	
 			<h2>Jetty Distributions from Eclipse</h2>
 			<p>
-			        The Jetty Web Server and core components such as Web Sockets, OSGi, JASPI, JMX, JNDI, AJP are
+			        The Jetty Web Server and core components such as Web Sockets, SPDY, OSGi, JASPI, JMX, JNDI, AJP are
 				available from eclipse.  These distributions and its dependencies are provided under the terms and conditions of the <a
 				href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified: 
 				<ul>
-					<li><a href="http://download.eclipse.org/jetty/">Jetty@eclipse downloads & P2 update</a></li>
-					<li><a
-					href="http://www.eclipse.org/downloads/download.php?file=/jetty/index.html">Jetty@eclipse mirror sites</a></li> 
-					<li>Install <a href="http://wiki.eclipse.org/Jetty/Howto/Install_Jetty">Jetty 7</a>
-					Instructions</li>
+					<li><a href="http://download.eclipse.org/jetty/">Jetty Downloads</a></li>
+					<li><a href="http://download.eclipse.org/jetty/documentation/current">Jetty 9 Documentation</a></li>
+					<li><a href="http://wiki.eclipse.org/Jetty">Jetty 7 and Jetty 8 Documentation</a></li> 
 				</ul>
 			</p>
 			</p>
-		</div>
-		<div class="homeitem3col">
-			<h2>Jetty Distributions from Codehaus</h2>
-			<p>
-			The codehaus downloads provide additional jetty-7 modules and integrations, the jetty-hightide-7
-			applications server as well as the full jetty 6 downloads.    The Jetty hightide applications server 
-			is a distribution of the Jetty Web Server that is bundled with and preconfigured for EE style services
-			such as JSP, JNDI, JTA, XA etc.
-				<ul>
-					<li><a href="http://dist.codehaus.org/jetty/">Jetty@codehaus downloads</a></li>
-					
-					<li><a href="http://repo1.maven.org/maven2/org/eclipse/jetty/">Maven repository for
-					org.eclipse.jetty components</a></li>
-					<li><a href="http://repo1.maven.org/maven2/org/mortbay/jetty/">Maven repository for
-					org.mortbay.jetty components</a></li>
-				</ul>
-			</p>		  
-			<p>
-				These downloads may include artifacts that are not covered by the terms and conditions of the Eclipse Foundation Software User Agreement. For details, please read the NOTICES file included in the distribution.
-			</p>		  
 		</div>
 	</div>	
 
