@@ -1,0 +1,80 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;18.&nbsp;Deployment Using Overlays</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;II.&nbsp;Advanced Topics"><link rel="prev" href="jetty-handlers.html" title="Chapter&nbsp;17.&nbsp;Handlers"><link rel="next" href="jetty-helloworld.html" title="Jetty HelloWorld"><link xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&nbsp;18.&nbsp;Deployment Using Overlays</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jetty-handlers.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Advanced Topics</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="jetty-helloworld.html">Next</a></td></tr></table><hr></div><div xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="deployment-using-overlays"></a>Chapter&nbsp;18.&nbsp;Deployment Using Overlays</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="deployment-using-overlays.html#embedding-jetty">Embedding Jetty</a></span></dt><dt><span class="section"><a href="jetty-helloworld.html">Jetty HelloWorld</a></span></dt><dt><span class="section"><a href="configuring-overlay-deployer.html">Configuring the Jetty Overlay Deployer</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedding-jetty"></a>Embedding Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="deployment-using-overlays.html#d0e8077">Overview</a></span></dt></dl></div><p>Jetty has a slogan, "Don't deploy your application in Jetty, deploy Jetty in your application." What this means
+  is that as an alternative to bundling your application as a standard WAR to be deployed in Jetty, Jetty is designed
+  to be a software component that can be instantiated and used in a Java program just like any POJO. Put another way,
+  running Jetty in embedded mode means putting an HTTP module into your application, rather than putting your
+  application into an HTTP server.</p><p>This tutorial takes you step-by-step from the simplest Jetty server instantiation to running multiple web
+  applications with standards-based deployment descriptors. The source for most of these examples is part of the
+  standard Jetty project.</p><p>This tutorial is also available as a Embedding Jetty Webinar recording.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8077"></a>Overview</h3></div></div></div><p>To embed a Jetty server, the following steps are typical.</p><div class="procedure"><ol class="procedure" type="1"><li class="step"><p class="title"><b>Creating the Server</b></p><p>The following code from SimplestServer.java instantiates and runs the simplest possible Jetty
+        server:</p><div class="informalexample"><pre class="programlisting">package org.eclipse.jetty.embedded;
+
+import org.eclipse.jetty.server.Server;
+
+/** The simplest possible Jetty server.
+ */
+public class SimplestServer {
+
+    public static void main(String[] args) throws Exception {
+        Server server = new Server(8080);
+        server.start();
+        server.join();
+    }
+}
+</pre></div><p>This runs an HTTP server on port 8080. It is not a very useful server as it has no handlers and thus
+        returns a 404 error for every request.</p></li><li class="step"><p class="title"><b>Writing Handlers</b></p><p>To produce a response to a request, Jetty requires a Handler to be set on the server. A handler
+        may:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">Examine/modify the HTTP request.</li><li class="listitem">Generate the complete HTTP response.</li><li class="listitem">Call another Handler (see HandlerWrapper).</li><li class="listitem">Select one or many Handlers to call (see HandlerCollection).</li></ul></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e8112"></a>Hello World Handler</h6></div></div></div><p>The following code based on HelloHandler.java shows a simple hello world handler:</p><div class="informalexample"><pre class="programlisting">package org.eclipse.jetty.embedded;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+
+public class HelloHandler extends AbstractHandler {
+
+    final String _greeting;
+
+    final String _body;
+
+    public HelloHandler() {
+        _greeting = "Hello World";
+        _body = null;
+    }
+
+    public HelloHandler(String greeting) {
+        _greeting = greeting;
+        _body = null;
+    }
+
+    public HelloHandler(String greeting, String body) {
+        _greeting = greeting;
+        _body = body;
+    }
+
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        baseRequest.setHandled(true);
+        response.getWriter().println("&lt;h1&gt;" + _greeting + "&lt;/h1&gt;");
+        if (_body != null) response.getWriter().println(_body);
+    }
+}
+</pre></div><p>The parameters passed to the handle method are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">target - the target of the request, which is either a URI or a name from a named
+            dispatcher.</li><li class="listitem">baseRequest - the Jetty mutable request object, which is always unwrapped.</li><li class="listitem">request - the immutable request object, which might have been wrapped.</li><li class="listitem">response - the response, which might have been wrapped.</li></ul></div><p>The handler sets the response status, content-type and marks the request as handled before it generates
+          the body of the response using a writer.</p><p>The following code from OneHandler.java shows how a Jetty server can use this handler:</p><div class="informalexample"><pre class="programlisting">public static void main(String[] args) throws Exception {
+    Server server = new Server(8080);
+    server.setHandler(new HelloHandler());
+    server.start();
+    server.join();
+}</pre></div><p>You now know everything you need to know to write an HTTP server based on Jetty. However, complex
+          request handling is typically built from multiple Handlers. We will look in later sections at how you can
+          combine handlers like aspects. You can see some of the handlers available in Jetty in the <a class="link" href="http://download.eclipse.org/jetty/stable-7/xref/org/eclipse/jetty/server/handler/package-summary.html" target="_top">
+          org.eclipse.jetty.server.handler</a> package.</p></div></li></ol></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-handlers.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-helloworld.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;17.&nbsp;Handlers&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Jetty HelloWorld</td></tr></table></div><div xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>
