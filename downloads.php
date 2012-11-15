@@ -20,7 +20,7 @@
 				href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified: 
 				<ul>
 					<li><a href="http://download.eclipse.org/jetty/">Jetty Downloads</a></li>
-					<li><a href="http://download.eclipse.org/jetty/documentation/current">Jetty 9 Documentation</a></li>
+					<li><a href="http://www.eclipse.org/jetty/documentation/current">Jetty 9 Documentation</a></li>
 					<li><a href="http://wiki.eclipse.org/Jetty">Jetty 7 and Jetty 8 Documentation</a></li> 
 				</ul>
 			</p>
