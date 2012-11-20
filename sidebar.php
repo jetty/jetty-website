@@ -11,5 +11,14 @@
     </ul>
   </div>
 
+  <div class="sideitem">
+    <h6>Active Contributors</h6>
+    <div style="position: relative; height: 50px;">
+      <a href="http://www.webtide.com/" target="_blank"
+          title="Webtide"><img src="http://www.webtide.com/_images/logo.gif"
+          style="position: absolute; left: 10px; top: 10px;"/></a>
+    </div>
+  </div>
+
 EOHTML
 ?>

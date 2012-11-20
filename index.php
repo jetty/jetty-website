@@ -64,6 +64,7 @@
           </tr>
         </table>
       
+      <p>Developer Advice and Production Support are <a href="http://www.webtide.com">available!</a></p>
     </div>
     
     <div id="rightcolumn">
