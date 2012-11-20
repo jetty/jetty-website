@@ -1,0 +1,93 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>webdefault.xml</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="reference-section.html" title="Chapter&nbsp;26.&nbsp;Reference Section"><link rel="prev" href="jetty-env-xml.html" title="jetty-env.xml"><link rel="next" href="override-web-xml.html" title="Jetty override-web.xml"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">
+    <code class="filename">webdefault.xml</code>
+  </th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jetty-env-xml.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;26.&nbsp;Reference Section</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="override-web-xml.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="webdefault-xml"></a>
+    <code class="filename">webdefault.xml</code>
+  </h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="webdefault-xml.html#using-webdefault-xml">Using <code class="filename">webdefault.xml</code></a></span></dt></dl></div><p>The <code class="filename">webdefault.xml</code> file saves web applications from having to define a lot of
+  house-keeping and container-specific elements in their own <code class="filename">web.xml</code> files. For example, you can
+  use it to set up mime-type mappings and JSP servlet-mappings. Jetty applies <code class="filename">webdefault.xml</code> to a
+  web application <span class="emphasis"><em>before</em></span> the application's own <code class="filename">WEB-INF/web.xml</code>, which means
+  that it cannot override values inside the webapp's <code class="filename">web.xml</code>. It uses the <a class="xref" href="reference-section.html#jetty-xml-config" title="jetty.xml">
+    <code class="filename">jetty.xml</code>
+  </a> syntax. Generally, it is convenient for all webapps in a Jetty instance to share the
+  same <code class="filename">webdefault.xml</code> file. However, it is certainly possible to provide differentiated <code class="filename">
+  webdefault.xml</code> files for individual web applications.</p><p>The <code class="filename">webdefault.xml</code> file is located in <code class="filename">
+  $(jetty.home)/etc/webdefault.xml</code>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-webdefault-xml"></a>Using <code class="filename">webdefault.xml</code></h3></div></div></div><p>You can specify a custom configuration file to use for specific webapps, or for all webapps. If you do not
+    specify an alternate defaults descriptor, Jetty automatically uses <code class="filename">webdefault.xml</code>.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-custom-webdefault-xml-one-webapp"></a>Creating a Custom <code class="filename">webdefault.xml</code> for One WebApp</h4></div></div></div><p>You can specify a custom <code class="filename">webdefault.xml</code> for an individual web application in that
+      webapp's <a class="xref" href="reference-section.html#jetty-xml-config" title="jetty.xml">
+    <code class="filename">jetty.xml</code>
+  </a> as follows:</p><div class="informalexample"><pre class="programlisting">
+ 
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  ...
+  <em class="hl-comment" style="color: silver">&lt;!-- Set up the absolute path to the custom webdefault.xml --&gt;</em>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/my/path/to/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  ...
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div><p>The equivalent in code is:</p><div class="informalexample"><pre class="programlisting">
+ 
+<strong class="hl-keyword">import</strong> org.eclipse.jetty.webapp.WebAppContext;
+
+    ...
+
+    WebAppContext wac = <strong class="hl-keyword">new</strong> WebAppContext();
+    ...
+    <em class="hl-comment" style="color: silver">//Set up the absolute path to the custom webdefault.xml.</em>
+    wac.setDefaultsDescriptor(<strong class="hl-string"><em style="color:red">"/my/path/to/webdefault.xml"</em></strong>);
+    ...
+
+        </pre></div><p>Alternatively, you can use a <a class="xref" href="jetty-classloading.html" title="Jetty Classloading">Jetty Classloading</a> to find the resource representing your
+      custom <code class="filename">webdefault.xml</code>.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-custom-webdefault-xml-multiple-webapps"></a>Creating a Custom <code class="filename">webdefault.xml</code> for Multiple WebApps</h4></div></div></div><p>If you want to apply the same custom <code class="filename">webdefault.xml</code> to a number of webapps, provide
+      the path to the file in <a class="xref" href="reference-section.html#jetty-xml-config" title="jetty.xml">
+    <code class="filename">jetty.xml</code>
+  </a> either to the hot deployer (<a class="xref" href="using-context-provider.html" title="Using the Context Provider">Using the Context Provider</a>) or the static deployer (<a class="xref" href="using-webapp-provider.html" title="Using the WebApp Provider">Using the WebApp Provider</a>). For
+      example:</p><div class="informalexample"><pre class="programlisting">
+ 
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    ...
+    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.WebAppDeployer"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+        ...
+        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/my/path/to/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+    ...
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="webdefault-xml-using-jetty-maven-plugin"></a>Using the Jetty Maven Plugin</h4></div></div></div><p>Similarly, when using the Jetty Maven Plugin (<a class="xref" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Configuring the Jetty Maven Plugin</a>), you provide a
+      customized <code class="filename">webdefault.xml</code> file for your webapp as follows:</p><div class="informalexample"><pre class="programlisting">
+ 
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+    ...
+    <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+            ...
+            <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;webAppConfig&gt;</strong>
+                  ...
+                  <strong class="hl-tag" style="color: #000096">&lt;defaultsDescriptor&gt;</strong>/my/path/to/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/defaultsDescriptor&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;/webAppConfig&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+        ...
+    <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+    ...
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="webdefault-xml-additional-resources"></a>Additional Resources</h4></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="xref" href="jetty-web-xml-config.html" title="jetty-web.xml">
+    <code class="filename">jetty-web.xml</code>
+  </a> &#8211;Reference for <code class="filename">
+        web.xml</code> files</li><li class="listitem"><a class="xref" href="override-web-xml.html" title="Jetty override-web.xml">Jetty <code class="filename">override-web.xml</code></a> &#8211;Information for this <code class="filename">
+        web.xml</code> -formatted file, applied after the webapp's <code class="filename">web.xml</code> webapp.</li><li class="listitem"><a class="xref" href="reference-section.html#jetty-xml-config" title="jetty.xml">
+    <code class="filename">jetty.xml</code>
+  </a> &#8211;Reference for <code class="filename">
+        jetty.xml</code> files</li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-env-xml.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="reference-section.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="override-web-xml.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">
+    <code class="filename">jetty-env.xml</code>
+  &nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Jetty <code class="filename">override-web.xml</code></td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

@@ -1,0 +1,196 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Configuring Virtual Hosts</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-contexts.html" title="Chapter&nbsp;5.&nbsp;Configuring Contexts"><link rel="prev" href="setting-context-path-to-root.html" title="Setting Context Path to / (root)"><link rel="next" href="custom-error-pages.html" title="Creating Custom Error Pages"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Virtual Hosts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="setting-context-path-to-root.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;5.&nbsp;Configuring Contexts</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="custom-error-pages.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-virtual-hosts"></a>Configuring Virtual Hosts</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-virtual-hosts.html#configuring-a-virtual-host">Configuring a Virtual Host</a></span></dt><dt><span class="section"><a href="configuring-virtual-hosts.html#configuring-different-webapps-for-different-virtual-hosts">Configuring Different Webapps for Different Virtual Hosts</a></span></dt><dt><span class="section"><a href="configuring-virtual-hosts.html#d0e2401">Configuring Different Webapps for Different Virtual Hosts, But at the Same Context Path</a></span></dt><dt><span class="section"><a href="configuring-virtual-hosts.html#configuring-virtual-hosts-with-non-asci-characters">Configuring Virtual Hosts with Non-ascii Characters</a></span></dt></dl></div><p>A virtual host is an alternative name, registered in DNS, for an IP address. Virtual hosting takes one of two
+  forms:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Multiple names can resolve to a single IP address.</p></li><li class="listitem"><p>Multi-homed hosts, that is machines with more than one network interface, can have a different name for
+      each IP address.</p></li></ul></div><p>Jetty users often want to configure their web applications taking into account these different virtual hosts.
+  Frequently, a machine with a single IP address has different DNS resolvable names associated with it, and a webapp
+  deployed on it must be reachable from all of the alternative names. Another possibility is to serve different web
+  applications from different virtual hosts.</p><p>You can set virtual hosts in various ways, including:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Using a context XML file in the context directory: <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html#setVirtualHosts" target="_top">
+      <code class="code">setVirtualHosts.</code>
+    </a> This is the preferred method.</p></li><li class="listitem"><p>Java calls in an embedded usage: <a class="xref" href="">???</a>.</p></li><li class="listitem"><p>Within an explicitly deployed webapp (no deployer) listed in [[Jetty/Reference/jetty.xml|jetty.xml]] or
+    similar.</p></li><li class="listitem"><p>Using a <code class="filename">WEB-INF/jetty-web.xml</code> file (deprecated, but works with the webapp provider if
+    you do not use the context provider).</p></li></ul></div><p>For descriptions of the various ways to configure Jetty, including links to documents that provide detailed
+  configuration instructions, see <a class="xref" href="">???</a>.</p><p>The examples that follow set virtual hosts in the preferred way, by calling the method <code class="code">
+  ContextHandler</code>.<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html#setVirtualHosts" target="_top">
+  setVirtualHosts</a>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-a-virtual-host"></a>Configuring a Virtual Host</h3></div></div></div><p>When configuring a web application, you can supply a list of IP addresses and names at which the web
+    application is reachable. Suppose you have a machine with these IP addresses and DNS resolvable names:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>333.444.555.666</p></li><li class="listitem"><p>127.0.0.1</p></li><li class="listitem"><p>www.blah.com</p></li><li class="listitem"><p>www.blah.net</p></li><li class="listitem"><p>www.blah.org</p></li></ul></div><p>Suppose you have a webapp, <span class="emphasis"><em>xxx.war</em></span>, that you want all of the above names and addresses
+    to serve. You would configure the webapp as follows:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/xxx<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/xxx.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>333.444.555.666<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>127.0.0.1<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.net<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.org<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><p>Assuming you have configured a connector listening on port 8080, webapp <span class="emphasis"><em>xxx.war</em></span> is
+    available at all of the following addresses:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          <code class="literal">http://333.444.555.666:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://127.0.0.1:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.com:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.net:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.org:8080/xxx</code>
+        </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-different-webapps-for-different-virtual-hosts"></a>Configuring Different Webapps for Different Virtual Hosts</h3></div></div></div><p>You can configure different webapps for different virtual hosts by supplying a different list of virtual
+    hosts for each webapp. For example, suppose your imaginary machine has these DNS names and IP addresses:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>333.444.555.666</p></li><li class="listitem"><p>127.0.0.1</p></li><li class="listitem"><p>www.blah.com</p></li><li class="listitem"><p>www.blah.net</p></li><li class="listitem"><p>www.blah.org</p></li><li class="listitem"><p>777.888.888.111</p></li><li class="listitem"><p>www.other.com</p></li><li class="listitem"><p>www.other.net</p></li><li class="listitem"><p>www.other.org</p></li></ul></div><p>Suppose also you have another webapp, <span class="emphasis"><em>zzz.war</em></span>. You want <span class="emphasis"><em>xxx.war</em></span> to
+    deploy as above, and <span class="emphasis"><em>zzz.war</em></span> to deploy only from 777.888.888.111, www.other.com, www.other.net
+    and www.other.org:</p><div class="informalexample"><pre class="programlisting">
+
+<em class="hl-comment" style="color: silver">&lt;!-- webapp xxx.war --&gt;</em>
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/xxx<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/xxx.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>333.444.555.666<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>127.0.0.1<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.net<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.org<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><div class="informalexample"><pre class="programlisting">
+
+<em class="hl-comment" style="color: silver">&lt;!-- webapp zzz.war --&gt;</em>
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/zzz<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/zzz.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>777.888.888.111<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.net<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.org<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><p>Webapp <span class="emphasis"><em>xxx.war</em></span> is still available at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          <code class="literal">http://333.444.555.666:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://127.0.0.1:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.com:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.net:8080/xxx</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.org:8080/xxx</code>
+        </p></li></ul></div><p>But now webapp ''zzz.war'' is available at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          <code class="literal">http://777.888.888.111:8080/zzz</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.com:8080/zzz</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.net:8080/zzz</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.org:8080/zzz</code>
+        </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2401"></a>Configuring Different Webapps for Different Virtual Hosts, But at the Same Context Path</h3></div></div></div><p>In the example above, <span class="emphasis"><em>webapp zzz.war</em></span> is available not only at a certain set of virtual
+    hosts, but also at the context path <code class="code">/zzz</code>, whilst the other webapp is available at both a different set
+    of virtual hosts, <span class="emphasis"><em>and</em></span> at a different context path. What happens if you want them at the
+    <span class="emphasis"><em>same</em></span> context path, but still at different sets of virtual hosts? You just supply the
+    <span class="emphasis"><em>same</em></span> context path for each webapp, leaving the disjoint set of virtual host definitions as
+    before:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/xxx.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>333.444.555.666<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>127.0.0.1<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.net<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.blah.org<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+
+      </pre></div><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/zzz.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>777.888.888.111<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.net<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.other.org<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><p>Now, webapp xxx.war is available at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          <code class="literal">http://333.444.555.666:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://127.0.0.1:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.com:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.net:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.blah.org:8080/</code>
+        </p></li></ul></div><p>and webapp zzz.war is available at:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+          <code class="literal">http://777.888.888.111:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.com:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.net:8080/</code>
+        </p></li><li class="listitem"><p>
+          <code class="literal">http://www.other.org:8080/</code>
+        </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-virtual-hosts-with-non-asci-characters"></a>Configuring Virtual Hosts with Non-ascii Characters</h3></div></div></div><p><a class="link" href="http://en.wikipedia.org/wiki/Internationalized_domain_name" target="_top">International domain
+    names</a> are names containing non-ascii characters. For example 
+    <code class="literal">"http://www.b&#8730;&ordm;cher.com"</code>. The DNS internally remains based on ascii, so these kinds
+    of names are translated via an encoding called <a class="link" href="http://tools.ietf.org/html/rfc3492" target="_top">
+    punycode</a> into an ascii representation. Modern browsers detect these non-ascii characters in URLs and
+    automatically apply the punycode encoding. For example, typing this URL into a browser:</p><code class="literal">http://www.&#8730;&#8226;&#8730;&sect;&#8730;&#8706;.com:8080/test/</code><p>translates to the following url:</p><code class="literal">http://www.xn--4cab6c.com:8080/test/</code><p>To use internationalized domain names with Jetty virtual hosts you need to supply the punycode form of the
+    name in your context xml file (and of course you need to supply it to your DNS setup).</p><p>For example, if you are running a webapp on port 8080 at context /test, and you want to configure a virtual
+    host for 
+    <code class="literal">www.&#8730;&#8226;&#8730;&sect;&#8730;&#8706;.com</code>, you configure its ascii equivalent in the
+    context xml file for the context:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/test.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"virtualHosts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>www.xn--4cab6c.com<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><p>After starting Jetty, you can enter the url 
+    <code class="literal">http://www.&#8730;&#8226;&#8730;&sect;&#8730;&#8706;.com:8080/test/</code>in a browser and reach the
+    webapp.</p><p>If you don't have any webapps deployed at /, hitting the URL 
+    <code class="literal">http://www.&#8730;&#8226;&#8730;&sect;&#8730;&#8706;.com:8080</code>reaches Jetty's default handler,
+    which serves back a 404 page listing the available contexts:</p><div class="informalexample"><pre class="programlisting">
+
+Error 404 - Not Found
+
+No context on this server matched or handled this request.
+
+Contexts known to this server are:
+
+/test @ www.xn--4cab6c.com:8080 ---&gt; WebAppContext@82d210@82d210/test,file:/tmp/Jetty_0_0_0_0_8080_test.war__test_www.xn..4cab6c.com_1jadjg/webapp/,/home/janb/src/jetty-eclipse/jetty/trunk/jetty-distribution/target/distribution/webapps/test.war
+
+      </pre></div><p>Notice that the link already has the punycode transformed domain name in it.</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="setting-context-path-to-root.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-contexts.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="custom-error-pages.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Setting Context Path to / (root)&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Creating Custom Error Pages</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

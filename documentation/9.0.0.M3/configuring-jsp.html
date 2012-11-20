@@ -1,0 +1,273 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;7.&nbsp;Configuring JSP Support</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring.html" title="Part&nbsp;II.&nbsp;Jetty Configuration Guide"><link rel="prev" href="using-webapp-provider.html" title="Using the WebApp Provider"><link rel="next" href="configuring-logging.html" title="Chapter&nbsp;8.&nbsp;Jetty Logging"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&nbsp;7.&nbsp;Configuring JSP Support</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="using-webapp-provider.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;II.&nbsp;Jetty Configuration Guide</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuring-logging.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuring-jsp"></a>Chapter&nbsp;7.&nbsp;Configuring JSP Support</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="configuring-jsp.html#jsp-support">Configuring JSP</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jsp-support"></a>Configuring JSP</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-jsp.html#compiling-jsps">Compiling JSPs</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#configuring-jsp-for-jetty">Configuring JSP for Jetty</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#modifying-configuration">Modifying the Configuration</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jstl-taglibs-for-jetty7-jetty8">Using JSTL Taglibs for Jetty 7.x and 8.x</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jsf-taglibs">Using JSF Taglibs</a></span></dt></dl></div><p>This document provides information about configuring JSP.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="compiling-jsps"></a>Compiling JSPs</h3></div></div></div><p>To compile <code class="filename">.jsp</code> files into Java classes, you need a Java compiler. You can acquire a
+    Java compiler from the JVM if you are using a full JDK, or from a third party Jar.</p><p>In versions of Jetty prior to 7.5.0, the JSP infrastructure uses the Eclipse Java Compiler ( <code class="code">
+    ecj.jar</code>) which is supplied in <code class="filename">$JETTY_HOME/lib/jsp</code>. For jetty-7.5.0 and later we
+    upgraded the version of JSP to <code class="code">jsp-impl-2.1.3.b10</code> (from Glassfish). In this version, the JSP
+    infrastructure ALWAYS tries to acquire a Java compiler from the JVM if the version of Java is 1.6 or above.
+    Therefore, if you are using a JRE, JSPs are unable to compile, so you must use a full JDK. Alternatively, you can
+    precompile your JSPs (which is preferable in a production deployment in any case). The
+    [[Jetty/Feature/Jetty_Jspc_Maven_Plugin|Jetty JSPC Maven Plugin]] TODO xref// is helpful for precompilation.</p><p>If you are using jetty-7.5.5 or later (including jetty-8.x), you can use <span class="emphasis"><em>either</em></span> a full
+    JDK <span class="emphasis"><em>or</em></span> a JRE in combination with a third party Java compiler (such as ecj which we distribute
+    in <code class="filename">$JETTY_HOME/lib/jsp</code>). To use the ecj compiler, you need to set a <code class="code">
+    SystemProperty</code>. You can do this either in your code or in a jetty config file. Here's the snippet that you
+    can put into <code class="filename">jetty.xml</code>:</p><div class="informalexample"><pre class="programlisting">
+
+  <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"java.lang.System"</span>  <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setProperty"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.apache.jasper.compiler.disablejsr199<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+
+      </pre></div><p>Alternatively, you can put this <code class="code">SystemProperty</code> into <code class="filename">start.ini</code>:</p><div class="informalexample"><pre class="programlisting">
+
+ -Dorg.apache.jasper.compiler.disablejsr199=true
+
+      </pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jsp-using-jetty-maven-plugin"></a>Using the Jetty Maven Plugin with JSP</h4></div></div></div><p>For jetty-7.5.0 and later we upgraded the version of JSP to <code class="filename">jsp-impl-2.1.3.b10</code> (from
+      Glassfish). In this version, the JSP infrastructure ALWAYS tries to acquire a Java compiler from the JVM if the
+      version of Java is 1.6 or above. Therefore, if you are using a JRE, JSPs are unable to compile, so you must use a
+      full JDK.</p><p>We hope to be able to introduce a patch to allow the use of third party Jars in an upcoming release of the
+      plugin. We will update this page when we have more information.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jsp-for-jetty"></a>Configuring JSP for Jetty</h3></div></div></div><p>The JSP engine has many configuration parameters. Some parameters affect only precompilation, and some affect
+    runtime recompilation checking. Parameters also differ between the 2.0 and 2.1 release of the JSP engine. This page
+    lists the configuration parameters, their meanings and their default settings.</p><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3><p>Be careful:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">For all of the parameters below, if the value you set doesn't take effect, try using all lower case
+        instead of camel case, as JSP is inconsistent in its parameter naming strategy.</li><li class="listitem">Be aware that for JDK1.6, the default for <span class="emphasis"><em>keepgenerated</em></span> is <span class="emphasis"><em>
+        false</em></span>; therefore <code class="filename">.java</code> files are left after compilation only if a compilation
+        error occurs.</li></ul></div></div><div class="table"><a name="d0e3774"></a><p class="title"><b>Table&nbsp;7.1.&nbsp;Understanding JSP 2.1 Parameters</b></p><div class="table-contents"><table summary="Understanding JSP 2.1 Parameters" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th align="left">init param</th><th align="left">Description</th><th align="left">Default</th><th align="left">webdefault.xml</th></tr></thead><tbody><tr><td>development</td><td><code class="code">development=true</code>, recompilation checks occur on each request. See also <code class="code">
+            modificationTestInterval</code>.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>fork</td><td>Should Ant fork its java compiles of JSP pages?</td><td>TRUE</td><td>FALSE</td></tr><tr><td>keepgenerated</td><td>Do you want to keep the generated Java files around?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>saveByteCode</td><td>If class files are generated as byte arrays, should they be saved to disk at the end of
+            compilations?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>trimSpaces</td><td>Should white spaces between directives or actions be trimmed?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>enablePooling</td><td>Determines whether tag handler pooling is enabled.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>mappedFile</td><td>Support for mapped Files. Generates a servlet that has a print statement per line of the JSP
+            file./</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>sendErrorToClient</td><td>If false, stack traces, etc., are sent to std error instead of the client's browser.</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>classdebuginfo</td><td>Include debugging info in class file.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>checkInterval</td><td>Interval in seconds between background recompile checks. Only relevant if <code class="code">
+            development=false</code>.</td><td>0</td><td>&#8211;</td></tr><tr><td>suppressSmap</td><td>Generation of SMAP info for JSR45 debugging.</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>dumpSmap</td><td>Dump SMAP JSR45 info to a file.</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>genStrAsCharArray</td><td>Option for generating Strings.</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>genStrAsByteArray</td><td>Option for generating Strings.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>defaultBufferNone</td><td>&nbsp;</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>errorOnUseBeanInvalidClassAttribute</td><td>&nbsp;</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>scratchDir</td><td>Directory where servlets are generated. Jetty sets this value according to the
+            [/display/JETTY/Temporary+Directories work dir] settings for the webapp.</td><td>&#8211;</td><td>&#8211;</td></tr><tr><td>compiler</td><td>Determined at runtime. For Jetty this is the Eclipse jdt compiler.</td><td>&#8211;</td><td>&#8211;</td></tr><tr><td>compilerTargetVM</td><td>Target vm to compile for.</td><td>1.5</td><td>&#8211;</td></tr><tr><td>compilerSourceVM</td><td>Sets source compliance level for the jdt compiler.</td><td>1.5</td><td>&#8211;</td></tr><tr><td>javaEncoding</td><td>Pass through the encoding to use for the compilation.</td><td>UTF8</td><td>&#8211;</td></tr><tr><td>modificationTestInterval</td><td>If <code class="code">development=true</code>, interval between recompilation checks, triggered by a
+            request.</td><td>0</td><td>&#8211;</td></tr><tr><td>xpoweredBy</td><td>Generate an X-Powered-By response header.</td><td>FALSE</td><td>FALSE</td></tr><tr><td>usePrecompiled/use-precompiled</td><td>&nbsp;</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>validating/enableTldValidation</td><td>Whether or not to validate tag files against the schema.</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>reload-interval</td><td>If <code class="code">reload-interval=0</code>, then no runtime checking of JSP, otherwise sets the checking
+            interval for both <code class="code">development=true</code> and <code class="code">development=false</code>.</td><td>&#8211;</td><td>&#8211;</td></tr><tr><td>initial-capacity/initialCapacity</td><td>The initial capacity of the hash maps mapping the name of the JSP to class and JSP file.</td><td>&#8211;</td><td>&#8211;</td></tr></tbody></table></div></div><br class="table-break"><p>Much confusion generally ensues about the <code class="code">development</code>, <code class="code">checkInterval</code> and <code class="code">
+    modificationTestInterval</code> parameters and JSP runtime recompilation. Here is a factoring out of the various
+    options:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">Check the JSP files for possible recompilation on every request: 
+      <div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>development&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>true&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+
+        </pre></div></li><li class="listitem">Only check approximately every N seconds, where a request will trigger the time-lapse calculation. This
+      example checks every 60 seconds: 
+      <div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>development&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>true&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>modificationTestInterval&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>60&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+
+        </pre></div></li><li class="listitem">Do no checking whatsoever, but still compile the JSP on the very first hit. (Note: this
+      ''reload-interval'' parameter is shorthand for a ''development=false'' and ''checkInterval=0'' combination.): 
+      <div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>reload-interval&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>-1&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+
+        </pre></div></li><li class="listitem">Don't do any request-time checking, but instead start a background thread to do checks every N seconds.
+      This example checks every 60 seconds: 
+      <div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>development&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>false&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+ <strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+ <strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>checkInterval&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>60&gt;<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+ 
+        </pre></div></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modifying-configuration"></a>Modifying the Configuration</h3></div></div></div><p>There are several options for modifying the Jasper JSP servlet configuration.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="overriding-webdefault.xml"></a>Overriding <code class="filename">webdefault.xml</code></h4></div></div></div><p>You can make a copy of the [[Jetty/Reference/webdefault.xml|webdefault.xml]] //TODO xref//that ships with
+      Jetty, apply your changes, and use it instead of the shipped version. The example below shows how to do this when
+      using the Jetty Maven plugin.</p><div class="informalexample"><pre class="programlisting">
+
+  <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webAppConfig&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;defaultsDescriptor&gt;</strong>src/main/resources/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/defaultsDescriptor&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webAppConfig&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;connectors&gt;</strong>
+    ..
+
+
+        </pre></div><p>If you're using Jetty standalone, and you want to change the JSP settings for just one or a few of your
+      webapps, copy the <code class="filename">$JETTY_HOME/etc/webdefault.xml</code> file somewhere, modify it, and then use a
+      [[Jetty/Feature/ContextDeployer|context xml]] //TODO xref// file to set this file as the <code class="code">
+      webdefaults</code> for your webapp. Here's a snippet:</p><div class="informalexample"><pre class="programlisting">
+
+ <strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"org.eclipse.jetty.webapp.WebAppContext"&gt;
+ 
+   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"contextPath"&gt;/foo<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"war"&gt;<strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"jetty.home" &gt;default=&gt;"."/&gt;/webapps/foobar.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"defaultsDescriptor"&gt;/home/smith/dev/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  
+ <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div><p>If you want to change the JSP settings for all of the webapps, edit the <code class="filename">
+      $JETTY_HOME/etc/webdefaults.xml</code> file directly instead.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-jsp-servlet-in-web.xml"></a>Configuring the JSP Servlet in <code class="filename">web.xml</code></h4></div></div></div><p>Another option is to add an entry for the Jasper JSP servlet to the <code class="filename">web.xml</code> file of
+      your webapp. You can use the entry in [[Jetty/Reference/webdefault.xml|webdefault.xml]]//TODO xref// as a
+      starting point.</p><div class="informalexample"><pre class="programlisting">
+
+ <strong class="hl-tag" style="color: #000096">&lt;servlet</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"jsp"&gt;
+     <strong class="hl-tag" style="color: #000096">&lt;servlet-name&gt;</strong>jsp<strong class="hl-tag" style="color: #000096">&lt;/servlet-name&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;servlet-class&gt;</strong>org.apache.jasper.servlet.JspServlet<strong class="hl-tag" style="color: #000096">&lt;/servlet-class&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>logVerbosityLevel<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>DEBUG<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>fork<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>&gt;false<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;init-param&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-name&gt;</strong>keepgenerated<strong class="hl-tag" style="color: #000096">&lt;/param-name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;param-value&gt;</strong>&gt;true<strong class="hl-tag" style="color: #000096">&lt;/param-value&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;/init-param&gt;</strong>
+     ...
+     
+     <strong class="hl-tag" style="color: #000096">&lt;load-on-startup&gt;</strong>0<strong class="hl-tag" style="color: #000096">&lt;/load-on-startup&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/servlet&gt;</strong>
+ 
+   <strong class="hl-tag" style="color: #000096">&lt;servlet-mapping&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;servlet-name&gt;</strong>jsp<strong class="hl-tag" style="color: #000096">&lt;/servlet-name&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.jsp<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.jspf<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.jspx<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.xsp<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.JSP<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.JSPF<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.JSPX<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>*.XSP<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/servlet-mapping&gt;</strong>
+   
+   <strong class="hl-tag" style="color: #000096">&lt;servlet</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300"></span><strong class="hl-tag" style="color: #000096">&gt;</strong>"my-servlet"&gt;
+     <strong class="hl-tag" style="color: #000096">&lt;servlet-name&gt;</strong>myServlet<strong class="hl-tag" style="color: #000096">&lt;/servlet-name&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;servlet-class&gt;</strong>com.acme.servlet.MyServlet<strong class="hl-tag" style="color: #000096">&lt;/servlet-class&gt;</strong>
+      ...
+
+
+        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jstl-taglibs-for-jetty7-jetty8"></a>Using JSTL Taglibs for Jetty 7.x and 8.x</h3></div></div></div><p>There are some differences in how you use JSTL taglibs in Jetty 7 and Jetty 8.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jstl-taglibs-for-jetty7.x"></a>Using JSTL Taglibs for Jetty 7.x</h4></div></div></div><p>The JSTL tags are present in the <code class="code">org.apache.taglibs.standard.glassfish</code> Jar in <code class="filename">
+      $JETTY_HOME/lib/jsp</code>. For the Jetty/JSP integration to find them, you need to configure a pattern that
+      defines the names of files in the container's classpath that contain <code class="filename">.tld</code> files. You must
+      define the pattern as a context attribute on <span class="emphasis"><em>each</em></span> context that you deploy. The context
+      attribute and pattern is:</p><pre class="screen">
+
+  attribute: org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern
+  value: .*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$
+
+      </pre><p>If you are using the Jetty deployers (that is, your <code class="filename">start.ini</code> file contains <code class="filename">
+      etc/jetty-deploy.xml</code>), you don't need to do anything, as the pattern is pre-defined in <code class="filename">
+      etc/jetty-deploy.xml</code>, and the deployer makes sure the attribute is set on each and every context it
+      deploys. If you are NOT using the deployers, you need to configure the attribute on <span class="emphasis"><em>
+      each</em></span> context you set. Here's an example:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Contexts"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/test.war<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setAttribute"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+
+        </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>You can use the <code class="filename">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</code> for more
+      than identifying Jars that contain tlds. Its purpose is to supply a pattern of names of Jars on the container's
+      classpath whose /META-INF directories should be scanned for resources, for fragments, or for TLDs.</div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jstl-taglibs-for-jetty8.x"></a>Using JSTL Taglibs for Jetty 8.x</h4></div></div></div><p>The version of JSP 2.2 engine that Jetty uses employs a Servlet 3.0 way of finding TLDs ( <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html" target="_top">
+      ServletContainerInitializer</a>), and thus does <span class="emphasis"><em>not</em></span> require that you define <code class="code">
+      org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</code>.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jsf-taglibs"></a>Using JSF Taglibs</h3></div></div></div><p>The following sections provide information about using JSF taglibs with Jetty Standalone and the Jetty Maven
+    Plugin.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-standalone"></a>Using JSF Taglibs with Jetty Standalone</h4></div></div></div><p>If you want to use JSF with your webapp, you need to copy the jsf implementation Jar (whichever Jar
+      contains the <code class="filename">META-INF/*.tld</code> files from your chosen JSF implementation) into <code class="filename">
+      $JETTY_HOME/lib/jsp</code>. This is because the version of the JSP engine from Glassfish that we are using
+      <span class="emphasis"><em>requires</em></span> that the JSF tags are on the container's classpath, and <span class="emphasis"><em>not</em></span> on
+      the webapp's classpath.</p><p>If you are using Jetty 7.x, add the JSF implementation Jar to the set of container Jars that are scanned
+      for TLDs. The set of Jars is specified as a Java Pattern as the value of the <code class="code">ContextAttribute
+      org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</code>. You must add a pattern that matches the name
+      of the implementation Jar.</p><p>You can set this <code class="code">ContextAttribute</code> on just a particular webapp, or for all webapps.</p><p>To set it on just one webapp, create or edit a [[Jetty/Feature/ContextDeployer|context xml]] //TODO xref//
+      file that describes your webapp. For example, assuming the implementation Jar is called <code class="code">
+      javax.faces-2.1.6.jar</code>:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
+    <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setAttribute"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>.*/.*javax.faces-[^/]*\.jar$|.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div><p>If you're deploying via code, the equivalent is to call the <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">
+        <code class="code">WebAppContext.setAttribute(String name, String value)</code>
+      </a> method.</p><p>If you want to use JSF with all of your webapps, <a class="xref" href="using-deployment-manager.html" title="Using the Deployment Manager">Using the Deployment Manager</a>, edit
+      <code class="filename">$JETTY_HOME/etc/jetty-deploy.xml</code>. For example, assuming the implementation Jar is named
+      <code class="code">javax.faces-2.1.6.jar</code>:</p><div class="informalexample"><pre class="programlisting">
+
+ <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"DeploymentManager"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.DeploymentManager"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contexts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Contexts"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setContextAttribute"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>.*/.*javax.faces-[^/]*\.jar$|.*/.*jsp-api-[^/]*\.jar$|.*/.*jsp-[^/]*\.jar$|.*/.*taglibs[^/]*\.jar$<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+
+        </pre></div><p>If you are using Jetty 8.x you do not need to add this pattern because Servlet Spec. 3.0 uses a different
+      method to find TLD descriptors.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-maven-plugin"></a>Using JSF Taglibs with Jetty Maven Plugin</h4></div></div></div><p>For Jetty versions prior to 7.5.0, your JSF Jars should be normal webapp dependencies. You do not need to
+      do anything else to use Jetty with JSF.</p><p>From versions 7.5.0 and later, the version of the JSP engine from Glassfish that we are using requires that
+      the JSF tags be on the container classpath, and not on the webapp classpath, so you need to make your JSF Jars
+      dependencies of the plugin and <span class="emphasis"><em>not</em></span> the webapp itself. For example:</p><div class="informalexample"><pre class="programlisting">
+
+   <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;webAppConfig&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/jetty-documentation<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/webAppConfig&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>5<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;dependencies&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>com.sun.faces<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jsf-api<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;version&gt;</strong>2.0.8<strong class="hl-tag" style="color: #000096">&lt;/version&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/dependency&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>com.sun.faces<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jsf-impl<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;version&gt;</strong>2.0.8<strong class="hl-tag" style="color: #000096">&lt;/version&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;/dependency&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/dependencies&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div><p>For versions 7.5.0 to 7.6.1, the Jetty Maven plugin does not scan the JSF dependency Jars for the TLDs
+      containing the startup listeners. If you are using these versions, we recommend you upgrade to a more recent
+      version. If this is not possible, you should define the relevant listener in your <code class="filename">
+      web.xml</code>:</p><p>For MyFaces:</p><div class="informalexample"><pre class="programlisting">
+
+ <strong class="hl-tag" style="color: #000096">&lt;listener&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;listener-class&gt;</strong>org.apache.myfaces.webapp.StartupServletContextListener<strong class="hl-tag" style="color: #000096">&lt;/listener-class&gt;</strong>
+ <strong class="hl-tag" style="color: #000096">&lt;/listener&gt;</strong>
+
+        </pre></div><p>For Mojarra:</p><div class="informalexample"><pre class="programlisting">
+
+  <strong class="hl-tag" style="color: #000096">&lt;listener&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;listener-class&gt;</strong>com.sun.faces.config.ConfigureListener<strong class="hl-tag" style="color: #000096">&lt;/listener-class&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/listener&gt;</strong>
+
+        </pre></div><p>For version 7.6.2 and later, the Jetty Maven plugin ensures that the TLDs containing the startup listeners
+      from the two most common JSF implementations (Mojarra and MyFaces) are automatically detected.</p></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="using-webapp-provider.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-logging.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using the WebApp Provider&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;8.&nbsp;Jetty Logging</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

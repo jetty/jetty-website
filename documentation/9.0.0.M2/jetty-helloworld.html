@@ -1,0 +1,73 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Jetty HelloWorld</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-embedding.html" title="Chapter&nbsp;16.&nbsp;Embedding"><link rel="prev" href="advanced-embedding.html" title="Chapter&nbsp;16.&nbsp;Embedding"><link rel="next" href="configuring-overlay-deployer.html" title="Configuring the Jetty Overlay Deployer"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Jetty HelloWorld</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="advanced-embedding.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;16.&nbsp;Embedding</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuring-overlay-deployer.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-helloworld"></a>Jetty HelloWorld</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-helloworld.html#downloading-jars">Downloading the Jars</a></span></dt><dt><span class="section"><a href="jetty-helloworld.html#writing-helloworld-example">Writing a HelloWorld Example</a></span></dt><dt><span class="section"><a href="jetty-helloworld.html#compiling-helloworld-example">Compiling the HelloWord example</a></span></dt><dt><span class="section"><a href="jetty-helloworld.html#running-handler-and-server">Running the Handler and Server</a></span></dt><dt><span class="section"><a href="jetty-helloworld.html#next-steps">Next Steps</a></span></dt></dl></div><p>This tutorial shows how you can develop code against the Jetty API with the jetty classes on your class path.
+  If you want to use Maven or standard web applications, see <a class="xref" href="jetty-maven-helloworld.html" title="Jetty and Maven HelloWorld">Jetty and Maven HelloWorld</a>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="downloading-jars"></a>Downloading the Jars</h3></div></div></div><p>Jetty is decomposed into many [[Jetty/Reference/Dependencies|jars and dependencies]] //TODO xref//to achieve
+    a minimal footprint by selecting the minimal set of jars. Typically it is best to use something like Maven to
+    manage jars this tutorial uses an aggregate Jar that contains all of the Jjetty classes in one Jar.</p><p>You can manually download the jetty aggregate-all Jar and the servlet api Jar using <a class="link" href="http://www.gnu.org/software/wget/" target="_top">
+      <span class="emphasis"><em>wget</em></span>
+    </a> or similar command (for example, <a class="link" href="http://curl.haxx.se/" target="_top">
+      <span class="emphasis"><em>curl</em></span>
+    </a>) or a browser. Use wget as follows:</p><pre class="screen">
+
+mkdir Demo
+cd Demo
+JETTY_VERSION=7.0.2.v20100331
+wget -U none http://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/$JETTY_VERSION/jetty-all-$JETTY_VERSION.jar
+wget -U none http://repo1.maven.org/maven2/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar
+
+    </pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="writing-helloworld-example"></a>Writing a HelloWorld Example</h3></div></div></div><p>The <a class="xref" href="">???</a> tutorial contains many examples of writing against the
+    Jetty API. This tutorial uses a simple HelloWorld handler with a main method to run the server. In an editor, edit
+    the file <code class="filename">HelloWorld.java</code> and add the following content:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-keyword">import</strong> javax.servlet.http.HttpServletRequest;
+<strong class="hl-keyword">import</strong> javax.servlet.http.HttpServletResponse;
+<strong class="hl-keyword">import</strong> javax.servlet.ServletException;
+
+<strong class="hl-keyword">import</strong> java.io.IOException;
+
+<strong class="hl-keyword">import</strong> org.eclipse.jetty.server.Server;
+<strong class="hl-keyword">import</strong> org.eclipse.jetty.server.Request;
+<strong class="hl-keyword">import</strong> org.eclipse.jetty.server.handler.AbstractHandler;
+
+<strong class="hl-keyword">public</strong> <strong class="hl-keyword">class</strong> HelloWorld <strong class="hl-keyword">extends</strong> AbstractHandler
+{
+    <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> handle(String target,
+                       Request baseRequest,
+                       HttpServletRequest request,
+                       HttpServletResponse response) 
+        <strong class="hl-keyword">throws</strong> IOException, ServletException
+    {
+        response.setContentType(<strong class="hl-string"><em style="color:red">"text/html;charset=utf-8"</em></strong>);
+        response.setStatus(HttpServletResponse.SC_OK);
+        baseRequest.setHandled(true);
+        response.getWriter().println(<strong class="hl-string"><em style="color:red">"&lt;h1&gt;Hello World&lt;/h1&gt;"</em></strong>);
+    }
+
+    <strong class="hl-keyword">public</strong> <strong class="hl-keyword">static</strong> <strong class="hl-keyword">void</strong> main(String[] args) <strong class="hl-keyword">throws</strong> Exception
+    {
+        Server server = <strong class="hl-keyword">new</strong> Server(<span class="hl-number">8080</span>);
+        server.setHandler(<strong class="hl-keyword">new</strong> HelloWorld());
+ 
+        server.start();
+        server.join();
+    }
+}
+
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="compiling-helloworld-example"></a>Compiling the HelloWord example</h3></div></div></div><p>The following command compiles the HelloWorld class:</p><pre class="screen">
+
+javac -cp servlet-api-2.5.jar:jetty-all-$JETTY_VERSION.jar HelloWorld.java
+
+    </pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="running-handler-and-server"></a>Running the Handler and Server</h3></div></div></div><p>The following command runs the HelloWorld example:</p><pre class="screen">
+
+java -cp .:servlet-api-2.5.jar:jetty-all-$JETTY_VERSION.jar HelloWorld
+
+    </pre><p>You can now point your browser at 
+    <span style="color: red">&lt;nowiki&gt;http://localhost:8080&lt;/nowiki&gt;</span>to see your hello world page.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="next-steps"></a>Next Steps</h3></div></div></div><p>To learn more about Jetty, take these next steps:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">Follow the examples in <a class="xref" href="">???</a> to better understand the jetty APIs.</li><li class="listitem">Explore the complete <a class="link" href="http://download.eclipse.org/jetty/stable-7/apidocs/" target="_top">jetty
+      javadoc</a></li><li class="listitem">Consider using Jetty and Maven (see <a class="xref" href="jetty-maven-helloworld.html" title="Jetty and Maven HelloWorld">Jetty and Maven HelloWorld</a>) to manage your Jars and
+      dependencies.</li><li class="listitem">Review other options in [[Jetty/Howto/Develop|Howto Develop with Jetty]] TODO xref</li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="advanced-embedding.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-embedding.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-overlay-deployer.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;16.&nbsp;Embedding&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring the Jetty Overlay Deployer</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

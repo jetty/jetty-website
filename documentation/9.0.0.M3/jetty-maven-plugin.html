@@ -1,0 +1,614 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Configuring the Jetty Maven Plugin</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;15.&nbsp;Maven and Jetty"><link rel="prev" href="maven-and-jetty.html" title="Chapter&nbsp;15.&nbsp;Maven and Jetty"><link rel="next" href="jetty-maven-helloworld.html" title="Jetty and Maven HelloWorld"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring the Jetty Maven Plugin</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="maven-and-jetty.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;15.&nbsp;Maven and Jetty</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-helloworld.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-maven-plugin"></a>Configuring the Jetty Maven Plugin</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-maven-plugin.html#get-up-and-running">Quick Start: Get Up and Running</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#running-and-deploying">Running and Deploying</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#configuring-jetty-container">Configuring the Jetty Container</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#configuring-your-webapp">Configuring Your WebApp</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#running-unassembled-webapp-in-separate-jvm">jetty:run-forked: Running an Unassembled Webapp in a Separate JVM</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#starting-jetty-without-first-executing-build">jetty:start: Starting Jetty without First Executing the Build Up to <span class="emphasis"><em>
+    test-compile</em></span> Phase</a></span></dt><dt><span class="section"><a href="jetty-maven-plugin.html#more-configuration-options">More Configuration Options</a></span></dt></dl></div><p>The Jetty Maven plugin is useful for rapid development and testing. You can add it to any webapp project that
+  is structured according to the usual Maven defaults. The plugin can then periodically scan your project for changes
+  and automatically redeploy the webapp if any are found. This makes the development cycle more productive by
+  eliminating the build and deploy steps: you use your IDE to make changes to the project, and the running web
+  container automatically picks them up, allowing you to test them straight away.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>The information on this page refers to the Jetty Maven plugin, for versions Jetty 7 and later. If you're using
+  the plugin with Jetty 6 (you should really upgrade), see the <a class="link" href="http://docs.codehaus.org/display/JETTY/Maven+Jetty+Plugin" target="_top">Maven Jetty Plugin guide</a> at
+  Codehaus.</div><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3>You need to use Maven 3 for jetty-7.5.3 and later releases.</div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="get-up-and-running"></a>Quick Start: Get Up and Running</h3></div></div></div><p>First, add <code class="code">jetty-maven-plugin</code> to your <code class="filename">pom.xml</code> definition:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+      </pre></div><p>Then, from the same directory as your root <code class="filename">pom.xml</code>, type:</p><pre class="screen">
+
+  mvn jetty:run
+
+    </pre><p>This starts Jetty and serves up your project on http://localhost:8080/.</p><p>Jetty continues to run until you stop it. While it runs, it periodically scans for changes to your project
+    files, so if you save changes and recompile your class files, Jetty redeploys your webapp, and you can instantly
+    test the changes you just made.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="stopping-plugin"></a>Stopping the Plugin</h4></div></div></div><p>You can terminate the plugin with a <code class="code">ctrl-c</code> in the terminal window where it is running.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="running-and-deploying"></a>Running and Deploying</h3></div></div></div><p>The Jetty Maven plugin has a number of distinct Maven goals. Each goal is an action you can run to accomplish
+    a specific task, or to work with a particular web application setup. You might need to insert goal-specific
+    configuration to run it properly.</p><p>To run the Jetty Maven plugin with a particular goal, use this command:</p><pre class="screen">
+
+  mvn jetty:&lt;var&gt;goalname&lt;/var&gt;
+
+    </pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jetty-container"></a>Configuring the Jetty Container</h3></div></div></div><p>These configuration elements set up the Jetty environment in which your webapp executes. They are common to
+    all goals.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="code">connectors</code> (Optional)&#8211;A list of <code class="code">
+      org.eclipse.jetty.server.Connector</code> objects, which are the port listeners for Jetty. If you don't specify
+      any, Jetty configures an NIO <code class="code">org.eclipse.jetty.server.nio.SelectChannelConnector</code> on port 8080. You
+      can change this default port number by using the system property <code class="code">jetty.port</code> on the command line, for
+      example, <code class="code">mvn -Djetty.port=9999 jetty:run</code>. Alternatively, you can specify as many connectors as you
+      like. You could instead configure the connectors in a standard //TO DO
+      xref//[[http://wiki.eclipse.org/Jetty/Reference/jetty.xml jetty xml config]] file and put its location into the
+      <code class="code">jettyXml</code> parameter.</li><li class="listitem"><code class="code">jettyXml</code> (Optional)&#8211;The location of a <code class="filename">jetty.xml</code> file to apply
+      in addition to any plugin configuration parameters. You might use it if you have other webapps, handlers, etc.,
+      to deploy, or if you have other Jetty objects that you cannot configure from the plugin.</li><li class="listitem"><code class="code">scanIntervalSeconds</code> (Optional)&#8211;The pause in seconds between sweeps of the webapp to
+      check for changes and automatically hot redeploy if any are detected. By default this is 0, which disables hot
+      deployment scanning. A number greater than 0 enables it.</li><li class="listitem"><code class="code">systemProperties</code> (Optional)&#8211;Allows you to configure System properties for the
+      execution of the plugin. For more information, see TODO [[#Setting System Properties|Setting System
+      Properties]].</li><li class="listitem"><code class="code">systemPropertiesFile</code> (Optional)&#8211;A file containing System properties to set for the
+      execution of the plugin. Settings that you make here do not override any system properties already set on the
+      command line, by the JVM, or in the POM via systemProperties. Available for Jetty 6.1.15rc4 and later.</li><li class="listitem"><code class="code">loginServices</code> (Optional)&#8211;A list of <code class="code">
+      org.eclipse.jetty.security.LoginService</code> implementations. Note that there is no default realm. If you use a
+      realm in your <code class="filename">web.xml</code> you can specify a corresponding realm here. You could instead
+      configure the login services in a jetty xml file and add its location to the <code class="code">
+      jettyXml</code> parameter.</li><li class="listitem"><code class="code">requestLog</code> (Optional)&#8211;An implementation of the <code class="code">
+      org.eclipse.jetty.server.RequestLog</code> request log interface. An implementation that respects the NCSA format
+      is available as <code class="code">org.eclipse.jetty.server.NCSARequestLog</code>. There are three other ways to configure the
+      RequestLog: 
+      <div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem">In a jetty xml config file (specified in the <code class="code">jettyXml</code> parameter).</li><li class="listitem">In a context (see <a class="xref" href="using-context-provider.html#ucp-deploying-contexts" title="Deploying Contexts">Deploying Contexts</a>), as specified in the <code class="code">
+        contextXml</code> parameter.</li><li class="listitem">In the <code class="code">webApp</code> element. TODO [http://wiki.eclipse.org/Jetty/Tutorial/RequestLo] on
+        configuring request logs.</li></ul></div></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-your-webapp"></a>Configuring Your WebApp</h3></div></div></div><p>These configuration parameters apply to your webapp. They are common to all goals.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="code">webApp</code> &#8211;Represents an extension to the class TODO <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.hml" target="_top">org.eclipse.jetty.webapp.WebAppContext</a>. You
+      can use any of the setter methods on this object to configure your webapp. Here are a few of the most useful
+      ones: 
+      <div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><code class="code">contextPath</code> &#8211;The context path for your webapp. By default, this is set to the
+        <code class="code">/jetty-documentation</code> from the project's <code class="filename">pom.xml</code>.</li><li class="listitem"><code class="code">descriptor</code> &#8211;The path to the <code class="filename">web.xml</code> file for your
+        webapp.</li><li class="listitem"><code class="code">defaultsDescriptor</code> &#8211;The path to a <code class="filename">webdefault.xml</code> file that
+        will be applied to your webapp before the <code class="filename">web.xml</code>. If you don't supply one, Jetty uses a
+        default file baked into the <code class="code">jetty-webapp.jar</code>.</li><li class="listitem"><code class="code">overrideDescriptor</code> &#8211;The path to a <code class="filename">web.xml</code> file that Jetty
+        applies after reading your <code class="filename">web.xml</code>. You can use this to replace or add
+        configuration.</li><li class="listitem"><code class="code">tempDirectory</code> &#8211;The path to a dir that Jetty can use to expand or copy jars and jsp
+        compiles when your webapp is running. The default is <code class="filename">
+        /home/jesse/src/releases/jetty-documentation/target/classes/tmp</code>.</li><li class="listitem"><code class="code">baseResource</code> &#8211;The path from which Jetty serves static resources. Defaults to
+        <code class="filename">src/main/webapp</code>.</li><li class="listitem"><code class="code">resourceBases</code> &#8211;Use instead of <code class="filename">baseResource</code> if you have
+        multiple dirs from which you want to serve static content. This is an array of dir names.</li><li class="listitem"><code class="code">baseAppFirst&gt;</code> (Optional)&#8211;Defaults to "true". Controls whether any overlayed
+        wars are added before or after the original base resource(s) of the webapp.</li></ul></div></li><li class="listitem"><code class="code">contextXml&gt;</code> (Optional)&#8211;The path to a context xml file that is applied to your
+      webapp AFTER the <code class="code">webApp</code> element.</li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="running-unassembled-webapp"></a>jetty:run: Running an Unassembled Webapp</h4></div></div></div><p>The <code class="code">run</code> goal runs on a webapp that does not have to be built into a WAR. Instead, Jetty
+      deploys the webapp from its constituent sources. It looks for the constituent parts of a webapp in the Maven
+      default project locations, although you can override these in the plugin configuration. For example, by default
+      it looks for:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">resources in <code class="filename">/home/jesse/src/releases/jetty-documentation/src/main/webapp</code></li><li class="listitem">classes in <code class="filename">/home/jesse/src/releases/jetty-documentation/target/classes</code></li><li class="listitem"><code class="filename">web.xml</code> in <code class="filename">/home/jesse/src/releases/jetty-documentation/src/main/webapp/WEB-INF/</code></li></ul></div><p>The plugin automatically ensures the classes are rebuilt and up-to-date before deployment. If you change
+      the source of a class and your IDE automatically compiles it in the background, the plugin picks up the changed
+      class.</p><p>You do not ned to assemble the webapp into a WAR, saving time during the development cycle. Once invoked,
+      you can configure the plugin to run continuously, scanning for changes in the project and automatically
+      performing a hot redeploy when necessary. Any changes you make are immediately reflected in the running instance
+      of Jetty, letting you quickly jump from coding to testing, rather than going through the cycle of: code, compile,
+      reassemble, redeploy, test.</p><p>Here is a small example, which turns on scanning for changes every ten seconds, and sets the webapp context
+      path to "/test":</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-additional-parameters"></a>Configuring Additional Parameters</h4></div></div></div><p>In addition to the <code class="code">webApp</code> element that is common to most goals, the <code class="code">
+      jetty:run</code> goal supports:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="code">classesDirectory</code> &#8211;Location of your compiled classes for the webapp. You should
+        rarely need to set this parameter. Instead, you should set <code class="code">build outputDirectory</code> in your
+        <code class="filename">pom.xml</code>.</li><li class="listitem"><code class="code">testClassesDirectory</code> &#8211;Location of the compiled test classes for your webapp. By
+        default this is <code class="filename">/home/jesse/src/releases/jetty-documentation/target/test-classes</code>.</li><li class="listitem"><code class="code">useTestScope</code> &#8211;If true, the classes from <code class="code">testClassesDirectory</code> and
+        dependencies of scope "test" are placed first on the classpath. By default this is false.</li><li class="listitem"><code class="code">useProvidedScope</code> &#8211;If true, the dependencies with scope "provided" are placed onto
+        the <span class="emphasis"><em>container classpath</em></span>. Be aware that this is NOT the webapp classpath, as "provided"
+        indicates that these dependencies would normally be expected to be provided by the container. You should very
+        rarely ever need to use this. Instead, you should copy the provided dependencies as explicit dependencies of
+        the <code class="code">plugin</code> instead.</li><li class="listitem"><code class="code">webAppSourceDirectory</code> &#8211;By default, this is set to <code class="filename">
+        /home/jesse/src/releases/jetty-documentation/src/main/webapp</code>. If your static sources are in a different location, set this parameter
+        accordingly.</li><li class="listitem"><code class="code">jettyEnvXml</code> (Optional)&#8211;Location of a <code class="filename">jetty-env.xml</code> file,
+        which allows you to make JNDI bindings that satisfy <code class="code">env-entry</code>, <code class="code">resource-env-ref</code>, and
+        <code class="code">resource-ref</code> linkages in the <code class="filename">web.xml</code> that are scoped only to the webapp and
+        not shared with other webapps that you might be deploying at the same time (for example, by using a <code class="code">
+        jettyConfig</code> file).</li><li class="listitem"><code class="code">scanTargets</code> (Optional)&#8211;A list of files and directories to periodically scan in
+        addition to those the plugin automatically scans.</li><li class="listitem"><code class="code">scanTargetPatterns</code> (Optional)&#8211;If you have a long list of extra files you want
+        scanned, it is more convenient to use pattern matching expressions to specify them instead of enumerating them
+        with the <code class="code">scanTargetsList</code> of <code class="code">scanTargetPatterns</code>, each consisting of a directory, and
+        including and/or excluding parameters to specify the file matching patterns.</li><li class="listitem"><code class="code">skip</code> (Optional)&#8211;Default is false. If true, the execution of the plugin exits. Same
+        as setting the SystemProperty <code class="code">-Djetty.skip</code> on the command line.</li></ul></div><p>Here's an example:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+  ...
+  <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+    ...
+      <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;webAppSourceDirectory&gt;</strong>/home/jesse/src/releases/jetty-documentation/src/staticfiles<strong class="hl-tag" style="color: #000096">&lt;/webAppSourceDirectory&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;webAppConfig&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;descriptor&gt;</strong>/home/jesse/src/releases/jetty-documentation/src/over/here/web.xml<strong class="hl-tag" style="color: #000096">&lt;/descriptor&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;jettyEnvXml&gt;</strong>/home/jesse/src/releases/jetty-documentation/src/over/here/jetty-env.xml<strong class="hl-tag" style="color: #000096">&lt;/jettyEnvXml&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/webAppConfig&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;classesDirectory&gt;</strong>/home/jesse/src/releases/jetty-documentation/somewhere/else<strong class="hl-tag" style="color: #000096">&lt;/classesDirectory&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;scanTargets&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;scanTarget&gt;</strong>src/mydir<strong class="hl-tag" style="color: #000096">&lt;/scanTarget&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;scanTarget&gt;</strong>src/myfile.txt<strong class="hl-tag" style="color: #000096">&lt;/scanTarget&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/scanTargets&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;scanTargetPatterns&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;scanTargetPattern&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;directory&gt;</strong>src/other-resources<strong class="hl-tag" style="color: #000096">&lt;/directory&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;includes&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;include&gt;</strong>**/*.xml<strong class="hl-tag" style="color: #000096">&lt;/include&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;include&gt;</strong>**/*.properties<strong class="hl-tag" style="color: #000096">&lt;/include&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;/includes&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;excludes&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;exclude&gt;</strong>**/myspecial.xml<strong class="hl-tag" style="color: #000096">&lt;/exclude&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;exclude&gt;</strong>**/myspecial.properties<strong class="hl-tag" style="color: #000096">&lt;/exclude&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;/excludes&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/scanTargetPattern&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/scanTargetPatterns&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+
+        </pre></div><p>If, for whatever reason, you cannot run on an unassembled webapp, the goals <code class="code">run-war</code> and <code class="code">
+      run-exploded</code> work on unassembled webapps.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="running-assembled-webapp-as-war"></a>jetty:run-war: Running an Assembled Webapp as a WAR</h4></div></div></div><p>This goal first packages your webapp as a WAR file and then deploys it to Jetty. If you set a non-zero
+      <code class="code">scanInterval</code>, Jetty watches your <code class="filename">pom.xml</code> and the WAR file; if either changes,
+      it redeploys the war.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-war"></a>Configuring the WAR</h5></div></div></div><p><code class="code">war</code> is the location of the built WAR file. This defaults to <code class="code">
+        /home/jesse/src/releases/jetty-documentation/target/jetty-documentation-9.0.0.M3.war</code>. If this is not sufficient, set it to your
+        custom location.</p><p>Here's how to set it:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+  ...
+  <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+    ...
+      <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;war&gt;</strong>/home/jesse/src/releases/jetty-documentation/target/mycustom.war<strong class="hl-tag" style="color: #000096">&lt;/war&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+
+          </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="running-assembled-webapp-as-expanded-war"></a>jetty:run-exploded: Running an Assembled Webapp as an Expanded WAR</h4></div></div></div><p>The run-exploded goal first assembles your webapp into an exploded WAR file and then deploys it to Jetty.
+      If you set a non-zero <code class="code">scanInterval</code>, Jetty watches your <code class="filename">pom.xml, WEB-INF/lib,
+      WEB-INF/</code> classes and <code class="filename">WEB-INF/web.xml</code> for changes and redeploys when
+      necessary.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-exploded-war"></a>Configuring the Exploded WAR</h5></div></div></div><p><code class="code">war</code> is the location of the exploded WAR. This defaults to <code class="code">
+        /home/jesse/src/releases/jetty-documentation/target/jetty-documentation-9.0.0.M3</code>, but you can override the default by setting this
+        parameter.</p><p>Here's how to set it:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+  ...
+  <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+    ...
+      <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>maven-jetty-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;war&gt;</strong>/home/jesse/src/releases/jetty-documentation/target/myfunkywebapp<strong class="hl-tag" style="color: #000096">&lt;/war&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+
+          </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="deploy-war-running-pre-assembled-war"></a>jetty:deploy-war: Running a pre-assembled war</h4></div></div></div><p>This is basically the same as <code class="code">jetty:run-war</code>, but without assembling the WAR of the current
+      module. Unlike <code class="code">run-war</code>, the phase in which this plugin executes is not bound to the "package"
+      phase.</p><p>For example, you might want to start Jetty on the test-compile phase and stop Jetty on the test-phase.
+      Here's the configuration:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+  ...
+  <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+    ...
+      <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;war&gt;</strong>/home/jesse/src/releases/jetty-documentation/target/mycustom.war<strong class="hl-tag" style="color: #000096">&lt;/war&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;executions&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;execution&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;id&gt;</strong>start-jetty<strong class="hl-tag" style="color: #000096">&lt;/id&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;phase&gt;</strong>test-compile<strong class="hl-tag" style="color: #000096">&lt;/phase&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;goals&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;goal&gt;</strong>deploy-war<strong class="hl-tag" style="color: #000096">&lt;/goal&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/goals&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;daemon&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/daemon&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;reload&gt;</strong>manual<strong class="hl-tag" style="color: #000096">&lt;/reload&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/execution&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;execution&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;id&gt;</strong>stop-jetty<strong class="hl-tag" style="color: #000096">&lt;/id&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;phase&gt;</strong>test<strong class="hl-tag" style="color: #000096">&lt;/phase&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;goals&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;goal&gt;</strong>stop<strong class="hl-tag" style="color: #000096">&lt;/goal&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/goals&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/execution&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/executions&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+
+        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="running-unassembled-webapp-in-separate-jvm"></a>jetty:run-forked: Running an Unassembled Webapp in a Separate JVM</h3></div></div></div><p>This goal was new in jetty-7.5.2. You can force Jetty to start the webapp in a new JVM, optionally passing
+    arguments to the JVM. Unlike the other goals, this one does not share all the same configuration parameters
+    (although a lot of them are the same, so that you can use many of the goals with the same configuration). The
+    configuration options are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="filename">jettyXml</code> &#8211;The locations of jetty xml configuration files used to configure
+      the container in the new JVM.</li><li class="listitem"><code class="filename">contextXml</code> (Optional&gt;&#8211;The location of a context xml file to configure the
+      webapp in the new JVM.</li><li class="listitem"><code class="filename">contextPath</code> (Optional).&#8211;The context path for the webapp in the new JVM.
+      Defaults to <code class="filename">/jetty-documentation</code>. Overrides a setting inside a <code class="code">contextXml</code>&gt;
+      file.</li><li class="listitem"><code class="filename">webAppSourceDirectory</code> (Optional)&#8211;The location of the static resources for
+      your webapp. Defaults to <code class="filename">src/main/webapp</code>. Overrides a <code class="code">Set
+      name="baseResource"</code> setting inside a <code class="code">contextXml</code> file.</li><li class="listitem"><code class="filename">resourceDirs</code> (Optional)&#8211;New in jetty-7.6.5. An array of directories
+      containing static content that form the resource base for your webapp, in conjuction with the <code class="filename">
+      webAppSourceDirectory</code>. See also <code class="code">baseAppFirst</code>.</li><li class="listitem"><code class="code">baseAppFirst</code> (Optional)&#8211;New in jetty-7.6.5. Defaults to "true". Controls whether the
+      <code class="filename">webAppSourceDirectory</code> or <code class="filename">resourceDirs</code> are first on the list of
+      resources that form the base resource for the webapp.</li><li class="listitem"><code class="filename">webXml</code> (Optional)&#8211;The location of the <code class="filename">web.xml</code> file.
+      Defaults to <code class="filename">src/main/webapp/WEB-INF/web.xml</code>. Overrides a <code class="code">Set
+      name="descriptor"</code> inside a <code class="filename">contextXml</code> file.</li><li class="listitem"><code class="filename">tmpDirectory</code> (Optional)&#8211;The location of the temporary work directory.
+      Defaults to <code class="filename">target/tmp</code>. Overrides a <code class="filename">Set name="tempDirectory"</code>&gt; inside
+      a <code class="filename">contextXml</code> file.</li><li class="listitem"><code class="filename">classesDirectory</code> (Optional)&#8211;The location of the compiled classes for the
+      webapp. Defaults to <code class="filename">/home/jesse/src/releases/jetty-documentation/target/classes</code>.</li><li class="listitem"><code class="filename">testClassesDirectory</code> (Optional)&#8211;The location of the compiled test classes
+      for the webapp. Defaults to <code class="filename">/home/jesse/src/releases/jetty-documentation/target/test-classes</code>.</li><li class="listitem"><code class="code">useTestScope</code> (Optional)&#8211;Defaults to "false". If true, the test classes and
+      dependencies of scope "test" are placed on the webapp's classpath.</li><li class="listitem"><code class="code">useProvidedScope</code> (Optional)&#8211;Defaults to "false". If true, the dependencies of scope
+      "provided" are placed on the jetty container's classpath.</li><li class="listitem"><code class="code">stopPort</code> (Mandatory)&#8211;A port number for jetty to listen on to receive a stop command
+      to cause it to shutdown. If configured, the stopKey is used to authenticate an incoming stop command.</li><li class="listitem"><code class="code">stopKey&gt;</code> (Mandatory)&#8211;A string value that has to be sent to the <code class="code">
+      stopPort</code> to authenticate the stop command.</li><li class="listitem"><code class="code">skip</code> (Optional)&#8211;Defaults to false. If true, the execution of this plugin is
+      skipped.</li><li class="listitem"><code class="code">jvmArgs</code> (Optional)&#8211;A string representing arbitrary arguments to pass to the forked
+      JVM.</li></ul></div><p>To deploy your unassembled web app to Jetty running in a new JVM:</p><pre class="screen">
+
+    mvn jetty:run-forked
+
+    </pre><p>Jetty continues to execute until you either:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">Press <code class="code">cntrl-c</code> in the terminal window to stop the plugin, which also stops the forked
+      JVM.</li><li class="listitem">Use <code class="code">mvn jetty:stop</code> to stop the forked JVM, which also stops the plugin.</li></ul></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>If you want to set a custom port, you need to specify it in a <code class="filename">jetty.xml</code> file rather than
+    setting the 
+    <span style="color: red">&lt;connector&gt;
+      <span style="color: red">&lt;port&gt;&lt;/port&gt;</span>
+    &lt;/connector&gt;</span>tags. You can specify the location of the <code class="filename">jetty.xml</code> using the <code class="code">
+    jettyXml</code> parameter.</div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="starting-jetty-without-first-executing-build"></a>jetty:start: Starting Jetty without First Executing the Build Up to <span class="emphasis"><em>
+    test-compile</em></span> Phase</h3></div></div></div><p>This goal was new in jetty-7.6.0. We designed it to use with an execution binding in your <code class="filename">
+    pom.xml</code>. It is similar to the <code class="code">jetty:run</code> goal, however it does NOT first execute the build
+    up until the "test-compile" phase to ensure that all necessary classes and files of the webapp have been generated.
+    This is most useful when you want to control the start and stop of Jetty via execution bindings in your <code class="filename">
+    pom.xml</code>.</p><p>For example, you can configure the plugin to start your webapp at the beginning of your unit tests and stop
+    at the end. To do this, you need to set up a couple of <code class="code">execution</code> scenarios for the Jetty plugin and
+    use the <code class="code">
+      <span style="color: red">&lt;daemon&gt;true&lt;/daemon&gt;</span>
+    </code> configuration option to force Jetty to execute only while Maven is running, instead of running
+    indefinitely. You use the <code class="code">pre-integration-test</code> and <code class="code">post-integration-test</code> Maven build
+    phases to trigger the execution and termination of Jetty:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;stopKey&gt;</strong>foo<strong class="hl-tag" style="color: #000096">&lt;/stopKey&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;stopPort&gt;</strong>9999<strong class="hl-tag" style="color: #000096">&lt;/stopPort&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;executions&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;execution&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;id&gt;</strong>start-jetty<strong class="hl-tag" style="color: #000096">&lt;/id&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;phase&gt;</strong>pre-integration-test<strong class="hl-tag" style="color: #000096">&lt;/phase&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;goals&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;goal&gt;</strong>start<strong class="hl-tag" style="color: #000096">&lt;/goal&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/goals&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>0<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;daemon&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/daemon&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/execution&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;execution&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;id&gt;</strong>stop-jetty<strong class="hl-tag" style="color: #000096">&lt;/id&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;phase&gt;</strong>post-integration-test<strong class="hl-tag" style="color: #000096">&lt;/phase&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;goals&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;goal&gt;</strong>stop<strong class="hl-tag" style="color: #000096">&lt;/goal&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/goals&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/execution&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/executions&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+      </pre></div><p>Of course, you can use this goal from the command line ( <code class="code">mvn jetty:start</code>), however you need to
+    be sure that all generated classes and files for your webapp are already present first.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="more-configuration-options"></a>More Configuration Options</h3></div></div></div><p>The following sections provide information on additional configuration options.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="excluded-goals"></a>Excluded Goals</h4></div></div></div><p>Your webapp might not work with one of the goals, for example <code class="code">jetty:run</code>. In this case, use the
+      <code class="code">excludedGoals</code> parameter:</p><p><code class="code">excludedGoals</code> (Optional)&#8211;Set to a comma-separated list of Jetty goal names which, if
+      executed, cause the plugin to print an informative message and exit immediately:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;excludedGoals&gt;</strong>run,run-exploded<strong class="hl-tag" style="color: #000096">&lt;/excludedGoals&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="manual-reload"></a>Manual Reload</h4></div></div></div><p>You might not want Jetty to automatically reload and redeploy your webapp when something about it changes.
+      For example, you might be doing a series of changes that you want to ignore until you're done. In that use, use
+      the <code class="code">reload</code> parameter:</p><p><code class="code">reload</code> (Optional)&#8211;Default value is <code class="code">automatic</code>. If <code class="code">manual</code>, a
+      linefeed in the console can reload the context. If <code class="code">automatic</code>, traditional reloading on changed files
+      is enabled.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="stopping-plugin-from-another-terminal-window"></a>Stopping the Plugin from Another Terminal Window</h4></div></div></div><p>If you want to use <code class="code">mvn jetty:stop</code>, you need to configure the plugin with a special port number
+      and key that you also supply by executing the <code class="code">stop</code> goal:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="code">stopPort</code> &#8211;A port number for jetty to listen on to receive a stop command to cause
+        it to shutdown.</li><li class="listitem"><code class="code">stopKey</code> &#8211;A string value sent to the <code class="code">stopPort</code> to validate the stop
+        command.</li></ul></div><p>Here's a configuration example:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;stopPort&gt;</strong>9966<strong class="hl-tag" style="color: #000096">&lt;/stopPort&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;stopKey&gt;</strong>foo<strong class="hl-tag" style="color: #000096">&lt;/stopKey&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div><p>Then, while Jetty is running, type:</p><pre class="screen">
+
+    mvn jetty:stop
+
+      </pre><p>The <code class="code">stopPort</code> must be free on the machine you are running on. If this is not the case, you get
+      an "Address already in use" error message after the "Started SelectedChannelConnector ..." message.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-mvn-jetty:help"></a>Using <code class="code">mvn jetty:help</code> for More Help</h4></div></div></div><p>For more help, use the <code class="code">mvn jetty:help</code> command.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="code">mvn jetty:help</code> &#8211;Prints the list of goals for the jetty-maven-plugin, with a
+        description of each goal.</li><li class="listitem"><code class="code">mvn jetty:help -Ddetail=true -Dgoal= goal-name</code> &#8211;Prints a list of the properties
+        you can set for that goal, in addition to its description.</li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="skipping-execution-of-jetty"></a>Skipping Execution of Jetty</h4></div></div></div><p>Similar to the well known system property <code class="code">mvn.test.skip</code>, you can define the system property
+      <code class="code">jetty.skip</code> to prevent Jetty running. This is most useful when configuring Jetty for execution during
+      integration testing and you want to skip the tests:</p><pre class="screen">
+
+    mvn -Djetty.skip=true
+
+      </pre><p>You can also use the <code class="code">skip</code> configuration parameter to skip Jetty during certain executions (see
+      above).</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-security-settings"></a>Configuring Security Settings</h4></div></div></div><p>You can configure LoginServices (known as UserRealms in Jetty 6) in the plugin. Here's an example of
+      setting up the HashLoginService for a webapp:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webAppConfig&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webAppConfig&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;loginServices&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;loginService</strong> <span class="hl-attribute" style="color: #F5844C">implementation</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.security.HashLoginService"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;name&gt;</strong>Test Realm<strong class="hl-tag" style="color: #000096">&lt;/name&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;config&gt;</strong>/home/jesse/src/releases/jetty-documentation/src/etc/realm.properties<strong class="hl-tag" style="color: #000096">&lt;/config&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/loginService&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/loginServices&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-connectors-jetty-maven-plugin"></a>Configuring Connectors for Jetty Maven Plugin</h4></div></div></div><p>You can configure a list of <code class="code">org.eclipse.jetty.server.Connector</code> objects for the plugin. If you
+      don't specify any, an NIO <code class="code">org.eclipse.jetty.server.nio.SelectChannelConnector</code> is configured on port
+      8080. You can change this default port number by using the system property <code class="code">jetty.port</code> on the command
+      line, for example <code class="code">mvn -Djetty.port=9999 jetty:run</code>. Alternatively, you can specify as many connectors
+      as you like. Here's an example of configuring a connector on a different port number:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;connectors&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;connector</strong> <span class="hl-attribute" style="color: #F5844C">implementation</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.nio.SelectChannelConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;port&gt;</strong>9090<strong class="hl-tag" style="color: #000096">&lt;/port&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;maxIdleTime&gt;</strong>60000<strong class="hl-tag" style="color: #000096">&lt;/maxIdleTime&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/connector&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;/connectors&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-overlaid-wars"></a>Using Overlaid WARs</h4></div></div></div><p>If your webapp depends on other WAR files, the Jetty Maven plugin is able to merge resources from all of
+      them. The merging is fairly simple and does not support exclusions. The ordering of dependencies is important if
+      you have defined the same resource in multiple files. There is no special configuration for this beyond simply
+      declaring the dependencies.</p><p>For example, suppose our webapp depends on these two WARs:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>com.acme<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>X<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;type&gt;</strong>war<strong class="hl-tag" style="color: #000096">&lt;/type&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/dependency&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>com.acme<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>Y<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;type&gt;</strong>war<strong class="hl-tag" style="color: #000096">&lt;/type&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/dependency&gt;</strong>
+
+        </pre></div><p>Suppose the webapps contain:</p><div class="informalexample"><pre class="programlisting">
+
+WebAppX:
+
+/foo.jsp
+/bar.jsp
+/WEB-INF/web.xml
+
+
+
+WebAppY:
+
+/bar.jsp
+/baz.jsp
+/WEB-INF/web.xml
+/WEB-INF/special.xml
+
+        </pre></div><p>Then the webapp has available these additional resources:</p><div class="informalexample"><pre class="programlisting">
+
+/foo.jsp (X)
+/bar.jsp (X)
+/baz.jsp (Y)
+/WEB-INF/web.xml (X)
+/WEB-INF/sitemesh.xml (Y)
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-multiple-webapp-root-directories"></a>Using Multiple Webapp Root Directories</h4></div></div></div><p>If you have external resources that you want to incorporate in the execution of a webapp, but which are not
+      assembled into WARs, you can't use the overlaid WARs method described above, but you can tell Jetty the
+      directories in which these external resources are located. At runtime, when Jetty receives a request for a
+      resource, it searches all the locations to retrieve the resource. It's a lot like the overlaid WAR situation, but
+      without the WAR. Here's a configuration example:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/jetty-documentation-9.0.0.M3<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;baseResource</strong> <span class="hl-attribute" style="color: #F5844C">implementation</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.util.resource.ResourceCollection"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;resourcesAsCSV&gt;</strong>src/main/webapp,/home/johndoe/path/to/my/other/source,/yet/another/folder<strong class="hl-tag" style="color: #000096">&lt;/resourcesAsCSV&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/baseResource&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-gzip-compression"></a>Using GZip Compression and Other Jetty Extensions</h4></div></div></div><p>You must explicitly enable GZip compression and other Jetty extensions by adding a dependency on
+      jetty-servlets:</p><div class="informalexample"><pre class="programlisting">
+
+      <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;version&gt;</strong>7.0.1.v20091125<strong class="hl-tag" style="color: #000096">&lt;/version&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+          [...]
+        <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;dependencies&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.eclipse.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-servlets<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;version&gt;</strong>7.0.1.v20091125<strong class="hl-tag" style="color: #000096">&lt;/version&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/dependency&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/dependencies&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+      
+        </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>Setting the <code class="code">groupId</code>: Maven by default looks for plugins with a groupId of <code class="code">
+      org.apache.maven.plugins</code>, even if the groupId is declared differently as above. To instruct Maven to look
+      for the plugin in the groupId as defined, set a plugin group in a profile in <code class="filename">
+      settings.xml</code>:</div><pre class="screen">
+
+&lt;profile&gt;
+  ...
+  &lt;pluginGroups&gt;
+    &lt;pluginGroup&gt;org.mortbay.jetty&lt;/pluginGroup&gt;
+  &lt;/pluginGroups&gt;
+&lt;/profile&gt;
+
+      </pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="running-more-than-one-webapp"></a>Running More than One Webapp</h4></div></div></div><p>You can use either a <code class="filename">jetty.xml</code> file to configure extra (pre-compiled) webapps that you
+      want to deploy, or you can use the <code class="code">contextHandlers</code> configuration element in the Jetty plugin
+      configuration to do so. If you want to deploy webapp A, and webapps B and C in the same Jetty instance:</p><p>Putting the configuration in webapp A's <code class="code">pom.xml</code>:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextHandlers&gt;</strong>           
+            <strong class="hl-tag" style="color: #000096">&lt;contextHandler</strong> <span class="hl-attribute" style="color: #F5844C">implementation</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;war&gt;</strong>/home/jesse/src/releases/jetty-documentation../../B.war<strong class="hl-tag" style="color: #000096">&lt;/war&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/B<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/contextHandler&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;contextHandler</strong> <span class="hl-attribute" style="color: #F5844C">implementation</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;war&gt;</strong>/home/jesse/src/releases/jetty-documentation../../C.war<strong class="hl-tag" style="color: #000096">&lt;/war&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/B<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/contextHandler&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/contextHandlers&gt;</strong> 
+  <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div><p>Alternatively, add a <code class="filename">jetty.xml</code> file to webapp A. Copy the <code class="filename">
+      jetty.xml</code> file from the jetty distribution, and then add WebAppContexts for the other 2
+      webapps:</p><div class="informalexample"><pre class="programlisting">
+
+   <strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Contexts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addHandler"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
+           <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+             <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/B<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+             <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>../../B.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+           <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;Call&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
+           <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+             <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contextPath"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/C<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+             <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>../../C.war<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/Ref&gt;</strong>
+
+        </pre></div><p>Then configure the location of this <code class="filename">jetty.xml</code> file into webapp A's jetty
+      plugin:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;scanIntervalSeconds&gt;</strong>10<strong class="hl-tag" style="color: #000096">&lt;/scanIntervalSeconds&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;jettyXml&gt;</strong>src/main/etc/jetty.xml<strong class="hl-tag" style="color: #000096">&lt;/jettyXml&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+        </pre></div><p>For either of these solutions, the other webapps must already have been built, and they are not
+      automatically monitored for changes. You can refer either to the packed WAR file of the pre-built webapps or to
+      their expanded equivalents.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="setting-system-properties"></a>Setting System Properties</h4></div></div></div><p>You can specify property name/value pairs that Jetty sets as System properties for the execution of the
+      plugin. Note that if a System property is already set (for example, from the command line or by the JVM itself),
+      then these configured properties DO NOT override them. This feature is useful to tidy up the command line and
+      save a lot of typing.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="specifying-properties-in-pom"></a>Specifying System Properties in the POM</h5></div></div></div><p>Here's an example of how to specify System properties in the POM:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;systemProperties&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;systemProperty&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;name&gt;</strong>fooprop<strong class="hl-tag" style="color: #000096">&lt;/name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;value&gt;</strong>222<strong class="hl-tag" style="color: #000096">&lt;/value&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/systemProperty&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/systemProperties&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+          </pre></div><p>As of jetty-7.6.5, you CAN cause the system properties defined in the POM to override those on the
+        command line by using the <code class="code">force</code> parameter:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;systemProperties&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;force&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/force&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;systemProperty&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;name&gt;</strong>fooprop<strong class="hl-tag" style="color: #000096">&lt;/name&gt;</strong>
+         <strong class="hl-tag" style="color: #000096">&lt;value&gt;</strong>222<strong class="hl-tag" style="color: #000096">&lt;/value&gt;</strong>
+       <strong class="hl-tag" style="color: #000096">&lt;/systemProperty&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/systemProperties&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+          </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="specifying-properties-in-file"></a>Specifying System Properties in a File</h5></div></div></div><p>You can also specify your System properties in a file. System properties you specify in this way DO NOT
+        override System properties that set on the command line, by the JVM, or directly in the POM via <code class="code">
+        systemProperties</code>.</p><p>Here's an example of the file:</p><div class="informalexample"><pre class="programlisting">
+
+fooprop=222
+
+          </pre></div><p>Here's an example of configuring the file for the plugin, although you can instead specify the file by
+        setting the System property (!) <code class="filename">jetty.systemPropertiesFile</code> on the command line:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;groupId&gt;</strong>org.mortbay.jetty<strong class="hl-tag" style="color: #000096">&lt;/groupId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>jetty-maven-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;systemPropertiesFile&gt;</strong>/home/jesse/src/releases/jetty-documentation/mysys.props<strong class="hl-tag" style="color: #000096">&lt;/systemPropertiesFile&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;webApp&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;contextPath&gt;</strong>/test<strong class="hl-tag" style="color: #000096">&lt;/contextPath&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/webApp&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+
+          </pre></div></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="maven-and-jetty.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-helloworld.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;15.&nbsp;Maven and Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Jetty and Maven HelloWorld</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

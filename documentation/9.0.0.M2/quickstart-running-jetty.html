@@ -1,0 +1,79 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Running Jetty</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="quick-start-getting-started.html" title="Chapter&nbsp;2.&nbsp;Quick Start Jetty"><link rel="prev" href="quick-start-getting-started.html" title="Chapter&nbsp;2.&nbsp;Quick Start Jetty"><link rel="next" href="quickstart-deploying-webapps.html" title="Deploying Web Applications"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Running Jetty</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="quick-start-getting-started.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Quick Start Jetty</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="quickstart-deploying-webapps.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-running-jetty"></a>Running Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-running-jetty.html#d0e424">Changing the Jetty Port</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#d0e453">Starting HTTPS</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#d0e498">Stopping Jetty</a></span></dt></dl></div><p>To start the jetty distribution on the default port of 8080 run the following command:</p><p>
+    <code class="code">&gt; java -jar start.jar</code>
+  </p><p>If everything goes correctly you should see about 20 lines of logged INFO statements that will include lines
+  like the following, that inform you of the components being started:</p><div class="informalexample"><pre class="programlisting">
+2012-10-22 16:02:24.988:INFO:oejs.Server:main: jetty-9.0.0-M2
+2012-10-22 16:02:25.040:INFO:oejs.NCSARequestLog:main: Opened /home/gregw/src/jetty-9/jetty-distribution/target/distribution/logs/2012_10_22.request.log
+2012-10-22 16:02:25.115:INFO:oejs.ServerConnector:main: Started ServerConnector@6aeeafb{HTTP/1.1}{0.0.0.0:8080}
+2012-10-22 16:02:25.348:INFO:oejs.ServerConnector:main: Started ServerConnector@24a45e{SSL-http/1.1}{0.0.0.0:8443}
+2012-10-22 16:02:25.357:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/] at interval 1
+2012-10-22 16:02:25.688:INFO:oejd.DeploymentManager:main: Deployable added: /home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/test.xml
+2012-10-22 16:02:25.725:INFO:oejw.WebInfConfiguration:main: Extract jar:file:/home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/test.war!/ to /tmp/jetty-0.0.0.0-8080-test.war-_test-any-/webapp
+2012-10-22 16:02:26.097:INFO:oejsh.ContextHandler:main: started o.e.j.w.WebAppContext@4e3ceb07{/test,file:/tmp/jetty-0.0.0.0-8080-test.war-_test-any-/webapp/,AVAILABLE}{/test.war}
+
+
+
+    
+    
+    
+    </pre></div><p>You will also see some warnings like:</p><div class="informalexample"><pre class="programlisting">
+2012-10-22 16:02:24.748:WARN::main: test-realm is deployed. DO NOT USE IN PRODUCTION!
+2012-10-22 16:02:25.582:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
+    
+    
+    
+    </pre></div><p>These warnings are telling you that some demonstration web applications and services are deployed and that they
+  should be removed before the server is put into production. These warnings can be ignored while testing, or you can
+  see <a class="link" href="quickstart-deploying-webapps.html" title="Deploying Web Applications">Deploying Web Applications</a> to learn how to remove
+  them.</p><p>You can test the started Jetty by pointing a Browser or any HTTP client at port 8080 of the machine. If you are
+  running the browser on the same machine as the Jetty instance, then the URL to use is:</p><p>
+    <code class="code">http://localhost:8080/</code>
+  </p><p>Your browser or HTTP client should see the Jetty welcome page and be able to follow the links to some test web
+  applications.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e424"></a>Changing the Jetty Port</h3></div></div></div><p>If you see the following exception you already have something running on the port that jetty is configured to
+    run on and you either need to shut down whatever that process is, or configure jetty to run on another port.</p><div class="informalexample"><pre class="programlisting">
+java.net.BindException: Address already in use 
+  at sun.nio.ch.Net.bind0(Native Method) 
+  at sun.nio.ch.Net.bind(Net.java:344)
+  at sun.nio.ch.Net.bind(Net.java:336)
+  at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:199)i
+
+
+
+      
+      
+      
+      </pre></div><p>Jetty can be made to run on a different port by adding setting the jetty.port Property on the command
+    line:</p><p>
+      <code class="code">&gt; java -jar start.jar jetty.port=8081</code>
+    </p><p>This property can also be set in the <code class="code">start.ini</code> file or by editing the usage of the property in
+    the <code class="code">etc/jetty-http.xml</code> configuration file. The way this works is that it defines a Property that is
+    used by the etc/jetty-http.xml configuration file to inject a port value into the ServerConnector defined there.
+    For more information see the <a class="link" href="quick-start-configure.html#quickstart-config">quickstart configuration guide</a> and <a class="link" href="configuring-connectors.html">configuring connectors</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e453"></a>Starting HTTPS</h3></div></div></div><p>By defaults set in the <code class="code">start.ini</code> file, Jetty starts the HTTP connector that is defined in <code class="code">
+    etc/jetty-http.xml</code>. To also start the HTTPS connector defined in <code class="code">etc/jetty-https.xml</code> you can
+    simply append this configuration file to the command line:</p><p>
+      <code class="code">&gt; java -jar start.jar etc/jetty-https.xml</code>
+    </p><p>You can now test this connector by pointing your browser to:</p><p>
+      <code class="code">https://localhost:8443/</code>
+    </p><p>Alternately you can edit the <code class="code">start.ini</code> file and uncomment the line that includes the https
+    configuration file and then start jetty without any extra command line arguments. Note also that the SSL port can
+    be changed with the jetty.tls.port Property:</p><p>
+      <code class="code">&gt; java -jar start.jar jetty.tls.port=8444 etc/jetty-https.xml</code>
+    </p><p>The job of the start.jar command is to interpret the command line and start.ini arguments in order to build a
+    java classpath and list of properties and configuration files to pass to the main class of the Jetty XML
+    configuration mechanism. The start.jar mechanism has many options which are documented in <a class="xref" href="advanced-jetty-start.html" title="Chapter&nbsp;13.&nbsp;Starting Jetty">Chapter&nbsp;13, <i>Starting Jetty</i></a> and can be seen in summary with the command:</p><p>
+      <code class="code">&gt; java -jar start.jar --help</code>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e498"></a>Stopping Jetty</h3></div></div></div><p>If jetty has been simply started from the command line, then it is safe to stop it using the normal Ctrl-C
+    key sequence to abort it. This will trigger an orderly shutdown of the server.</p><p>However, the server may be started with some advanced start.jar options so that it runs in the
+    background:</p><p>
+      <code class="code">&gt; java -jar start.jar STOP.PORT=8881 STOP.KEY=magic --daemon &amp;</code>
+    </p><p>This server may now be shutdown with the command:</p><p>
+      <code class="code">&gt; java -jar start.jar STOP.PORT=8881 STOP.KEY=magic --stop</code>
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="quick-start-getting-started.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="quick-start-getting-started.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="quickstart-deploying-webapps.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;2.&nbsp;Quick Start Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Deploying Web Applications</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

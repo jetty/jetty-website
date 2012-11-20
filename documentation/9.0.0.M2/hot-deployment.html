@@ -1,0 +1,56 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Hot Deployment</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;5.&nbsp;Deploying Jetty"><link rel="prev" href="setting-deployment-bindings.html" title="Setting Deployment Bindings"><link rel="next" href="deploying-webapps.html" title="Deploying WebApps"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Hot Deployment</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="setting-deployment-bindings.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;5.&nbsp;Deploying Jetty</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="deploying-webapps.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="hot-deployment"></a>Hot Deployment</h2></div></div></div><p>Jetty lets you deploy an arbitrary context or web application by monitoring a directory for changes. If you add
+  a web application or a context descriptor to the directory, Jetty's DeploymentManager (DM) deploys a new context. If
+  you touch or update a context descriptor, the DM stops, reconfigures, and redeploys its context. If you remove a
+  context, the DM stops it and removes it from the server.</p><p>The DeploymentManager is a state-oriented mechanism suitable for developers and embedded users to customize to
+  a variety of use cases. An example follows of the <code class="filename">jetty.xml</code> that creates the basic
+  DeploymentManager, which Jetty then uses to plug in the ContextProvider and the WebAppProvider that back the Hot
+  Deployment mechanism. This example also provides information about adding another node to the deployment state, in
+  this case a debug binding. In the Jetty distribution this XML is in the <code class="filename">jetty-deploy.xml</code> file,
+  which combined with the <code class="filename">jetty-contexts.xml</code> and <code class="filename">jetty-webapps.xml</code> files
+  comprise the stock Jetty hot deployment mechanism.</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.Server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
+    <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"DeploymentManager"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.DeploymentManager"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contexts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Contexts"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setContextAttribute"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>.*/jsp-api-[^/]*\.jar$|.*/jsp-[^/]*\.jar$<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+          
+          
+          <em class="hl-comment" style="color: silver">&lt;!-- Add a customize step to the deployment lifecycle --&gt;</em>
+          <em class="hl-comment" style="color: silver">&lt;!-- uncomment and replace DebugBinding with your extended AppLifeCycle.Binding class 
+          &lt;Call name="insertLifeCycleNode"&gt;
+            &lt;Arg&gt;deployed&lt;/Arg&gt;
+            &lt;Arg&gt;starting&lt;/Arg&gt;
+            &lt;Arg&gt;customise&lt;/Arg&gt;
+          &lt;/Call&gt;
+          &lt;Call name="addLifeCycleBinding"&gt;
+            &lt;Arg&gt;
+              &lt;New class="org.eclipse.jetty.deploy.bindings.DebugBinding"&gt;
+                &lt;Arg&gt;customise&lt;/Arg&gt;
+              &lt;/New&gt;
+            &lt;/Arg&gt;
+          &lt;/Call&gt;
+          --&gt;</em>
+          
+        <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+    </pre></div><p>See <a class="xref" href="using-context-provider.html" title="Using the Context Provider">Using the Context Provider</a> for more information. Previously, Jetty implemented this feature
+  via a ContextDeployer and WebappDeployer, which have both been deprecated.</p><p>See also <a class="xref" href="using-deployment-manager.html" title="Using the Deployment Manager">Using the Deployment Manager</a> for detailed conceptual information.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="setting-deployment-bindings.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-deployment.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="deploying-webapps.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Setting Deployment Bindings&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Deploying WebApps</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>
