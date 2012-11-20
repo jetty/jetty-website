@@ -64,7 +64,7 @@
           </tr>
         </table>
       
-      <p>Developer Advice and Production Support are <a href="http://www.webtide.com">available!</a></p>
+        <p>Benefit from committer knowledge and get training, consulting services, professional support and SLAs, just ask us about it!</p>
     </div>
     
     <div id="rightcolumn">
