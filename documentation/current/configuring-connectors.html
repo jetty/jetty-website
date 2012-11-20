@@ -22,7 +22,7 @@
       </span></dt><dd><p>Instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
         ServerConnector</a> which accepts SSL (aka TLS) connections and are assumed to carry the HTTP protocol and
         are thus chained to a HTTP connection.</p></dd><dt><span class="term">
-        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/etc/jetty-spdy.xml" target="_top">jetty-spdy.xml</a>
+        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>
       </span></dt><dd><p>Instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
         ServerConnector</a> with accepts SSL connections which may carry either HTTP or SPDY traffic. Initially the
         SSL connection is chained an NPN (Next Protocol Negotiation) connection, which eventually replaces itself with
@@ -85,7 +85,7 @@
     <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty.xml" target="_top">jetty.xml</a>,
     which is then used by Ref element in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a>,
     <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a> and
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/etc/jetty-spdy.xml" target="_top">jetty-spdy.xml</a>.</p><p>A typical configuration of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
+    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>.</p><p>A typical configuration of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
     HttpConfiguration</a> is: 
     </p><div class="informalexample"><pre class="programlisting">
 
@@ -141,7 +141,7 @@
     SslContextFactory</a> instance that is injected into an <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/SslConnectionFactory.html" target="_top">
     SslConnectionFactory</a> instance. An example using the keystore distributed with Jetty (containing a self
     signed test certificate) can be seen in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a> and
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/etc/jetty-spdy.xml" target="_top">jetty-spdy.xml</a>.
+    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>.
     Read more about SSL keystores in <a class="link" href="configuring-ssl.html" title="Configuring SSL">Configuring SSL</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1336"></a>Configuring Connection Factories</h3></div></div></div><p>It is the ConnectionFactory instances injected into a ServerConnector that create the protocol handling
     Connection instances for the network EndPoints accepted by the connector. Thus the different instances of
     connectors in a jetty setup vary mostly in their configuration of the factories for the protocols they support.
@@ -191,160 +191,139 @@
     HttpConnectionFactory which will create a HttpConnection.</p><p>A more complex example involving multiple connection factories is jetty-spdy.xml:</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
 
-&lt;!-- ============================================================= --&gt;
-&lt;!-- Configure the Jetty Server instance with an ID "Server"       --&gt;
-&lt;!-- by adding a SPDY connector.                                   --&gt;
-&lt;!-- This configuration must be used in conjunction with jetty.xml --&gt;
-&lt;!-- It should not be used with jetty-https.xml as this connector  --&gt;
-&lt;!-- can provide both HTTPS and SPDY connections                   --&gt;
-&lt;!-- ============================================================= --&gt;
 &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
 
-  &lt;!-- =========================================================== --&gt;
-  &lt;!-- Setup the SSL Context factory used to establish all TLS     --&gt;
-  &lt;!-- Connections and session.                                    --&gt;
-  &lt;!--                                                             --&gt;
-  &lt;!-- Consult the javadoc of o.e.j.util.ssl.SslContextFactory     --&gt;
-  &lt;!-- o.e.j.server.HttpConnectionFactory for all configuration    --&gt;
-  &lt;!-- that may be set here.                                       --&gt;
-  &lt;!-- =========================================================== --&gt;
-  &lt;New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory"&gt;
-    &lt;Set name="KeyStorePath"&gt;&lt;Property name="jetty.home" default="." /&gt;/etc/keystore&lt;/Set&gt;
-    &lt;Set name="KeyStorePassword"&gt;OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4&lt;/Set&gt;
-    &lt;Set name="KeyManagerPassword"&gt;OBF:1u2u1wml1z7s1z7a1wnl1u2g&lt;/Set&gt;
-    &lt;Set name="TrustStorePath"&gt;&lt;Property name="jetty.home" default="." /&gt;/etc/keystore&lt;/Set&gt;
-    &lt;Set name="TrustStorePassword"&gt;OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4&lt;/Set&gt;
-  &lt;/New&gt;
+    &lt;New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory"&gt;
+        &lt;Set name="keyStorePath"&gt;src/main/resources/keystore.jks&lt;/Set&gt;
+        &lt;Set name="keyStorePassword"&gt;storepwd&lt;/Set&gt;
+        &lt;Set name="trustStorePath"&gt;src/main/resources/truststore.jks&lt;/Set&gt;
+        &lt;Set name="trustStorePassword"&gt;storepwd&lt;/Set&gt;
+        &lt;Set name="protocol"&gt;TLSv1&lt;/Set&gt;
+    &lt;/New&gt;
 
-  &lt;!-- =========================================================== --&gt;
-  &lt;!-- Create a TLS specific HttpConfiguration based on the        --&gt;
-  &lt;!-- common HttpConfiguration defined in jetty.xml               --&gt;
-  &lt;!-- Add a SecureRequestCustomizer to extract certificate and    --&gt;
-  &lt;!-- session information                                         --&gt;
-  &lt;!-- =========================================================== --&gt;
-  &lt;New id="tlsHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration"&gt;
-    &lt;Arg&gt;&lt;Ref id="httpConfig"/&gt;&lt;/Arg&gt;
-    &lt;Call name="addCustomizer"&gt;
-      &lt;Arg&gt;&lt;New class="org.eclipse.jetty.server.SecureRequestCustomizer"/&gt;&lt;/Arg&gt;
-    &lt;/Call&gt;
-  &lt;/New&gt;
+    &lt;New id="tlsHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration"&gt;
+        &lt;Arg&gt;
+            &lt;New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration"&gt;
+                &lt;Set name="secureScheme"&gt;https&lt;/Set&gt;
+                &lt;Set name="securePort"&gt;
+                    &lt;Property name="jetty.tls.port" default="8443"/&gt;
+                &lt;/Set&gt;
+                &lt;Set name="outputBufferSize"&gt;32768&lt;/Set&gt;
+                &lt;Set name="requestHeaderSize"&gt;8192&lt;/Set&gt;
+                &lt;Set name="responseHeaderSize"&gt;8192&lt;/Set&gt;
 
-  &lt;!-- =========================================================== --&gt;
-  &lt;!-- Create a push strategy which can be used by reference by    --&gt;
-  &lt;!-- individual connection factories below.                      --&gt;
-  &lt;!--                                                             --&gt;
-  &lt;!-- Consult the javadoc of o.e.j.spdy.server.http.ReferrerPushStrategy --&gt;
-  &lt;!-- for all configuration that may be set here.                 --&gt;
-  &lt;!-- =========================================================== --&gt;
-  &lt;New id="pushStrategy" class="org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy"&gt;
-    &lt;!-- Uncomment to blacklist browsers for this push strategy. If one of the blacklisted Strings occurs in the
-         user-agent header sent by the client, push will be disabled for this browser. This is case insensitive" --&gt;
-    &lt;!--
-    &lt;Set name="UserAgentBlacklist"&gt;
-        &lt;Array type="String"&gt;
-            &lt;Item&gt;.*(?i)firefox/14.*&lt;/Item&gt;
-            &lt;Item&gt;.*(?i)firefox/15.*&lt;/Item&gt;
-            &lt;Item&gt;.*(?i)firefox/16.*&lt;/Item&gt;
-        &lt;/Array&gt;
-    &lt;/Set&gt;
-    --&gt;
-
-    &lt;!-- Uncomment to override default file extensions to push --&gt;
-    &lt;!--
-    &lt;Set name="PushRegexps"&gt;
-        &lt;Array type="String"&gt;
-           &lt;Item&gt;.*\.css&lt;/Item&gt;
-           &lt;Item&gt;.*\.js&lt;/Item&gt;
-           &lt;Item&gt;.*\.png&lt;/Item&gt;
-           &lt;Item&gt;.*\.jpg&lt;/Item&gt;
-           &lt;Item&gt;.*\.gif&lt;/Item&gt;
-       &lt;/Array&gt;
-    &lt;/Set&gt;
-    --&gt;
-    &lt;Set name="referrerPushPeriod"&gt;5000&lt;/Set&gt;
-    &lt;Set name="maxAssociatedResources"&gt;32&lt;/Set&gt;
-  &lt;/New&gt;
-
-  &lt;!-- =========================================================== --&gt;
-  &lt;!-- Add a SPDY/HTTPS Connector.                                 --&gt;
-  &lt;!-- Configure an o.e.j.server.ServerConnector with connection   --&gt;
-  &lt;!-- factories for TLS (aka SSL), NPN, SPDY and HTTP to provide  --&gt;
-  &lt;!-- a connector that can accept HTTPS or SPDY connections.      --&gt;
-  &lt;!--                                                             --&gt;
-  &lt;!-- All accepted TLS connections are initially wired to a NPN   --&gt;
-  &lt;!-- connection, which attempts to use a TLS extension to        --&gt;
-  &lt;!-- negotiation the protocol.     If NPN is not supported by    --&gt;
-  &lt;!-- the client, then the NPN connection is replaced by a HTTP   --&gt;
-  &lt;!-- connection.  If a specific protocol version (eg spdy/3) is  --&gt;
-  &lt;!-- negotiated by NPN, then the appropriate connection factory  --&gt;
-  &lt;!-- is used to create a connection to replace the NPN connection--&gt;
-  &lt;!--                                                             --&gt;
-  &lt;!-- The final result is a SPDY or HTTP connection wired behind  --&gt;
-  &lt;!-- a TLS (aka SSL) connection.                                 --&gt;
-  &lt;!--                                                             --&gt;
-  &lt;!-- Consult the javadoc of o.e.j.server.ServerConnector and the --&gt;
-  &lt;!-- specific connection factory types for all configuration     --&gt;
-  &lt;!-- that may be set here.                                       --&gt;
-  &lt;!-- =========================================================== --&gt;
-  &lt;Call id="sslConnector" name="addConnector"&gt;
-    &lt;Arg&gt;
-      &lt;New class="org.eclipse.jetty.server.ServerConnector"&gt;
-        &lt;Arg name="server"&gt;&lt;Ref id="Server" /&gt;&lt;/Arg&gt;
-        &lt;Arg name="factories"&gt;
-          &lt;Array type="org.eclipse.jetty.server.ConnectionFactory"&gt;
-
-            &lt;!-- SSL Connection factory with NPN as next protocol --&gt;
-            &lt;Item&gt;
-              &lt;New class="org.eclipse.jetty.server.SslConnectionFactory"&gt;
-                &lt;Arg name="next"&gt;npn&lt;/Arg&gt;
-                &lt;Arg name="sslContextFactory"&gt;&lt;Ref id="sslContextFactory" /&gt;&lt;/Arg&gt;
-              &lt;/New&gt;
-            &lt;/Item&gt;
-
-            &lt;!-- NPN Connection factory with HTTP as default protocol --&gt;
-            &lt;Item&gt;
-              &lt;New class="org.eclipse.jetty.spdy.server.NPNServerConnectionFactory"&gt;
-                &lt;Arg name="protocols"&gt;&lt;Array type="String"&gt;
-                    &lt;Item&gt;spdy/3&lt;/Item&gt;
-                    &lt;Item&gt;spdy/2&lt;/Item&gt;
-                    &lt;Item&gt;http/1.1&lt;/Item&gt;
-                &lt;/Array&gt;&lt;/Arg&gt;
-                &lt;Set name="defaultProtocol"&gt;http/1.1&lt;/Set&gt;
-              &lt;/New&gt;
-            &lt;/Item&gt;
-
-            &lt;!-- SPDY/3 Connection factory --&gt;
-            &lt;Item&gt;
-              &lt;New class="org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory"&gt;
-                &lt;Arg name="version" type="int"&gt;3&lt;/Arg&gt;
-                &lt;Arg name="config"&gt;&lt;Ref id="tlsHttpConfig" /&gt;&lt;/Arg&gt;
-                &lt;Arg name="pushStrategy"&gt;&lt;Ref id="pushStrategy"/&gt;&lt;/Arg&gt;
-              &lt;/New&gt;
-            &lt;/Item&gt;
-
-            &lt;!-- SPDY/2 Connection factory --&gt;
-            &lt;Item&gt;
-              &lt;New class="org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory"&gt;
-                &lt;Arg name="version" type="int"&gt;2&lt;/Arg&gt;
-                &lt;Arg name="config"&gt;&lt;Ref id="tlsHttpConfig" /&gt;&lt;/Arg&gt;
-              &lt;/New&gt;
-            &lt;/Item&gt;
-
-            &lt;!-- HTTP Connection factory --&gt;
-            &lt;Item&gt;
-              &lt;New class="org.eclipse.jetty.server.HttpConnectionFactory"&gt;
-                &lt;Arg name="config"&gt;&lt;Ref id="tlsHttpConfig" /&gt;&lt;/Arg&gt;
-              &lt;/New&gt;
-            &lt;/Item&gt;
-          &lt;/Array&gt;
+                &lt;!-- Uncomment to enable handling of X-Forwarded- style headers
+                &lt;Call name="addCustomizer"&gt;
+                    &lt;Arg&gt;&lt;New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/&gt;&lt;/Arg&gt;
+                &lt;/Call&gt;
+                --&gt;
+            &lt;/New&gt;
         &lt;/Arg&gt;
+        &lt;Call name="addCustomizer"&gt;
+            &lt;Arg&gt;
+                &lt;New class="org.eclipse.jetty.server.SecureRequestCustomizer"/&gt;
+            &lt;/Arg&gt;
+        &lt;/Call&gt;
+    &lt;/New&gt;
 
-        &lt;Set name="host"&gt;&lt;Property name="jetty.host" /&gt;&lt;/Set&gt;
-        &lt;Set name="port"&gt;&lt;Property name="jetty.tls.port" default="8443" /&gt;&lt;/Set&gt;
-        &lt;Set name="idleTimeout"&gt;30000&lt;/Set&gt;
-      &lt;/New&gt;
-    &lt;/Arg&gt;
-  &lt;/Call&gt;
+    &lt;New id="pushStrategy" class="org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy"&gt;
+        &lt;!-- Uncomment to blacklist browsers for this push strategy. If one of the blacklisted Strings occurs in the
+             user-agent header sent by the client, push will be disabled for this browser. This is case insensitive" --&gt;
+        &lt;!--
+        &lt;Set name="UserAgentBlacklist"&gt;
+            &lt;Array type="String"&gt;
+                &lt;Item&gt;.*(?i)firefox/14.*&lt;/Item&gt;
+                &lt;Item&gt;.*(?i)firefox/15.*&lt;/Item&gt;
+                &lt;Item&gt;.*(?i)firefox/16.*&lt;/Item&gt;
+            &lt;/Array&gt;
+        &lt;/Set&gt;
+        --&gt;
+
+        &lt;!-- Uncomment to override default file extensions to push --&gt;
+        &lt;!--
+        &lt;Set name="PushRegexps"&gt;
+            &lt;Array type="String"&gt;
+               &lt;Item&gt;.*\.css&lt;/Item&gt;
+               &lt;Item&gt;.*\.js&lt;/Item&gt;
+               &lt;Item&gt;.*\.png&lt;/Item&gt;
+               &lt;Item&gt;.*\.jpg&lt;/Item&gt;
+               &lt;Item&gt;.*\.gif&lt;/Item&gt;
+           &lt;/Array&gt;
+        &lt;/Set&gt;
+        --&gt;
+        &lt;Set name="referrerPushPeriod"&gt;5000&lt;/Set&gt;
+        &lt;Set name="maxAssociatedResources"&gt;32&lt;/Set&gt;
+    &lt;/New&gt;
+
+    &lt;Call id="sslConnector" name="addConnector"&gt;
+        &lt;Arg&gt;
+            &lt;New class="org.eclipse.jetty.server.ServerConnector"&gt;
+                &lt;Arg name="server"&gt;&lt;Ref id="Server"/&gt;&lt;/Arg&gt;
+                &lt;Arg name="factories"&gt;
+                    &lt;Array type="org.eclipse.jetty.server.ConnectionFactory"&gt;
+
+                        &lt;!-- SSL Connection factory with NPN as next protocol --&gt;
+                        &lt;Item&gt;
+                            &lt;New class="org.eclipse.jetty.server.SslConnectionFactory"&gt;
+                                &lt;Arg name="next"&gt;npn&lt;/Arg&gt;
+                                &lt;Arg name="sslContextFactory"&gt;
+                                    &lt;Ref id="sslContextFactory"/&gt;
+                                &lt;/Arg&gt;
+                            &lt;/New&gt;
+                        &lt;/Item&gt;
+
+                        &lt;!-- NPN Connection factory with HTTP as default protocol --&gt;
+                        &lt;Item&gt;
+                            &lt;New class="org.eclipse.jetty.spdy.server.NPNServerConnectionFactory"&gt;
+                                &lt;Arg name="protocols"&gt;
+                                    &lt;Array type="String"&gt;
+                                        &lt;Item&gt;spdy/3&lt;/Item&gt;
+                                        &lt;Item&gt;spdy/2&lt;/Item&gt;
+                                        &lt;Item&gt;http/1.1&lt;/Item&gt;
+                                    &lt;/Array&gt;
+                                &lt;/Arg&gt;
+                                &lt;Set name="defaultProtocol"&gt;http/1.1&lt;/Set&gt;
+                            &lt;/New&gt;
+                        &lt;/Item&gt;
+
+                        &lt;!-- SPDY/3 Connection factory --&gt;
+                        &lt;Item&gt;
+                            &lt;New class="org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory"&gt;
+                                &lt;Arg name="version" type="int"&gt;3&lt;/Arg&gt;
+                                &lt;Arg name="config"&gt;
+                                    &lt;Ref id="tlsHttpConfig"/&gt;
+                                &lt;/Arg&gt;
+                                &lt;Arg name="pushStrategy"&gt;
+                                    &lt;Ref id="pushStrategy"/&gt;
+                                &lt;/Arg&gt;
+                            &lt;/New&gt;
+                        &lt;/Item&gt;
+
+                        &lt;!-- SPDY/2 Connection factory --&gt;
+                        &lt;Item&gt;
+                            &lt;New class="org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory"&gt;
+                                &lt;Arg name="version" type="int"&gt;2&lt;/Arg&gt;
+                                &lt;Arg name="config"&gt;
+                                    &lt;Ref id="tlsHttpConfig"/&gt;
+                                &lt;/Arg&gt;
+                            &lt;/New&gt;
+                        &lt;/Item&gt;
+
+                        &lt;!-- HTTP Connection factory --&gt;
+                        &lt;Item&gt;
+                            &lt;New class="org.eclipse.jetty.server.HttpConnectionFactory"&gt;
+                                &lt;Arg name="config"&gt;
+                                    &lt;Ref id="tlsHttpConfig"/&gt;
+                                &lt;/Arg&gt;
+                            &lt;/New&gt;
+                        &lt;/Item&gt;
+                    &lt;/Array&gt;
+                &lt;/Arg&gt;
+
+                &lt;Set name="port"&gt;8443&lt;/Set&gt;
+            &lt;/New&gt;
+        &lt;/Arg&gt;
+    &lt;/Call&gt;
 
 &lt;/Configure&gt;
 </pre></div><p>In this case 5 connection factories are created that are linked together by their protocol names:</p><div class="variablelist"><dl><dt><span class="term">"SSL-npn"</span></dt><dd><p>The default protocol is set by the first connection factory, which in this case is an
