@@ -26,7 +26,7 @@
     $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
     $Nav->addNavSeparator("Resources", null);
-    $Nav->addCustomNav("Documentation", "http://www.eclipse.org/jetty/documentation/current", "_self", 2);
+    $Nav->addCustomNav("Documentation", "http://www.eclipse.org/jetty/documentation", "_self", 2);
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     #FIXME: $Nav->addCustomNav("FAQ", "", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
