@@ -1,7 +1,7 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    <title>Configuring the Jetty Maven Plugin</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><style type="text/css">
-body { background-image: url('images/draft.png');
+body { background-image: url('images/draft-ribbon.png');
        background-repeat: no-repeat;
        background-position: top left;
        /* The following properties make the watermark "fixed" on the page. */
@@ -201,7 +201,7 @@ body { background-image: url('images/draft.png');
 <strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
         </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="deploy-war-running-pre-assembled-war"></a>jetty:deploy-war</h3></div></div></div><p>This is basically the same as <code class="code">jetty:run-war</code>, but without assembling the WAR of the current
     module. Unlike <code class="code">run-war</code>, the phase in which this plugin executes is not bound to the "package" phase.
-    For example, you might want to start Jetty on the "test-compile" phase and stop Jetty on the "test-phase".</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7202"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">&lt;war&gt;</span></dt><dd><p>The location of the WAR file. This defaults to <code class="code">
+    For example, you might want to start Jetty on the "test-compile" phase and stop Jetty on the "test-phase".</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7188"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">&lt;war&gt;</span></dt><dd><p>The location of the WAR file. This defaults to <code class="code">
             /Users/jesse/docsync/jetty-documentation/target/jetty-documentation-9.0.0-SNAPSHOT</code>, but you can override the default by setting
             this parameter.</p></dd></dl></div><p>Here's the configuration:</p><div class="informalexample"><pre class="programlisting">
 <strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
@@ -237,7 +237,7 @@ body { background-image: url('images/draft.png');
     <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
-        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-run-forked-goal"></a>jetty:run-forked</h3></div></div></div><p>This goal allows you to start the webapp in a new JVM, optionally passing arguments to that new JVM.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7225"></a>Configuration</h4></div></div></div><p>NOTE: unfortunately, unlike most of the other goals, this one does NOT support a <span class="bold"><strong>
+        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-run-forked-goal"></a>jetty:run-forked</h3></div></div></div><p>This goal allows you to start the webapp in a new JVM, optionally passing arguments to that new JVM.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7211"></a>Configuration</h4></div></div></div><p>NOTE: unfortunately, unlike most of the other goals, this one does NOT support a <span class="bold"><strong>
       &lt;webApp&gt;</strong></span> parameter to configure the webapp. Therefore, if your webapp requires a lot of
       configuration, it will be difficult to switch between eg <code class="code">jetty:run</code> and <code class="code">
       jetty:run-forked</code> executions.</p><p>The available configuration parameters are:</p><div class="variablelist"><dl><dt><span class="term">&lt;jettyXml&gt;</span></dt><dd><p>The locations of jetty xml configuration files used to configure the container in the new JVM.</p></dd><dt><span class="term">&lt;contextXml&gt;</span></dt><dd><p>Optional. The location of a context xml file to configure the webapp in the new JVM.</p></dd><dt><span class="term">&lt;contextPath&gt;</span></dt><dd><p>Optional. The context path for the webapp in the new JVM. Defaults to <code class="filename">
@@ -318,7 +318,7 @@ body { background-image: url('images/draft.png');
     "Address already in use" error message after the "Started SelectedChannelConnector ..." message.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-overlaid-wars"></a>Using Overlaid wars</h3></div></div></div><p>If your webapp depends on other war files, the<a class="link" href="jetty-maven-plugin.html#jetty-run-goal" title="jetty:run">jetty:run</a> and <a class="link" href="jetty-maven-plugin.html#jetty-run-forked-goal" title="jetty:run-forked">jetty:run-forked</a> goals are able to merge resources from all of them. It can
     do so based on the settings of the <a class="link" href="http://maven.apache.org/plugins/maven-war-plugin/" target="_top">
     maven-war-plugin</a>, or if your project does not use the <a class="link" href="http://maven.apache.org/plugins/maven-war-plugin/" target="_top">maven-war-plugin</a> to handle the overlays, it can
-    fall back to a simple algorithm to determine the ordering of resources.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7519"></a>With maven-war-plugin</h4></div></div></div><p>The maven-war-plugin has a rich set of capabilities for merging resources. The jetty:run and
+    fall back to a simple algorithm to determine the ordering of resources.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7505"></a>With maven-war-plugin</h4></div></div></div><p>The maven-war-plugin has a rich set of capabilities for merging resources. The jetty:run and
       jetty:run-forked goals are able to interpret most of them and apply them during execution of your unassembled
       webapp. This is probably best seen by looking at a concrete example.</p><p>Suppose your webapp depends on the following wars:</p><p>
         </p><div class="informalexample"><pre class="programlisting">
@@ -384,7 +384,7 @@ WebAppY:
       or specify the <code class="code">&lt;baseAppFirst&gt;false&lt;/baseAppFirst&gt;</code> parameter to the
       jetty-maven-plugin.</p><p>Moreover, due to the <code class="code">exclusions</code> specified above, a request for the resource <code class="code">
       bar.jsp</code> would only be satisfied from <code class="code">com.acme.Y.war.</code> Similarly as <code class="code">baz.jsp</code> is
-      excluded, a request for it would result in a 404 error.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7574"></a>Without maven-war-plugin</h4></div></div></div><p>The algorithm is fairly simple, is based on the ordering of declaration of the dependent wars, and does not
+      excluded, a request for it would result in a 404 error.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7560"></a>Without maven-war-plugin</h4></div></div></div><p>The algorithm is fairly simple, is based on the ordering of declaration of the dependent wars, and does not
       support exclusions. The configuration parameter <code class="code">&lt;baseAppFirst&gt;</code> (see the section on <a class="link" href="jetty-maven-plugin.html#configuring-your-webapp" title="Configuring Your WebApp">Configuring Your Webapp</a> for more information) can be used to control
       whether your webapp's resources are placed first or last on the resource path at runtime.</p><p>For example, suppose our webapp depends on these two wars:</p><div class="informalexample"><pre class="programlisting">
 <strong class="hl-tag" style="color: #000096">&lt;dependency&gt;</strong>
