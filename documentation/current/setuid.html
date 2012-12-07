@@ -1,0 +1,80 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;19.&nbsp;Setuid</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft-ribbon.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;III.&nbsp;Advanced Topics Guide"><link rel="prev" href="jetty-ant.html" title="Use Jetty with Ant"><link rel="next" href="frameworks.html" title="Chapter&nbsp;20.&nbsp;Frameworks"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&nbsp;19.&nbsp;Setuid</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jetty-ant.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;III.&nbsp;Advanced Topics Guide</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="frameworks.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="setuid"></a>Chapter&nbsp;19.&nbsp;Setuid</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="setuid.html#configuring-setuid">Configuring Setuid</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-setuid"></a>Configuring Setuid</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="setuid.html#d0e7935">Configuring the Setuid feature</a></span></dt><dt><span class="section"><a href="setuid.html#d0e7981">Enabling SetUID on startup</a></span></dt><dt><span class="section"><a href="setuid.html#d0e8008">Supported Operating Systems</a></span></dt></dl></div><p>On Unix based systems, port 80 is protected and can usually only be opened by the superuser root. As it is not
+  desirable to run the server as root (for security reasons), the solution options are as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Start Jetty as the root user, and use Jetty's setuid mechanism to switch to a non-root user after
+      startup.</p></li><li class="listitem"><p>Configure the server to run as a normal user on port 8080 (or some other non protected port). Then,
+      configure the operating system to redirect port 80 to 8080 using ipchains, iptables, ipfw or a similar
+      mechanism.</p></li></ul></div><p>The latter has traditionally been the solution, however Jetty 9 has Setuid feature.</p><p>If you are using Solaris 10, you may not need to use this feature, as Solaris provides a User Rights Management
+  framework that can permit users and processes superuser-like abilities. Please refer to the Solaris documentation for
+  more information.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7935"></a>Configuring the Setuid feature</h3></div></div></div><p>In the Jetty <code class="filename">etc</code> directory you will find the following jetty-setuid.xml file which can
+    be modified to suit your needs.</p><div class="informalexample"><pre class="programlisting">
+
+<span class="hl-directive" style="color: maroon">&lt;?xml version="1.0"?&gt;</span>
+<strong class="hl-tag" style="color: blue">&lt;!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd"&gt;</strong>
+
+<em class="hl-comment" style="color: silver">&lt;!-- ================================================================ --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!-- Configure the Jetty SetUIDServer                                 --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!-- This configuration file *must* be specified first in the list of --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!-- configuration files and should be used in combination with other --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!-- configuration files eg jetty.xml                                 --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!-- ================================================================ --&gt;</em>
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.setuid.SetUIDServer"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"startServerAsPrivileged"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>false<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"umask"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>2<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"username"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>jetty<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"groupname"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>jetty<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<em class="hl-comment" style="color: silver">&lt;!-- uncomment to change the limits on number of open file descriptors for root --&gt;</em>
+<em class="hl-comment" style="color: silver">&lt;!--
+    &lt;Call name="setRLimitNoFiles"&gt;
+    &lt;Arg&gt;
+        &lt;New class="org.eclipse.jetty.setuid.RLimit"&gt;
+          &lt;Set name="soft"&gt;20000&lt;/Set&gt;
+          &lt;Set name="hard"&gt;40000&lt;/Set&gt;
+        &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+--&gt;</em>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+      </pre></div><p>Options:</p><div class="variablelist"><dl><dt><span class="term">startServerAsPrivileged</span></dt><dd><p>set this to true if you will start the server up as the root user</p></dd><dt><span class="term">umask</span></dt><dd><p>the umask setting you would like the process to have, optionally you may remove this line to leave it
+          unchanged.</p></dd><dt><span class="term">username</span></dt><dd><p>the name of the user you would like tthe process to run under after starting, set to <span class="emphasis"><em>
+          jetty</em></span> by default</p></dd><dt><span class="term">groupname</span></dt><dd><p>the name of the group you would like the process to run under after starting, set to <span class="emphasis"><em>
+          jetty</em></span> by default</p></dd></dl></div><p>Additionally if you would like to set the file descriptor limits in the process you can uncomment the
+    appropriate section above and set the soft and hard values accordingly.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7981"></a>Enabling SetUID on startup</h3></div></div></div><p>The <code class="filename">jetty-setuid.xml</code> file runs as a wrapper around the typical Jetty server
+    configuration so you must set this xml file to be processed before any others. This is already configured yet
+    commented out in the normal <code class="filename">start.ini</code> file in the root of the jetty-distribution.</p><p>Open the <code class="filename">start.ini</code> file and look for the following section:</p><div class="informalexample"><pre class="programlisting">
+       
+#===========================================================
+# Enable SetUID
+# To enable setuid you must have the jetty-setuid.xml as the
+# first xml file to be processed.
+# The default user and group is 'jetty' and if you are
+# starting as root you must change the run privledged to true
+#-----------------------------------------------------------
+# OPTIONS=setuid
+# etc/jetty-setuid.xml
+#===========================================================
+
+      </pre></div><p>Uncomment the OPTIONS line which will set the setuid libraries to be loaded when Jetty starts along with the
+    line following which will process the <code class="filename">jetty-setuid.xml</code> file when jetty starts up. Take care
+    when modifying this file when the SetUID feature is in play as it <span class="emphasis"><em>MUST</em></span> be the first xml file
+    to be processed.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e8008"></a>Supported Operating Systems</h3></div></div></div><p>The Setuid feature leverages the the JNI setup with the jvm so part of the feature is C code compiled for the
+    appropriate operating environment. By default we ship with <code class="filename">.so</code> files for both Linux and Mac OS
+    X. The code for the entire SetUID feature is located in the <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.toolchain.git/" target="_top">Jetty toolchain</a>. The Linux file is
+    built on a release machine, most typically an Ubunutu machine with a fairly standard setup. If the existing
+    distributed binaries do not work you can look to this project and fiddle with the appropriate linker and compiler
+    options until it works.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-ant.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="frameworks.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Use Jetty with Ant&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;20.&nbsp;Frameworks</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

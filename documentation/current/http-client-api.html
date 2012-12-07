@@ -1,0 +1,198 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>API Usage</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="http-client.html" title="Chapter&nbsp;23.&nbsp;HTTP Client"><link rel="prev" href="http-client.html" title="Chapter&nbsp;23.&nbsp;HTTP Client"><link rel="next" href="http-client-other.html" title="Other Features"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">API Usage</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="http-client.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;23.&nbsp;HTTP Client</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="http-client-other.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="http-client-api"></a>API Usage</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="http-client-api.html#http-client-blocking">Blocking APIs</a></span></dt><dt><span class="section"><a href="http-client-api.html#http-client-async">Asynchronous APIs</a></span></dt><dt><span class="section"><a href="http-client-api.html#http-client-content">Content Handling</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-blocking"></a>Blocking APIs</h3></div></div></div><p>The simpler way to perform a HTTP request is the following:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.GET(<strong class="hl-string"><em style="color:red">"http://domain.com/path?query"</em></strong>).get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>Method <code class="code">HttpClient.GET(...)</code> performs a HTTP GET request to the given URI and returns a <code class="code">
+    Future&lt;ContentResponse&gt;</code> that you can use to cancel the request or to impose a total timeout for the
+    request/response conversation (in the example above, of 5 seconds).</p><p>When the request/response conversation completes successfully, the <code class="code">ContentResponse</code> object is
+    returned, containing the HTTP response information: status code, headers and possibly a content. The content length
+    is limited by default to 2 MiB; for larger content see <a class="xref" href="http-client-api.html#http-client-response-content" title="Response Content Handling">Response Content Handling</a>.</p><p>If you want to customize the request, for example by issuing a HEAD request instead of a GET, and simulating
+    a browser user agent, you can do it in this way:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path?query"</em></strong>)
+        .method(HttpMethod.HEAD)
+        .agent(<strong class="hl-string"><em style="color:red">"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:17.0) Gecko/20100101 Firefox/17.0"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>This is a shorthand for:</p><div class="informalexample"><pre class="programlisting">
+
+Request request = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path?query"</em></strong>);
+Future&lt;ContentResponse&gt; future = request
+        .method(HttpMethod.HEAD)
+        .agent(<strong class="hl-string"><em style="color:red">"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:17.0) Gecko/20100101 Firefox/17.0"</em></strong>)
+        .send();
+ContentResponse response = future.get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>You first create a request object using <code class="code">httpClient.newRequest(...)</code>, and then you customize it
+    using the fluent API style (that is, chained invocation of methods on the request object). When the request object
+    is customized, you call <code class="code">Request.send()</code> that produces a <code class="code">Future</code> that can be used to wait
+    for the request/response conversation to complete or to cancel the request/response conversation.</p><p>Simple POST requests also have a shortcut method:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.POST(<strong class="hl-string"><em style="color:red">"http://domain.com/entity/1"</em></strong>)
+        .param(<strong class="hl-string"><em style="color:red">"p"</em></strong>, <strong class="hl-string"><em style="color:red">"value"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>The POST request is sent with the <code class="code">application/x-www-form-urlencoded</code> content type, and POST
+    parameter values are automatically URL-encoded.</p><p>Jetty HTTP client automatically follows redirects, so automatically handles the typical web pattern <a class="link" href="http://en.wikipedia.org/wiki/Post/Redirect/Get" target="_top">POST/Redirect/GET</a>, and the response object contains
+    the content of the response of the GET request. Following redirects is a feature that you can enable/disable on a
+    per-request basis or globally.</p><p>File uploads also require one line, and make use of JDK 7&#8242;s <code class="code">java.nio.file</code> classes:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/upload"</em></strong>)
+        .file(Paths.get(<strong class="hl-string"><em style="color:red">"file_to_upload.txt"</em></strong>), <strong class="hl-string"><em style="color:red">"text/plain"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-async"></a>Asynchronous APIs</h3></div></div></div><p>So far we have shown how to use Jetty HTTP client in a blocking style, that is the thread that issues the
+    request blocks until the request/response conversation is complete. In this section we will look at Jetty HTTP
+    client asynchronous, non-blocking, APIs that are perfectly suited for large content downloads, for parallel
+    processing of requests/responses and in all those cases where performance and efficient thread and resource
+    utilization is a key factor.</p><p>A simple asynchronous GET request can be written in this way:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        .send(<strong class="hl-keyword">new</strong> Response.CompleteListener()
+        {
+            <em><span class="hl-annotation" style="color: gray">@Override</span></em>
+            <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> onComplete(Result result)
+            {
+                <em class="hl-comment" style="color: silver">// Your logic here</em>
+            }
+        });
+
+      </pre></div><p>Method <code class="code">Request.send(Response.CompleteListener)</code> returns void and does not block; the <code class="code">
+    Response.CompleteListener</code> provided as a parameter is notified when the request/response conversation is
+    complete, and the <code class="code">Result</code> parameter allows you to access the response object.</p><p>You can write the same code using JDK 8&#8242;s lambda expressions:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        .send((result) -&gt; { <em class="hl-comment" style="color: silver">/* Your logic here */</em> });
+
+      </pre></div><p>The HTTP client APIs use listeners extensively to provide hooks for all possible request and response events,
+    and with JDK 8&#8242;s lambda expressions they&#8217;re even more fun to use:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        <em class="hl-comment" style="color: silver">// Add request hooks</em>
+        .onRequestQueued((request) -&gt; { ... })
+        .onRequestBegin((request) -&gt; { ... })
+        ... <em class="hl-comment" style="color: silver">// More request hooks available</em>
+
+        <em class="hl-comment" style="color: silver">// Add response hooks</em>
+        .onResponseBegin((response) -&gt; { ... })
+        .onResponseHeaders((response) -&gt; { ... })
+        .onResponseContent((response, buffer) -&gt; { ... })
+        ... <em class="hl-comment" style="color: silver">// More response hooks available</em>
+
+        .send((result) -&gt; { ... });
+
+      </pre></div><p>This makes Jetty HTTP client suitable for HTTP load testing because, for example, you can accurately time
+    every step of the request/response conversation (thus knowing where the request/response time is really
+    spent).</p><p>Have a look at the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/client/api/Request.Listener.html" target="_top">
+      <code class="code">Request.Listener</code>
+    </a> class to know about request events, and to the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/client/api/Response.Listener.html" target="_top">
+      <code class="code">Response.Listener</code>
+    </a> class to know about response events.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-content"></a>Content Handling</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="http-client-request-content"></a>Request Content Handling</h4></div></div></div><p>Jetty HTTP client provides a number of utility classes off the shelf to handle request content.</p><p>You can provide request content as <code class="code">String</code>, <code class="code">byte[]</code>, <code class="code">ByteBuffer</code>,
+      <code class="code">java.nio.file.Path</code>, <code class="code">InputStream</code>, and provide your own implementation of 
+      <code class="classname">org.eclipse.jetty.client.api.ContentProvider</code>. Here&#8217;s an example that provides the
+      request content using <code class="code">java.nio.file.Paths</code>:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/upload"</em></strong>)
+        .file(Paths.get(<strong class="hl-string"><em style="color:red">"file_to_upload.txt"</em></strong>), <strong class="hl-string"><em style="color:red">"text/plain"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+        </pre></div><p>This is equivalent to using the <code class="code">PathContentProvider</code> utility class:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/upload"</em></strong>)
+        .content(<strong class="hl-keyword">new</strong> PathContentProvider(Paths.get(<strong class="hl-string"><em style="color:red">"file_to_upload.txt"</em></strong>)), <strong class="hl-string"><em style="color:red">"text/plain"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+        </pre></div><p>Alternatively, you can use <code class="code">FileInputStream</code> via the <code class="code">
+      InputStreamContentProvider</code> utility class:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/upload"</em></strong>)
+        .content(<strong class="hl-keyword">new</strong> InputStreamContentProvider(<strong class="hl-keyword">new</strong> FileInputStream(<strong class="hl-string"><em style="color:red">"file_to_upload.txt"</em></strong>)), <strong class="hl-string"><em style="color:red">"text/plain"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+        </pre></div><p>If you have already read the content in memory, you can pass it as a <code class="code">byte[]</code> using the <code class="code">
+      BytesContentProvider</code> utility class:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-keyword">byte</strong>[] bytes = ...;
+ContentResponse response = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/upload"</em></strong>)
+        .content(<strong class="hl-keyword">new</strong> BytesContentProvider(bytes), <strong class="hl-string"><em style="color:red">"text/plain"</em></strong>)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+        </pre></div><p>Other utility classes are available for the most common types.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="http-client-response-content"></a>Response Content Handling</h4></div></div></div><p>Jetty HTTP client allows applications to handle response content in different ways.</p><p>The first way is to buffer the response content in memory; this is done when using the blocking APIs (see
+      <a class="xref" href="http-client-api.html#http-client-blocking" title="Blocking APIs">Blocking APIs</a>) and the content is buffered within a <code class="code">ContentResponse</code> up to
+      2 MiB.</p><p>If you want to control the length of the response content (for example limiting to values smaller than the
+      default of 2 MiB), then you can use a 
+      <code class="classname">org.eclipse.jetty.client.util.BlockingResponseListener</code>in this way:</p><div class="informalexample"><pre class="programlisting">
+
+Request request = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>);
+
+<em class="hl-comment" style="color: silver">// Limit response content buffer to 512 KiB</em>
+BlockingResponseListener listener = <strong class="hl-keyword">new</strong> BlockingResponseListener(request, <span class="hl-number">512</span> * <span class="hl-number">1024</span>);
+
+request.send(listener);
+
+ContentResponse response = listener.get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+        </pre></div><p>If the response content length is exceeded, the response will be aborted, and an exception will be thrown
+      by method <code class="code">get()</code>.</p><p>If you are using the asynchronous APIs (see <a class="xref" href="http-client-api.html#http-client-async" title="Asynchronous APIs">Asynchronous APIs</a>), you can use the <code class="code">
+      BufferingResponseListener</code> utility class:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        <em class="hl-comment" style="color: silver">// Buffer response content up to 8 MiB</em>
+        .send(<strong class="hl-keyword">new</strong> BufferingResponseListener(<span class="hl-number">8</span> * <span class="hl-number">1024</span> * <span class="hl-number">1024</span>)
+        {
+            <em><span class="hl-annotation" style="color: gray">@Override</span></em>
+            <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> onComplete(Result result)
+            {
+                <strong class="hl-keyword">if</strong> (!result.isFailed())
+                {
+                    <strong class="hl-keyword">byte</strong>[] responseContent = getContent();
+                    <em class="hl-comment" style="color: silver">// Your logic here</em>
+                }
+            }
+        });
+
+        </pre></div><p>The second way is the most efficient (because it avoids content copies) and allows you to specify a <code class="code">
+      Response.ContentListener</code>, or a subclass, to handle the content as soon as it arrives:</p><div class="informalexample"><pre class="programlisting">
+
+ContentResponse response = httpClient
+        .newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        .send(<strong class="hl-keyword">new</strong> Response.Listener.Empty()
+        {
+            <em><span class="hl-annotation" style="color: gray">@Override</span></em>
+            <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> onContent(Response response, ByteBuffer buffer)
+            {
+                <em class="hl-comment" style="color: silver">// Your logic here</em>
+            }
+        });
+
+        </pre></div><p>The third way allows you to wait for the response and then stream the content using the <code class="code">
+      InputStreamResponseListener</code> utility class:</p><div class="informalexample"><pre class="programlisting">
+
+InputStreamResponseListener listener = <strong class="hl-keyword">new</strong> InputStreamResponseListener();
+httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
+        .send(listener);
+<em class="hl-comment" style="color: silver">// Wait for the response headers to arrive</em>
+Response response = listener.get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+<em class="hl-comment" style="color: silver">// Look at the response</em>
+<strong class="hl-keyword">if</strong> (response.getStatus() == <span class="hl-number">200</span>)
+{
+    InputStream responseContent = listener.getInputStream();
+    <em class="hl-comment" style="color: silver">// Your logic here</em>
+}
+
+        </pre></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="http-client.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http-client.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http-client-other.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;23.&nbsp;HTTP Client&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Other Features</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>
