@@ -12,7 +12,7 @@ body { background-image: url('images/draft-ribbon.png');
           <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="custom-error-pages"></a>Creating Custom Error Pages</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="custom-error-pages.html#d0e2541">Defining error pages in web.xml</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2566">Configuring context files</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2580">Setting a custom error handler class</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2609">Server level 404 error</a></span></dt></dl></div><p>The following sections describe several ways to create custom error pages in Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2541"></a>Defining error pages in web.xml</h3></div></div></div><p>You can use the standard webapp configuration file located in <code class="filename">webapp/WEB-INF/web.xml</code> to
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="custom-error-pages"></a>Creating Custom Error Pages</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="custom-error-pages.html#d0e2892">Defining error pages in web.xml</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2917">Configuring context files</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2931">Setting a custom error handler class</a></span></dt><dt><span class="section"><a href="custom-error-pages.html#d0e2960">Server level 404 error</a></span></dt></dl></div><p>The following sections describe several ways to create custom error pages in Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2892"></a>Defining error pages in web.xml</h3></div></div></div><p>You can use the standard webapp configuration file located in <code class="filename">webapp/WEB-INF/web.xml</code> to
     map errors to specific URLs with the error-page element. This element creates a mapping between the error-code or
     exception-type to the location of a resource in the web application.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">error-code &#8218;&Auml;&igrave; integer value</li><li class="listitem">exception-type &#8218;&Auml;&igrave; fully qualified class name of a Java Exception type</li><li class="listitem">location &#8218;&Auml;&igrave; location of the resource in the webapp relative to the root of the web
       application. Value should start with "/".</li></ul></div><p>Error code example:</p><div class="informalexample"><pre class="programlisting">
@@ -29,7 +29,7 @@ body { background-image: url('images/draft-ribbon.png');
   <strong class="hl-tag" style="color: #000096">&lt;location&gt;</strong>/jspsnoop/IOException<strong class="hl-tag" style="color: #000096">&lt;/location&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/error-page&gt;</strong>
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2566"></a>Configuring context files</h3></div></div></div><p>Context files are normally located in <code class="filename">jetty.home/contexts/</code> (see ContextDeployer for more
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2917"></a>Configuring context files</h3></div></div></div><p>Context files are normally located in <code class="filename">jetty.home/contexts/</code> (see ContextDeployer for more
     details). You can use context files to configure the default error handler provided for a context with more
     flexibility than is available with <code class="code">web.xml</code>, specifically with the support of error code ranges:</p><div class="informalexample"><pre class="programlisting">
 
@@ -72,7 +72,7 @@ body { background-image: url('images/draft-ribbon.png');
   <strong class="hl-tag" style="color: #000096">&lt;/Get&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2580"></a>Setting a custom error handler class</h3></div></div></div><p>You can configure a context with a custom error handler class that extends either <code class="code">
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2931"></a>Setting a custom error handler class</h3></div></div></div><p>You can configure a context with a custom error handler class that extends either <code class="code">
     ErrorHandler</code> for generic contexts, or <code class="code">ErrorPageErrorHandler</code> for webapp contexts.</p><p>You can implement the following methods to control the appearance of the error pages:</p><div class="informalexample"><pre class="programlisting">
 
 <strong class="hl-keyword">void</strong> handle(String target, HttpServletRequest request, HttpServletResponse response, <strong class="hl-keyword">int</strong> dispatch) <strong class="hl-keyword">throws</strong> IOException
@@ -103,7 +103,7 @@ body { background-image: url('images/draft-ribbon.png');
 <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2609"></a>Server level 404 error</h3></div></div></div><p>You might get a 'page not found' when a request is made to the server for a resource that is outside of any
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2960"></a>Server level 404 error</h3></div></div></div><p>You might get a 'page not found' when a request is made to the server for a resource that is outside of any
     registered contexts. As an example, you have a domain name pointing to your public server IP, yet no context is
     registered with jetty to serve pages for that domain. As a consequence, the server, by default, gives a listing of
     all contexts running on the server.</p><p>One of the quickest ways to avoid this behavior is to create a catch all context. Create a "root" web app

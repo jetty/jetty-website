@@ -12,37 +12,51 @@ body { background-image: url('images/draft-ribbon.png');
           <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuring-connectors"></a>Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="configuring-connectors.html#jetty-connectors">Connector Configuration Overview</a></span></dt><dt><span class="section"><a href="configuring-ssl.html">Configuring SSL</a></span></dt><dt><span class="section"><a href="setting-port80-access.html">Setting Port 80 Access for a Non-Root User</a></span></dt></dl></div><p>This chapter discusses various options for configuring Jetty connectors.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-connectors"></a>Connector Configuration Overview</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-connectors.html#d0e1178">Constructing a Server Connector</a></span></dt><dt><span class="section"><a href="configuring-connectors.html#jetty-connectors-network-settings">Network settings.</a></span></dt><dt><span class="section"><a href="configuring-connectors.html#jetty-connectors-http-configuration">HTTP Configuration</a></span></dt><dt><span class="section"><a href="configuring-connectors.html#d0e1320">SSL Context Configuration</a></span></dt><dt><span class="section"><a href="configuring-connectors.html#d0e1340">Configuring Connection Factories</a></span></dt></dl></div><p>Connectors are the mechanism through which Jetty accepts network connections for various protocols. Configuring
-  a connector is a combination of configuring the network parameters on the connector itself (eg port), configuring the
-  services used by the connector (e.g. executors &amp; schedulers) and configuration of the connection factories used
-  to instantiate and configure the protocol for an accepted connection. Jetty primarily uses a single connector type
-  called <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-  ServerConnector</a>.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Prior to Jetty-9, the type of the connector was used to specify both the protocol and the implementation used
-    (eg NIO vs blocking IO). In Jetty-9 the is only an NIO connector and the protocol is now configured by a collection
-    of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ConnectionFactory.html" target="_top">
-    ConnectionFactory</a> s on the connector. Thus Jetty-9 primarily uses a single connector type:
-    ServerConnector</p></div><p>The standard jetty distribution comes with the following Jetty IoC XML files that create and configure
-  connectors, which should be read in conjunction with this section:</p><div class="variablelist"><dl><dt><span class="term">
-        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a>
-      </span></dt><dd><p>Instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-        ServerConnector</a> which accepts HTTP connections (which may be upgraded to Websocket).</p></dd><dt><span class="term">
-        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>
-      </span></dt><dd><p>Instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-        ServerConnector</a> which accepts SSL (aka TLS) connections and are assumed to carry the HTTP protocol and
-        are thus chained to a HTTP connection.</p></dd><dt><span class="term">
-        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>
-      </span></dt><dd><p>Instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-        ServerConnector</a> with accepts SSL connections which may carry either HTTP or SPDY traffic. Initially the
-        SSL connection is chained an NPN (Next Protocol Negotiation) connection, which eventually replaces itself with
-        a connection for a protocol it negotiates with the client, which may be a version of SPDY or HTTP. If the
-        client does not support NPN, then HTTP is assumed.</p></dd></dl></div><p>Typically very little configuration is needed on connectors other than setting the port (see <a class="link" href="configuring-connectors.html#jetty-connectors-network-settings" title="Network settings.">Network settings</a>), and perhaps enabling X-Forwarded customization
-  (see <a class="link" href="configuring-connectors.html#jetty-connectors-http-configuration" title="HTTP Configuration">HTTP Configuration</a>). Most other settings should be
-  consider for expert configuration only.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1178"></a>Constructing a Server Connector</h3></div></div></div><p>The services used by a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-    ServerConnector</a> instance are set by constructor injection and once instantiated cannot be changed. Most of
-    the services may be defaulted with null or 0 values so that a reasonable default is used, thus for most purposes
-    only the Server and the Connection Factories need to be passed to the connector constructor. In Jetty IoC XML (eg.
-    in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a>),
-    this can be done with:</p><div class="informalexample"><pre class="programlisting">
+    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuring-connectors"></a>Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="configuring-connectors.html#jetty-connectors">Connector Configuration Overview</a></span></dt><dt><span class="section"><a href="configuring-ssl.html">Configuring SSL</a></span></dt><dt><span class="section"><a href="setting-port80-access.html">Setting Port 80 Access for a Non-Root User</a></span></dt></dl></div><p>This chapter discusses various options for configuring Jetty connectors.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-connectors"></a>Connector Configuration Overview</h2></div></div></div><p>Connectors are the mechanism through which Jetty accepts network connections for various protocols. Configuring
+  a connector is a combination of configuring the following: 
+  </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Network parameters on the connector itself (the port).</p></li><li class="listitem"><p>Services the connector uses (executors, schedulers).</p></li><li class="listitem"><p>Connection factories that instantiate and configure the protocol for an accepted connection.</p></li></ul></div><p>
+  </p><p>Jetty primarily uses a single connector type called <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">ServerConnector</a>.</p><p>
+  </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Prior to Jetty 9, the type of the connector specified both the protocol and the implementation used (NIO vs
+    blocking IO). Jetty 9 has only an NIO connector, and a collection of <a class="link" href="JDURL/org/eclipse/jetty/server/ConnectionFactory.html" target="_top">
+      <code class="code">ConnectionFactories</code>
+    </a> now configure the protocol on the connector. Thus Jetty 9 primarily uses a single connector type: <code class="code">
+    ServerConnector.</code></p></div><p>
+  </p><p>The standard Jetty distribution comes with the following Jetty IoC XML files that create and configure
+  connectors; you should examine them as you read this section:</p><p>
+  </p><div class="variablelist"><dl><dt><span class="term">
+        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
+          <code class="filename">jetty-http.xml</code>
+        </a>
+      </span></dt><dd><p>Instantiates a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+          <code class="code">ServerConnector</code>
+        </a> that accepts HTTP connections (which you can upgrade to Websocket).</p></dd><dt><span class="term">
+        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">
+          <code class="filename">jetty-https.xml</code>
+        </a>
+      </span></dt><dd><p>Instantiates a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+          <code class="code">ServerConnector</code>
+        </a> that accepts SSL/TLS connections; these are assumed to carry the HTTP protocol and are thus chained to
+        a HTTP connection.</p></dd><dt><span class="term">
+        <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">
+          <code class="filename">example-jetty-spdy.xml</code>
+        </a>
+      </span></dt><dd><p>Instantiates a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+          <code class="code">ServerConnector</code>
+        </a> that accepts SSL connections that carry either HTTP or SPDY traffic. Initially the SSL connection is
+        chained to a Next Protocol Negotiation (NPN) connection, which eventually replaces itself with a connection for
+        a protocol it negotiates with the client; this protocol may be a version of SPDY or HTTP. If the client does
+        not support NPN, HTTP is assumed.</p></dd></dl></div><p>
+  </p><p>Typically you need to configure very little on connectors other than set the port (see <a class="link" href="configuring-connectors.html#jetty-connectors-network-settings" title="Network Settings.">Network Settings</a>), and perhaps enable X-Forwarded-For
+  customization (see <a class="link" href="configuring-connectors.html#jetty-connectors-http-configuration" title="HTTP Configuration">HTTP Configuration</a>). Most other
+  settings are for expert configuration only.</p><p>
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1413"></a>Constructing a <code class="code">ServerConnector</code></h4></div></div></div><p>The services a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+      <code class="code">ServerConnector</code>
+    </a> instance uses are set by constructor injection and once instantiated cannot be changed. Most of the
+    services may be defaulted with null or 0 values so that a reasonable default is used, thus for most purposes only
+    the Server and the connection factories need to be passed to the connector constructor. In Jetty IoC XML (that is,
+    in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
+      <code class="filename">jetty-http.xml</code>
+    </a>), you can do this with:</p><div class="informalexample"><pre class="programlisting">
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.ServerConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -54,9 +68,11 @@ body { background-image: url('images/draft-ribbon.png');
   <em class="hl-comment" style="color: silver">&lt;!-- set connector fields here --&gt;</em>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong> 
       
-      </pre></div><p>The other arguments that can be passed when constructing a Server Connector may be seen in the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html#ServerConnector%28org.eclipse.jetty.server.Server,%20java.util.concurrent.Executor,%20org.eclipse.jetty.util.thread.Scheduler,%20org.eclipse.jetty.io.ByteBufferPool,%20int,%20int,%20org.eclipse.jetty.server.ConnectionFactory...%29" target="_top">javadoc</a>.
-    Typically the defaults are sufficient for almost all deployments.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-connectors-network-settings"></a>Network settings.</h3></div></div></div><p>The connector network settings are configured by calling setters on the connector before it is started. For
-    example the port can be set with the Jetty IoC XML:</p><div class="informalexample"><pre class="programlisting">
+      </pre></div><p>You can see the other arguments that can be passed when constructing a <code class="code">ServerConnector</code> in the
+    <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html#ServerConnector%28org.eclipse.jetty.server.Server,%20java.util.concurrent.Executor,%20org.eclipse.jetty.util.thread.Scheduler,%20org.eclipse.jetty.io.ByteBufferPool,%20int,%20int,%20org.eclipse.jetty.server.ConnectionFactory...%29" target="_top">Javadoc</a>.
+    Typically the defaults are sufficient for almost all deployments.</p></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jetty-connectors-network-settings"></a>Network Settings.</h4></div></div></div><p>You configure connector network settings by calling setters on the connector before it is started. For
+    example, you can set the port with the Jetty IoC XML:</p><div class="informalexample"><pre class="programlisting">
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.ServerConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -75,25 +91,33 @@ body { background-image: url('images/draft-ribbon.png');
   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"port"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.port"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"8080"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>    
       
-      </pre></div><p>The network settings that can be set on the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
-    ServerConnector</a> include:</p><div class="table"><a name="d0e1215"></a><p class="title"><b>Table&nbsp;4.1.&nbsp;Connector configuration</b></p><div class="table-contents"><table summary="Connector configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Field</th><th align="center">Description</th></tr></thead><tbody><tr><td>host</td><td>The network interface this connector binds to as an IP address or a hostname. If null or 0.0.0.0,
-            then bind to all interfaces.</td></tr><tr><td>port</td><td>The configured port for the connector or 0 a random available port may be used (selected port
-            available via getLocalPort()).</td></tr><tr><td>idleTimeout</td><td>The time in milliseconds that the connection can be idle before it is closed.</td></tr><tr><td>defaultProtocol</td><td>The name of the default protocol used to select a Connection Factory instance. This defaults to the
-            first ConnectionFactory added to the connector.</td></tr><tr><td>stopTimeout</td><td>The time in milliseconds to wait while gently stopping a connector.</td></tr><tr><td>acceptQueueSize</td><td>The size of the pending connection backlog. The exact interpretation is JVM and Operating system
-            specific and may be ignored. Higher values allow more connections to be waiting pending and acceptor
-            thread. Because the exact interpretation is deployment dependent, it is best to keep this value as the
-            default unless there is a specific connection issue for a specific OS that needs to be addressed.</td></tr><tr><td>reuseAddress</td><td>Allow the server socket to be rebound even if in <a class="link" href="http://www.ssfnet.org/Exchange/tcp/tcpTutorialNotes.html" target="_top">TIME_WAIT</a>. For servers it is
+      </pre></div><p>The network settings that you can set on the <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+      <code class="code">ServerConnector</code>
+    </a> include:</p><div class="table"><a name="d0e1465"></a><p class="title"><b>Table&nbsp;4.1.&nbsp;Connector Configuration</b></p><div class="table-contents"><table summary="Connector Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Field</th><th align="center">Description</th></tr></thead><tbody><tr><td>host</td><td>The network interface this connector binds to as an IP address or a hostname. If null or 0.0.0.0,
+            bind to all interfaces.</td></tr><tr><td>port</td><td>The configured port for the connector or 0 a random available port may be used (selected port
+            available via <code class="code">getLocalPort()</code>).</td></tr><tr><td>idleTimeout</td><td>The time in milliseconds that the connection can be idle before it is closed.</td></tr><tr><td>defaultProtocol</td><td>The name of the default protocol used to select a <code class="code">ConnectionFactory</code> instance. This
+            defaults to the first <code class="code">ConnectionFactory</code> added to the connector.</td></tr><tr><td>stopTimeout</td><td>The time in milliseconds to wait before gently stopping a connector.</td></tr><tr><td>acceptQueueSize</td><td>The size of the pending connection backlog. The exact interpretation is JVM and operating system
+            specific and you can ignore it. Higher values allow more connections to wait pending an acceptor thread.
+            Because the exact interpretation is deployment dependent, it is best to keep this value as the default
+            unless there is a specific connection issue for a specific OS that you need to address.</td></tr><tr><td>reuseAddress</td><td>Allow the server socket to be rebound even if in <a class="link" href="http://www.ssfnet.org/Exchange/tcp/tcpTutorialNotes.html" target="_top">TIME_WAIT</a>. For servers it is
             typically OK to leave this as the default true.</td></tr><tr><td>soLingerTime</td><td>A value &gt;=0 set the socket <a class="link" href="http://stackoverflow.com/questions/3757289/tcp-option-so-linger-zero-when-its-required" target="_top">
             SO_LINGER</a> value in milliseconds. Jetty attempts to gently close all TCP/IP connections with proper
-            half close semantics, so a linger timeout should not be required and thus the default is -1.</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-connectors-http-configuration"></a>HTTP Configuration</h3></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
-    HttpConfiguration</a> class holds the configuration for <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpChannel.html" target="_top">
-    HTTPChannel</a> s, which may either be created 1:1 with each HTTP/1 connection or 1:n on a multiplexed SPDY
-    connection. Thus a HTTPConfiguration object is injected into both the HTTP and SPDY Connection factories. To avoid
-    duplication of configuration, the standard Jetty distribution creates the common HttpConfiguration instance in
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty.xml" target="_top">jetty.xml</a>,
-    which is then used by Ref element in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a>,
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a> and
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>.</p><p>A typical configuration of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
+            half close semantics, so a linger timeout should not be required and thus the default is -1.</td></tr></tbody></table></div></div><br class="table-break"></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jetty-connectors-http-configuration"></a>HTTP Configuration</h4></div></div></div><p>The <a class="link" href="JDURL/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">HttpConfiguration</a> class
+    holds the configuration for <a class="link" href="http://JDURL/org/eclipse/jetty/server/HttpChannel.html" target="_top">
+      <code class="code">HTTPChannel</code>
+    </a> s, which you can create 1:1 with each HTTP/1 connection or 1:n on a multiplexed SPDY connection. Thus an
+    <code class="code">HTTPConfiguration</code> object is injected into both the HTTP and SPDY Connection factories. To avoid
+    duplicate configuration, the standard Jetty distribution creates the common <code class="code">HttpConfiguration</code> instance
+    in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty.xml" target="_top">
+      <code class="filename">jetty.xml</code>
+    </a>, which is a Ref element then uses in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
+      <code class="filename">jetty-http.xml</code>
+    </a>, <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">
+      <code class="filename">jetty-https.xml</code>
+    </a> and <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">
+      <code class="filename">example-jetty-spdy.xml</code>
+    </a>.</p><p>A typical configuration of <a class="link" href="JDURL/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
     HttpConfiguration</a> is: 
     </p><div class="informalexample"><pre class="programlisting">
 
@@ -109,9 +133,11 @@ body { background-image: url('images/draft-ribbon.png');
       <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
       
-      </pre></div><p>This example adds a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_top">ForwardedRequestCustomizer</a> to
-    process the <a class="link" href="http://en.wikipedia.org/wiki/X-Forwarded-For" target="_top">X-Forward-For</a> and related proxy
-    headers. The instance created with an ID "httpConfig" can be used by reference by jetty-https.xml: 
+      </pre></div><p>This example adds a <a class="link" href="JDURL/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_top">
+      <code class="code">ForwardedRequestCustomizer</code>
+    </a> to process the <a class="link" href="http://en.wikipedia.org/wiki/X-Forwarded-For" target="_top">X-Forward-For</a> and
+    related proxy headers. <code class="filename">jetty-https.xml</code> can, by reference, use the instance created with an ID
+    "httpConfig": 
     </p><div class="informalexample"><pre class="programlisting">
 
   <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -132,8 +158,9 @@ body { background-image: url('images/draft-ribbon.png');
     <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
       
-      </pre></div><p>For SSL based connectors (in jetty-https.xml and jetty-spdy.xml), the common "httpConfig"
-    instance is used as the basis to create an SSL specific configuration with ID "tlsHttpConfig" : 
+      </pre></div><p>For SSL based connectors (in <code class="filename">jetty-https.xml</code> and <code class="filename">
+    jetty-spdy.xml</code>), the common "httpConfig" instance is used as the basis to create an SSL specific
+    configuration with ID "tlsHttpConfig": 
     </p><div class="informalexample"><pre class="programlisting">
 
   <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"tlsHttpConfig"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.HttpConfiguration"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -143,18 +170,26 @@ body { background-image: url('images/draft-ribbon.png');
     <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
       
-      </pre></div><p>This adds a SecureRequestCustomizer which adds SSL Session IDs and certificate information as
-    request attributes.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1320"></a>SSL Context Configuration</h3></div></div></div><p>The TLS (aka SSL) connectors for HTTPS and SPDY require a certificate to establish a secure connection.
-    Certificates in jetty are held in standard JVM keystores and are configured as keystore and truststores on a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">
-    SslContextFactory</a> instance that is injected into an <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/SslConnectionFactory.html" target="_top">
-    SslConnectionFactory</a> instance. An example using the keystore distributed with Jetty (containing a self
-    signed test certificate) can be seen in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a> and
-    <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">example-jetty-spdy.xml</a>.
-    Read more about SSL keystores in <a class="link" href="configuring-ssl.html" title="Configuring SSL">Configuring SSL</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1340"></a>Configuring Connection Factories</h3></div></div></div><p>It is the ConnectionFactory instances injected into a ServerConnector that create the protocol handling
-    Connection instances for the network EndPoints accepted by the connector. Thus the different instances of
-    connectors in a jetty setup vary mostly in their configuration of the factories for the protocols they support.
-    Other than selecting which factories to use, there is typically very little factory configuration required other
-    than injecting the HTTPConfiguration or SslContextFactory instances.</p><p>The simplest example in the jetty distribution is <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a>:</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0"?&gt;
+      </pre></div><p>This adds a <code class="code">SecureRequestCustomizer</code> which adds SSL Session IDs and certificate
+    information as request attributes.</p></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1617"></a>SSL Context Configuration</h4></div></div></div><p>The SSL/TSL connectors for HTTPS and SPDY require a certificate to establish a secure connection. Jetty holds
+    certificates in standard JVM keystores and are configured as keystore and truststores on a <a class="link" href="JDURL/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">
+      <code class="code">SslContextFactory</code>
+    </a> instance that is injected into an <a class="link" href="JDURL/org/eclipse/jetty/server/SslConnectionFactory.html" target="_top">
+      <code class="code">SslConnectionFactory</code>
+    </a> instance. An example using the keystore distributed with Jetty (containing a self signed test certificate)
+    is in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">
+      <code class="filename">jetty-https.xml</code>
+    </a> and <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">
+      <code class="filename">example-jetty-spdy.xml</code>
+    </a>. Read more about SSL keystores in <a class="link" href="configuring-ssl.html" title="Configuring SSL">Configuring SSL</a>.</p></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1650"></a>Configuring Connection Factories</h4></div></div></div><p>It is the <code class="code">ConnectionFactory</code> instances injected into a <code class="code">ServerConnector</code> that create
+    the protocol handling Connection instances for the network endpoints the connector accepts. Thus the different
+    instances of connectors in a Jetty setup vary mostly in the configuration of the factories for the protocols they
+    support. Other than selecting which factories to use, there is typically very little factory configuration required
+    other than injecting the <code class="code">HTTPConfiguration</code> or <code class="code">SslContextFactory</code> instances.</p><p>The simplest example in the Jetty distribution is <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
+      <code class="filename">jetty-http.xml</code>
+    </a>:</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
 
 &lt;!-- ============================================================= --&gt;
@@ -195,8 +230,8 @@ body { background-image: url('images/draft-ribbon.png');
   &lt;/Call&gt;
 
 &lt;/Configure&gt;
-</pre></div><p>Here the connector has only a single ConnectionFactory, and when a new connection is accepted, it is the
-    HttpConnectionFactory which will create a HttpConnection.</p><p>A more complex example involving multiple connection factories is jetty-spdy.xml:</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+</pre></div><p>Here the connector has only a single <code class="code">ConnectionFactory</code>, and when a new connection is accepted,
+    it is the <code class="code">HttpConnectionFactory</code> that creates an <code class="code">HttpConnection.</code></p><p>A more complex example involving multiple connection factories is <code class="filename">jetty-spdy.xml</code>:</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
 
 &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
@@ -334,13 +369,13 @@ body { background-image: url('images/draft-ribbon.png');
     &lt;/Call&gt;
 
 &lt;/Configure&gt;
-</pre></div><p>In this case 5 connection factories are created that are linked together by their protocol names:</p><div class="variablelist"><dl><dt><span class="term">"SSL-npn"</span></dt><dd><p>The default protocol is set by the first connection factory, which in this case is an
-          SslConnectionFactory instantiated with "npn" as the next protocol. Thus accepted EndPoints are associated
-          with an SslConnection instance that is chained to an NpnConnection instance created by the "npn" connection
-          factory.</p></dd><dt><span class="term">"npn"</span></dt><dd><p>This is the NPNServerConnectionFactory that chained to by the SslConnection. The NPN connections
-          negotiate with the client for the next protocol and then a factory of that name is looked up to create a
-          connection to replace the NPN connection. If NPN is not supported, the defaultProtocol is configured as
-          "http/1.1"</p></dd><dt><span class="term">"spdy/3"</span></dt><dd><p>The factory used by NPN Connections if SPDY version 3 is negotiated.</p></dd><dt><span class="term">"spdy/2"</span></dt><dd><p>The factory used by NPN Connections if SPDY version 2 is negotiated.</p></dd><dt><span class="term">"http/1.1"</span></dt><dd><p>The factory used by NPN Connections if HTTP version 1.1 is negotiated or if NPN is not supported. Note
-          that HTTP/1.1 can also handle HTTP/1.0 and HTTP/0.</p></dd></dl></div><p></p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-ssl.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;II.&nbsp;Jetty Configuration Guide&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring SSL</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+</pre></div><p>In this case five connection factories are created and linked together by their protocol names:</p><div class="variablelist"><dl><dt><span class="term">"SSL-npn"</span></dt><dd><p>The default protocol is set by the first connection factory, which in this case is an <code class="code">
+          SslConnectionFactory</code> instantiated with "npn" as the next protocol. Thus accepted endpoints are
+          associated with an <code class="code">SslConnection</code> instance that is chained to an <code class="code">
+          NpnConnection</code> instance created by the "npn" connection factory.</p></dd><dt><span class="term">"npn"</span></dt><dd><p>This is the <code class="code">NPNServerConnectionFactory</code> that chained to by the <code class="code">SslConnection</code>.
+          The NPN connections negotiate with the client for the next protocol and then a factory of that name is looked
+          up to create a connection to replace the NPN connection. If NPN is not supported, the defaultProtocol is
+          configured as "http/1.1".</p></dd><dt><span class="term">"spdy/3"</span></dt><dd><p>The factory NPN connections use if SPDY version 3 is negotiated.</p></dd><dt><span class="term">"spdy/2"</span></dt><dd><p>The factory NPN connections use if SPDY version 2 is negotiated.</p></dd><dt><span class="term">"http/1.1"</span></dt><dd><p>The factory NPN connections use if HTTP version 1.1 is negotiated or if NPN is not supported. Note that
+          HTTP/1.1 can also handle HTTP/1.0 and HTTP/0.</p></dd></dl></div><p></p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-ssl.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;II.&nbsp;Jetty Configuration Guide&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring SSL</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
 See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
           <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>

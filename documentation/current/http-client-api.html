@@ -73,7 +73,20 @@ httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://do
 httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
         .send((result) -&gt; { <em class="hl-comment" style="color: silver">/* Your logic here */</em> });
 
-      </pre></div><p>The HTTP client APIs use listeners extensively to provide hooks for all possible request and response events,
+      </pre></div><p>You can impose a total timeout for the request/response conversation by using the utility class <code class="code">
+    TimedResponseListener</code>, in this way:</p><div class="informalexample"><pre class="programlisting">
+
+Request request = httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>);
+request.send(<strong class="hl-keyword">new</strong> TimedResponseListener(<span class="hl-number">3</span>, TimeUnit.SECONDS, request, <strong class="hl-keyword">new</strong> Response.CompleteListener()
+{
+    <em><span class="hl-annotation" style="color: gray">@Override</span></em>
+    <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> onComplete(Result result)
+    {
+        <em class="hl-comment" style="color: silver">// Your logic here</em>
+    }
+}));
+
+      </pre></div><p>The example above will impose a total timeout of 3 seconds on the request/response conversation.</p><p>The HTTP client APIs use listeners extensively to provide hooks for all possible request and response events,
     and with JDK 8&#8242;s lambda expressions they&#8217;re even more fun to use:</p><div class="informalexample"><pre class="programlisting">
 
 httpClient.newRequest(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>)
