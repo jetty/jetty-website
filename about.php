@@ -232,5 +232,7 @@ EOHTML;
 
 
 	# Generate the web page
+	$App->AddGoogleAnalyticsTrackingCode("UA-1149868-5");
 	$App->generatePage($theme, $Menu, $Nav, $pageAuthor, $pageKeywords, $pageTitle, $html);
+
 ?>
