@@ -1,4 +1,4 @@
-<?php
+<?php include_once("analytics.php")
 
     # Set the theme for your project's web pages.
     # See the Committer Tools "How Do I" for list of themes
