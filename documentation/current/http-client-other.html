@@ -1,0 +1,92 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Other Features</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="http-client.html" title="Chapter&nbsp;23.&nbsp;HTTP Client"><link rel="prev" href="http-client-api.html" title="API Usage"><link rel="next" href="websocket-client.html" title="Chapter&nbsp;24.&nbsp;Websocket Clients"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Other Features</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="http-client-api.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;23.&nbsp;HTTP Client</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="websocket-client.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+          <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="http-client-other"></a>Other Features</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="http-client-other.html#http-client-cookie">Cookies Support</a></span></dt><dt><span class="section"><a href="http-client-other.html#http-client-authentication">Authentication Support</a></span></dt><dt><span class="section"><a href="http-client-other.html#http-client-proxy">Proxy Support</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-cookie"></a>Cookies Support</h3></div></div></div><p>Jetty HTTP client supports cookies out of the box. The <code class="code">HttpClient</code> instance receives cookies from
+    HTTP responses and stores them in a 
+    <code class="classname">java.net.CookieStore</code>, a class that is part of the JDK. When new requests are made, the
+    cookie store is consulted and if there are matching cookies (that is, cookies that are not expired and that match
+    domain and path of the request) then they are added to the requests.</p><p>Applications can programmatically access the cookie store to find the cookies that have been set:</p><div class="informalexample"><pre class="programlisting">
+
+CookieStore cookieStore = httpClient.getCookieStore();
+List&lt;HttpCookie&gt; cookies = cookieStore.get(URI.create(<strong class="hl-string"><em style="color:red">"http://domain.com/path"</em></strong>));
+
+      </pre></div><p>Applications can also programmatically set cookies as if they were returned from a HTTP response:</p><div class="informalexample"><pre class="programlisting">
+
+CookieStore cookieStore = httpClient.getCookieStore();
+HttpCookie cookie = <strong class="hl-keyword">new</strong> HttpCookie(<strong class="hl-string"><em style="color:red">"foo"</em></strong>, <strong class="hl-string"><em style="color:red">"bar"</em></strong>);
+cookie.setDomain(<strong class="hl-string"><em style="color:red">"domain.com"</em></strong>);
+cookie.setPath(<strong class="hl-string"><em style="color:red">"/"</em></strong>);
+cookie.setMaxAge(TimeUnit.DAYS.toSeconds(<span class="hl-number">1</span>));
+cookieStore.add(URI.create(<strong class="hl-string"><em style="color:red">"http://domain.com"</em></strong>), cookie);
+
+      </pre></div><p>You can remove cookies that you do not want to be sent in future HTTP requests:</p><div class="informalexample"><pre class="programlisting">
+
+CookieStore cookieStore = httpClient.getCookieStore();
+URI uri = URI.create(<strong class="hl-string"><em style="color:red">"http://domain.com"</em></strong>);
+List&lt;HttpCookie&gt; cookies = cookieStore.get(uri);
+<strong class="hl-keyword">for</strong> (HttpCookie cookie : cookies)
+    cookieStore.remove(uri, cookie);
+
+      </pre></div><p>If you want to totally disable cookie handling, you can install a <code class="code">HttpCookieStore.Empty</code> instance
+    in this way:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.setCookieStore(<strong class="hl-keyword">new</strong> HttpCookieStore.Empty());
+
+      </pre></div><p>You can enable cookie filtering by installing a cookie store that performs the filtering logic in this
+    way:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.setCookieStore(<strong class="hl-keyword">new</strong> GoogleOnlyCookieStore());
+
+<strong class="hl-keyword">public</strong> <strong class="hl-keyword">class</strong> GoogleOnlyCookieStore <strong class="hl-keyword">extends</strong> HttpCookieStore
+{
+    <em><span class="hl-annotation" style="color: gray">@Override</span></em>
+    <strong class="hl-keyword">public</strong> <strong class="hl-keyword">void</strong> add(URI uri, HttpCookie cookie)
+    {
+        <strong class="hl-keyword">if</strong> (uri.getHost().endsWith(<strong class="hl-string"><em style="color:red">"google.com"</em></strong>))
+            <strong class="hl-keyword">super</strong>.add(uri, cookie);
+    }
+}
+
+      </pre></div><p>The example above will retain only cookies that come from the <code class="code">google.com</code> domain or
+    sub-domains.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-authentication"></a>Authentication Support</h3></div></div></div><p>Jetty HTTP client supports the "Basic" and "Digest" authentication mechanisms defined by <a class="link" href="http://www.ietf.org/rfc/rfc2617.txt" target="_top">RFC 2617</a>.</p><p>You can configure authentication credentials in the HTTP client instance as follows:</p><div class="informalexample"><pre class="programlisting">
+
+String uri = <strong class="hl-string"><em style="color:red">"http://domain.com/secure"</em></strong>;
+String realm = <strong class="hl-string"><em style="color:red">"MyRealm"</em></strong>;
+String user = <strong class="hl-string"><em style="color:red">"username"</em></strong>;
+String pass = <strong class="hl-string"><em style="color:red">"password"</em></strong>;
+
+<em class="hl-comment" style="color: silver">// Add authentication credentials</em>
+AuthenticationStore auth = httpClient.getAuthenticationStore();
+auth.addAuthentication(<strong class="hl-keyword">new</strong> BasicAuthentication(uri, realm, user, pass));
+
+ContentResponse response = httpClient
+        .newRequest(uri)
+        .send()
+        .get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>Jetty HTTP client tests authentication credentials against the challenge(s) the server issues, and if they
+    match it automatically sends the right authentication headers to the server for authentication. If the
+    authentication is successful, it caches the result and reuses it for subsequent requests for the same domain and
+    matching URIs.</p><p>Successful authentications are cached, but it is possible to clear them in order to force authentication
+    again:</p><div class="informalexample"><pre class="programlisting">
+
+httpClient.getAuthenticationStore().clearAuthenticationResults();
+
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-proxy"></a>Proxy Support</h3></div></div></div><p>Jetty HTTP client can be configured to use a forward proxy:</p><div class="informalexample"><pre class="programlisting">
+
+ProxyConfiguration proxyConfig = <strong class="hl-keyword">new</strong> ProxyConfiguration(<strong class="hl-string"><em style="color:red">"proxyHost"</em></strong>, proxyPort);
+<em class="hl-comment" style="color: silver">// Do not proxy requests for localhost:8080</em>
+proxyConfig.getExcludedOrigins().add(<strong class="hl-string"><em style="color:red">"localhost:8080"</em></strong>);
+
+httpClient.setProxyConfiguration(proxyConfig);
+
+ContentResponse response = httpClient.GET(uri).get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
+
+      </pre></div><p>You specify the proxy host and port, and optionally also the origins that you do not want to be proxied, and
+    then set the proxy configuration on the <code class="code">HttpClient</code> instance.</p><p>Configured in this way, <code class="code">HttpClient</code> makes requests to the proxy (for plain-text HTTP requests) or
+    establishes a tunnel via HTTP CONNECT (for encrypted HTTPS requests).</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="http-client-api.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http-client.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="websocket-client.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">API Usage&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;24.&nbsp;Websocket Clients</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at 
+          <span style="color:#fd360b"> Github!</span></a></span><br></div></body></html>
