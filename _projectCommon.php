@@ -1,4 +1,4 @@
-<?php include_once("analytics.php")
+<?php 
 
     # Set the theme for your project's web pages.
     # See the Committer Tools "How Do I" for list of themes
@@ -42,5 +42,6 @@
     $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);
     $Nav->addCustomNav("Source", "http://wiki.eclipse.org/Jetty/Contributor/Building", "_self", 2);
     
+    include_once("analyticstracking.php")
 ?>
 
