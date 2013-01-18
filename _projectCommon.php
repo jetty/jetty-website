@@ -10,6 +10,7 @@
     # Additional styles
     $App->AddExtraHtmlHeader('<link rel=stylesheet type="text/css" href="/jetty/css/jetty.css">' . "\n");
     
+    $App->SetGoogleAnalyticsTrackingCode("UA-1149868-7");
     # Define your project-wide Nav bars here.
     # Format is Link text, link URL (can be http://www.someothersite.com/), target (_self, _blank), level (1, 2 or 3)
     # these are optional
@@ -42,6 +43,5 @@
     $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);
     $Nav->addCustomNav("Source", "http://wiki.eclipse.org/Jetty/Contributor/Building", "_self", 2);
     
-    #include_once("analyticstracking.php")
 ?>
 
