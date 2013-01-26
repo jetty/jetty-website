@@ -1,34 +1,29 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Jetty and Maven HelloWorld</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><style type="text/css">
-body { background-image: url('images/draft-ribbon.png');
-       background-repeat: no-repeat;
-       background-position: top left;
-       /* The following properties make the watermark "fixed" on the page. */
-       /* I think that's just a bit too distracting for the reader... */
-       /* background-attachment: fixed; */
-       /* background-position: center center; */
-     }</style><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;17.&nbsp;Maven and Jetty"><link rel="prev" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin"><link rel="next" href="ant-and-jetty.html" title="Chapter&nbsp;18.&nbsp;Ant and Jetty"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Jetty and Maven HelloWorld</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jetty-maven-plugin.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;17.&nbsp;Maven and Jetty</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="ant-and-jetty.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
+   <title>Using Maven</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;17.&nbsp;Maven and Jetty"><link rel="prev" href="maven-and-jetty.html" title="Chapter&nbsp;17.&nbsp;Maven and Jetty"><link rel="next" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-logo.svg" width="80"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Using Maven</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="maven-and-jetty.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;17.&nbsp;Maven and Jetty</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-plugin.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-variant: small-caps; font-weight: bold"><a href="http://www.webtide.com/support.jsp" style="text-decoration:none">Contact the core Jetty developers at
           <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-maven-helloworld"></a>Jetty and Maven HelloWorld</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-maven-helloworld.html#configuring-embedded-jetty-with-maven">Configuring Embedded Jetty with Maven</a></span></dt><dt><span class="section"><a href="jetty-maven-helloworld.html#developing-standard-webapp-with-jetty-and-maven">Developing a Standard WebApp with Jetty and Maven</a></span></dt></dl></div><p><a class="link" href="http://maven.apache.org/" target="_top">Apache Maven</a> is a software project management and comprehension
-  tool. Based on the concept of a project object model (POM), Maven can manage a project's build, reporting and
-  documentation from a central piece of information. It is an ideal tool to build a web application project, and such
-  projects can use the [[Jetty/Feature/Jetty Maven Plugin | Jetty Maven Plugin]] //TODO xref// to run the web
-  application in development mode. You can use Maven both to build embedded Jetty applications and standards based web
-  applications.</p><p>To understand the basic operations of building and running against Jetty, first review:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><a class="xref" href="jetty-helloworld.html" title="Jetty HelloWorld">Jetty HelloWorld</a>.</li><li class="listitem"><a class="xref" href="">???</a>.</li></ul></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-embedded-jetty-with-maven"></a>Configuring Embedded Jetty with Maven</h3></div></div></div><p>Maven uses convention over configuration, so it is best to use the project structure as Maven recommends. You
-    can use <span class="emphasis"><em>Archetypes</em></span> to quickly setup Maven projects, this tutorial sets up the structure
-    manually:</p><pre class="screen">
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-maven-helloworld"></a>Using Maven</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-maven-helloworld.html#configuring-embedded-jetty-with-maven">Using Embedded Jetty with Maven</a></span></dt><dt><span class="section"><a href="jetty-maven-helloworld.html#developing-standard-webapp-with-jetty-and-maven">Developing a Standard WebApp with Jetty and Maven</a></span></dt></dl></div><p><a class="link" href="http://maven.apache.org/" target="_top">Apache Maven</a> is a
+  software project management and comprehension tool. Based on the concept of
+  a project object model (POM), Maven can manage a project's build, reporting
+  and documentation from a central piece of information. </p><p>It is an ideal tool to build a web application project, and such
+  projects can use the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">jetty-maven-plugin</a> to easily run the web
+  application and save time in development. You can also use Maven to build,
+  test and run a project which embeds Jetty. </p><p>First we'll have a look at a very simple HelloWorld java application
+  that embeds Jetty, then a simple webapp which makes use of the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">jetty-maven-plugin</a> to speed up the
+  development cycle.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-embedded-jetty-with-maven"></a>Using Embedded Jetty with Maven</h3></div></div></div><p>To understand the basic operations of building and running against
+    Jetty, first review</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="link" href="advanced-embedding.html" title="Chapter&nbsp;16.&nbsp;Embedding">embedding with
+        Jetty</a></p></li><li class="listitem"><p><a class="link" href="jetty-helloworld.html" title="Jetty HelloWorld">Jetty HelloWorld
+        example</a></p></li></ul></div><p>Maven uses convention over configuration, so it is best to use the
+    project structure Maven recommends. You can use <span class="emphasis"><em><a class="link" href=""></a><a class="link" href="http://maven.apache.org/guides/introduction/introduction-to-archetypes.html" target="_top">archetypes</a><a class="link" href=""></a></em></span>
+    to quickly setup Maven projects, but we will set up the structure manually
+    for this simple tutorial example:</p><pre class="screen">&gt; mkdir JettyMavenHelloWorld
+&gt; cd JettyMavenHelloWorld
+&gt; mkdir -p src/main/java/org/example</pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-helloworld-class"></a>Creating the HelloWorld Class</h4></div></div></div><p>Use an editor to create the file
+      <code class="filename">src/main/java/org/example/HelloWorld.java</code> with the
+      following contents:</p><div class="informalexample"><pre class="programlisting"><span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">package</span> org.example;
 
-mkdir JettyMavenHelloWorld
-cd JettyMavenHelloWorld
-mkdir -p src/main/java/org/example
-
-    </pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-helloworld-class"></a>Creating the HelloWorld Class</h4></div></div></div><p>Use an editor to create the file <code class="filename">src/main/java/org/example/HelloWorld.java</code> with the
-    following contents:</p><div class="informalexample"><pre class="programlisting">
-&gt;
-<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">package</span> org.example;
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.servlet.http.HttpServletRequest;
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.servlet.http.HttpServletResponse;
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.servlet.ServletException;
@@ -59,12 +54,9 @@ mkdir -p src/main/java/org/example
         server.start();
         server.join();
     }
-}
-
-      </pre></div>&gt;</div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-pom-descriptor"></a>Creating the POM Descriptor</h4></div></div></div><p>The <code class="filename">pom.xml</code> file declares the project name and it's dependencies. Use an editor to
-    create the file <code class="filename">pom.xml</code> with the following contents:</p><div class="informalexample"><pre class="programlisting">
-&gt;
-&lt;project xmlns=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://maven.apache.org/POM/4.0.0"</span> 
+}   </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-embedded-pom-descriptor"></a>Creating the POM Descriptor</h4></div></div></div><p>The <code class="filename">pom.xml</code> file declares the project name
+      and its dependencies. Use an editor to create the file
+      <code class="filename">pom.xml</code> with the following contents:</p><div class="informalexample"><pre class="programlisting">&lt;project xmlns=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://maven.apache.org/POM/4.0.0"</span> 
          xmlns:xsi=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://www.w3.org/2001/XMLSchema-instance"</span> 
          xsi:schemaLocation=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;
 
@@ -76,7 +68,7 @@ mkdir -p src/main/java/org/example
   &lt;name&gt;Jetty HelloWorld&lt;/name&gt;
 
   &lt;properties&gt;
-    &lt;jettyVersion&gt;<span class="hl-number">7.2</span>.0.v2<span class="hl-number">0101020</span>&lt;/jettyVersion&gt;
+    &lt;jettyVersion&gt;<span class="hl-number">9.0</span>.<span class="hl-number">0</span>&lt;/jettyVersion&gt;
   &lt;/properties&gt;
 
   &lt;dependencies&gt;
@@ -90,12 +82,6 @@ mkdir -p src/main/java/org/example
   &lt;build&gt;
     &lt;plugins&gt;
       &lt;plugin&gt;
-        &lt;!-- This plugin is needed <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">for</span> the servlet example --&gt;
-        &lt;groupId&gt;org.mortbay.jetty&lt;/groupId&gt;
-        &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-        &lt;version&gt;${jettyVersion}&lt;/version&gt;
-      &lt;/plugin&gt;
-      &lt;plugin&gt;
         &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
         &lt;artifactId&gt;exec-maven-plugin&lt;/artifactId&gt;
         &lt;version&gt;<span class="hl-number">1.1</span>&lt;/version&gt;
@@ -108,18 +94,12 @@ mkdir -p src/main/java/org/example
       &lt;/plugin&gt;
     &lt;/plugins&gt;
   &lt;/build&gt;
-&lt;/project&gt;
-
-      </pre></div>&gt;</div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="buildng-and-running-embedded-helloworld"></a>Building and Running Embedded HelloWorld</h4></div></div></div><p>You can now compile and execute the HelloWorld class by using these commands:</p><pre class="screen">
-
-mvn clean compile exec:java
-
-      </pre><p>You can point your browser to 
-      <span style="color: red">&lt;nowiki&gt;http://localhost:8080&lt;/nowiki&gt;</span>to see the hello world page. You can observe what Maven is doing for you
-      behind the scenes by using the <code class="code">mvn dependency:tree</code> command, which reveals the transitive dependency
-      resolved and downloaded as:</p><pre class="screen">
-
-&gt; mvn dependency:tree
+&lt;/project&gt;   </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="buildng-and-running-embedded-helloworld"></a>Building and Running Embedded HelloWorld</h4></div></div></div><p>You can now compile and execute the HelloWorld class by using
+      these commands:</p><pre class="screen">&gt; mvn clean compile exec:java  </pre><p>You can point your browser to <code class="code">http://localhost:8080</code>
+      to see the hello world page. You can observe what Maven is doing for you
+      behind the scenes by using the <code class="code">mvn dependency:tree</code> command,
+      which reveals the transitive dependency resolved and downloaded
+      as:</p><pre class="screen">&gt; mvn dependency:tree
 [INFO] Scanning for projects...
 [INFO] Searching repository for plugin with prefix: 'dependency'.
 [INFO] ------------------------------------------------------------------------
@@ -128,38 +108,28 @@ mvn clean compile exec:java
 [INFO] ------------------------------------------------------------------------
 [INFO] [dependency:tree {execution: default-cli}]
 [INFO] org.example:hello-world:jar:0.1-SNAPSHOT
-[INFO] \- org.eclipse.jetty:jetty-server:jar:7.0.1.v20091125:compile
-[INFO]    +- javax.servlet:servlet-api:jar:2.5:compile
-[INFO]    +- org.eclipse.jetty:jetty-continuation:jar:7.0.1.v20091125:compile
-[INFO]    \- org.eclipse.jetty:jetty-http:jar:7.0.1.v20091125:compile
-[INFO]       \- org.eclipse.jetty:jetty-io:jar:7.0.1.v20091125:compile
-[INFO]          \- org.eclipse.jetty:jetty-util:jar:7.0.1.v20091125:compile
+[INFO] \- org.eclipse.jetty:jetty-server:jar:9.0.0:compile
+[INFO]    +- org.eclipse.jetty:javax.servlet:jar:3.0.0.v201112011016:compile
+[INFO]    +- org.eclipse.jetty:jetty-continuation:jar:9.0.0:compile
+[INFO]    \- org.eclipse.jetty:jetty-http:jar:9.0.0:compile
+[INFO]       \- org.eclipse.jetty:jetty-io:jar:9.0.0:compile
+[INFO]          \- org.eclipse.jetty:jetty-util:jar:9.0.0:compile
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESSFUL
 [INFO] ------------------------------------------------------------------------
 [INFO] Total time: 4 seconds
-[INFO] Finished at: Tue Feb 16 16:19:08 EST 2010
+[INFO] Finished at: Thu Jan 24 16:19:08 EST 2013
 [INFO] Final Memory: 11M/68M
-[INFO] ------------------------------------------------------------------------
-
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="developing-standard-webapp-with-jetty-and-maven"></a>Developing a Standard WebApp with Jetty and Maven</h3></div></div></div><p>The example above shows how to run a hello world example as an embedded Jetty handler. The following example
-    shows how to develop a standard webapp with Maven and Jetty. First create the Maven structure:</p><pre class="screen">
-
-mkdir JettyMavenHelloWarApp
-cd JettyMavenHelloWebApp
-mkdir -p src/main/java/org/example
-mkdir -p src/main/webapp/WEB-INF
-
-    </pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-static-content"></a>Creating Static Content</h4></div></div></div><p>A web application can contain static content, so create the file <code class="filename">
-    src/main/webapp/index.html</code> with the following contents:</p><div class="informalexample"><pre class="programlisting">
-&gt;
-&lt;h1&gt;Hello World Webapp&lt;/h1&gt;
-&lt;a href="/hello"&gt;Hello Servlet&lt;/a&gt;
-
-      </pre></div>&gt;</div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-servlet"></a>Creating a Servlet</h4></div></div></div><p>Use an editor to create the file <code class="filename">src/main/java/org/example/HelloServlet.java</code> with the
-    following contents:</p><div class="informalexample"><pre class="programlisting">
-&gt;
-<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">package</span> org.example;
+[INFO] ------------------------------------------------------------------------      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="developing-standard-webapp-with-jetty-and-maven"></a>Developing a Standard WebApp with Jetty and Maven</h3></div></div></div><p>The previous section demonstrated how to use Maven with an
+    application that embeds Jetty. Now we will examine instead how to develop
+    a standard webapp with Maven and Jetty. First create the Maven structure
+    (you can use the <a class="link" href="???" target="_top">maven webapp archetype</a> instead
+    if you prefer):</p><pre class="screen">&gt; mkdir JettyMavenHelloWarApp
+&gt; cd JettyMavenHelloWebApp
+&gt; mkdir -p src/main/java/org/example
+&gt; mkdir -p src/main/webapp/WEB-INF</pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-servlet"></a>Creating a Servlet</h4></div></div></div><p>Use an editor to create the file
+      <code class="filename">src/main/java/org/example/HelloServlet.java</code> with
+      the following contents:</p><div class="informalexample"><pre class="programlisting"><span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">package</span> org.example;
 
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> java.io.IOException;
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.servlet.ServletException;
@@ -176,18 +146,16 @@ mkdir -p src/main/webapp/WEB-INF
         response.getWriter().println(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"&lt;h1&gt;Hello Servlet&lt;/h1&gt;"</span>);
         response.getWriter().println(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"session="</span> + request.getSession(true).getId());
     }
-}
-
-      </pre></div>&gt; 
-    <p>You need to declare this servlet in the deployment descriptor, so edit the file <code class="filename">
-    src/main/webapp/WEB-INF/web.xml</code> and add the following contents:</p><div class="informalexample"><pre class="programlisting">
-&gt;
-<span class="hl-directive" style="color: maroon">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
+}</pre></div><p>You need to declare this servlet in the deployment descriptor, so
+      edit the file <code class="filename">src/main/webapp/WEB-INF/web.xml</code> and
+      add the following contents:</p><div class="informalexample"><pre class="programlisting"><span class="hl-directive" style="color: maroon">&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span>
 <strong class="hl-tag" style="color: #000096">&lt;web-app</strong> 
    <span class="hl-attribute" style="color: #F5844C">xmlns</span>=<span class="hl-value" style="color: #993300">"http://java.sun.com/xml/ns/javaee"</span> 
    <span class="hl-attribute" style="color: #F5844C">xmlns:xsi</span>=<span class="hl-value" style="color: #993300">"http://www.w3.org/2001/XMLSchema-instance"</span>
-   <span class="hl-attribute" style="color: #F5844C">xsi:schemaLocation</span>=<span class="hl-value" style="color: #993300">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"</span> 
-   <span class="hl-attribute" style="color: #F5844C">version</span>=<span class="hl-value" style="color: #993300">"2.5"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+   <span class="hl-attribute" style="color: #F5844C">xsi:schemaLocation</span>=<span class="hl-value" style="color: #993300">"http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"</span>
+   <span class="hl-attribute" style="color: #F5844C">metadata-complete</span>=<span class="hl-value" style="color: #993300">"false"</span>
+   <span class="hl-attribute" style="color: #F5844C">version</span>=<span class="hl-value" style="color: #993300">"3.0"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
   <strong class="hl-tag" style="color: #000096">&lt;servlet&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;servlet-name&gt;</strong>Hello<strong class="hl-tag" style="color: #000096">&lt;/servlet-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;servlet-class&gt;</strong>org.example.HelloServlet<strong class="hl-tag" style="color: #000096">&lt;/servlet-class&gt;</strong>
@@ -196,20 +164,55 @@ mkdir -p src/main/webapp/WEB-INF
     <strong class="hl-tag" style="color: #000096">&lt;servlet-name&gt;</strong>Hello<strong class="hl-tag" style="color: #000096">&lt;/servlet-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>/hello/*<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/servlet-mapping&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/web-app&gt;</strong>
 
-      </pre></div>&gt;</div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-and-running-web-application"></a>Building and Running the Web Application</h4></div></div></div><p>Now build and run the web application by using the command:</p><pre class="screen">
+<strong class="hl-tag" style="color: #000096">&lt;/web-app&gt;</strong></pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-plugin-pom-descriptor"></a>Creating the POM Descriptor</h4></div></div></div><p>The <code class="filename">pom.xml</code> file declares the project name
+      and its dependencies. Use an editor to create the file
+      <code class="filename">pom.xml</code> with the following contents, noting
+      particularly the declaration of the<a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">
+      jetty-maven-plugin</a>:</p><div class="informalexample"><pre class="programlisting">&lt;project xmlns=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://maven.apache.org/POM/4.0.0"</span> 
+         xmlns:xsi=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://www.w3.org/2001/XMLSchema-instance"</span> 
+         xsi:schemaLocation=<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"</span>&gt;
 
-mvn jetty:run
+  &lt;modelVersion&gt;<span class="hl-number">4.0</span>.<span class="hl-number">0</span>&lt;/modelVersion&gt;
+  &lt;groupId&gt;org.example&lt;/groupId&gt;
+  &lt;artifactId&gt;hello-world&lt;/artifactId&gt;
+  &lt;version&gt;<span class="hl-number">0.1</span>-SNAPSHOT&lt;/version&gt;
+  &lt;packaging&gt;war&lt;/packaging&gt;
+  &lt;name&gt;Jetty HelloWorld WebApp&lt;/name&gt;
 
-      </pre><p>You can see the static and dynamic content at 
-      <span style="color: red">&lt;nowiki&gt;http://localhost:8080/hello-world/hello&lt;/nowiki&gt;</span>. The context path portion of the url ("hello-world")
-      comes from the artifact ID in the pom.xml file.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-war-file"></a>Building a WAR file</h4></div></div></div><p>You can create a Web Application Archive (WAR) file from the project with the command:</p><pre class="screen">
+  &lt;properties&gt;
+    &lt;jettyVersion&gt;<span class="hl-number">9.0</span>.<span class="hl-number">0</span>&lt;/jettyVersion&gt;
+  &lt;/properties&gt;
 
-mvn package
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.eclipse.jetty.orbit&lt;/groupId&gt;
+      &lt;artifactId&gt;javax.servlet&lt;/artifactId&gt;
+      &lt;version&gt;<span class="hl-number">3.0</span>.0.v2<span class="hl-number">01112011016</span>&lt;/version&gt;
+      &lt;scope&gt;provided&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
 
-      </pre><p>The resulting war file is in the <code class="filename">target</code> directory and may be deployed on any standard
-      servlet server or [[Jetty/Howto/Deploy_Web_Applications|deployed to jetty]]. TODO xref</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-maven-plugin.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ant-and-jetty.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Configuring the Jetty Maven Plugin&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;18.&nbsp;Ant and Jetty</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+        &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${jettyVersion}&lt;/version&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+
+&lt;/project&gt;   </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-and-running-web-application"></a>Building and Running the Web Application</h4></div></div></div><p>Now you can both build and run the web application without needing
+      to assemble it into a war by using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">jetty-maven-plugin</a> via the
+      command:</p><pre class="screen">&gt; mvn jetty:run</pre><p>You can see the static and dynamic content at
+      <code class="code"></code>http://localhost:8080/hello</p><p>There are a great deal of configuration options available for the
+      jetty-maven-plugin to help you build and run your webapp. The full
+      reference is at <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Configuring the Jetty
+      Maven Plugin</a>.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-war-file"></a>Building a WAR file</h4></div></div></div><p>You can create a Web Application Archive (WAR) file from the
+      project with the command:</p><pre class="screen">&gt; mvn package    </pre><p>The resulting war file is in the <code class="filename">target</code>
+      directory and may be deployed on any standard servlet server,
+      including<a class="link" href="configuring-deployment.html" title="Chapter&nbsp;7.&nbsp;Deploying Jetty"> Jetty</a>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="maven-and-jetty.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-plugin.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;17.&nbsp;Maven and Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring the Jetty Maven Plugin</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
 See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at
           <span style="color:#fd360b"> Github!</span></a></span><br></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
   var _gaq = _gaq || [];

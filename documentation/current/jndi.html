@@ -12,182 +12,255 @@ body { background-image: url('images/draft-ribbon.png');
           <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="jndi"></a>Chapter&nbsp;12.&nbsp;JNDI</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="jndi.html#configuring-jndi">Configuring JNDI</a></span></dt><dt><span class="section"><a href="jndi-datasource-examples.html">JNDI Datasource Examples</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-jndi"></a>Configuring JNDI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jndi.html#quick-setup">Quick Setup</a></span></dt><dt><span class="section"><a href="jndi.html#detailed-setup">Detailed Setup</a></span></dt><dt><span class="section"><a href="jndi.html#using-jndi">Using JNDI</a></span></dt></dl></div><p>Jetty supports <code class="code">java:comp/env</code> lookups in web apps. This is an optional feature for which you need
-  to do some setup. However, if you are using the <a class="link" href="http://mvnrepository.com/artifact/org.mortbay.jetty/jetty-hightide" target="_top">Hightide</a> distribution of Jetty,
-  this feature is already fully enabled, so you can skip any setup steps, and just read the sections on how to put
-  objects into Jetty JNDI so that you can retrieve them at runtime.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-setup"></a>Quick Setup</h3></div></div></div><p>If you are using the standard distribution of jetty, and want to enable JNDI for all your webapps, complete
-    the steps in this section. If you need a more selective configuration, see <a class="xref" href="jndi.html#detailed-setup" title="Detailed Setup">Detailed Setup</a>.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Edit the <code class="filename">$JETTY_HOME/start.ini file</code>.</p></li><li class="listitem"><p>Modify the Server OPTIONS to include <span class="emphasis"><em>plus</em></span>, for example: 
-        </p><div class="informalexample"><pre class="programlisting">
-
-
-OPTIONS=Server,jsp,jmx,resources,websocket,ext,plus
-
-          
-          </pre></div></li><li class="listitem"><p>Near the bottom of the file, in the section on Configuration files, add the following line after <code class="code">
-        etc/jetty.xml</code>: 
-        </p><div class="informalexample"><pre class="programlisting">
-
-
-etc/jetty-plus.xml
-
-          
-          </pre></div></li><li class="listitem"><p>Save the file.</p></li></ol></div><p>You can now start Jetty and use JNDI with your webapps. See the next section for information on how to add
-    entries to the JNDI environment that Jetty can look up within webapps.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="detailed-setup"></a>Detailed Setup</h3></div></div></div><p>The following sections describe the fine points of configuring JNDI.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="setting-up-list-of-configurations"></a>Setting Up the List of Configurations</h4></div></div></div><p>When deploying a webapp, Jetty has an extensible list of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">configurations</a> that it applies to the webapp
-      in a specific order. These configurations do things like parse <code class="filename">web.xml</code>, set up the classpath
-      for the webapp, and parse <code class="filename">WEB-INF/jetty-web.xml</code>.</p><p>To use JNDI with Jetty, you need additional attributes that do things like read <code class="filename">
-      WEB-INF/jetty-env.xml</code>, set up a <code class="code">java:comp/env context</code>, and hook up JNDI entries from the
-      environment into your webapp. The list below shows the two extra elements and the order you must use when you add
-      them:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    </span></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="jndi"></a>Chapter&nbsp;12.&nbsp;JNDI</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="jndi.html#configuring-jndi">Configuring JNDI</a></span></dt><dt><span class="section"><a href="jndi-datasource-examples.html">JNDI Datasource Examples</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-jndi"></a>Configuring JNDI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jndi.html#quick-setup">Quick Setup</a></span></dt><dt><span class="section"><a href="jndi.html#detailed-setup">Detailed Setup</a></span></dt><dt><span class="section"><a href="jndi.html#using-jndi">Using JNDI</a></span></dt></dl></div><p>Jetty supports <code class="code">java:comp/env</code> lookups in web apps. This is
+  an optional feature for which you need to do some setup. </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quick-setup"></a>Quick Setup</h3></div></div></div><p>If you are using the standard distribution of jetty, and want to
+    enable JNDI for all your webapps, complete the steps in this section. If
+    you need a more selective configuration, see below for <a class="link" href="jndi.html#detailed-setup" title="Detailed Setup">detailed configuration
+    instructions</a>.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Edit the <code class="filename">$JETTY_HOME/start.ini file</code>.</p></li><li class="listitem"><p>Uncomment the following two lines: </p><div class="informalexample"><pre class="programlisting">OPTIONS=plus
+etc/jetty-plus.xml    </pre></div></li><li class="listitem"><p>Save the file.</p></li></ol></div><p>You can now start Jetty and use JNDI with your webapps. See <a class="link" href="jndi.html#using_jndi">Using JNDI</a> for information on how to add
+    entries to the JNDI environment that Jetty can look up within
+    webapps.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="detailed-setup"></a>Detailed Setup</h3></div></div></div><p>The following sections describe the fine points of configuring
+    JNDI.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="setting-up-list-of-configurations"></a>Setting Up the List of Configurations</h4></div></div></div><p>When deploying a webapp, Jetty has an extensible list of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">configurations</a>
+      that it applies to the webapp in a specific order. These configurations
+      do things like parse <code class="filename">web.xml</code>, set up the classpath
+      for the webapp, and parse
+      <code class="filename">WEB-INF/jetty-web.xml</code>.</p><p>To use JNDI with Jetty, you need additional attributes that do
+      things like read <code class="filename"> WEB-INF/jetty-env.xml</code>, set up a
+      <code class="code">java:comp/env context</code>, and hook up JNDI entries from the
+      environment into your webapp. The list below shows the two extra
+      elements and the order you must use when you add them:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.MetaInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.FragmentConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for jndi --&gt;</span>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for jndi --&gt;</span>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.PlusConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for jndi --&gt;</span>
   <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.JettyWebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.TagLibConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- not needed for jetty-8 --&gt;</span>
-<strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
-
-        
-        </pre></div><p>This augmented list of Configurations for JNDI is predefined for you in the <code class="code">
-      etc/jetty-plus.xml</code> file.</p><p>To have jetty use <code class="code">etc/jetty-plus.xml</code> and therefore to enable JNDI for all webapps, edit the
-      <code class="code">$JETTY_HOME/start.ini file</code>, and add the following line in the Configuration section near the bottom
-      of the file:</p><div class="informalexample"><pre class="programlisting">
-
-
-etc/jetty-plus.xml
-
-        
-        </pre></div><p>Now skip down to the section, <a class="xref" href="jndi.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI Implementation Jars to the Jetty Classpath</a>.</p><p>If you only want to use JNDI with specific webapps, read on.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="applying-jndi-to-single-webapp"></a>Applying JNDI to a Single WebApp</h4></div></div></div><p>If you have only a few webapps that you want to use with JNDI, you can apply the augmented list of
-      configurations specifically to those webapps. To do that, create a context xml file for each webapp, and set up
-      the configuration classes. Here's an example of how that should look:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong></pre></div><p>This augmented list of Configurations for JNDI is predefined for
+      you in the <code class="code"> etc/jetty-plus.xml</code> file. The <a class="link" href="jndi.html#quick-setup" title="Quick Setup">Quick Setup</a> section shows you how to enable
+      it. Note: the <code class="code">etc/jetty-plus.xml</code> file will enable it for
+      <span class="bold"><strong>all</strong></span> webapps. The file also contains
+      other (commented out) alternatives for enabling JNDI with webapps, such
+      as creating a separate deployer just for deploying JNDI-enabled
+      webapps.</p><p>Now skip down to <a class="link" href="jndi.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI
+      Implementation Jars to the Jetty Classpath</a> if you want to use
+      JNDI with all webapps. If you only want to use JNDI with specific
+      webapps, read on.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="applying-jndi-to-single-webapp"></a>Enabling JNDI for a Single WebApp</h4></div></div></div><p>If you have only a few webapps that you want to use with JNDI, you
+      can apply the augmented list of configurations specifically to those
+      webapps. To do that, create a context xml file for each webapp, and set
+      up the configuration classes. Here's an example of how that should
+      look:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
   <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.MetaInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.FragmentConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for JNDI --&gt;</span>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for JNDI --&gt;</span>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.PlusConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for JNDI --&gt;</span>
     <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.JettyWebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.TagLibConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
 
   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/my-cool-webapp<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"configurationClasses"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
 
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
-
-        
-        </pre></div><p>Now you're ready for the next step, which is to put the JNDI Jars onto the jetty classpath, described in
-      the next section, <a class="xref" href="jndi.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI Implementation Jars to the Jetty Classpath</a>.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="adding-jndi-implementation-jars-to-jetty-classpath"></a>Adding JNDI Implementation Jars to the Jetty Classpath</h4></div></div></div><p>Now that you have the JNDI configuration for the webapp(s) set up, you need to ensure that the JNDI
-      implementation Jars are on the Jetty classpath. These jars are optional, so are not there by default. You add
-      these into the classpath by using startup time OPTIONS.</p><p>One way to do this is to supply it on the command line like so:</p><div class="informalexample"><pre class="programlisting">
-
-
-java -jar start.jar OPTIONS=plus
-
-        
-        </pre></div><p>Another, more permanent way of doing this is to edit the <code class="filename">$JETTY_HOME/start.ini</code> file
-      and modify the OPTIONS section to include "plus":</p><div class="informalexample"><pre class="programlisting">
-
-
-OPTIONS=Server,jsp,jmx,resources,websocket,ext,plus
-
-        
-        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jndi"></a>Using JNDI</h3></div></div></div><p>You can now configure naming resources to reference in a <code class="code">web.xml</code> file and access from within the
-    <code class="code">java:comp/env</code> naming environment of the webapp during execution. Specifically, you can configure
-    support for the following <code class="code">web.xml</code> elements:</p><div class="informalexample"><pre class="programlisting">
-
-
-env-entry/
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5362"></a>Enabling JNDI for a Deployer</h4></div></div></div><p>Another alternative to enabling JNDI for all webapps (see <a class="link" href="quick-start.html" title="Part&nbsp;I.&nbsp;Quick Start Guide">Quick Start</a>), or just individual webapps
+      (see <a class="link" href="jndi.html#applying-jndi-to-single-webapp" title="Enabling JNDI for a Single WebApp">Enabling JNDI for a
+      Single WebApp</a>) is to create a specific Deployer instance that
+      will enable JNDI for all weabpps it deploys. That way, you can <a class="link" href="jndi.html#setting-up-list-of-configurations" title="Setting Up the List of Configurations">setup</a> the
+      configurations once, and they will be applied to every webapp you drop
+      into the nominated directory - that way you keep your JNDI enabled
+      webapps separate from the non-JNDI enabled webapps. The
+      <code class="code">etc/jetty-plus.xml</code> file has an example of this (commented
+      out):</p><div class="informalexample"><pre class="programlisting">  &lt;!-- =========================================================== --&gt;
+  &lt;!-- Apply plusConfig to all webapps in webapps-plus             --&gt;
+  &lt;!-- =========================================================== --&gt;
+  &lt;!-- Uncomment the following to set up a deployer that will      --&gt;
+  &lt;!-- deploy webapps from a directory called webapps-plus. Note   --&gt;
+  &lt;!-- that you will need to create this directory first!          --&gt;
+  &lt;Ref id="DeploymentManager"&gt;
+      &lt;Call name="addAppProvider"&gt;
+        &lt;Arg&gt;
+          &lt;New class="org.eclipse.jetty.deploy.providers.WebAppProvider"&gt;
+            &lt;Set name="monitoredDirName"&gt;&lt;Property name="jetty.home" default="." /&gt;/webapps-plus&lt;/Set&gt;
+            &lt;Set name="defaultsDescriptor"&gt;&lt;Property name="jetty.home" default="."/&gt;/etc/webdefault.xml&lt;/Set&gt;
+            &lt;Set name="scanInterval"&gt;5&lt;/Set&gt;
+            &lt;Set name="parentLoaderPriority"&gt;false&lt;/Set&gt;
+            &lt;Set name="extractWars"&gt;true&lt;/Set&gt;
+            &lt;Set name="configurationClasses"&gt;&lt;Ref id="plusConfig"/&gt;&lt;/Set&gt;
+          &lt;/New&gt;
+        &lt;/Arg&gt;
+      &lt;/Call&gt;
+  &lt;/Ref&gt;
+</pre></div><p>The above creates a new deployer that looks for things to deploy
+      in the <code class="code">webapps-plus</code> directory and sets up the JNDI
+      configurations for them. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you do this, you will need to either supply the
+        <code class="code">etc/jetty-plus.xml</code> file last on the runline, or move it
+        to after the <code class="code">etc/jetty-deploy.xml</code> file reference in
+        start.ini. This is because this section of the
+        <code class="code">etc/jetty-plus.xml</code> file refers to the DeploymentManager,
+        which is created in the <code class="code">etc/jetty-deploy.xm</code>l file.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="adding-jndi-implementation-jars-to-jetty-classpath"></a>Adding JNDI Implementation Jars to the Jetty Classpath</h4></div></div></div><p>Now that you have the JNDI configuration for the webapp/s set up,
+      you need to ensure that the JNDI implementation Jars are on the Jetty
+      classpath. These jars are optional, so are not there by default. You add
+      these into the classpath by using startup time OPTIONS.</p><p>In the <a class="link" href="quick-start.html" title="Part&nbsp;I.&nbsp;Quick Start Guide">Quick Start</a> section, we
+      showed you how to use start.ini to accomplish this in a permanent
+      fashion.</p><p>Instead, you can supply the "plus" OPTION on the command line so
+      it is valid for that run only. Here's how you would do it:</p><div class="informalexample"><pre class="programlisting">java -jar start.jar OPTIONS=plus</pre></div><p>Note: if you haven't set up the Configurations that enable JNDI
+      for individual webapps, you will need to use the
+      <code class="code">etc/jetty-plus.xml</code> file, which you can also do on the
+      runline:</p><div class="informalexample"><pre class="screen">java -jar start.jar OPTIONS=plus jetty-plus.xml</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jndi"></a>Using JNDI</h3></div></div></div><p>You can now configure naming resources to reference in a
+    <code class="code">web.xml</code> file and access from within the
+    <code class="code">java:comp/env</code> naming environment of the webapp during
+    execution. Specifically, you can configure support for the following
+    <code class="code">web.xml</code> elements:</p><div class="informalexample"><pre class="programlisting">env-entry/
 resource-ref/
-resource-env-ref/
+resource-env-ref/</pre></div><p><a class="link" href="jndi.html#configuring-env-entries" title="Configuring env-entries">Configuring
+    env-entries</a> shows you how to set up overrides for <code class="code">
+    env-entry</code> elements in <code class="filename">web.xml</code>, while <a class="link" href="">Configuring
+    resource-refs and resource-env-refs</a> discusses how to configure
+    support resources such as <code class="code">javax.sql.DataSource</code>.</p><p>You can also plug a JTA
+    <code class="code">javax.transaction.UserTransaction</code> implementation into Jetty
+    so that webapps can look up <code class="code">java:comp/UserTransaction</code> to
+    obtain a distributed transaction manager: see <a class="link" href="jndi.html#configuring-xa-transactions" title="Configuring XA Transactions">Configuring XA
+    Transactions</a>.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="defining-naming-entries"></a>Declaring Resources</h4></div></div></div><p>You must declare the objects you want bound into the Jetty
+      environment that you can then hook into your webapp via env-entry,
+      resource-ref and resource-env-refs in web.xml. You create these bindings
+      by using declarations of the following types:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.EnvEntry</code> for
+          <code class="code">env-entry</code> type of entries</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Resource</code> for all
+          other type of resources.</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Transaction</code> for a JTA
+          manager.</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Link</code> for link between
+          a <code class="filename"> web.xml</code> resource name and a naming
+          entry.</p></li></ul></div><p>Declarations of each of these types follow the same general
+      pattern:</p><div class="informalexample"><pre class="programlisting">&lt;New class="org.eclipse.jetty.plus.jndi.xxxx"&gt;
+  &lt;Arg&gt;&lt;!-- scope --&gt;&lt;/Arg&gt;
+  &lt;Arg&gt;&lt;!-- name --&gt;&lt;/Arg&gt;
+  &lt;Arg&gt;&lt;!-- value --&gt;&lt;/Arg&gt;
+&lt;/New&gt;</pre></div><p>These declarations can generally be placed into three different
+      files, depending on your needs and the <a class="link" href="jndi.html#jndi-name-scope" title="Scope of Resource Names">scope</a> of the resources being
+      declared.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e5511"></a>Where to Declare Resources</h5></div></div></div><p>You can define naming resources in three places:</p><div class="variablelist"><dl><dt><span class="term">jetty.xml</span></dt><dd><p>Naming resources defined in a
+              <code class="filename">jetty.xml</code> file are <a class="link" href="jndi.html#jndi-name-scope" title="Scope of Resource Names">scoped</a> at either the JVM level
+              or the Server level. Note that the classes for the resource must
+              be visible at the Jetty container level. If the classes for the
+              resource only exist inside your webapp, it must be declared in a
+              WEB-INF/jetty-env.xml file.</p></dd><dt><span class="term">WEB-INF/jetty-env.xml</span></dt><dd><p>Naming resources in a
+              <code class="filename">WEB-INF/jetty-env.xml</code> file are <a class="link" href="jndi.html#jndi-name-scope" title="Scope of Resource Names">scoped</a> to the web app in which
+              the file resides. While you can enter JVM or Server scopes if
+              you choose, we do not recommend doing so. The resources defined
+              here may use classes from inside your webapp.</p></dd><dt><span class="term">context xml file</span></dt><dd><p>Entries in a context xml file should be <a class="link" href="jndi.html#jndi-name-scope" title="Scope of Resource Names">scoped</a> at the level of the
+              webapp to which they apply, although you can supply a less
+              strict scoping level of Server or JVM if you choose. As with
+              resources declared in a jetty.xml file, classes associated with
+              the resource must be visible on the container's
+              classpath.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="jndi-name-scope"></a>Scope of Resource Names</h5></div></div></div><p>Naming resources within Jetty belong to one of three different
+        scopes, in increasing order of restrictiveness:</p><div class="variablelist"><dl><dt><span class="term">jvm scope</span></dt><dd><p>the name will be unique across the JVM instance, and is
+              visible to all application code. This scope is represented by a
+              null first parameter to the resource declaration. Eg:</p><div class="informalexample"><pre class="programlisting">&lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;/Arg&gt;  &lt;!-- empty arg --&gt;
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+       &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;</pre></div></dd><dt><span class="term">server scope</span></dt><dd><p>the name will be unique to a Server instance, and is only
+              visible to code associated with that instance. This scope is
+              represented by referencing the Server instance as the first
+              parameter to the resource declaration. Eg:</p><div class="informalexample"><pre class="programlisting">&lt;Configure id="Server" class="org.eclipse.jetty.Server"&gt;
 
-      
-      </pre></div><p>Notice that <a class="xref" href="jndi.html#configuring-env-entries" title="Configuring env-entries">Configuring <code class="code">env-entries</code></a> shows you how to set up overrides for <code class="code">
-    env-entry</code> elements in <code class="filename">web.xml</code>, while <a class="xref" href="jndi.html#configuring-resource-refs-and-resorce-env-refs" title="Configuring resource-refs and resource-env-refs">Configuring <code class="code">resource-refs</code> and <code class="code">resource-env-refs</code></a> discusses how to configure support resources such as
-    <code class="code">javax.sql.DataSource</code>.</p><p>You can also plug a JTA <code class="code">javax.transaction.UserTransaction</code> implementation into Jetty so that
-    webapps can look up <code class="code">java:comp/UserTransaction</code> to obtain a distributed transaction manager. See <a class="xref" href="jndi.html#configuring-xa-transactions" title="Configuring XA Transactions">Configuring XA Transactions</a>.</p><p>You can define your naming resources with three scopes:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>jvm scope&#8211;the name is unique within the JVM.</p></li><li class="listitem"><p>server scope&#8211;the name is unique to the Server instance.</p></li><li class="listitem"><p>webapp scope&#8211;the name is unique to the WebAppContext instance.</p></li></ul></div><p>See <a class="xref" href="jndi.html#setting-jndi-entries-as-global-or-scoped" title="Setting JNDI Entries as Global or Scoped">Setting JNDI Entries as Global or Scoped</a>, which explains <span class="emphasis"><em>scoping</em></span>,
-    and shows you how to use it. Essentially, scoping ensures that JNDI bindings from one webapp do not interfere with
-    the JNDI bindings of another&#8211;unless of course you want them to.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="binding-objects-into-jetty-jndi"></a>Binding Objects into Jetty JNDI</h4></div></div></div><p>You can bind four types of object into Jetty JNDI:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>An ordinary POJO instance.</p></li><li class="listitem"><p>A <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
-          javax.naming.Reference</a> instance.</p></li><li class="listitem"><p>An object instance that implements the <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Referenceable.html" target="_top">
-          javax.naming.Referenceable</a> interface.</p></li><li class="listitem"><p>A link between a name as referenced in <code class="filename">web.xml</code> and as referenced in the
-          environment.</p></li></ul></div><p>The binding for all of these object types follows the same pattern:</p><div class="informalexample"><pre class="programlisting">
+&lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;Ref id="Server"/&gt;&lt;/Arg&gt;  &lt;!-- reference to Server instance --&gt;
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+       &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;
 
+&lt;/Configure&gt;</pre></div></dd><dt><span class="term">webapp scope</span></dt><dd><p>the name will be unique to the WebAppContext instance, and
+              is only visible to code associated with that instance. This
+              scope is represented by referencing the WebAppContext instance
+              as the first parameter to the resource declaration. Eg:</p><div class="informalexample"><pre class="programlisting">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
 
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">type</span> <span class="hl-attribute" style="color: #F5844C">of</span> <span class="hl-attribute" style="color: #F5844C">naming</span> <span class="hl-attribute" style="color: #F5844C">entry&gt;</span>
-  <span class="hl-attribute" style="color: #F5844C">&lt;Arg&gt;scope&lt;/Arg&gt;</span>
-  <span class="hl-attribute" style="color: #F5844C">&lt;Arg&gt;name</span> <span class="hl-attribute" style="color: #F5844C">to</span> <span class="hl-attribute" style="color: #F5844C">bind</span> <span class="hl-attribute" style="color: #F5844C">as&lt;/Arg&gt;</span>
-  <span class="hl-attribute" style="color: #F5844C">&lt;Arg&gt;the</span> <span class="hl-attribute" style="color: #F5844C">object</span> <span class="hl-attribute" style="color: #F5844C">to</span> <span class="hl-attribute" style="color: #F5844C">bind&lt;/Arg&gt;</span>
-<span class="hl-attribute" style="color: #F5844C">&lt;/New&gt;</span>
+&lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;Ref id='wac'/&gt;&lt;/Arg&gt; &lt;!-- reference to WebAppContext --&gt;
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+       &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;
 
-        
-        </pre></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="defining-naming-entries"></a>Defining Naming Entries</h5></div></div></div><p>The <code class="code">type of naming entry</code> can be:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.EnvEntry</code> for <code class="code">env-entry</code>.</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Resource</code> for all other type of resources.</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Transaction</code> for a JTA manager. For detailed information, see
-            the <a class="xref" href="jndi.html#configuring-xa-transactions" title="Configuring XA Transactions">Configuring XA Transactions</a>.</p></li><li class="listitem"><p><code class="code">org.eclipse.jetty.plus.jndi.Link</code> for link between a <code class="filename">
-            web.xml</code> resource name and a <code class="code">amingEntry</code>.</p></li></ul></div><p>For more information, see <a class="xref" href="jndi.html#configuring-links" title="Configuring Links">Configuring Links</a>.</p><p>You can define naming entries in three places:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
-              <code class="filename">jetty.xml</code>
-            </p></li><li class="listitem"><p>
-              <code class="filename">WEB-INF/jetty-env.xml</code>
-            </p></li><li class="listitem"><p>context xml file</p></li></ol></div><p>Naming entries defined in a <code class="filename">jetty.xml</code> file are scoped at either the JVM level or the
-        Server level. Naming entries in a <code class="filename">jetty-env.xml</code> file are scoped to the web app in which
-        the file resides. While you can enter JVM or Server scopes if you choose, we do not recommend doing so. In most
-        cases you define all naming entries that you want visible to a particular Server instance, or to the JVM as a
-        whole in a <code class="filename">jetty.xml</code> file. Entries in a context xml file are scoped at the level of the
-        webapp to which they apply, although once again, you can supply a less strict scoping level of Server or JVM if
-        you choose.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-env-entries"></a>Configuring <code class="code">env-entries</code></h5></div></div></div><p>Sometimes it is useful to pass configuration information to a webapp at runtime that you either cannot or
-        cannot conveniently code into a <code class="code">web.xml env-entry</code>. In such cases, you can use <code class="code">
-        org.eclipse.jetty.plus.jndi.EnvEntry</code>, and even override an entry of the same name in <code class="filename">
-        web.xml</code>.</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.EnvEntry"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+&lt;/Configure&gt;</pre></div></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="binding-objects-into-jetty-jndi"></a>What Can Be Bound as a Resource</h5></div></div></div><p>You can bind four types of object into Jetty JNDI:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>An ordinary POJO instance.</p></li><li class="listitem"><p>A <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
+            javax.naming.Reference</a> instance.</p></li><li class="listitem"><p>An object instance that implements the <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Referenceable.html" target="_top">
+            javax.naming.Referenceable</a> interface.</p></li><li class="listitem"><p>A link between a name as referenced in
+            <code class="filename">web.xml</code> and as referenced in the Jetty
+            environment.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-env-entries"></a>Configuring <code class="code">env-entries</code></h5></div></div></div><p>Sometimes it is useful to pass configuration information to a
+        webapp at runtime that you either cannot or cannot conveniently code
+        into a <code class="code">web.xml env-entry</code>. In such cases, you can use
+        <code class="code"> org.eclipse.jetty.plus.jndi.EnvEntry</code>, and even override
+        an entry of the same name in <code class="filename"> web.xml</code>.</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.EnvEntry"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>mySpecialValue<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.Integer"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>4000<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"boolean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-
-          
-          </pre></div><p>This example defines a virtual <code class="code">env-entry</code> called <code class="code">mySpecialValue</code> with value
-        <code class="code">4000</code> that is unique within the whole JVM. It is put into JNDI at <code class="code">
-        java:comp/env/mySpecialValue</code> for <span class="emphasis"><em>every</em></span> web app deployed. Moreover, the boolean
-        argument indicates that this value overrides an <code class="code">env-entry</code> of the same name in <code class="code">
-        web.xml</code>. If you don't want to override, then omit this argument, or set it to <code class="code">false</code>.</p><p>See <a class="xref" href="jndi.html#setting-jndi-entries-as-global-or-scoped" title="Setting JNDI Entries as Global or Scoped">Setting JNDI Entries as Global or Scoped</a> for information on other scopes.</p><p>The Servlet Specification allows binding only the following object types to an <code class="code">
-        env-entry</code>:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">java.lang.String</li><li class="listitem">java.lang.Integer</li><li class="listitem">java.lang.Float</li><li class="listitem">java.lang.Double</li><li class="listitem">java.lang.Long</li><li class="listitem">java.lang.Short</li><li class="listitem">java.lang.Character</li><li class="listitem">java.lang.Byte</li><li class="listitem">java.lang.Boolean</li></ul></div><p>However, Jetty is a little more flexible and allows you to also bind custom POJOs, <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
+<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>   </pre></div><p>This example defines a virtual <code class="code">env-entry</code> called
+        <code class="code">mySpecialValue</code> with value <code class="code">4000</code> that is <a class="link" href="jndi.html#jndi-name-scope" title="Scope of Resource Names">scoped</a> to the JVM. It is put into
+        JNDI at <code class="code"> java:comp/env/mySpecialValue</code> for
+        <span class="emphasis"><em>every</em></span> web app deployed. Moreover, the boolean
+        argument indicates that this value overrides an <code class="code">env-entry</code>
+        of the same name in <code class="code"> web.xml</code>. If you don't want to
+        override, then omit this argument, or set it to
+        <code class="code">false</code>.</p><p>The Servlet Specification allows binding only the following
+        object types to an <code class="code"> env-entry</code>:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+            java.lang.String
+          </li><li class="listitem">
+            java.lang.Integer
+          </li><li class="listitem">
+            java.lang.Float
+          </li><li class="listitem">
+            java.lang.Double
+          </li><li class="listitem">
+            java.lang.Long
+          </li><li class="listitem">
+            java.lang.Short
+          </li><li class="listitem">
+            java.lang.Character
+          </li><li class="listitem">
+            java.lang.Byte
+          </li><li class="listitem">
+            java.lang.Boolean
+          </li></ul></div><p>However, Jetty is a little more flexible and allows you to also
+        bind custom POJOs, <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
         javax.naming.References</a> and <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Referenceable.html" target="_top">
-        javax.naming.Referenceables</a>. Be aware that if you take advantage of this feature, your web application
-        is <span class="emphasis"><em>not portable</em></span>.</p><p>To use the <code class="code">env-entry</code> configured above, use code in your servlet/filter/etc., such as:</p><div class="informalexample"><pre class="programlisting">
-
-
-<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.naming.InitialContext;
+        javax.naming.Referenceables</a>. Be aware that if you take
+        advantage of this feature, your web application is <span class="emphasis"><em>not
+        portable</em></span>.</p><p>To use the <code class="code">env-entry</code> configured above, use code in
+        your servlet/filter/etc., such as:</p><div class="informalexample"><pre class="programlisting"><span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.naming.InitialContext;
 
 InitialContext ic = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> InitialContext();
-Integer mySpecialValue = (Integer)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"java:comp/env/mySpecialValue"</span>);
+Integer mySpecialValue = (Integer)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"java:comp/env/mySpecialValue"</span>);      </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-resource-refs-and-resorce-env-refs"></a>Configuring <code class="code">resource-refs</code> and
+        <code class="code">resource-env-refs</code></h5></div></div></div><p>You can configure any type of resource that you want to refer to
+        in a <code class="code">web.xml</code> file as a <code class="code">resource-ref</code> or
+        <code class="code">resource-env-ref</code>, using the <code class="code">
+        org.eclipse.jetty.plus.jndi.Resource</code> type of naming entry. You
+        provide the scope, the name of the object (relative to
+        <code class="code">java:comp/env</code>) and a POJO instance or a
+        <code class="code">javax.naming.Reference</code> instance or
+        <code class="code">javax.naming.Referenceable</code> instance.</p><p>The <a class="link" href="http://jcp.org/aboutJava/communityprocess/pr/jsr244/index.html" target="_top">J2EE
+        Specification</a> recommends that DataSources be stored in
+        <code class="code">java:comp/env/jdbc</code>, JMS connection factories under
+        <code class="code">java:comp/env/jms</code>, JavaMail connection factories under
+        <code class="code"> java:comp/env/mail</code> and URL connection factories under
+        <code class="code">java:comp/env/url</code>. For example:</p><div class="table"><a name="d0e5749"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;Storing DataSources</b></p><div class="table-contents"><table summary="Storing DataSources" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h5></div></div></div><p>Here is an example of configuring a
+        <code class="code">javax.sql.DataSource</code>. Jetty can use any DataSource
+        implementation available on its classpath. In this example, the
+        DataSource is from the <a class="link" href="http://db.apache.org/derby" target="_top">Derby</a> relational database,
+        but you can use any implementation of a
+        <code class="code">javax.sql.DataSource</code>. This example configures it as
+        scoped to a web app with the id of <span class="emphasis"><em> wac</em></span>:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
-          
-          </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-resource-refs-and-resorce-env-refs"></a>Configuring <code class="code">resource-refs</code> and <code class="code">resource-env-refs</code></h5></div></div></div><p>You can configure any type of resource that you want to refer to in a <code class="code">web.xml</code> file as a
-        <code class="code">resource-ref</code> or <code class="code">resource-env-ref</code>, using the <code class="code">
-        org.eclipse.jetty.plus.jndi.Resource</code> type of naming entry. You provide the scope, the name of the object
-        (relative to <code class="code">java:comp/env</code>) and a POJO instance or a <code class="code">javax.naming.Reference</code> instance
-        or <code class="code">javax.naming.Referenceable</code> instance.</p><p>The <a class="link" href="http://jcp.org/aboutJava/communityprocess/pr/jsr244/index.html" target="_top">J2EE
-        Specification</a> recommends that DataSources be stored in <code class="code">java:comp/env/jdbc</code>, JMS connection
-        factories under <code class="code">java:comp/env/jms</code>, JavaMail connection factories under <code class="code">
-        java:comp/env/mail</code> and URL connection factories under <code class="code">java:comp/env/url</code>. For
-        example:</p><div class="table"><a name="d0e5779"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;Storing DataSources</b></p><div class="table-contents"><table summary="Storing DataSources" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h5></div></div></div><p>Here is an example of configuring a <code class="code">javax.sql.DataSource</code>. Jetty can use any DataSource
-        implementation available on its classpath. In this example, the DataSource is from the <a class="link" href="http://db.apache.org/derby" target="_top">Derby</a> relational database, but you can use any implementation of a
-        <code class="code">javax.sql.DataSource</code>. This example configures it as scoped to a web app with the id of <span class="emphasis"><em>
-        wac</em></span>:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/myds<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -198,42 +271,43 @@ Integer mySpecialValue = (Integer)ic.lookup(<span xmlns:jfetch="java:org.eclipse
     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-          
-          </pre></div><p>The code above creates an instance of <code class="code">org.apache.derby.jdbc.EmbeddedDataSource</code>, calls the
-        two setter methods <code class="code">setDatabaseName("test"),</code> and <code class="code">setCreateDatabase("create"),</code> and
-        binds it into the JNDI scope for the web app. If you do not have the appropriate <code class="code">resource-ref</code> set
-        up in your <code class="code">web.xml</code>, it is available from application lookups as <code class="code">
-        java:comp/env/jdbc/myds</code>.</p><p>Here's an example <code class="filename">web.xml</code> declaration for the datasource above:</p><div class="informalexample"><pre class="programlisting">
-
-
-  <strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>       </pre></div><p>The code above creates an instance of
+        <code class="code">org.apache.derby.jdbc.EmbeddedDataSource</code>, calls the two
+        setter methods <code class="code">setDatabaseName("test"),</code> and
+        <code class="code">setCreateDatabase("create"),</code> and binds it into the JNDI
+        scope for the web app. If you do not have the appropriate
+        <code class="code">resource-ref</code> set up in your <code class="code">web.xml</code>, it is
+        available from application lookups as <code class="code">
+        java:comp/env/jdbc/myds</code>.</p><p>Here's an example <code class="filename">web.xml</code> declaration for
+        the datasource above:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-ref-name&gt;</strong>jdbc/myds<strong class="hl-tag" style="color: #000096">&lt;/res-ref-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-type&gt;</strong>javax.sql.DataSource<strong class="hl-tag" style="color: #000096">&lt;/res-type&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-auth&gt;</strong>Container<strong class="hl-tag" style="color: #000096">&lt;/res-auth&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong>
-
-          
-          </pre></div><p>To look up your DataSource in your servlet/filter/etc.:</p><div class="informalexample"><pre class="programlisting">
-
-
-<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.naming.InitialContext;
+<strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong>     </pre></div><p>To look up your DataSource in your servlet/filter/etc.:</p><div class="informalexample"><pre class="programlisting"><span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.naming.InitialContext;
 <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">import</span> javax.sql.DataSource;
 
 InitialContext ic = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> InitialContext();
-DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"java:comp/env/jdbc/myds"</span>);
+DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"java:comp/env/jdbc/myds"</span>);     </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>
+          Careful! When configuring Resources, ensure that the type of object you configure matches the type of object you expect to look up in 
 
-          
-          </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3>Careful! When configuring Resources, ensure that the type of object you configure matches the type of
-        object you expect to look up in <code class="code">java:comp/env</code>. For database connection factories, this means that
-        the object you register as a Resource <span class="emphasis"><em>must</em></span> implement the <code class="code">
-        javax.sql.DataSource</code> interface.</div><p>For more examples of datasource configurations, see <a class="xref" href="jndi-datasource-examples.html" title="JNDI Datasource Examples">JNDI Datasource Examples</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-jms-queues-topics-connectionfactories"></a>Configuring JMS Queues, Topics and ConnectionFactories</h5></div></div></div><p>Jetty can bind any implementation of the JMS destinations and connection factories. You just need to
-        ensure the implementation Jars are available on Jetty's classpath. Here is an example of binding an <a class="link" href="http://activemq.apache.org" target="_top">ActiveMQ</a> in JVM connection factory:</p><div class="informalexample"><pre class="programlisting">
+          <code class="code">java:comp/env</code>
 
+          . For database connection factories, this means that the object you register as a Resource 
 
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
+          <span class="emphasis"><em>must</em></span>
+
+           implement the 
+
+          <code class="code">javax.sql.DataSource</code>
+
+           interface.
+        </div><p>For more examples of datasource configurations, see <a class="xref" href="jndi-datasource-examples.html" title="JNDI Datasource Examples">JNDI Datasource Examples</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-jms-queues-topics-connectionfactories"></a>Configuring JMS Queues, Topics and ConnectionFactories</h5></div></div></div><p>Jetty can bind any implementation of the JMS destinations and
+        connection factories. You just need to ensure the implementation Jars
+        are available on Jetty's classpath. Here is an example of binding an
+        <a class="link" href="http://activemq.apache.org" target="_top">ActiveMQ</a> in-JVM
+        connection factory:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"cf"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jms/connectionFactory<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -243,15 +317,14 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-          
-          </pre></div><p>For more information, see <a class="link" href="http://activemq.apache.org/" target="_top">ActiveMQ</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-mail"></a>Configuring Mail</h5></div></div></div><p>Jetty also provides infrastructure for access to <code class="code">javax.mail.Sessions</code> from within an
-        application:</p><div class="informalexample"><pre class="programlisting">
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><p>The entry in web.xml would be:</p><div class="informalexample"><pre class="programlisting">&lt;resource-ref&gt;
+        &lt;res-ref-name&gt;jms/connectionFactory&lt;/res-ref-name&gt;
+        &lt;res-type&gt;javax.jms.ConnectionFactory&lt;/res-type&gt;
+        &lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;</pre></div><p>TODO: put in an example of a QUEUE from progress demo</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-mail"></a>Configuring Mail</h5></div></div></div><p>Jetty also provides infrastructure for access to
+        <code class="code">javax.mail.Sessions</code> from within an application:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"mail"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>mail/Session<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -269,40 +342,33 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
        <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
      <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-          
-          </pre></div><p>The setup above creates an instance of the <code class="code">
-        org.eclipse.jetty.jndi.factories.MailSessionReference</code> class, calls its setter methods <code class="code">
-        setUser("fred");</code>, <code class="code">setPassword("OBF:1xmk1w261z0f1w1c1xmq");</code> to set up the authentication for
-        the mail system, and populates a set of Properties, setting them on the <code class="code">
-        MailSessionReference</code> instance. The result is that an application can look up <code class="code">
-        java:comp/env/mail/Session</code> at runtime and obtain access to a <code class="code">javax.mail.Session</code> that has
-        the necessary configuration to permit it to send email via SMTP.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3>You can set the password to be plain text, or use Jetty's Jetty/Howto/Secure Passwords|password
-        obfuscation //TODO xref// mechanism to make the config file more secure from prying eyes. But you cannot use
-        the other Jetty encryption mechanisms of MD5 and Crypt because then the original password cannot be recovered,
-        which is necessary for the mail system.</div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-xa-transactions"></a>Configuring XA Transactions</h5></div></div></div><p>If you want to perform distributed transactions with your resources, you need a <span class="emphasis"><em>transaction
-        manager</em></span> that supports the JTA interfaces that you can look up as <code class="code">
-        java:comp/UserTransaction</code> in your webapp. Jetty does not ship with one as standard, but you can plug in
-        the one you prefer. You can configure a transaction manager using the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org.eclipse.jetty.plus.jndi.Transaction.html" target="_top">JNDI Transaction</a> object in a Jetty config
-        file. The following example configures the <a class="link" href="" target="_top">Atomikos</a> transaction manager:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"tx"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Transaction"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>      </pre></div><p>The setup above creates an instance of the <code class="code">
+        org.eclipse.jetty.jndi.factories.MailSessionReference</code> class,
+        calls its setter methods to set up the authentication for the mail
+        system, and populates a set of Properties, setting them on the <code class="code">
+        MailSessionReference</code> instance. The result is that an
+        application can look up <code class="code"> java:comp/env/mail/Session</code> at
+        runtime and obtain access to a <code class="code">javax.mail.Session</code> that
+        has the necessary configuration to permit it to send email via
+        SMTP.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3>
+          You can set the password to be plain text, or use Jetty's Jetty/Howto/Secure Passwords|password obfuscation //TODO xref// mechanism to make the config file more secure from prying eyes. But you cannot use the other Jetty encryption mechanisms of MD5 and Crypt because then the original password cannot be recovered, which is necessary for the mail system.
+        </div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-xa-transactions"></a>Configuring XA Transactions</h5></div></div></div><p>If you want to perform distributed transactions with your
+        resources, you need a <span class="emphasis"><em>transaction manager</em></span> that
+        supports the JTA interfaces that you can look up as <code class="code">
+        java:comp/UserTransaction</code> in your webapp. Jetty does not ship
+        with one as standard, but you can plug in the one you prefer. You can
+        configure a transaction manager using the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org.eclipse.jetty.plus.jndi.Transaction.html" target="_top">JNDI
+        Transaction</a> object in a Jetty config file. The following
+        example configures the <a class="link" href="" target="_top">Atomikos</a> transaction
+        manager:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"tx"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Transaction"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"com.atomikos.icatch.jta.J2eeUserTransaction"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong></pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-links"></a>Configuring Links</h5></div></div></div><p>Generally, the name you set for your <code class="code">Resource</code>
+        should be the same name you use for it in <code class="code"> web.xml</code>. For
+        example:</p><p>In a context xml file:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
-          
-          </pre></div><p>You can also use the <a class="link" href="http://mvnrepository.com/artifact/org.mortbay.jetty/jetty-hightide" target="_top">
-        Hightide</a> distribution of jetty instead, which comes with the <a class="link" href="http://www.atomikos.com" target="_top">
-        Atomikos</a> transaction system pre-configured.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="configuring-links"></a>Configuring Links</h5></div></div></div><p>The name you set for your <code class="code">NamingEntry</code> should be the same name you use for it in <code class="code">
-        web.xml</code>. For example:</p><p>In a context xml file:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -313,13 +379,8 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-          
-          </pre></div><p>In <code class="code">web.xml</code>:</p><div class="informalexample"><pre class="programlisting">
-
-
-  <strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><p>In <code class="code">web.xml</code>:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-ref-name&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/res-ref-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-type&gt;</strong>javax.sql.DataSource<strong class="hl-tag" style="color: #000096">&lt;/res-type&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-auth&gt;</strong>Container<strong class="hl-tag" style="color: #000096">&lt;/res-auth&gt;</strong>
@@ -327,17 +388,13 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
       <strong class="hl-tag" style="color: #000096">&lt;injection-target-class&gt;</strong>com.acme.JNDITest<strong class="hl-tag" style="color: #000096">&lt;/injection-target-class&gt;</strong>
       <strong class="hl-tag" style="color: #000096">&lt;injection-target-name&gt;</strong>myDatasource<strong class="hl-tag" style="color: #000096">&lt;/injection-target-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;/injection-target&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong>      </pre></div><p>However, you can refer to it in <code class="code">web.xml</code> by a
+        different name, and link it to the name in your <code class="code">
+        org.eclipse.jetty.plus.jndi.Resource</code> by using an
+        <code class="code">org.eclipse.jetty.plus.jndi.Link</code>. For the example above,
+        you can refer to the <code class="code">jdbc/mydatasource</code> resource as <code class="code">
+        jdbc/mydatasource1</code> as follows:</p><p>In a context xml file declare jdbc/mydatasource:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
-          
-          </pre></div><p>You can refer to it in <code class="code">web.xml</code> by a different name, and link it to the name in your <code class="code">
-        org.eclipse.jetty.plus.jndi.Resource</code> by using an <code class="code">org.eclipse.jetty.plus.jndi.Link</code> type of
-        NamingEntry. For the example above, you can refer to the <code class="code">jdbc/mydatasource</code> resource as <code class="code">
-        jdbc/mydatasource1</code> as follows:</p><p>In a context xml file:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
@@ -348,23 +405,15 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
 
-          
-          </pre></div><p>In a <code class="filename">jetty-env.xml</code> file:</p><div class="informalexample"><pre class="programlisting">
-
-
-  <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"map1"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Link"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><p>In a <code class="filename">WEB-INF/jetty-env.xml</code> file, link the
+        name jdbc/mydatasource to the name you wish to reference it as in
+        web.xml, which in this case jdbc/mydatasource1:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"map1"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Link"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource1<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- name in web.xml --&gt;</span>
     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- name in container environment --&gt;</span>
-  <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-
-          
-          </pre></div><p>And in <code class="filename">web.xml:</code></p><div class="informalexample"><pre class="programlisting">
-
-
-  <strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>   </pre></div><p>Now you can refer to jdbc/mydatasource1
+        <code class="filename">web.xml:</code></p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;resource-ref&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-ref-name&gt;</strong>jdbc/mydatasource1<strong class="hl-tag" style="color: #000096">&lt;/res-ref-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-type&gt;</strong>javax.sql.DataSource<strong class="hl-tag" style="color: #000096">&lt;/res-type&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;res-auth&gt;</strong>Container<strong class="hl-tag" style="color: #000096">&lt;/res-auth&gt;</strong>
@@ -372,67 +421,9 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
       <strong class="hl-tag" style="color: #000096">&lt;injection-target-class&gt;</strong>com.acme.JNDITest<strong class="hl-tag" style="color: #000096">&lt;/injection-target-class&gt;</strong>
       <strong class="hl-tag" style="color: #000096">&lt;injection-target-name&gt;</strong>myDatasource<strong class="hl-tag" style="color: #000096">&lt;/injection-target-name&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;/injection-target&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong>
-
-          
-          </pre></div><p>This can be useful when you cannot change <code class="filename">web.xml</code> but need to link it to a resource
-        in your deployment environment.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="setting-jndi-entries-as-global-or-scoped"></a>Setting JNDI Entries as Global or Scoped</h4></div></div></div><p>As previously stated, you can control the visibility of your JNDI naming entries within your JVM, Server
-      and WebAppContext instances. Naming entries at the jvm scope are visible by any application code, and are
-      available to bind to <code class="code">java:comp/env</code>. Naming entries at the Server scope do not interfere with entries
-      of the same name in a different Server instance, and are available to bind to <code class="code">java:comp/env</code> of any
-      web apps deployed to that Server instance. Finally, the most specific scope are entries at the webapp scope. An
-      entry of this type is only available to bind to <code class="code">java:comp/env</code> of the web app in which it is
-      defined.</p><p>The first parameter to the NamingEntry controls the scope.</p><p>The jvm scope is represented by a null parameter:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"cf"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jms/connectionFactory<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.activemq.ActiveMQConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>vm://localhost?broker.persistent=false<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-
-        
-        </pre></div><p>The Server scope is represented by referencing the related Server object:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.Server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"cf"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jms/connectionFactory<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.activemq.ActiveMQConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>vm://localhost?broker.persistent=false<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
-
-        
-        </pre></div><p>The webapp scope is represented by referencing the related <code class="code">WebAppContext</code> object:</p><div class="informalexample"><pre class="programlisting">
-
-
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-...
-<strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"cf"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jms/connectionFactory<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.activemq.ActiveMQConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>vm://localhost?broker.persistent=false<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
-
-        
-        </pre></div><p>As you can see, the most natural configuration files in which to declare naming entries of each scope
-      are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><code class="filename">etc/jetty.xml</code> file&#8211;jvm or Server scope</li><li class="listitem"><code class="filename">&gt;WEB-INF/jetty-env.xml</code> file or a context xml file&#8211;webapp
-        scope</li></ul></div></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="using-persistent-sessions.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jndi-datasource-examples.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using Persistent Sessions&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;JNDI Datasource Examples</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
+<strong class="hl-tag" style="color: #000096">&lt;/resource-ref&gt;</strong> </pre></div><p>This can be useful when you cannot change
+        <code class="filename">web.xml</code> but need to link it to a resource in your
+        deployment environment.</p></div></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="using-persistent-sessions.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jndi-datasource-examples.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using Persistent Sessions&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;JNDI Datasource Examples</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" style="background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; "><span style="font-style:oblique;font-size: 80%">
 See an error or something missing?<br></span><span style="font-variant: small-caps; font-weight: bold"><a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Contribute to this documentation at
           <span style="color:#fd360b"> Github!</span></a></span><br></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
   var _gaq = _gaq || [];
