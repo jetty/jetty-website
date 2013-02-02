@@ -2,7 +2,7 @@
 
 <!--
 This is the document type descriptor for the
-org.eclipse.jetty.xml.XmlConfiguration class.  It allows a java object to be
+org.eclipse.XmlConfiguration class.  It allows a java object to be
 configured by with a sequence of Set, Put and Call elements.  These tags are
 mapped to methods on the object to be configured as follows:
 
@@ -19,17 +19,16 @@ my be specified if a match is not achieved.
 -->
 
 <!ENTITY % CONFIG "Set|Get|Put|Call|New|Ref|Array|Map|Property">
-<!ENTITY % VALUE "#PCDATA|Get|Call|New|Ref|Array|Map|SystemProperty|Env|Property">
+<!ENTITY % VALUE "#PCDATA|Get|Call|New|Ref|Array|Map|SystemProperty|Property">
 
 <!ENTITY % TYPEATTR "type CDATA #IMPLIED " > <!-- String|Character|Short|Byte|Integer|Long|Boolean|Float|Double|char|short|byte|int|long|boolean|float|double|URL|InetAddress|InetAddrPort| #classname -->
-<!ENTITY % IMPLIEDCLASSATTR "class CDATA #IMPLIED" >
-<!ENTITY % CLASSATTR "class CDATA #REQUIRED" >
-<!ENTITY % NAMEATTR "name CDATA #REQUIRED" >
-<!ENTITY % IMPLIEDNAMEATTR "name CDATA #IMPLIED" >
+<!ENTITY % IMPLIEDCLASSATTR "class NMTOKEN #IMPLIED" >
+<!ENTITY % CLASSATTR "class NMTOKEN #REQUIRED" >
+<!ENTITY % NAMEATTR "name NMTOKEN #REQUIRED" >
+<!ENTITY % IMPLIEDNAMEATTR "name NMTOKEN #IMPLIED" >
 <!ENTITY % DEFAULTATTR "default CDATA #IMPLIED" >
-<!ENTITY % IDATTR "id ID #IMPLIED" >
-<!ENTITY % REFATTR "refid CDATA #IMPLIED" >
-<!ENTITY % REQUIREDIDATTR "id ID #REQUIRED" >
+<!ENTITY % IDATTR "id NMTOKEN #IMPLIED" >
+<!ENTITY % REQUIREDIDATTR "id NMTOKEN #REQUIRED" >
 
 
 <!--
@@ -39,7 +38,7 @@ can be configured:
 
     <Configure class="com.acme.MyClass"> ... </Configure>
 -->
-<!ELEMENT Configure (Arg*,(%CONFIG;)*) >
+<!ELEMENT Configure (%CONFIG;)* >
 <!ATTLIST Configure %IMPLIEDCLASSATTR; %IDATTR; >
 
 
@@ -58,7 +57,7 @@ specified type.
 
 A Set with a class attribute is treated as a static set method invocation.
 -->
-<!ELEMENT Set (%VALUE;)* >
+<!ELEMENT Set ( %VALUE; )* >
 <!ATTLIST Set %NAMEATTR; %TYPEATTR; %IMPLIEDCLASSATTR; >
 
 
@@ -73,7 +72,7 @@ which act on the object returned by the get call.
 
 A Get with a class attribute is treated as a static get method or field.
 -->
-<!ELEMENT Get (%CONFIG;)* >
+<!ELEMENT Get (%CONFIG;)*>
 <!ATTLIST Get %NAMEATTR; %IMPLIEDCLASSATTR; %IDATTR; >
 
 
@@ -90,7 +89,7 @@ space is trimmed out of the value. If it contains multiple value
 elements they are added as strings before being converted to any
 specified type.
 -->
-<!ELEMENT Put (%VALUE;)* >
+<!ELEMENT Put ( %VALUE; )* >
 <!ATTLIST Put %NAMEATTR; %TYPEATTR; >
 
 
@@ -115,15 +114,14 @@ This is equivalent to:
 
 A Call with a class attribute is treated as a static call.
 -->
-<!ELEMENT Call (Arg*,(%CONFIG;)*) >
-<!ATTLIST Call %NAMEATTR; %IMPLIEDCLASSATTR; %IDATTR; >
+<!ELEMENT Call (Arg*,(%CONFIG;)*)>
+<!ATTLIST Call %NAMEATTR; %IMPLIEDCLASSATTR; %IDATTR;>
 
 
 <!--
 Arg Element.
-This element defines a positional or optional named argument for the 
-Call and New elements. The optional type attribute can force the type 
-of the value.
+This element defines a positional argument for the Call element.
+The optional type attribute can force the type of the value.
 
 An Arg element can contain value text and/or value elements such as Call,
 New, SystemProperty, etc. If no value type is specified, then white
@@ -131,15 +129,15 @@ space is trimmed out of the value. If it contains multiple value
 elements they are added as strings before being converted to any
 specified type.
 -->
-<!ELEMENT Arg (%VALUE;)* >
-<!ATTLIST Arg %TYPEATTR; %IMPLIEDNAMEATTR; >
+<!ELEMENT Arg ( %VALUE; )* >
+<!ATTLIST Arg %TYPEATTR; %IMPLIEDNAMEATTR;  >
 
 
 <!--
 New Element.
 This element allows the creation of a new object as part of a
-value for elements such as Set, Put, Arg, etc. The class attribute 
-determines the type of the new object and the contained Arg elements
+value for elements such as Set, Put, Arg, etc. The class attribute determines
+the type of the new object and the contained Arg elements
 are used to select the constructor for the new object.
 
 A New element can contain a sequence of Arg elements followed by
@@ -156,24 +154,22 @@ This is equivalent to:
  Object o = new com.acme.MyClass("value1");
  o.setTest("Value2");
 -->
-<!ELEMENT New (Arg*,(%CONFIG;)*) >
+<!ELEMENT New (Arg*,(%CONFIG;)*)>
 <!ATTLIST New %CLASSATTR; %IDATTR;>
 
 
 <!--
 Ref Element.
-This element allows a previously created object to be referenced by id.  The 
-attribute refid is used to specify the id of another object (the attribute id can
-also be used, but it's use is deprecated).
+This element allows a previously created object to be referenced by id.
 A Ref element can contain a sequence of elements such as Set, Put, Call, etc.
-which act on the referenced object.
+which act on the referenced object:
 
- <Ref refid="myobject">
+ <Ref id="myobject">
    <Set name="Test">Value2</Set>
  </New>
 -->
-<!ELEMENT Ref (%CONFIG;)* >
-<!ATTLIST Ref %IDATTR; %REFATTR;>
+<!ELEMENT Ref ((%CONFIG;)*)>
+<!ATTLIST Ref %REQUIREDIDATTR;>
 
 
 <!--
@@ -191,7 +187,7 @@ are used for each element of the array:
 This is equivalent to:
  String[] a = new String[] { "value0", new String("value1") };
 -->
-<!ELEMENT Array (Item*) >
+<!ELEMENT Array (Item*)>
 <!ATTLIST Array %TYPEATTR; %IDATTR; >
 
 
@@ -213,9 +209,9 @@ This is equivalent to:
  Map m = new HashMap();
  m.put("keyName", new String("value1"));
 -->
-<!ELEMENT Map (Entry*) >
+<!ELEMENT Map (Entry*)>
 <!ATTLIST Map %IDATTR; >
-<!ELEMENT Entry (Item,Item) >
+<!ELEMENT Entry (Item,Item)>
 
 
 <!--
@@ -229,7 +225,7 @@ is specified, then white space is trimmed out of the value.
 If it contains multiple value elements they are added as strings
 before being converted to any specified type.
 -->
-<!ELEMENT Item (%VALUE;)* >
+<!ELEMENT Item ( %VALUE; )* >
 <!ATTLIST Item %TYPEATTR; %IDATTR; >
 
 
@@ -246,27 +242,8 @@ This is equivalent to:
 
  System.getProperty("Test","value");
 -->
-<!ELEMENT SystemProperty EMPTY >
-<!ATTLIST SystemProperty %NAMEATTR; %DEFAULTATTR; %IDATTR; >
-
-
-<!--
-Environment variable Element.
-This element allows OS Environment variables to be retrieved as
-part of the value of elements such as Set, Put, Arg, etc.
-The name attribute specifies the env variable name and the optional
-default argument provides a default value.
-
- <Env name="Test" default="value" />
-
-This is equivalent to:
-
- String v=System.getEnv("Test");
- if (v==null) v="value";
-
--->
-<!ELEMENT Env EMPTY >
-<!ATTLIST Env %NAMEATTR; %DEFAULTATTR; %IDATTR; >
+<!ELEMENT SystemProperty EMPTY>
+<!ATTLIST SystemProperty %NAMEATTR; %DEFAULTATTR; %IDATTR;>
 
 
 <!--
@@ -284,5 +261,5 @@ which act on the retrieved object:
    </Call>
  </Property>
 -->
-<!ELEMENT Property (%CONFIG;)* >
-<!ATTLIST Property %NAMEATTR; %DEFAULTATTR; %IDATTR; >
+<!ELEMENT Property ((%CONFIG;)*)>
+<!ATTLIST Property %NAMEATTR; %DEFAULTATTR; %IDATTR;>
