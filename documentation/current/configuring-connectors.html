@@ -49,7 +49,7 @@ body { background-image: url('images/draft-ribbon.png');
   </p><p>Typically you need to configure very little on connectors other than set the port (see <a class="link" href="configuring-connectors.html#jetty-connectors-network-settings" title="Network Settings.">Network Settings</a>), and perhaps enable X-Forwarded-For
   customization (see <a class="link" href="configuring-connectors.html#jetty-connectors-http-configuration" title="HTTP Configuration">HTTP Configuration</a>). Most other
   settings are for expert configuration only.</p><p>
-  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1411"></a>Constructing a <code class="code">ServerConnector</code></h4></div></div></div><p>The services a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1441"></a>Constructing a <code class="code">ServerConnector</code></h4></div></div></div><p>The services a <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
       <code class="code">ServerConnector</code>
     </a> instance uses are set by constructor injection and once instantiated cannot be changed. Most of the
     services may be defaulted with null or 0 values so that a reasonable default is used, thus for most purposes only
@@ -99,7 +99,7 @@ body { background-image: url('images/draft-ribbon.png');
       
       </pre></div><p>The network settings that you can set on the <a class="link" href="JDURL/org/eclipse/jetty/server/ServerConnector.html" target="_top">
       <code class="code">ServerConnector</code>
-    </a> include:</p><div class="table"><a name="d0e1463"></a><p class="title"><b>Table&nbsp;4.1.&nbsp;Connector Configuration</b></p><div class="table-contents"><table summary="Connector Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Field</th><th align="center">Description</th></tr></thead><tbody><tr><td>host</td><td>The network interface this connector binds to as an IP address or a hostname. If null or 0.0.0.0,
+    </a> include:</p><div class="table"><a name="d0e1493"></a><p class="title"><b>Table&nbsp;4.1.&nbsp;Connector Configuration</b></p><div class="table-contents"><table summary="Connector Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Field</th><th align="center">Description</th></tr></thead><tbody><tr><td>host</td><td>The network interface this connector binds to as an IP address or a hostname. If null or 0.0.0.0,
             bind to all interfaces.</td></tr><tr><td>port</td><td>The configured port for the connector or 0 a random available port may be used (selected port
             available via <code class="code">getLocalPort()</code>).</td></tr><tr><td>idleTimeout</td><td>The time in milliseconds that the connection can be idle before it is closed.</td></tr><tr><td>defaultProtocol</td><td>The name of the default protocol used to select a <code class="code">ConnectionFactory</code> instance. This
             defaults to the first <code class="code">ConnectionFactory</code> added to the connector.</td></tr><tr><td>stopTimeout</td><td>The time in milliseconds to wait before gently stopping a connector.</td></tr><tr><td>acceptQueueSize</td><td>The size of the pending connection backlog. The exact interpretation is JVM and operating system
@@ -184,7 +184,7 @@ body { background-image: url('images/draft-ribbon.png');
       
       </pre></div><p>This adds a <code class="code">SecureRequestCustomizer</code> which adds SSL Session IDs and certificate
     information as request attributes.</p></div><p>
-  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1615"></a>SSL Context Configuration</h4></div></div></div><p>The SSL/TSL connectors for HTTPS and SPDY require a certificate to establish a secure connection. Jetty holds
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1645"></a>SSL Context Configuration</h4></div></div></div><p>The SSL/TSL connectors for HTTPS and SPDY require a certificate to establish a secure connection. Jetty holds
     certificates in standard JVM keystores and are configured as keystore and truststores on a <a class="link" href="JDURL/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">
       <code class="code">SslContextFactory</code>
     </a> instance that is injected into an <a class="link" href="JDURL/org/eclipse/jetty/server/SslConnectionFactory.html" target="_top">
@@ -195,7 +195,7 @@ body { background-image: url('images/draft-ribbon.png');
     </a> and <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-spdy/spdy-example-webapp/src/main/config/example-jetty-spdy.xml" target="_top">
       <code class="filename">example-jetty-spdy.xml</code>
     </a>. Read more about SSL keystores in <a class="link" href="configuring-ssl.html" title="Configuring SSL">Configuring SSL</a>.</p></div><p>
-  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1648"></a>Configuring Connection Factories</h4></div></div></div><p>It is the <code class="code">ConnectionFactory</code> instances injected into a <code class="code">ServerConnector</code> that create
+  </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e1678"></a>Configuring Connection Factories</h4></div></div></div><p>It is the <code class="code">ConnectionFactory</code> instances injected into a <code class="code">ServerConnector</code> that create
     the protocol handling Connection instances for the network endpoints the connector accepts. Thus the different
     instances of connectors in a Jetty setup vary mostly in the configuration of the factories for the protocols they
     support. Other than selecting which factories to use, there is typically very little factory configuration required
