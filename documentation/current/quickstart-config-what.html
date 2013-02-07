@@ -176,7 +176,7 @@ Configure a custom context for serving javadoc as static resources
       is the HashLoginService, which can read usernames and credentials from a Java properties file.</p><p>To configure an instance of HashLoginService that matches the "Test Realm" configured above, the following
       <code class="filename">$JETTY_HOME/etc/test-realm.xml</code> IoC XML file should be passed on the command line or set in
       <code class="filename">start.ini</code>.</p><div class="informalexample"><pre class="programlisting">&lt;?xml version="1.0"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-" "http://www.eclipse.org/jetty/configure.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
 &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
     &lt;!-- =========================================================== --&gt;
     &lt;!-- Configure Authentication Login Service                      --&gt;
@@ -194,11 +194,12 @@ Configure a custom context for serving javadoc as static resources
         &lt;/New&gt;
       &lt;/Arg&gt;
     &lt;/Call&gt;
-    
+
     &lt;Get class="org.eclipse.jetty.util.log.Log" name="rootLogger"&gt;
       &lt;Call name="warn"&gt;&lt;Arg&gt;test-realm is deployed. DO NOT USE IN PRODUCTION!&lt;/Arg&gt;&lt;/Call&gt;
     &lt;/Get&gt;
-&lt;/Configure&gt;</pre></div><p>This creates and configures the LoginService as an aggregate bean on the server. When a web application is
+&lt;/Configure&gt;
+</pre></div><p>This creates and configures the LoginService as an aggregate bean on the server. When a web application is
       deployed that declares a realm called "Test Realm," the server beans are searched for a matching Login
       Service.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1227"></a>Configuring the Deployer</h3></div></div></div><p>The Jetty deployer is a service object that scans a directory for contexts and web applications to hot
     deploy.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A directory called <code class="filename">example/</code> is deployed as a standard web application if it contains

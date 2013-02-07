@@ -62,7 +62,7 @@ etc/jetty-plus.xml    </pre></div></li><li class="listitem"><p>Save the file.</p
   <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
 
   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/my-cool-webapp<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"configurationClasses"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"configurationClasses"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5362"></a>Enabling JNDI for a Deployer</h4></div></div></div><p>Another alternative to enabling JNDI for all webapps (see <a class="link" href="quick-start.html" title="Part&nbsp;I.&nbsp;Quick Start Guide">Quick Start</a>), or just individual webapps
       (see <a class="link" href="jndi.html#applying-jndi-to-single-webapp" title="Enabling JNDI for a Single WebApp">Enabling JNDI for a
@@ -78,7 +78,7 @@ etc/jetty-plus.xml    </pre></div></li><li class="listitem"><p>Save the file.</p
   &lt;!-- Uncomment the following to set up a deployer that will      --&gt;
   &lt;!-- deploy webapps from a directory called webapps-plus. Note   --&gt;
   &lt;!-- that you will need to create this directory first!          --&gt;
-  &lt;Ref id="DeploymentManager"&gt;
+  &lt;Ref refid="DeploymentManager"&gt;
       &lt;Call name="addAppProvider"&gt;
         &lt;Arg&gt;
           &lt;New class="org.eclipse.jetty.deploy.providers.WebAppProvider"&gt;
@@ -87,7 +87,7 @@ etc/jetty-plus.xml    </pre></div></li><li class="listitem"><p>Save the file.</p
             &lt;Set name="scanInterval"&gt;5&lt;/Set&gt;
             &lt;Set name="parentLoaderPriority"&gt;false&lt;/Set&gt;
             &lt;Set name="extractWars"&gt;true&lt;/Set&gt;
-            &lt;Set name="configurationClasses"&gt;&lt;Ref id="plusConfig"/&gt;&lt;/Set&gt;
+            &lt;Set name="configurationClasses"&gt;&lt;Ref refid="plusConfig"/&gt;&lt;/Set&gt;
           &lt;/New&gt;
         &lt;/Arg&gt;
       &lt;/Call&gt;
@@ -168,7 +168,7 @@ resource-env-ref/</pre></div><p><a class="link" href="jndi.html#configuring-env-
               parameter to the resource declaration. Eg:</p><div class="informalexample"><pre class="programlisting">&lt;Configure id="Server" class="org.eclipse.jetty.Server"&gt;
 
 &lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
-  &lt;Arg&gt;&lt;Ref id="Server"/&gt;&lt;/Arg&gt;  &lt;!-- reference to Server instance --&gt;
+  &lt;Arg&gt;&lt;Ref refid="Server"/&gt;&lt;/Arg&gt;  &lt;!-- reference to Server instance --&gt;
   &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
   &lt;Arg&gt;
     &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
@@ -183,7 +183,7 @@ resource-env-ref/</pre></div><p><a class="link" href="jndi.html#configuring-env-
               as the first parameter to the resource declaration. Eg:</p><div class="informalexample"><pre class="programlisting">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
 
 &lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
-  &lt;Arg&gt;&lt;Ref id='wac'/&gt;&lt;/Arg&gt; &lt;!-- reference to WebAppContext --&gt;
+  &lt;Arg&gt;&lt;Ref refid='wac'/&gt;&lt;/Arg&gt; &lt;!-- reference to WebAppContext --&gt;
   &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
   &lt;Arg&gt;
     &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
@@ -262,7 +262,7 @@ Integer mySpecialValue = (Integer)ic.lookup(<span xmlns:jfetch="java:org.eclipse
         scoped to a web app with the id of <span class="emphasis"><em> wac</em></span>:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/myds<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.derby.jdbc.EmbeddedDataSource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -309,7 +309,7 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
         connection factory:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"cf"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jms/connectionFactory<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.activemq.ActiveMQConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -326,7 +326,7 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
         <code class="code">javax.mail.Sessions</code> from within an application:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"mail"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>mail/Session<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
      <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
        <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.jndi.factories.MailSessionReference"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -370,7 +370,7 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
         example:</p><p>In a context xml file:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.derby.jdbc.EmbeddedDataSource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -396,7 +396,7 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
         jdbc/mydatasource1</code> as follows:</p><p>In a context xml file declare jdbc/mydatasource:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
 
 <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"myds"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Resource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"wac"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.apache.derby.jdbc.EmbeddedDataSource"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -409,7 +409,7 @@ DataSource myDS = (DataSource)ic.lookup(<span xmlns:jfetch="java:org.eclipse.jet
 <strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><p>In a <code class="filename">WEB-INF/jetty-env.xml</code> file, link the
         name jdbc/mydatasource to the name you wish to reference it as in
         web.xml, which in this case jdbc/mydatasource1:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"map1"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.plus.jndi.Link"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">'wac'</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource1<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- name in web.xml --&gt;</span>
     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>jdbc/mydatasource<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- name in container environment --&gt;</span>
 <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>   </pre></div><p>Now you can refer to jdbc/mydatasource1
