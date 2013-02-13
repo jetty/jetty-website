@@ -123,13 +123,13 @@
 </tr>
 
 <tr>
-<td> 8.2 </td>
+<td> 9.0 </td>
 <td> Eclipse </td>
 <td> 1.7 </td>
 <td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)<br/>SPDY</td>
 <td> 3.0 </td>
-<td> 2.1 </td>
-<td> Experimental </td>
+<td> 2.2 </td>
+<td> Stable </td>
 </tr>
 
 <tr>
@@ -138,7 +138,7 @@
 <td> 1.6 </td>
 <td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)</td>
 <td> 3.0 </td>
-<td> 2.1 </td>
+<td> 2.2 </td>
 <td> Stable </td>
 </tr>
 
