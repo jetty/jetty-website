@@ -11,9 +11,7 @@ ContentResponse response = httpClient.GET(<span xmlns:jfetch="java:org.eclipse.j
       </pre></div><p>Method <code class="code">HttpClient.GET(...)</code> performs a HTTP GET request to the given URI and returns a
     <code class="code">ContentResponse</code> when the request/response conversation completes successfully.</p><p>The <code class="code">ContentResponse</code> object contains the HTTP response information: status code, headers
     and possibly a content. The content length is limited by default to 2 MiB; for larger content see
-    <a class="xref" href="http-client-api.html#http-client-response-content" title="Response Content Handling">
-            License Details
-        </a>.</p><p>If you want to customize the request, for example by issuing a HEAD request instead of a GET, and simulating
+    <a class="xref" href="http-client-api.html#http-client-response-content" title="Response Content Handling">Response Content Handling</a>.</p><p>If you want to customize the request, for example by issuing a HEAD request instead of a GET, and simulating
     a browser user agent, you can do it in this way:</p><div class="informalexample"><pre class="programlisting">
 
 ContentResponse response = httpClient.newRequest(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://domain.com/path?query"</span>)
@@ -178,9 +176,7 @@ content.close();
       In this case, <code class="code">Response.Listener</code> callbacks will be invoked before the request is fully sent.
       This allows fine-grained control of the request/response conversation: for example the server may reject
       contents that are too big, send a response to the client, which in turn may stop the content upload.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="http-client-response-content"></a>Response Content Handling</h4></div></div></div><p>Jetty HTTP client allows applications to handle response content in different ways.</p><p>The first way is to buffer the response content in memory; this is done when using the blocking APIs (see
-      <a class="xref" href="http-client-api.html#http-client-blocking" title="Blocking APIs">
-            License Details
-        </a>) and the content is buffered within a <code class="code">ContentResponse</code> up to
+      <a class="xref" href="http-client-api.html#http-client-blocking" title="Blocking APIs">Blocking APIs</a>) and the content is buffered within a <code class="code">ContentResponse</code> up to
       2 MiB.</p><p>If you want to control the length of the response content (for example limiting to values smaller than the
       default of 2 MiB), then you can use a
       <code class="classname">org.eclipse.jetty.client.util.FutureResponseListener</code>in this way:</p><div class="informalexample"><pre class="programlisting">
@@ -195,9 +191,7 @@ request.send(listener);
 ContentResponse response = listener.get(<span class="hl-number">5</span>, TimeUnit.SECONDS);
 
         </pre></div><p>If the response content length is exceeded, the response will be aborted, and an exception will be thrown
-      by method <code class="code">get()</code>.</p><p>If you are using the asynchronous APIs (see <a class="xref" href="http-client-api.html#http-client-async" title="Asynchronous APIs">
-            License Details
-        </a>), you can use the <code class="code">
+      by method <code class="code">get()</code>.</p><p>If you are using the asynchronous APIs (see <a class="xref" href="http-client-api.html#http-client-async" title="Asynchronous APIs">Asynchronous APIs</a>), you can use the <code class="code">
       BufferingResponseListener</code> utility class:</p><div class="informalexample"><pre class="programlisting">
 
 httpClient.newRequest(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http://domain.com/path"</span>)
