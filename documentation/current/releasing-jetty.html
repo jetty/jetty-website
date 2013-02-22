@@ -4,9 +4,9 @@
           <span style="color:#fd360b"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="releasing-jetty"></a>Releasing Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="releasing-jetty.html#d0e11216">Jetty Release Notes</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11304">Building and Deploying Aggregate Docs</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11322">Deploying Distribution Files</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11334">Updating Stable Links</a></span></dt></dl></div><p>There are a number of steps to releasing jetty. It is not just limited to running a couple of maven commands
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="releasing-jetty"></a>Releasing Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="releasing-jetty.html#d0e11519">Jetty Release Notes</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11607">Building and Deploying Aggregate Docs</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11625">Deploying Distribution Files</a></span></dt><dt><span class="section"><a href="releasing-jetty.html#d0e11637">Updating Stable Links</a></span></dt></dl></div><p>There are a number of steps to releasing jetty. It is not just limited to running a couple of maven commands
   and then moving onto bigger and better things. There are a number of process related issues once the fun maven bits
-  have been completed.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11216"></a>Jetty Release Notes</h3></div></div></div><p>This release script is for jetty7, to release jetty8 the script is equivalent except instead of 'master'
+  have been completed.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11519"></a>Jetty Release Notes</h3></div></div></div><p>This release script is for jetty7, to release jetty8 the script is equivalent except instead of 'master'
     branch we use 'jetty-8' branch and instead of 'release' branch we use 'release-8'. To keep this clear in the steps
     below the actual git branch name is replaced with $ORIG_BRANCH and $REL_BRANCH.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Pick your version identification strings.</p><p>These follow a strict format and will be used when prompted during step <a class="xref" href="releasing-jetty.html#prepare-release-step">6</a> below.</p><pre class="screen">
 
@@ -66,7 +66,7 @@ $ git checkout $ORIG_BRANCH
 $ git merge --no-ff $REL_BRANCH
 $ git push origin $ORIG_BRANCH
 
-        </pre></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11304"></a>Building and Deploying Aggregate Docs</h3></div></div></div><p>Define the jetty.eclipse.website server entry in your .m2/settings.xml file. You'll need to have access to
+        </pre></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11607"></a>Building and Deploying Aggregate Docs</h3></div></div></div><p>Define the jetty.eclipse.website server entry in your .m2/settings.xml file. You'll need to have access to
     the dev.eclipse.org machine to perform these actions. If you don't know if you have access to this then you
     probably don't and will need to ask a project leader for help.</p><p>To build and deploy the aggregate javadoc and jxr bits:</p><pre class="screen">
 
@@ -86,7 +86,7 @@ mv jetty-project/xref .
 rmdir jetty-project
 
     </pre><p>The end result should be api documents accessible from http://download.eclipse.org/jetty/&lt;project
-    version&gt;/api-docs and http://download.eclipse.org/jetty/&lt;project version&gt;/xref</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11322"></a>Deploying Distribution Files</h3></div></div></div><p>Since we also provide alternative locations to download jetty distributions we need to copy these into place.
+    version&gt;/api-docs and http://download.eclipse.org/jetty/&lt;project version&gt;/xref</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11625"></a>Deploying Distribution Files</h3></div></div></div><p>Since we also provide alternative locations to download jetty distributions we need to copy these into place.
     There are a couple of scripts that will take care of this although they need to be localized to your particular
     execution environment and you need to have authorization to put stuff where it needs to go. These scripts are
     located at: <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git/tree/release-scripts" target="_top">
@@ -99,7 +99,7 @@ $ ./promote-to-codehaus.sh 7.6.2.v20120302 7.6.2
     </pre><p>Each of these scripts will download all of the relevant files from maven central and then copy them into the
     correct location on eclipse and codehaus infrastructure. On the eclipse side of it they will also adjust the
     documentation links if they remain broken as well as regenerate all of the html files on the eclipse download
-    site.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11334"></a>Updating Stable Links</h3></div></div></div><p>Since we are not allowed to have symbolic links on the download site we have to log into the machine manually
+    site.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11637"></a>Updating Stable Links</h3></div></div></div><p>Since we are not allowed to have symbolic links on the download site we have to log into the machine manually
     and remove the previous stable directory and update it with a new release. Maintaining the conventions we use on
     the site will allow all 'stable' links to be stable and not needed to update to the latest major Jetty build
     version:</p><pre class="screen">
