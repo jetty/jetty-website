@@ -18,8 +18,9 @@
   individual web applications.</p><p>The <code class="filename">webdefault.xml</code> file is located in <code class="filename">
   $(jetty.home)/etc/webdefault.xml</code>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-webdefault-xml"></a>Using <code class="filename">webdefault.xml</code></h3></div></div></div><p>You can specify a custom configuration file to use for specific
     webapps, or for all webapps. If you do not specify an alternate defaults
-    descriptor, Jetty automatically uses
-    <code class="filename">webdefault.xml</code>.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-custom-webdefault-xml-one-webapp"></a>Creating a Custom <code class="filename">webdefault.xml</code> for One
+    descriptor, the $JETTY-HOME/etc/jetty-deploy.xml file will configure jetty
+    to automatically use
+    $JETTY_HOME/etc/<code class="filename">webdefault.xml</code>.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-custom-webdefault-xml-one-webapp"></a>Creating a Custom <code class="filename">webdefault.xml</code> for One
       WebApp</h4></div></div></div><p>You can specify a custom <code class="filename">webdefault.xml</code> for
       an individual web application in that webapp's <a class="xref" href="jetty-xml-config.html" title="jetty.xml"><code class="filename">jetty.xml</code></a> as follows:</p><div class="informalexample"><pre class="programlisting">
  
@@ -47,20 +48,9 @@
       <code class="filename">webdefault.xml</code>.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-custom-webdefault-xml-multiple-webapps"></a>Creating a Custom <code class="filename">webdefault.xml</code> for
       Multiple WebApps</h4></div></div></div><p>If you want to apply the same custom
       <code class="filename">webdefault.xml</code> to a number of webapps, provide the
-      path to the file in <a class="xref" href="jetty-xml-config.html" title="jetty.xml"><code class="filename">jetty.xml</code></a> either to the hot
-      deployer (<a class="xref" href="using-context-provider.html" title="Using the Context Provider">Using the Context Provider</a>) or the static
-      deployer (<a class="xref" href="using-webapp-provider.html" title="Using the WebApp Provider">Using the WebApp Provider</a>). For example:</p><div class="informalexample"><pre class="programlisting">
- 
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    ...
-    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.WebAppDeployer"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-        ...
-        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>/my/path/to/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-    ...
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
-
-        </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="webdefault-xml-using-jetty-maven-plugin"></a>Using the Jetty Maven Plugin</h4></div></div></div><p>Similarly, when using the Jetty Maven Plugin (<a class="xref" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Configuring the Jetty Maven Plugin</a>), you provide a customized
+      path to the file in <a class="xref" href="jetty-xml-config.html" title="jetty.xml"><code class="filename">jetty.xml</code></a> in the
+      $JETTY_HOME/etc/jetty-deploy.xml file:</p><div class="informalexample"><pre class="programlisting">   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>/other/path/to/another/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong></pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="webdefault-xml-using-jetty-maven-plugin"></a>Using the Jetty Maven Plugin</h4></div></div></div><p>Similarly, when using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Jetty
+      Maven Plugin</a> you provide a customized
       <code class="filename">webdefault.xml</code> file for your webapp as
       follows:</p><div class="informalexample"><pre class="programlisting">
  
