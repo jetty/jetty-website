@@ -376,7 +376,6 @@ import org.eclipse.jetty.deploy.PropertiesConfigurationManager;
 import org.eclipse.jetty.deploy.providers.WebAppProvider;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.server.ForwardedRequestCustomizer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -393,7 +392,7 @@ import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.StatisticsHandler;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.util.thread.TimerScheduler;
+import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 
 public class LikeJettyXml {
 
@@ -403,7 +402,7 @@ public class LikeJettyXml {
         QueuedThreadPool threadPool = new QueuedThreadPool();
         threadPool.setMaxThreads(500);
         Server server = new Server(threadPool);
-        server.addBean(new TimerScheduler());
+        server.addBean(new ScheduledExecutorScheduler());
         HttpConfiguration http_config = new HttpConfiguration();
         http_config.setSecureScheme("https");
         http_config.setSecurePort(8443);
