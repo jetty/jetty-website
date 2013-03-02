@@ -4,7 +4,7 @@
           <span style="color:#F3A"> www.webtide.com</span></a></span><br><span style="font-style:oblique;font-size: 80%">
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedding-jetty"></a>Embedding Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="embedding-jetty.html#d0e7200">Overview</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7237">Creating the Server</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7248">Using Handlers</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7377">Embedding Connectors</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7425">Embedding Servlets</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7443">Embedding Contexts</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7495">Embedding ServletContexts</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7515">Embedding Web Applications</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7532">Like Jetty XML</a></span></dt></dl></div><p>Jetty has a slogan, "<span class="emphasis"><em>Don't deploy your application in Jetty,
+    </span></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedding-jetty"></a>Embedding Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="embedding-jetty.html#d0e7222">Overview</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7259">Creating the Server</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7270">Using Handlers</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7399">Embedding Connectors</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7447">Embedding Servlets</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7465">Embedding Contexts</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7517">Embedding ServletContexts</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7537">Embedding Web Applications</a></span></dt><dt><span class="section"><a href="embedding-jetty.html#d0e7554">Like Jetty XML</a></span></dt></dl></div><p>Jetty has a slogan, "<span class="emphasis"><em>Don't deploy your application in Jetty,
   deploy Jetty in your application!</em></span>" What this means is that as an
   alternative to bundling your application as a standard WAR to be deployed in
   Jetty, Jetty is designed to be a software component that can be instantiated
@@ -13,11 +13,11 @@
   rather than putting your application into an HTTP server.</p><p>This tutorial takes you step-by-step from the simplest Jetty server
   instantiation to running multiple web applications with standards-based
   deployment descriptors. The source for most of these examples is part of the
-  standard Jetty project.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7200"></a>Overview</h3></div></div></div><p>To embed a Jetty server the following steps are typical and are
+  standard Jetty project.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7222"></a>Overview</h3></div></div></div><p>To embed a Jetty server the following steps are typical and are
     illustrated by the examples in this tutorial:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Create a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Server.html" target="_top">Server</a>
-        instance</p></li><li class="listitem"><p>Add/Configure <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Connector.html" target="_top">Connector</a>s</p></li><li class="listitem"><p>Add/Configure <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Handler.html" target="_top">Handler</a>s
-        and/or <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">Context</a>s
-        and/or <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/Servlet.html" target="_top">Servlet</a>s</p></li><li class="listitem"><p>Start the Server</p></li><li class="listitem"><p>Wait on the server or do something else with your thread.</p></li></ol></div><p></p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7237"></a>Creating the Server</h3></div></div></div><p>The following code from SimplestServer.java instantiates and runs
+        instance.</p></li><li class="listitem"><p>Add/Configure <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Connector.html" target="_top">Connectors</a>.</p></li><li class="listitem"><p>Add/Configure <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Handler.html" target="_top">Handlers</a>
+        and/or <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandler.html" target="_top">Contexts</a>
+        and/or <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/Servlet.html" target="_top">Servlets</a>.</p></li><li class="listitem"><p>Start the Server.</p></li><li class="listitem"><p>Wait on the server or do something else with your thread.</p></li></ol></div><p></p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7259"></a>Creating the Server</h3></div></div></div><p>The following code from SimplestServer.java instantiates and runs
     the simplest possible Jetty server:</p><div class="informalexample"><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Server;
@@ -33,10 +33,9 @@ public class SimplestServer {
     }
 }
 </pre></div><p>This runs an HTTP server on port 8080. It is not a very useful
-    server as it has no handlers and thus returns a 404 error for every
-    request.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7248"></a>Using Handlers</h3></div></div></div><p>To produce a response to a request, Jetty requires a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Handler.html" target="_top">Handler</a>
-    to be set on the server. A handler may:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Examine/modify the HTTP request.</p></li><li class="listitem"><p>Generate the complete HTTP response.</p></li><li class="listitem"><p>Call another Handler (see HandlerWrapper).</p></li><li class="listitem"><p>Select one or many Handlers to call (see
-        HandlerCollection).</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7269"></a>HelloWorld Handler</h4></div></div></div><p>The following code based on HelloHandler.java shows a simple hello
+    server as it has no handlers, and thus returns a 404 error for every
+    request.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7270"></a>Using Handlers</h3></div></div></div><p>To produce a response to a request, Jetty requires that you set a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Handler.html" target="_top">Handler</a> on the server. A handler may:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Examine/modify the HTTP request.</p></li><li class="listitem"><p>Generate the complete HTTP response.</p></li><li class="listitem"><p>Call another Handler (see HandlerWrapper).</p></li><li class="listitem"><p>Select one or many Handlers to call (see
+        HandlerCollection).</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7291"></a>HelloWorld Handler</h4></div></div></div><p>The following code based on HelloHandler.java shows a simple hello
       world handler:</p><div class="informalexample"><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import java.io.IOException;
@@ -75,62 +74,62 @@ public class HelloHandler extends AbstractHandler {
         if (_body != null) response.getWriter().println(_body);
     }
 }
-</pre></div><p>The parameters passed to the handle method are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>target - the target of the request, which is either a URI or a
-          name from a named dispatcher.</p></li><li class="listitem"><p>baseRequest - the Jetty mutable request object, which is
-          always unwrapped.</p></li><li class="listitem"><p>request - the immutable request object, which may have been
-          wrapped by a filter or servlet.</p></li><li class="listitem"><p>response - the response, which may have been wrapped by a
-          filter or servlet.</p></li></ul></div><p>The handler sets the response status, content-type and marks the
+</pre></div><p>The parameters passed to the handle method are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>target&#8211;the target of the request, which is either a URI or a
+          name from a named dispatcher.</p></li><li class="listitem"><p>baseRequest&#8211;the Jetty mutable request object, which is
+          always unwrapped.</p></li><li class="listitem"><p>request&#8211;the immutable request object, which may have been
+          wrapped by a filter or servlet.</p></li><li class="listitem"><p>response&#8211;the response, which may have been wrapped by a
+          filter or servlet.</p></li></ul></div><p>The handler sets the response status, content-type, and marks the
       request as handled before it generates the body of the response using a
-      writer.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7295"></a>Running HelloWorldHandler</h4></div></div></div><p>To allow a Handler to handle HTTP requests, it must be added to a
+      writer.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7317"></a>Running HelloWorldHandler</h4></div></div></div><p>To allow a Handler to handle HTTP requests, you must add it to a
       Server instance. The following code from OneHandler.java shows how a
       Jetty server can use the HelloWorld handler:</p><div class="informalexample"><pre class="programlisting">public static void main(String[] args) throws Exception {
     Server server = new Server(8080);
     server.setHandler(new HelloHandler());
     server.start();
     server.join();
-}</pre></div><p>All request handling in Jetty is done by one or more handlers.
-      Some handlers are used to select other specific handlers (eg a
+}</pre></div><p>One or more handlers do all request handling in Jetty.
+      Some handlers select other specific handlers (for example, a
       ContextHandlerCollection uses the context path to select a
-      ContextHandler); others will use application logic to generate a
-      response (eg the ServletHandler passes the request to an application
-      Servlet), while others will do tasks unrelated to generating the
-      response (eg RequestLogHandler or StatisticsHandler).</p><p>We will look in later sections at how you can combine handlers
+      ContextHandler); others use application logic to generate a
+      response (for example, the ServletHandler passes the request to an application
+      Servlet), while others do tasks unrelated to generating the
+      response (for example, RequestLogHandler or StatisticsHandler).</p><p>Later sections describe how you can combine handlers
       like aspects. You can see some of the handlers available in Jetty in the
       <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/handler/package-summary.html" target="_top">
-      org.eclipse.jetty.server.handler</a> package.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7313"></a>Handler Collections and Wrappers</h4></div></div></div><p>Complex request handling is typically built from multiple Handlers
-      that can be combined in various ways. Jetty has several implementations
+      org.eclipse.jetty.server.handler</a> package.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7335"></a>Handler Collections and Wrappers</h4></div></div></div><p>Complex request handling is typically built from multiple Handlers
+      that you can combine in various ways. Jetty has several implementations
       of the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HandlerContainer.html" target="_top">HandlerContainer</a>
       interface:</p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerCollection.html" target="_top">HandlerCollection</a></span></dt><dd><p>Holds a collection of other handlers and calls each handler
             in order. This is useful for combining statistics and logging
             handlers with the handler that generates the response.</p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerList.html" target="_top">HandlerList</a></span></dt><dd><p>A Handler Collection that calls each handler in turn until
             either an exception is thrown, the response is committed or the
-            request.isHandled() returns true. It can be used to combine
+            request.isHandled() returns true. You can use it to combine
             handlers that conditionally handle a request, such as calling
-            multiple contexts until one matches a virtual host.</p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerWrapper.html" target="_top">HandlerWrapper</a></span></dt><dd><p>A Handler base class that can be used to daisy chain
+            multiple contexts until one matches a virtual host.</p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerWrapper.html" target="_top">HandlerWrapper</a></span></dt><dd><p>A Handler base class that you can use to daisy chain
             handlers together in the style of aspect-oriented programming. For
             example, a standard web application is implemented by a chain of a
-            context, session, security and servlet handlers.</p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandlerCollection.html" target="_top">ContextHandlerCollection</a></span></dt><dd><p>A sepcialized HandlerCollection that uses the longest prefix
-            of the request URI (the contextPath) to select a contqained
-            ContextHandler to handle the request.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7350"></a>Scoped Handlers</h4></div></div></div><p>Much of the standard Servlet container in jetty is implemented
+            context, session, security and servlet handlers.</p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/ContextHandlerCollection.html" target="_top">ContextHandlerCollection</a></span></dt><dd><p>A specialized HandlerCollection that uses the longest prefix
+            of the request URI (the contextPath) to select a contained
+            ContextHandler to handle the request.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7372"></a>Scoped Handlers</h4></div></div></div><p>Much of the standard Servlet container in Jetty is implemented
       with HandlerWrappers that daisy chain handlers together: ContextHandler
       to SessionHandler to SecurityHandler to ServletHandler. However, because
       of the nature of the servlet specification, this chaining cannot be a
       pure nesting of handlers as the outer handlers sometimes need
-      information that is processed by the inner handlers. For example, when a
-      ContextHandler calls some application listeners to inform it of a
-      request entering the context, it must already know what servlet the
+      information that the inner handlers process. For example, when a
+      ContextHandler calls some application listeners to inform them of a
+      request entering the context, it must already know which servlet the
       ServletHandler will dispatch the request to so that the servletPath
       method returns the correct value.</p><p>The HandlerWrapper is specialized to the <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/handler/ScopedHandler.html" target="_top">ScopedHandler</a>
       abstract class, which supports a daisy chain of scopes. For example if a
-      ServletHandler is nested withing a ContextHandler, then the order and
+      ServletHandler is nested withing a ContextHandler, the order and
       nesting of execution of methods is:</p><div class="literallayout"><p>Server.handle(...)<br>
 &nbsp;&nbsp;ContextHandler.doScope(...)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;ServletHandler.doScope(...)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ContextHandler.doHandle(...)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServletHandler.doHandle(...)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SomeServlet.service(...)</p></div><p>Thus when the ContextHandler handles the request, it is done so
-      within the scope established by the ServletHandler.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7364"></a>Resource Handler</h4></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/FileServer.html" target="_top">FileServer
-      example</a> shows how a ResourceHandler can be used to serve static
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SomeServlet.service(...)</p></div><p>Thus when the ContextHandler handles the request, it does so
+      within the scope the ServletHandler has established.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7386"></a>Resource Handler</h4></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/FileServer.html" target="_top">FileServer
+      example</a> shows how you can use a ResourceHandler to serve static
       content from the current working directory:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Handler;
@@ -159,15 +158,14 @@ public class FileServer {
         server.join();
     }
 }
-</pre><p>Note that a HandlerList is used with the ResourceHandler and a
-      DefaultHandler, so that the DefaultHandler will generate a good 404
-      response for any requests that do not match a static resource.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7377"></a>Embedding Connectors</h3></div></div></div><p>In the previous examples, the Server instance was passed a port
-    number and it internally created a default instance of a Connector that
-    listened for request on that port. However, often when embedding jetty it
-    will be desirable to explicity instantiate and configure one or more
-    Connectors for a Server instance.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7382"></a>One Connector</h4></div></div></div><p>In the following example, <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneConnector.html" target="_top">OneConnector.java</a>,
-      a single HTTP connector instance is instantiated, configured and added
-      to the server:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
+</pre><p>Notice that a HandlerList is used with the ResourceHandler and a
+      DefaultHandler, so that the DefaultHandler generates a good 404
+      response for any requests that do not match a static resource.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7399"></a>Embedding Connectors</h3></div></div></div><p>In the previous examples, the Server instance is passed a port
+    number and it internally creates a default instance of a Connector that
+    listens for requests on that port. However, often when embedding Jetty it
+    is desirable to explicity instantiate and configure one or more
+    Connectors for a Server instance.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7404"></a>One Connector</h4></div></div></div><p>The following example, <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneConnector.html" target="_top">OneConnector.java</a>,
+      instantiates, configures, and adds a single HTTP connector instance to the server:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -189,29 +187,29 @@ public class OneConnector {
         server.join();
     }
 }
-</pre><p>In this example the connector handles the HTTP protocol as that is
+</pre><p>In this example the connector handles the HTTP protocol, as that is
       the default for the <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/ServerConnector.html" target="_top">ServerConnector</a>
-      class.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7398"></a>Many Connectors</h4></div></div></div><p>When configuring multiple connectors (eg HTTP and HTTPS), it may
+      class.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7420"></a>Many Connectors</h4></div></div></div><p>When configuring multiple connectors (for example, HTTP and HTTPS), it may
       be desirable to share configuration of common parameters for HTTP. To
-      achieve this the ServerConnector class needs to be explicitly configured
-      with ConnectionFactory instances which can be provided with the common
-      HTTP configuration.</p><p>In the <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/ManyConnectors.html" target="_top">ManyConnectors
-      example</a>, a server is configured with two ServerConnector
+      achieve this you need to explicitly configure the ServerConnector class
+      with ConnectionFactory instances, and provide them with common
+      HTTP configuration.</p><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/ManyConnectors.html" target="_top">ManyConnectors
+      example</a>, configures a server with two ServerConnector
       instances: the http connector has a <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/HttpConnectionFactory.html" target="_top">HTTPConnectionFactory</a>
       instance; the https connector has a SslConnectionFactory chained to a
       HttpConnectionFactory. Both HttpConnectionFactories are configured based
       on the same <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">HttpConfiguration</a>
       instance, however the HTTPS factory uses a wrapped configuration so that
       a <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/server/SecureRequestCustomizer.html" target="_top">SecureRequestCustomizer</a>
-      may be added.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7417"></a>SPDY Connectors</h4></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/SpdyConnector.html" target="_top">SPDYConnector
+      can be added.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e7439"></a>SPDY Connectors</h4></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/SpdyConnector.html" target="_top">SPDYConnector
       example</a> is a similar to the HTTPS connector except that the
-      SslConnectionFactory is chained NPNConnectionFactory that negotiates if
-      the next protocol will be SPDY/2, SPDY/3 or HTTPS. </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7425"></a>Embedding Servlets</h3></div></div></div><p><a class="link" href="http://en.wikipedia.org/wiki/Java_Servlet" target="_top">Servlet</a>s are
+      SslConnectionFactory is chained to the NPNConnectionFactory that negotiates whether
+      the next protocol is to be SPDY/2, SPDY/3 or HTTPS. </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7447"></a>Embedding Servlets</h3></div></div></div><p><a class="link" href="http://en.wikipedia.org/wiki/Java_Servlet" target="_top">Servlets</a> are
     the standard way to provide application logic that handles HTTP requests.
     Servlets are similar to a Jetty Handler except that the request object is
     not mutable and thus cannot be modified. Servlets are handled in Jetty by
-    a <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/MinimalServlets.html" target="_top">ServletHandler</a>
-    that: uses standard path mappings to match a Servlet to a request; sets
+    A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/MinimalServlets.html" target="_top">ServletHandler</a>
+    handles Servlets in Jetty. It uses standard path mappings to match a Servlet to a request; sets
     the requests servletPath and pathInfo; passes the request to the servlet,
     possibly via Filters to produce a response.</p><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/MinimalServlets.html" target="_top">MinimalServlets
     example</a> creates a ServletHandler instance and configures a single
@@ -246,16 +244,16 @@ public class MinimalServlets {
         }
     }
 }
-</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7443"></a>Embedding Contexts</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneContext.html" target="_top">ContextHandler</a>
+</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7465"></a>Embedding Contexts</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneContext.html" target="_top">ContextHandler</a>
     is a ScopedHandler that responds only to requests that have a URI prefix
     that matches the configured context path. Requests that match the context
     path have their path methods updated accordingly and the contexts scope is
     available, which optionally may include:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A Classloader that is set as the Thread context classloader
-        while request handling is in scope.</p></li><li class="listitem"><p>A set of attributes that is made available via the <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html" target="_top">ServletContext</a>
-        API</p></li><li class="listitem"><p>A set of init parameters that is made available via the <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html" target="_top">ServletContext</a>
-        API</p></li><li class="listitem"><p>A base Resource which is used as the document root for static
+        while request handling is in scope.</p></li><li class="listitem"><p>A set of attributes that is available via the <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html" target="_top">ServletContext</a>
+        API.</p></li><li class="listitem"><p>A set of init parameters that is available via the <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html" target="_top">ServletContext</a>
+        API.</p></li><li class="listitem"><p>A base Resource which is used as the document root for static
         resource requests via the <a class="link" href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContext.html" target="_top">ServletContext</a>
-        API</p></li><li class="listitem"><p>A set of virtual host names</p></li></ul></div><p>The following <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneContext.html" target="_top">OneContext
+        API.</p></li><li class="listitem"><p>A set of virtual host names.</p></li></ul></div><p>The following <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneContext.html" target="_top">OneContext
     example</a> shows a context being established that wraps the <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/HelloHandler.html" target="_top">HelloHandler</a>:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Server;
@@ -275,10 +273,9 @@ public class OneContext {
         server.join();
     }
 }
-</pre><p>When many contexts are present, a ContextHandlerCollection can be
-    embedded to efficiently examine a request URI to then select the matching
+</pre><p>When many contexts are present, you can embed a ContextHandlerCollection to efficiently examine a request URI to then select the matching
     ContextHandler(s) for the request. The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/ManyContexts.html" target="_top">ManyContexts
-    example</a> shows how many such contexts can be configured:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
+    example</a> shows how many such contexts you can configure:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -306,7 +303,7 @@ public class ManyContexts {
         server.join();
     }
 }
-</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7495"></a>Embedding ServletContexts</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/servlet/ServletContextHandler.html" target="_top">ServletContextHandler</a>
+</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7517"></a>Embedding ServletContexts</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/servlet/ServletContextHandler.html" target="_top">ServletContextHandler</a>
     is a specialization of ContextHandler with support for standard sessions
     and Servlets. The following <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneServletContext.html" target="_top">OneServletContext
     example</a> instantiates a <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/servlet/DefaultServlet.html" target="_top">DefaultServlet</a>
@@ -332,12 +329,12 @@ public class OneServletContext {
         server.join();
     }
 }
-</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7515"></a>Embedding Web Applications</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">WebAppContext</a>
+</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7537"></a>Embedding Web Applications</h3></div></div></div><p>A <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">WebAppContext</a>
     is an extension of a ServletContextHandler that uses the <a class="link" href="http://en.wikipedia.org/wiki/WAR_%28Sun_file_format%29" target="_top">standard
     layout</a> and web.xml to configure the servlets, filters and other
     features from a web.xml and/or annotations. The following <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/OneWebApp.html" target="_top">OneWebApp
-    example</a> configures the jetty test webapp. Web application can use
-    resources provided by the container and in this case a LoginService is
+    example</a> configures the Jetty test webapp. Web applications can use
+    resources the container provides, and in this case a LoginService is
     needed and also configured:</p><pre class="programlisting">package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.security.HashLoginService;
@@ -362,10 +359,10 @@ public class OneWebApp {
         server.join();
     }
 }
-</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7532"></a>Like Jetty XML</h3></div></div></div><p>The typical way to configure an instance of the Jetty server is via
+</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7554"></a>Like Jetty XML</h3></div></div></div><p>The typical way to configure an instance of the Jetty server is via
     <code class="literal">jetty.xml</code> and associated configuration files. However
-    the Jetty XML configuration format is just a simple rendering of what can
-    be done in code, thus it is very simple to write embedded code that does
+    the Jetty XML configuration format is just a simple rendering of what you can
+    do in code; it is very simple to write embedded code that does
     precisely what the jetty.xml configuration does. The <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/embedded/LikeJettyXml.html" target="_top">LikeJettyXml
     example</a> following renders in code the behaviour obtained from the
     configuration files:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty.xml" target="_top">jetty.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-jmx/src/main/config/etc/jetty-jmx.xml" target="_top">jetty-jmx.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">jetty-http.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-deploy/src/main/config/etc/jetty-deploy.xml" target="_top">jetty-deploy.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty-stats.xml" target="_top">jetty-stats.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty-requestlog.xml" target="_top">jetty-requestlog.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/jetty-server/src/main/config/etc/jetty-lowresources.xml" target="_top">jetty-lowresources.xml</a></p></li><li class="listitem"><p><a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/tests/test-webapps/test-jetty-webapp/src/main/config/etc/test-realm.xml" target="_top">test-realm.xml</a></p></li></ul></div><pre class="programlisting">package org.eclipse.jetty.embedded;
