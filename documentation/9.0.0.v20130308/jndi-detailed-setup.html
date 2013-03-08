@@ -1,0 +1,123 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Detailed Setup</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI"><link rel="prev" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI"><link rel="next" href="using-jetty-jndi.html" title="Working with Jetty JNDI"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Detailed Setup</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jndi.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;12.&nbsp;Configuring JNDI</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="using-jetty-jndi.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/support.jsp">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jndi-detailed-setup"></a>Detailed Setup</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations">Setting Up the List of Configurations</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#applying-jndi-to-single-webapp">Enabling JNDI for a Single WebApp</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#d0e5289">Enabling JNDI for a Deployer</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath">Adding JNDI Implementation Jars to the Jetty Classpath</a></span></dt></dl></div><p>The following sections describe the finer points of configuring JNDI in Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jndi-setting-up-list-of-configurations"></a>Setting Up the List of Configurations</h3></div></div></div><p>When deploying a webapp, Jetty has an extensible list of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">configurations</a>
+      that it applies to the webapp in a specific order. These configurations
+      do things like parse the <code class="filename">web.xml</code>, set up the classpath
+      for the webapp, and parse jetty specific <code class="filename">WEB-INF/jetty-web.xml</code> files.</p><p>To use JNDI with Jetty, you need additional attributes that do
+      things like read <code class="filename">WEB-INF/jetty-env.xml</code>, set up a
+      <code class="code">java:comp/env context</code>, and hook up JNDI entries from the
+      environment into your webapp. The list below shows the two extra
+      elements and the order you must use when you add them:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.MetaInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.FragmentConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for jndi --&gt;</span>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.PlusConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for jndi --&gt;</span>
+  <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.JettyWebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+
+        </pre></div><p>This augmented list of configurations for JNDI is predefined for
+      you in the <code class="code"> etc/jetty-plus.xml</code> file. The <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section shows you how to enable
+      it. Be aware that the <code class="code">etc/jetty-plus.xml</code> file enables JNDI for
+      <span class="bold"><strong>all</strong></span> webapps. The file also contains
+      other (commented out) alternatives for enabling JNDI with webapps, such
+      as creating a separate deployer just for deploying JNDI-enabled
+      webapps.</p><p>Now skip down to <a class="link" href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI
+      Implementation Jars to the Jetty Classpath</a> if you want to use
+      JNDI with all webapps. If you only want to use JNDI with specific
+      webapps, read on.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="applying-jndi-to-single-webapp"></a>Enabling JNDI for a Single WebApp</h3></div></div></div><p>If you have only a few webapps that you want to use with JNDI, you
+      can apply the augmented list of configurations specifically to those
+      webapps. To do that, create a context XML file for each webapp, and set
+      up the configuration classes. Here's an example of how that should
+      look:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"java.lang.String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.WebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.MetaInfConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.FragmentConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.EnvConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for JNDI --&gt;</span>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.plus.webapp.PlusConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- add for JNDI --&gt;</span>
+    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>org.eclipse.jetty.webapp.JettyWebXmlConfiguration<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"war"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/webapps/my-cool-webapp<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"configurationClasses"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5289"></a>Enabling JNDI for a Deployer</h3></div></div></div><p>Another alternative to enabling JNDI for all webapps (see <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a>, or just individual webapps
+      (see <a class="link" href="jndi-detailed-setup.html#applying-jndi-to-single-webapp" title="Enabling JNDI for a Single WebApp">Enabling JNDI for a
+      Single WebApp</a>) is to create a specific Deployer instance that enables JNDI for all weabpps it deploys. That way, you can <a class="link" href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations" title="Setting Up the List of Configurations">set up</a> the
+      configurations once to apply them to every webapp you drop
+      into the nominated directory738211;in this way you keep your JNDI-enabled
+      webapps separate from the non-JNDI enabled webapps. The
+      <code class="filename">etc/jetty-plus.xml</code> file has an example of this (commented
+      out):</p><div class="informalexample"><pre class="programlisting">
+  
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- =========================================================== --&gt;</span>
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- Apply plusConfig to all webapps in webapps-plus             --&gt;</span>
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- =========================================================== --&gt;</span>
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- Uncomment the following to set up a deployer that will      --&gt;</span>
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- deploy webapps from a directory called webapps-plus. Note   --&gt;</span>
+  <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">&lt;!-- that you will need to create this directory first!          --&gt;</span>
+  <strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"DeploymentManager"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addAppProvider"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.providers.WebAppProvider"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"monitoredDirName"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>/webapps-plus<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/etc/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"scanInterval"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>5<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"parentLoaderPriority"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>false<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"extractWars"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"configurationClasses"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"plusConfig"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+          <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+  <strong class="hl-tag" style="color: #000096">&lt;/Ref&gt;</strong>
+
+        </pre></div><p>This creates a new deployer that looks for things to deploy
+      in the <code class="filename">webapps-plus</code> directory and sets up the JNDI
+      configurations for them.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If you do this, you need to either supply the
+        <code class="filename">etc/jetty-plus.xml</code> file last on the runline, or move it
+        to after the <code class="filename">etc/jetty-deploy.xml</code> file reference in
+        <code class="filename">start.ini</code>. This is because this section of the
+        <code class="filename">etc/jetty-plus.xml</code> file refers to the DeploymentManager,
+        which is created in the <code class="filename">etc/jetty-deploy.xm</code> file.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="adding-jndi-implementation-jars-to-jetty-classpath"></a>Adding JNDI Implementation Jars to the Jetty Classpath</h3></div></div></div><p>Now that you have the JNDI configuration for the webapp/s set up,
+      you need to ensure that the JNDI implementation Jars are on the Jetty
+      classpath. These jars are optional, so are not there by default. You add
+      these into the classpath by using startup time OPTIONS.</p><p>In the <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section, we
+      showed you how to use <code class="filename">start.ini</code> to accomplish this in a permanent
+      fashion. Instead, you can supply the <span class="emphasis"><em>plus</em></span> OPTION on the command line so
+      it is valid for that run only. Here's how to do it:</p><div class="informalexample"><pre class="screen">
+
+$ java -jar start.jar OPTIONS=plus
+
+        </pre></div><p>Be aware that if you haven't set up the configurations that enable JNDI
+      for individual webapps, you need to use the
+      <code class="filename">etc/jetty-plus.xml</code> file, which you can also do on the
+      runline:</p><div class="informalexample"><pre class="screen">
+
+$ java -jar start.jar OPTIONS=plus etc/jetty-plus.xml
+
+        </pre></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jndi.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="jndi.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="using-jetty-jndi.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;12.&nbsp;Configuring JNDI&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Working with Jetty JNDI</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
+        See an error or something missing?
+        <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+            <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>

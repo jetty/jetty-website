@@ -1,0 +1,64 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Chapter&nbsp;27.&nbsp;HTTP Client</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="clients.html" title="Part&nbsp;IV.&nbsp;Jetty Client Guide"><link rel="prev" href="clients.html" title="Part&nbsp;IV.&nbsp;Jetty Client Guide"><link rel="next" href="http-client-api.html" title="API Usage"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter&nbsp;27.&nbsp;HTTP Client</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="clients.html">Prev</a>&nbsp;</td><th width="60%" align="center">Part&nbsp;IV.&nbsp;Jetty Client Guide</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="http-client-api.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/support.jsp">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="http-client"></a>Chapter&nbsp;27.&nbsp;HTTP Client</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="http-client.html#http-client-intro">Introduction</a></span></dt><dt><span class="section"><a href="http-client-api.html">API Usage</a></span></dt><dt><span class="section"><a href="http-client-other.html">Other Features</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="http-client-intro"></a>Introduction</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="http-client.html#http-client-init">Initialization</a></span></dt></dl></div><p>The Jetty HTTP client module provides easy-to-use APIs, utility classes and a high performance, asynchronous
+  implementation to perform HTTP and HTTPS requests.</p><p>The Jetty HTTP client module requires Java version 1.7 or superior and it is Java 1.8 lambda compliant, that
+  is, Java 1.8 applications can use lambda expressions in many of the HTTP client APIs.</p><p>Jetty HTTP client is implemented and offers an asynchronous API, that is a programming interface that never
+  blocks for I/O events, thus making it very efficient in thread utilization and well suited for load testing and
+  parallel computation.</p><p>However, sometimes all you need to do is to perform a GET request to a resource, and Jetty HTTP client offers
+  also a synchronous API, that is a programming interface where the thread that issued the request blocks until the
+  request/response conversation is complete.</p><p>Out of the box features that you get with the Jetty HTTP client are:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Redirect support; redirect codes such as 302 or 303 are automatically followed</p></li><li class="listitem"><p>Cookies support; cookies sent by servers are stored and sent back to servers in matching requests</p></li><li class="listitem"><p>Authentication support; HTTP "Basic" and "Digest" authentications are supported, others are
+      pluggable</p></li><li class="listitem"><p>Forward proxy support</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-init"></a>Initialization</h3></div></div></div><p>The main class is named, as in Jetty 7 and Jetty 8,
+    <code class="classname">org.eclipse.jetty.client.HttpClient</code> (although it is not backward compatible with the same
+    class in Jetty 7 and Jetty 8).</p><p>You can think of an <code class="code">HttpClient</code> instance as a browser instance. Like a browser, it can make
+    requests to different domains, it manages redirects, cookies and authentication, you can configure it with a proxy,
+    and it provides you with the responses to the requests you make.</p><p>In order to use <code class="code">HttpClient</code>, you must instantiate it, configure it, and then start it:</p><div class="informalexample"><pre class="programlisting">
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Instantiate HttpClient</span>
+HttpClient httpClient = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> HttpClient();
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Configure HttpClient, for example:</span>
+httpClient.setFollowRedirects(false);
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Start HttpClient</span>
+httpClient.start();
+
+      </pre></div><p>You can create multiple instances of <code class="code">HttpClient</code>; the reason to do this is that you want to
+    specify different configuration parameters (for example, one instance is configured with a forward proxy while
+    another is not), or because you want the two instances to behave like two different browsers and hence have
+    different cookies, different authentication credentials and so on.</p><p>When you create a <code class="code">HttpClient</code> instance using the parameterless constructor, you will only be able
+    to perform plain HTTP requests, and you will not be able to perform HTTPS requests.</p><p>In order to perform HTTPS requests, you should create first a
+    <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top"><code class="code">SslContextFactory</code></a>,
+    configure it, and pass it to <code class="code">HttpClient</code>'s constructor. When created with a <code class="code">
+    SslContextFactory</code>, the <code class="code">HttpClient</code> will be able to perform both HTTP and HTTPS requests to any
+    domain.</p><div class="informalexample"><pre class="programlisting">
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Instantiate and configure the SslContextFactory</span>
+SslContextFactory sslContextFactory = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> SslContextFactory();
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Instantiate HttpClient with the SslContextFactory</span>
+HttpClient httpClient = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> HttpClient(sslContextFactory);
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Configure HttpClient, for example:</span>
+httpClient.setFollowRedirects(false);
+
+<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-comment">// Start HttpClient</span>
+httpClient.start();
+
+      </pre></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="clients.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="clients.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http-client-api.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;IV.&nbsp;Jetty Client Guide&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;API Usage</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
+        See an error or something missing?
+        <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+            <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
