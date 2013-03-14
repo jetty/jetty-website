@@ -127,7 +127,7 @@
 <td> Eclipse </td>
 <td> 1.7 </td>
 <td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)<br/>SPDY</td>
-<td> 3.0 </td>
+<td> 3.0 (3.1 on branch) </td>
 <td> 2.2 </td>
 <td> Stable </td>
 </tr>
@@ -139,7 +139,7 @@
 <td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)</td>
 <td> 3.0 </td>
 <td> 2.2 </td>
-<td> Stable </td>
+<td> Mature </td>
 </tr>
 
 <tr>
@@ -149,7 +149,7 @@
 <td> HTTP/1.1(RFC2616)<br/>Websocket(RFC6455)</td>
 <td> 2.5 </td>
 <td> 2.1 </td>
-<td> Stable </td>
+<td> Mature </td>
 </tr>
 
 
@@ -160,7 +160,7 @@
 <td> HTTP/1.1(RFC2616)</td>
 <td> 2.5 </td>
 <td> 2.0 </td>
-<td> Mature </td>
+<td> Venerable </td>
 </tr>
 
 <tr>
