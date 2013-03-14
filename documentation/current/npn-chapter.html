@@ -4,10 +4,10 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="npn-chapter"></a>Chapter&nbsp;14.&nbsp;NPN</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="npn-chapter.html#npn"></a></span></dt></dl></div><div class="section"><div class="titlepage"></div><div class="toc"><dl><dt><span class="section"><a href="npn-chapter.html#npn-introduction">Configuring NPN</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-starting">Starting the JVM</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-understanding">Understanding the NPN API</a></span></dt><dt><span class="section"><a href="npn-chapter.html#client-example">Client Example</a></span></dt><dt><span class="section"><a href="npn-chapter.html#server-example">Server Example</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-implementation">Implementation Details</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-tests">Unit Tests</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-debugging">Debugging</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-license-details">License Details</a></span></dt><dt><span class="section"><a href="npn-chapter.html#d0e6772">Versions</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-introduction"></a>Configuring NPN</h3></div></div></div><p>The Jetty project provides an implementation of the Transport Layer Security (TLS) extension for Next Protocol
-    Negotiation (NPN) for OpenJDK 7 or greater. NPN allows the
-    application layer to negotiate which protocol to use over the secure
-    connection.</p><p>NPN currently negotiates using SPDY as an application level protocol
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="npn-chapter"></a>Chapter&nbsp;14.&nbsp;NPN</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="npn-chapter.html#npn"></a></span></dt></dl></div><div class="section"><div class="titlepage"></div><div class="toc"><dl><dt><span class="section"><a href="npn-chapter.html#npn-introduction">Configuring NPN</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-starting">Starting the JVM</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-understanding">Understanding the NPN API</a></span></dt><dt><span class="section"><a href="npn-chapter.html#client-example">Client Example</a></span></dt><dt><span class="section"><a href="npn-chapter.html#server-example">Server Example</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-implementation">Implementation Details</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-tests">Unit Tests</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-debugging">Debugging</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-license-details">License Details</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-versions">Versions</a></span></dt><dt><span class="section"><a href="npn-chapter.html#npn-build">How to build NPN</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-introduction"></a>Configuring NPN</h3></div></div></div><p>The Jetty project provides an implementation of the Transport Layer
+    Security (TLS) extension for Next Protocol Negotiation (NPN) for OpenJDK 7
+    or greater. NPN allows the application layer to negotiate which protocol
+    to use over the secure connection.</p><p>NPN currently negotiates using SPDY as an application level protocol
     on port 443, and also negotiates the SPDY version. However, NPN is not
     SPDY-specific in any way. Jetty's NPN implementation, although hosted
     under the umbrella of the Jetty project, is independent of Jetty (the
@@ -16,7 +16,12 @@
     file system for the NPN Boot Jar file, for example, one at the Maven
     coordinates org.mortbay.jetty.npn:npn-boot.</p><p>Be aware that the current versions of the npn packages no longer
     align with Jetty versions. Look at the dates in those file paths before
-    looking at the version number.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-understanding"></a>Understanding the NPN API</h3></div></div></div><p>Applications need to interact with NPN TLS extension protocol
+    looking at the version number.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="npn-osgi"></a>Starting in OSGi</h4></div></div></div><p>To use NPN in an OSGi environment, in addition to putting the NPN
+      jar on the boot classpath for the container, you will also need to
+      deploy the jetty-osgi-npn jar. This jar contains a Fragment-Host
+      directive that ensures the NPN classes will be available from the system
+      bundle.</p><p>You can download the jetty-osgi-npn jar from maven central:
+      http://repo1.maven.org/maven2/org/eclipse/jetty/osgi/jetty-osgi-npn/</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-understanding"></a>Understanding the NPN API</h3></div></div></div><p>Applications need to interact with NPN TLS extension protocol
     negotiations. For example, server applications need to know whether the
     client supports NPN, and client applications needs to know the list of
     protocols the server supports, and so on.</p><p>To implement this interaction, Jetty's NPN implementation provides
@@ -28,44 +33,44 @@
     register instances of SSLSocket or SSLEngine with a ClientProvider or
     ServerProvider (depending on whether the application is a client or server
     application). Refer to NextProtoNego Javadocs and to the examples below
-    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e6679"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">                SSLContext sslContext = ...;
-                SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"localhost"</span>,
-                server.getLocalPort());
+    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e6686"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">
+SSLContext sslContext = ...;
+SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"localhost"</span>, server.getLocalPort());
 
-                NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> NextProtoNego.ClientProvider()
-                {
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">boolean</span> supports()
-                {
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">return</span> true;
-                }
+NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> NextProtoNego.ClientProvider()
+{
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">boolean</span> supports()
+    {
+        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">return</span> true;
+    }
 
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">void</span> unsupported()
-                {
-                }
-
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> String selectProtocol(List
-                &lt;String&gt;
-                protocols)
-                {
-                <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">return</span> protocols.get(<span class="hl-number">0</span>);
-                }
-                });</pre></div></div><br class="example-break"><p>The NPN implementation calls
-    <code class="code">NextProtoNego.ClientProvider</code> methods <code class="code">supports(),
-    unsupported()</code> and <code class="code">selectProtocol(List&lt;String&gt;)</code>,
-    so that the client application can decide:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>whether to support NPN.</p></li><li class="listitem"><p>whether the server supports NPN.</p></li><li class="listitem"><p>to select one of the protocols the server supports.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="server-example"></a>Server Example</h3></div></div></div><p>The example for SSLEngine is identical, and you just need to replace
-    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e6708"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">  SSLSocket sslSocket = ...;
-  NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> NextProtoNego.ServerProvider()
-  {
     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">void</span> unsupported()
     {
     }
 
     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> List &lt;String&gt;protocols()
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> String selectProtocol(List&lt;String&gt; protocols)
+    {
+        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">return</span> protocols.get(<span class="hl-number">0</span>);
+    }
+});
+</pre></div></div><br class="example-break"><p>The NPN implementation calls
+    <code class="code">NextProtoNego.ClientProvider</code> methods <code class="code">supports(),
+    unsupported()</code> and <code class="code">selectProtocol(List&lt;String&gt;)</code>,
+    so that the client application can decide:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>whether to support NPN.</p></li><li class="listitem"><p>whether the server supports NPN.</p></li><li class="listitem"><p>to select one of the protocols the server supports.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="server-example"></a>Server Example</h3></div></div></div><p>The example for SSLEngine is identical, and you just need to replace
+    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e6715"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">
+SSLSocket sslSocket = ...;
+NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> NextProtoNego.ServerProvider()
+{
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">void</span> unsupported()
+    {
+    }
+
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-annotation">@Override</span>
+    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">public</span> List&lt;String&gt; protocols()
     {
        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">return</span> Arrays.asList(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"http/1.1"</span>);
     }
@@ -75,12 +80,14 @@
     {
        System.out.println(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-string">"Protocol Selected is: "</span> + protocol);
     }
-});</pre></div></div><br class="example-break"><p>The NPN implementation calls <code class="code">NextProtoNego.ServerProvider</code> methods
-    <code class="code">unsupported(), protocols()</code> and <code class="code">protocolSelected(String),</code> so that the
+});
+</pre></div></div><br class="example-break"><p>The NPN implementation calls
+    <code class="code">NextProtoNego.ServerProvider</code> methods <code class="code">unsupported(),
+    protocols()</code> and <code class="code">protocolSelected(String),</code> so that the
     server application can</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>know whether the client supports NPN.</p></li><li class="listitem"><p>provide the list of protocols the server supports.</p></li><li class="listitem"><p>know which protocol the client chooses.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-implementation"></a>Implementation Details</h3></div></div></div><p>It is common that the NextProtoNego.ServerProvider and the
-    NextProtoNego.ClientProvider are implemented as (anonymous) inner
-    classes, and that their methods' implementations require references to the
-    the sslSocket (or sslEngine), either directly or indirectly.</p><p>Since the NextProtoNego class holds [sslSocket/sslEngine, provider]
+    NextProtoNego.ClientProvider are implemented as (anonymous) inner classes,
+    and that their methods' implementations require references to the the
+    sslSocket (or sslEngine), either directly or indirectly.</p><p>Since the NextProtoNego class holds [sslSocket/sslEngine, provider]
     pairs in a WeakHashMap, if the value (that is, the provider
     implementation) holds a strong (even indirect) reference to the key, then
     the WeakHashMap entries are never removed, leading to a memory
@@ -89,38 +96,38 @@
     org.eclipse.jetty.io.nio.SslConnection that in turn holds a reference to
     the sslEngine. Therefore the NextProtoNego.ServerProvider implementation
     does not use the SslConnection directly, but instead via an
-    AtomicReference that is cleared upon connection close.</p><p>Be aware that declaring the SslConnection as a final local variable and
-    referencing it from within the anonymous NextProtoNego.ServerProvider
+    AtomicReference that is cleared upon connection close.</p><p>Be aware that declaring the SslConnection as a final local variable
+    and referencing it from within the anonymous NextProtoNego.ServerProvider
     class generates a hidden field in the anonymous inner class, causing the
     memory leak, so you must avoid doing so.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-tests"></a>Unit Tests</h3></div></div></div><p>You can write and run unit tests that use the NPN implementation.
     The solution that we use with Maven is to specify an additional command
     line argument to the Surefire plugin:</p><div class="informalexample"><pre class="programlisting">
-                <strong class="hl-tag" style="color: #000096">&lt;project</strong> <span class="hl-attribute" style="color: #F5844C">...&gt;</span>
+<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
 
-                <span class="hl-attribute" style="color: #F5844C">&lt;properties&gt;</span>
-                    <span class="hl-attribute" style="color: #F5844C">&lt;npn-version&gt;1.1.1.v20121030&lt;/npn-version&gt;</span>
-                <span class="hl-attribute" style="color: #F5844C">&lt;/properties&gt;</span>
+<strong class="hl-tag" style="color: #000096">&lt;properties&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;npn-version&gt;</strong>1.1.1.v20121030<strong class="hl-tag" style="color: #000096">&lt;/npn-version&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/properties&gt;</strong>
 
-                <span class="hl-attribute" style="color: #F5844C">&lt;build&gt;</span>
-                    <span class="hl-attribute" style="color: #F5844C">&lt;plugins&gt;</span>
-                        <span class="hl-attribute" style="color: #F5844C">&lt;plugin&gt;</span>
-                            <span class="hl-attribute" style="color: #F5844C">&lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;</span>
-                            <span class="hl-attribute" style="color: #F5844C">&lt;configuration&gt;</span>
-                                <span class="hl-attribute" style="color: #F5844C">&lt;argLine&gt;</span>
-                                    <span class="hl-attribute" style="color: #F5844C">-Xbootclasspath/p:/Users/jesse/.m2/repository/org/mortbay/jetty/npn/npn-boot/${npn-version}/npn-boot-${npn-version}.jar</span>
-                                <span class="hl-attribute" style="color: #F5844C">&lt;/argLine&gt;</span>
-                            <span class="hl-attribute" style="color: #F5844C">&lt;/configuration&gt;</span>
-                        <span class="hl-attribute" style="color: #F5844C">&lt;/plugin&gt;</span>
+<strong class="hl-tag" style="color: #000096">&lt;build&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>maven-surefire-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;argLine&gt;</strong>
+                    -Xbootclasspath/p:/Users/jesse/.m2/repository/org/mortbay/jetty/npn/npn-boot/${npn-version}/npn-boot-${npn-version}.jar
+                <strong class="hl-tag" style="color: #000096">&lt;/argLine&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
+        <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
 
-                        <span class="hl-attribute" style="color: #F5844C">...</span>
+        ...
 
-                    <span class="hl-attribute" style="color: #F5844C">&lt;/plugins&gt;</span>
-                <span class="hl-attribute" style="color: #F5844C">&lt;/build&gt;</span>
+    <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
+<strong class="hl-tag" style="color: #000096">&lt;/build&gt;</strong>
 
-                <span class="hl-attribute" style="color: #F5844C">...</span>
+...
 
-            <span class="hl-attribute" style="color: #F5844C">&lt;/project&gt;</span>
-            </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
+<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
     way:</p><pre class="screen">NextProtoNego.debug = true;</pre><p>Since the NextProtoNego class is in the boot classpath, we chose not
     to use logging libraries because we do not want to override application
     logging library choices; therefore the logging is performed directly on
@@ -128,9 +135,20 @@
     classes and on a few new classes that need to live in the
     <code class="filename">sun.security.ssl</code> package. These classes are released
     under the same GPLv2+exception license of OpenJDK.</p><p>The NextProtoNego class is released under same license as the
-    classes of the Jetty project.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6772"></a>Versions</h3></div></div></div><p>The NPN implementation, relying on modifications of OpenJDK classes,
+    classes of the Jetty project.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-versions"></a>Versions</h3></div></div></div><p>The NPN implementation, relying on modifications of OpenJDK classes,
     updates every time there are updates to the modified OpenJDK
-    classes.</p><div class="table"><a name="d0e6777"></a><p class="title"><b>Table&nbsp;14.1.&nbsp;NPN vs. OpenJDK versions</b></p><div class="table-contents"><table summary="NPN vs. OpenJDK versions" border="1"><colgroup><col align="left" class="npn"><col align="left" class="openjdk"></colgroup><thead><tr><th align="left">NPN version</th><th align="left">OpenJDK version</th></tr></thead><tbody><tr><td align="left">1.0.0.v20120402</td><td align="left">1.7.0 - 1.7.0u2 - 1.7.0u3</td></tr><tr><td align="left">1.1.0.v20120525</td><td align="left">1.7.0u4 - 1.7.0u5</td></tr><tr><td align="left">1.1.1.v20121030</td><td align="left">1.7.0u6 - 1.7.0u7</td></tr></tbody></table></div></div><br class="table-break"></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jmx-chapter.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spdy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;13.&nbsp;JMX&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;15.&nbsp;SPDY</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
+    classes.</p><div class="table"><a name="d0e6784"></a><p class="title"><b>Table&nbsp;14.1.&nbsp;NPN vs. OpenJDK versions</b></p><div class="table-contents"><table summary="NPN vs. OpenJDK versions" border="1"><colgroup><col align="left" class="npn"><col align="left" class="openjdk"></colgroup><thead><tr><th align="left">NPN version</th><th align="left">OpenJDK version</th></tr></thead><tbody><tr><td align="left">1.0.0.v20120402</td><td align="left">1.7.0 - 1.7.0u2 - 1.7.0u3</td></tr><tr><td align="left">1.1.0.v20120525</td><td align="left">1.7.0u4 - 1.7.0u5</td></tr><tr><td align="left">1.1.1.v20121030</td><td align="left">1.7.0u6 - 1.7.0u7</td></tr><tr><td align="left">1.1.3.v20130313</td><td align="left">1.7.0u9 - 1.7.0u10 - 1.7.0u11</td></tr><tr><td align="left">1.1.4.v20130313</td><td align="left">1.7.0u13</td></tr><tr><td align="left">1.1.5.v20130313</td><td align="left">1.7.0u15 - 1.7.0u17</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-build"></a>How to build NPN</h3></div></div></div><p>This section is for Jetty developers that need to update the NPN
+    implementation with the OpenJDK versions.</p><p>Clone the OpenJDK repository with the following command:</p><pre class="screen">
+$ hg clone http://hg.openjdk.java.net/jdk7/jdk7 jdk7
+$ cd jdk7
+$ ./get_source.sh
+  </pre><p>To update the source to a specific tag, use the following
+    command:</p><pre class="screen">
+$ ./make/scripts/hgforest.sh update &lt;tag-name&gt;
+  </pre><p>The list of OpenJDK tags can be obtained from <a class="link" href="http://hg.openjdk.java.net/jdk7u/jdk7u/tags" target="_top">this
+    page</a>.</p><p>Then you need to compare and incorporate the OpenJDK source changes
+    into the modified OpenJDK classes at the <a class="link" href="https://github.com/jetty-project/jetty-npn" target="_top">NPN GitHub
+    Repository</a>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jmx-chapter.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spdy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;13.&nbsp;JMX&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;15.&nbsp;SPDY</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
