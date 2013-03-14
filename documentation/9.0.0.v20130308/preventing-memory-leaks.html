@@ -1,0 +1,158 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Preventing Memory Leaks</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><style type="text/css">
+body { background-image: url('images/draft-ribbon.png');
+       background-repeat: no-repeat;
+       background-position: top left;
+       /* The following properties make the watermark "fixed" on the page. */
+       /* I think that's just a bit too distracting for the reader... */
+       /* background-attachment: fixed; */
+       /* background-position: center center; */
+     }</style><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="troubleshooting.html" title="Chapter&nbsp;26.&nbsp;Troubleshooting"><link rel="prev" href="troubleshooting.html" title="Chapter&nbsp;26.&nbsp;Troubleshooting"><link rel="next" href="clients.html" title="Part&nbsp;IV.&nbsp;Jetty Client Guide"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Preventing Memory Leaks</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="troubleshooting.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;26.&nbsp;Troubleshooting</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="clients.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/support.jsp">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="draft"><h5>DRAFT</h5><p>
+          This page contains content that we have migrated from Jetty 7 or Jetty 8 documentation into the correct format, but we have not yet audited it for technical accuracy in with Jetty 9.  Be aware that examples or information contained on this page may be incorrect.  Please check back soon as we continue improving the documentation, or submit corrections yourself to this page through <a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Github</a>. Thank you.
+          </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="preventing-memory-leaks"></a>Preventing Memory Leaks</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="preventing-memory-leaks.html#preventing-webapp-classloader-pinning">Preventing WebApp Classloader Pinning</a></span></dt><dt><span class="section"><a href="preventing-memory-leaks.html#jsp-bugs">JSP Bugs: Permgen Problems</a></span></dt><dt><span class="section"><a href="preventing-memory-leaks.html#jvm-bugs">JVM Bugs</a></span></dt></dl></div><p>If you have memory leaks, and you have thoroughly investigated tools
+  like jconsole, yourkit, jprofiler, jvisualvm or any of the other profiling
+  and analysis tools, and you can eliminate your code as the source of the
+  problem, read the following sections about how to prevent memory leaks in
+  your application.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="preventing-webapp-classloader-pinning"></a>Preventing WebApp Classloader Pinning</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This feature is available for Jetty 7.6.6 and later.</p></div><p>Code that keeps references to a webapp classloader can cause memory
+    leaks. These leaks fall generally into two categories: static fields and
+    daemon threads.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A static field is initialized with the value of the classloader,
+        which happens to be a webapp classloader; as Jetty undeploys and
+        redeploys the webapp, the static reference lives on, meaning garbage
+        collecting cannot occur for the webapp classloader.</p></li><li class="listitem"><p>When Jetty starts as a daemon thread and is outside the
+        lifecycle of the webapp, threads have references to the context
+        classloader that created them, leading to a memory leak if that
+        classloader belongs to a webapp. For a good discussion of the issue
+        see <a class="link" href="http://cdivilly.wordpress.com/tag/sun-awt-appcontext/" target="_top">
+        Anatomy of a PermGen Memory Leak.</a></p></li></ul></div><p>We provide a number of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs//org/eclipse/jetty/util/preventers/package-summary.html" target="_top">
+    workaround classes</a> that preemptively invoke the problematic code
+    with the Jetty classloader, thereby ensuring the webapp classloader is not
+    pinned. Be aware that since some of the problematic code creates threads,
+    you should be selective about which preventers you enable, and use only
+    those that are specific to your application.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="preventers-table"></a>Preventers</h4></div></div></div><p>Jetty includes the following preventers.</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th align="left">Preventer Name</th><th align="left">Problem Addressed</th></tr></thead><tbody><tr><td>AppContextLeakPreventer</td><td>The call to <code class="code">AppContext.getAppContext()</code> keeps
+              a static reference to the context classloader. The JRE can
+              invoke AppContext in many different places.</td></tr><tr><td>AWTLeakPreventer</td><td>The <code class="code">java.awt.Toolkit</code> class has a static
+              field that is the default toolkit. Creating the default toolkit
+              causes the creation of an <code class="code">EventQueue</code>, which has a
+              classloader field initialized with the thread context class
+              loader. See <a class="link" href="https://issues.jboss.org/browse/AS7-3733" target="_top">JBoss bug
+              AS7-3733.</a></td></tr><tr><td>DOMLeakPreventer</td><td>DOM parsing can cause the webapp classloader to be
+              pinned, due to the static field <code class="code"> RuntimeException</code>
+              of <code class="code">
+              com.sun.org.apache.xerces.internal.parsers.AbstractDOMParser.</code>
+              <a class="link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6916498" target="_top">Oracle
+              bug 6916498</a> specifically mentions that a heap dump might
+              not identify the GCRoot as the uncollected loader, making it
+              difficult to identify the cause of the leak.</td></tr><tr><td>DriverManagerLeakPreventer</td><td>The number of threads dedicated to accepting incoming
+              connections.</td></tr><tr><td>GCThreadLeakPreventer</td><td>Calls to <code class="code">sun.misc.GC.requestLatency</code> create a
+              daemon thread that keeps a reference to the context classloader.
+              A known caller of this method is the RMI impl. See <a class="link" href="http://stackoverflow.com/questions/6626680/does-java-garbage-collection-log-entry-full-gc-system-mean-some-class-called" target="_top">Stackoverflow:
+              Does java garbage collection log entry 'Full GC system' mean
+              some class called System.gc()?</a></td></tr><tr><td>Java2DLeakPreventer</td><td><code class="code">sun.java2d.Disposer</code> keeps a reference to the
+              classloader. See <a class="link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=51687" target="_top">ASF
+              bug 51687.</a></td></tr><tr><td>LDAPLeakPreventer</td><td>If <code class="code">com.sun.jndi.LdapPoolManager</code> class is
+              loaded and the system property <code class="code">
+              com.sun.jndi.ldap.connect.pool.timeout</code> is set to a
+              nonzero value, a daemon thread starts and keeps a reference to
+              the context classloader.</td></tr><tr><td>LoginConfigurationLeakPreventer</td><td>The <code class="code">javax.security.auth.login.Configuration</code>
+              class keeps a static reference to the thread context
+              classloader.</td></tr><tr><td>SecurityProviderLeakPreventer</td><td>Some security providers, such as
+              <code class="code">sun.security.pkcs11.SunPKCS11</code> start a deamon thread
+              that traps the thread context classloader.</td></tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-preventers"></a>Configuring Preventers</h4></div></div></div><p>You can individually enable each preventer by adding an instance
+      to a Server with the <code class="code"> addBean(Object)</code> call. Here's an
+      example of how to do it in code with the <code class="code">
+      org.eclipse.jetty.util.preventers.AppContextLeakPreventer</code>:</p><div class="informalexample"><pre class="programlisting">
+
+Server server = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> Server();
+server.addBean(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword">new</span> AppContextLeakPreventer());
+
+        </pre></div><p>You can add the equivalent in code to the
+      <code class="code">$JETTY_HOME/etc/jetty.xml</code> file or any jetty xml file that
+      is configuring a Server instance. Be aware that if you have more than
+      one Server instance in your JVM, you should configure these preventers
+      on just <span class="emphasis"><em>one</em></span> of them. Here's the example from code
+      put into xml:</p><div class="informalexample"><pre class="programlisting">
+
+<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.Server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+
+   <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
+      <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.util.preventers.AppContextLeakPreventer"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>
+    <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
+   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+
+        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jsp-bugs"></a>JSP Bugs: Permgen Problems</h3></div></div></div><p>The JSP engine in Jetty is Jasper. This was originally developed
+    under the Apache Tomcat project, but over time many different project have
+    forked it. All Jetty versions up to 6 used Apache-based Jasper
+    exclusively, with Jetty 6 using Apache Jasper only for JSP 2.0. With the
+    advent of JSP 2.1, Jetty 6 switched to using Jasper from Sun's <a class="link" href="https://glassfish.java.net/" target="_top">Glassfish</a> project, which is
+    now the reference implementation.</p><p>All forks of Jasper suffer from a problem whereby using JSP tag
+    files puts the permgen space under pressure. This is because of the
+    classloading architecture of the JSP implementation. Each JSP file is
+    effectively compiled and its class loaded in its own classloader to allow
+    for hot replacement. Each JSP that contains references to a tag file
+    compiles the tag if necessary and then loads it using its own classloader.
+    If you have many JSPs that refer to the same tag file, the tag's class is
+    loaded over and over again into permgen space, once for each JSP. See
+    <a class="link" href="http://java.net/jira/browse/GLASSFISH-3963" target="_top">Glassfish bug
+    3963</a> and <a class="link" href="https://issues.apache.org/bugzilla/show_bug.cgi?id=43878" target="_top">Apache
+    bug 43878.</a> The Apache Tomcat project has already closed this bug
+    with status WON'T FIX, however the Glassfish folks still have the bug open
+    and have scheduled it to be fixed. When the fix becomes available, the
+    Jetty project will pick it up and incorporate into our release
+    program.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jvm-bugs"></a>JVM Bugs</h3></div></div></div><p>This section describes garbage collection and direct ByteBuffer
+    problems.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jvm-garbage-collection-problems"></a>Garbage Collection Problems</h4></div></div></div><p>One symptom of a cluster of JVM related memory issues is the OOM
+      exception accompanied by a message such as
+      <code class="code">java.lang.OutOfMemoryError: requested xxxx bytes for xxx. Out of
+      swap space?</code></p><p><a class="link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4697804" target="_top">Oracle
+      bug 4697804</a> describes how this can happen in the scenario when
+      the garbage collector needs to allocate a bit more space during its run
+      and tries to resize the heap, but fails because the machine is out of
+      swap space. One suggested work around is to ensure that the JVM never
+      tries to resize the heap, by setting min heap size to max heap
+      size:</p><div class="informalexample"><pre class="programlisting">
+
+java -Xmx1024m -Xms1024m
+
+        </pre></div><p>Another workaround is to ensure you have configured sufficient
+      swap space on your device to accommodate all programs you are running
+      concurrently.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="direct-byte-buffers"></a>Direct ByteBuffers</h4></div></div></div><p>Exhausting native memory is another issue related to JVM bugs. The
+      symptoms to look out for are the process size growing, but heap use
+      remaining relatively constant. Both the JIT compiler and nio ByteBuffers
+      can consume native memory. <a class="link" href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6210541" target="_top">Oracle
+      bug 6210541</a> discusses a still-unsolved problem whereby the JVM
+      itself allocates a direct ByteBuffer in some circumstances while the
+      system never garbage collects, effectively eating native memory. Guy
+      Korland's blog discusses this problem <a class="link" href="http://www.jroller.com/gkorland/entry/java_s_memory_isn_t" target="_top">here</a>
+      and <a class="link" href="http://www.jroller.com/gkorland/entry/java_s_memory_managment_is" target="_top">here.</a>
+      As the JIT compiler consumes native memory, the lack of available memory
+      may manifest itself in the JIT as OutOfMemory exceptions such as
+      <code class="code">Exception in thread "CompilerThread0" java.lang.OutOfMemoryError:
+      requested xxx bytes for ChunkPool::allocate. Out of swap
+      space?</code></p><p>By default, Jetty allocates and manages its own pool of direct
+      ByteBuffers for io if you configure the nio SelectChannelConnector. It
+      also allocates MappedByteBuffers to memory-map static files via the
+      DefaultServlet settings. However, you could be vulnerable to this JVM
+      ByteBuffer allocation problem if you have disabled either of these
+      options. For example, if you're on Windows, you may have disabled the
+      use of memory-mapped buffers for the static file cache on the
+      DefaultServlet to avoid the file-locking problem.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="troubleshooting.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="troubleshooting.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="clients.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;26.&nbsp;Troubleshooting&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Part&nbsp;IV.&nbsp;Jetty Client Guide</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
+        See an error or something missing?
+        <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+            <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
