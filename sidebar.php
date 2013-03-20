@@ -14,8 +14,8 @@
   <div class="sideitem">
     <h6>Active Contributors</h6>
     <div style="position: relative; height: 50px;">
-      <a href="http://www.webtide.com/" target="_blank"
-          title="Webtide"><img src="http://www.webtide.com/_images/logo.gif"
+      <a href="http://www.intalio.com/jetty" target="_blank"
+          title="Intalio"><img src="http://www.eclipse.org/jetty/images/intalio.png"
           style="position: absolute; left: 10px; top: 10px;"/></a>
     </div>
   </div>
