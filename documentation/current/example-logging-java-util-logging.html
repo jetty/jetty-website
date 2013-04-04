@@ -7,9 +7,9 @@
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-logging-java-util-logging"></a>Example: Logging with Java's java.util.logging</h2></div></div></div><p>This page describes how to Configure Jetty for Logging with Java's
   <code class="literal"><a class="link" href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/package-summary.html" target="_top">java.util.logging</a></code>.</p><p>The basic configuration for Logging with java.util.logging is to use
   <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for
-  java.util.logging</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5033"></a>The Required JARs</h3></div></div></div><p>There will be 2 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.6.6/slf4j-jdk14-1.6.6.jar" target="_top">slf4j-jdk14-1.6.6.jar</a></code></span></dt><dd><p>This is the Slf4j binding layer for JDK 1.4 logging (also
+  java.util.logging</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5072"></a>The Required JARs</h3></div></div></div><p>There will be 2 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.6.6/slf4j-jdk14-1.6.6.jar" target="_top">slf4j-jdk14-1.6.6.jar</a></code></span></dt><dd><p>This is the Slf4j binding layer for JDK 1.4 logging (also
             known as java.util.logging)</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>This is the basic Slf4j API that Jetty's Slf4jLog
-            implementation uses.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5056"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
+            implementation uses.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5095"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
     them into place and tell Jetty to load them on each startup.</p><p>Create a ${jetty.home}/lib/logging/ directory and place the 2 files
     you downloaded there.</p><pre class="screen">[jetty-distribution-9.0.0.v20130308]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 40
@@ -25,11 +25,11 @@ total 40
 Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>logging</strong></span>, resources, websocket]
 18:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
 19:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-jdk14-1.6.6.jar</strong></span>
-</pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5102"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
+</pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5141"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
     <code class="filename">${jetty.home}/resources/jetty-logging.properties</code>,
     make sure it contains just the following</p><pre class="programlisting"># Configure Jetty for SLf4j Logging
 org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog</pre><p>This will tell Jetty to use the Slf4jLog implementation for its
-    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5115"></a>Configuring java.util.logging</h3></div></div></div><p>You'll need a
+    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5154"></a>Configuring java.util.logging</h3></div></div></div><p>You'll need a
     <code class="filename">${jetty.home}/resources/logging.properties</code> file to
     define what you want java.util.logging to do, and finally a way to have
     java.util.logging use this configuration.</p><p>Example
@@ -63,7 +63,7 @@ java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter
       <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
     <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5139"></a>Scripted Installation of java.util.logging</h3></div></div></div><pre class="programlisting">#!/bin/bash
+<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong></pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5178"></a>Scripted Installation of java.util.logging</h3></div></div></div><pre class="programlisting">#!/bin/bash
 # -------------------------------------------
 # FOR DEMONSTRATION PURPOSES ONLY
 # USE AT YOUR OWN RISK

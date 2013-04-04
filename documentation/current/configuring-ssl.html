@@ -184,7 +184,59 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
             Password</a> class.</p></dd></dl></div><p>The Truststore is used if validating client certificates and is
       typically set to the same keystore.</p><p>The keyManagerPassword is passed as the password arg to KeyManagerFactory.init(...). If there is no
           keymanagerpassword, then the keystorepassword is used instead. If there is no trustmanager set, then the
-          keystore is used as the trust store and the keystorepassword is used as the truststore password</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2145"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
+          keystore is used as the trust store and the keystorepassword is used as the truststore password</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-sslcontextfactory-cipherSuites"></a>Disabling/Enabling specific cipher suites</h4></div></div></div><p>For example to avoid the BEAST attack it is necessary to configure a specific set of cipher suites.
+              This can either be done via
+              <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html#setIncludeCipherSuites(java.lang.String...)" target="_top">
+                  SslContext.setIncludeCipherSuites(java.lang.String...)
+              </a>
+              or via<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html#setExcludeCipherSuites(java.lang.String...)" target="_top">
+                  SslContext.setExcludeCipherSuites(java.lang.String...)</a>.
+          </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>It's crucial that you use the exact names of the cipher suites as used/known by the JDK.
+              You can get them by obtaining an instance of SSLEngine and call getSupportedCipherSuites().
+              Tools like ssllabs.com might report slightly different names which will be ignored.</p></div><p>Both setIncludeCipherSuites and setExcludeCipherSuites can be feed by the exact cipher suite
+              name used in the jdk or by using regular expressions.
+          </p><p>
+              Here's a couple of examples on how to include only RC4 cipher suites. All of them will protect the
+              server from the <a class="link" href="https://www.google.com/search?q=beast+attack" target="_top">BEAST</a> attack.
+          </p><p>Include a preferred set of cipher suites:</p><div class="informalexample"><pre class="programlisting">
+              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"IncludeCipherSuites"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+                    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_RSA_WITH_RC4_128_MD5<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_RSA_WITH_RC4_128_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_ECDHE_RSA_WITH_RC4_128_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+              </pre></div><p>Include all RC4 cipher suites by using a regex:</p><div class="informalexample"><pre class="programlisting">
+              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"IncludeCipherSuites"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+                    <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>.*RC4.*<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+              </pre></div><p>Exclude all non RC4 cipher suites:</p><div class="informalexample"><pre class="programlisting">
+            <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"ExcludeCipherSuites"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"String"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_RSA_WITH_DES_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_DHE_RSA_WITH_DES_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_DHE_DSS_WITH_DES_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_RSA_EXPORT_WITH_RC4_40_MD5<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_DHE_RSA_WITH_AES_128_CBC_SHA256<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_RSA_WITH_AES_128_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_DHE_RSA_WITH_AES_128_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_RSA_WITH_AES_128_CBC_SHA256<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_RSA_WITH_3DES_EDE_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+                <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>RSA_WITH_3DES_EDE_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
+              <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
+            <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+            </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
+                  need to specify specific cipher suites. This configuration will adapt to any
+                  additions/removals of cipher suites to new versions of the JDK.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2184"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
       <code class="code">SslConnectionFactory</code> instance to be used when accepting network
       connections, which in turn is injected into an instance of
       <code class="code">ServerConnector</code>. For example from <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"sslConnector"</span> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
