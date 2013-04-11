@@ -24,6 +24,11 @@
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-announce/maillist.html">Mailing list archive</a>
                 </li>
                 <li>
+                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">jetty-users@eclipse.org</a></b> - A mail list for user discussion. <br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">Subscribe/unsubscribe instructions</a><br/>
+                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">Mailing list archive</a>
+                </li>
+                <li>
                     <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">jetty-dev@eclipse.org</a></b> - A mail list for developer discussion. It's a place, where Jetty committers, contributors and integrators discuss all topics related to project development.<br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-dev">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-dev/maillist.html">Mailing list archive</a><br/>
@@ -35,20 +40,12 @@
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-commit/maillist.html">Mailing list archive</a>
                 </li>
                 <li>
-                    <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">jetty-users@eclipse.org</a></b> - A mail list for user discussion. <br/>
-                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-users">Subscribe/unsubscribe instructions</a><br/>
-                    <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-users/maillist.html">Mailing list archive</a>
-                </li>
-                <li>
                     <b><a href="https://dev.eclipse.org/mailman/listinfo/jetty-build">jetty-build@eclipse.org</a></b>
 		    - A mail list for jetty build notifications. <br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="https://dev.eclipse.org/mailman/listinfo/jetty-build">Subscribe/unsubscribe instructions</a><br/>
                     <img src="/jetty/images/arrow.gif"></img>&nbsp;&nbsp;<a href="http://dev.eclipse.org/mhonarc/lists/jetty-build/maillist.html">Mailing list archive</a>
                 </li>
             </ul>
-            
-            <h3>Mailing Lists on codehaus</h3>
-            Mailing lists for Jetty extensions and for older versions of Jetty can be found at <a href="http://xircles.codehaus.org/projects/jetty/lists">codehaus</a>.
 		</div>
 		<h2>Frequently Asked Questions</h2>
 		<div id="subscribe">
