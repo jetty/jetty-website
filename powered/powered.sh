@@ -94,7 +94,7 @@ do
 
 done
 
-echo "</td></tr></table>"
+echo "</p></td></tr></table>"
 echo "</div>"
 echo "<script type=\"text/javascript\">"
 
