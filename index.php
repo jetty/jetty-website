@@ -20,7 +20,7 @@
     $html = <<<EOHTML
 
     <div id="midcolumn">
-        <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
+        <p><img src="/jetty/images/jetty-logo-80x22.png"/></p>
     
         <p>Jetty provides an Web server and <a
 	href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container, plus support

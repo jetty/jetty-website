@@ -7,7 +7,7 @@
       <li><a href="http://www.eclipse.org/projects/project_summary.php?projectid=rt.jetty">Project Summary</a></li>
       <li><a href="http://www.eclipse.org/jetty/documentation">Documentation</a></li>
       <li><a href="http://www.eclipse.org/jetty/downloads.php">Downloads</a></li>
-      <li><a href="https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&product=Jetty&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED">Bugs</a></li>
+      <li><a href="https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&amp;product=Jetty&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED">Bugs</a></li>
     </ul>
   </div>
 
