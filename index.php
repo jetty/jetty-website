@@ -19,6 +19,7 @@
     # Paste your HTML content between the EOHTML markers!   
     $html = <<<EOHTML
 
+    <div id="maincontent">
     <div id="midcolumn">
         <h1>Jetty</h1>
         <table> 
@@ -76,7 +77,7 @@
       
         <p>Benefit from committer knowledge and get training, consulting services, professional support and SLAs, just ask us about it!</p>
     </div>
-    
+    </div>
     <div id="rightcolumn">
         $sidebar        
     </div>
