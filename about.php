@@ -20,38 +20,30 @@
 	$html = <<<EOHTML
 
     <div id="midcolumn">
-	  <p><image src="/jetty/images/jetty-logo-80x22.png"/></p>
+	  <p><img alt="Jetty Logo" src="/jetty/images/jetty-logo-80x22.png"/></p>
 	  
-	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:<dl>
+	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:</p>
 	  
-      <h2>Distribtions</h2>
+      <h2>Distributions</h2>
       <br/>
       <ul>
 	  <p>
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides an HTTP server and Servlet container capable of
-	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7, the jetty
-	  webserver and other core compoments are hosted by the eclipse foundation. The project provides:<ul>
+	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7 on, the jetty
+	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:<ul>
 	    <li>Asynchronous HTTP Server</a>
-	    <li>Standard based Servlet Container</a>
+	    <li>Standards based Servlet Container</a>
 	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
+	    <li><a href="http://en.wikipedia.org/wiki/SPDY">SPDY</a> server</li>
 	    <li>Asynchronous HTTP Client</li>
-	    <li>OSGi, JNDI, JMX, JASPI, AJP support </li>
+	    <li>OSGi, JNDI, JMX, JASPI, AJP support</li>
 	  </ul>
 	  <br/>
 	  </p>
 
 	  <p>
-	  <b>Hightide</b> <br/> 
-	  The <a href="http://docs.codehaus.org/display/JETTY/Hightide+Documentation">Jetty Hightide</a> application 
-	  server is a distribution of the jetty Web Server assembled at codehaus with additional services like JNDI, 
-	  XA & JDBC preconfigured.  For jetty-hightide-6 this is an optimized, patched rebuild of jetty-6, while for 
-	  jetty-hightide-7 it is distribution based on the standard jetty-7 artifacts combined with other third party
-	  integrations.
-	  </p>
-
-	  <p>
-	  <b>Other distributions</b> <br/> 
+	  <b>Other</b> <br/> 
 	  Jetty is available in many forms and distributions, including the jetty-maven-plugin, debian and RPMs from 
 	  <a href="http://jetty.codehaus.org">jetty@codehaus</a>
 	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
@@ -64,7 +56,7 @@
 	  <p>
 	  <b>Eclipse</b><br/>
 	  In 2009, the Jetty project moved its core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
-	  in order to improve the IP processes and broaden the licensing and community of the project. 
+	  in order to improve the IP processes and broaden the licensing and community of the project.  As of Jetty 9 the project has fully moved to the Eclipse Foundation.
 	  </p>
 	  
 	  <p>
