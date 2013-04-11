@@ -8,7 +8,7 @@
     include("sidebar.php");
 
     # Additional styles
-#    $App->AddExtraHtmlHeader('<link rel="stylesheet" type="text/css" href="/jetty/css/jetty.css"/>' . "\n");
+    $App->AddExtraHtmlHeader('<link rel="stylesheet" type="text/css" href="/jetty/css/jetty.css"/>' . "\n");
     
     $App->SetGoogleAnalyticsTrackingCode("UA-1149868-7");
     # Define your project-wide Nav bars here.
@@ -21,6 +21,7 @@
     $Nav->addCustomNav("About This Project", "/projects/project_summary.php?projectid=rt.jetty", "_self", 2); // required link for project :/
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
     # custom links
+    # $Nav->addCustomNav("jetty@eclipse", "/jetty", "_self", 2);
     $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
     $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
@@ -42,5 +43,3 @@
     $Nav->addCustomNav("Source", "http://wiki.eclipse.org/Jetty/Contributor/Building", "_self", 2);
     
 ?>
-
-<link rel="stylesheet" type="text/css" href="/jetty/css/jetty.css"/>
