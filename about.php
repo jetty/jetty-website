@@ -34,8 +34,8 @@
 	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7 on, the jetty
 	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:</p>
 	  <ul>
-	    <li>Asynchronous HTTP Server</a>
-	    <li>Standards based Servlet Container</a>
+	    <li>Asynchronous HTTP Server</li>
+	    <li>Standards based Servlet Container</li>
 	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
 	    <li><a href="http://en.wikipedia.org/wiki/SPDY">SPDY</a> server</li>
 	    <li>Asynchronous HTTP Client</li>
