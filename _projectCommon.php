@@ -11,6 +11,10 @@
     $App->AddExtraHtmlHeader('<link rel="stylesheet" type="text/css" href="/jetty/css/jetty.css"/>' . "\n");
     
     $App->SetGoogleAnalyticsTrackingCode("UA-1149868-7");
+    
+    $App->setOGDescription('Jetty is a highly scalable modular servlet engine and http server that natively supports many modern protocols like SPDY and WebSockets.');
+    $App->setOGImage('http://www.eclipse.org/jetty/images/jetty-logo-80x22.png');
+    
     # Define your project-wide Nav bars here.
     # Format is Link text, link URL (can be http://www.someothersite.com/), target (_self, _blank), level (1, 2 or 3)
     # these are optional
