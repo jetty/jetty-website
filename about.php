@@ -112,7 +112,7 @@
       <br/>
       <ul>
       <li>
-	  <table border=1 cellpadding=2>
+	  <table border="1" cellpadding="2">
 <tr>
 <td><b>Version</b></td>
 <td><b>Home</b></td>
