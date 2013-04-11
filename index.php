@@ -21,7 +21,7 @@
 
     <div id="maincontent">
     <div id="midcolumn">
-        <h1>Eclipse Jetty - home of the servlet engine and http server</h1>
+        <h1>Jetty</h1>
         <table> 
           <tr>
             <td><p>Jetty provides an Web server and <a
