@@ -3,7 +3,7 @@
 
     #
     # Begin: page-specific settings.  Change these. 
-    $pageTitle      = "Jetty: a modern java based web server and servlet engine";
+    $pageTitle      = "Jetty - Servlet Engine and Http Server";
     $pageKeywords   = "Jetty, Servlets, Async, SPDY, Web Server, Web Client, Eclipse RT, Eclipse Runtime";
     $pageAuthor     = "jmcconnell";
     
