@@ -21,8 +21,8 @@
     $Nav->addCustomNav("About This Project", "/projects/project_summary.php?projectid=rt.jetty", "_self", 2); // required link for project :/
     $Nav->addCustomNav("About Jetty", "/jetty/about.php", "_self", 2);
     # custom links
-    #$Nav->addCustomNav("jetty@eclipse", "/jetty", "_self", 2);
-    #$Nav->addCustomNav("jetty@codehaus", "http://jetty.codehaus.org/jetty/", "_self", 2);
+    # $Nav->addCustomNav("jetty@eclipse", "/jetty", "_self", 2);
+    # $Nav->addCustomNav("jetty@codehaus", "http://jetty.codehaus.org/jetty/", "_self", 2);
     $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
     $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
