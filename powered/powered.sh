@@ -50,7 +50,7 @@ echo "<p>As a small, fast, embeddable web server and servlet container Jetty is 
 echo "These Jetty Powered products illustrate Jetty's versatility and the diversity of its community. </p>"
 echo "<p>Send your submission with a product logo (if you have one) and brief text describing your product to <code>powered AT mortbay.com</code> if you would like your product or project listed here.</p>"
 echo "<p>Feel free to download and use our <i>Powered By Jetty</i> logos:</p>"
-echo "<center><img border=\"0\" alt=\"large powered logo\" src=\"images/large_powered_by.gif\"><img border=\"0\" alt=\"small powered logo\" src=\"images/small_powered_by.gif\"></center>"
+echo "<center><img border=\"0\" alt=\"large powered logo\" src=\"images/large_powered_by.gif\"/><img border=\"0\" alt=\"small powered logo\" src=\"images/small_powered_by.gif\"/></center>"
 echo "</div>"
 
 echo "  <div class=\"book\">"
@@ -85,7 +85,7 @@ do
 
     NAME* )  
      NAME=$ARG
-     echo "<h3><a href=\"$HREF\">$NAME</a><p class=\"blurb\"></h3>"
+     echo "<h3><a href=\"$HREF\">$NAME</a></h3><p class=\"blurb\">"
      ;;
 
     *) echo $LINE
