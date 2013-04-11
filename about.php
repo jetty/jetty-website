@@ -27,11 +27,13 @@
       <h2>Distributions</h2>
       <br/>
       <ul>
+        <li>
 	  <p>
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides an HTTP server and Servlet container capable of
 	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7 on, the jetty
-	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:<ul>
+	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:
+	  <ul>
 	    <li>Asynchronous HTTP Server</a>
 	    <li>Standards based Servlet Container</a>
 	    <li><a href="http://en.wikipedia.org/wiki/Web_Sockets">Web Sockets</a> server</li>
@@ -41,54 +43,62 @@
 	  </ul>
 	  <br/>
 	  </p>
-
+    </li>
+    
+    <li>
 	  <p>
 	  <b>Other</b> <br/> 
 	  Jetty is available in many forms and distributions, including the jetty-maven-plugin, debian and RPMs from 
 	  <a href="http://jetty.codehaus.org">jetty@codehaus</a>
 	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
 	  </p>
-
-      </ul>
+    </li>
+    </ul>
       <h2>Homes</h2>
       <br/>
       <ul>
+	  <li>
 	  <p>
 	  <b>Eclipse</b><br/>
 	  In 2009, the Jetty project moved its core components to be a project of the <a href="http://eclipse.org/jetty">Eclipse Foundation</a>,
 	  in order to improve the IP processes and broaden the licensing and community of the project.  As of Jetty 9 the project has fully moved to the Eclipse Foundation.
 	  </p>
-	  
+	  </li>
+	  <li>
 	  <p>
 	  <b>Codehaus</b><br/>
 	  In 2005, the jetty project moved to <a href="http://codehaus.org">the codehaus</a> for its hosting services and 
 	  open source community.  In 2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
 	  integrations, extensions and packaging of jetty.
 	  </p>
-	  
+	  </li>
+	  <li>
 	  <p>
 	  <b>Sourceforge</b><br/>
 	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty">sourceforge.net</a>
 	  where versions 3.x, 4.x and 5.x were produced.
 	  </p>
-
+    </li>
       </ul>
       <h2>Sponsors</h2>
       <br/> 
       <ul>
+      <li>
 	  <p>
 	  <b>Intalio</b><br/>
 	  The role of the development of Jetty was taken over in 2009 by 
 	  <a href="http://www.intalio.com">Webtide LLC</a>, who acquired both Webtide and Mort Bay. Intalio is a company that
 	  offers both products and services based on open source software and they employ many of the jetty contributors.
 	  </p>
-
+    </li>
+    <li>
 	  <p>
 	  <b>Webtide</b><br/>
 	  The role of leading the development of Jetty was taken over in 2006 by <a href="http://www.webtide.com">Webtide LLC</a>, 
 	  formed as a joint venture between Mort Bay and partners providing marketting, sales and strategic assistance.
 	  </p>
-
+    </li>
+    <li>
 	  <p>
 	  <b>Mort Bay</b><br/>
 	  The Java HTTP server that became jetty was originally developed in 1995 by
@@ -97,11 +107,12 @@
 	  the major part of the copyright on the jetty code base.  Mort Bay directly hosted the jetty project until version
 	  3.x and was the prime sponsor of development until 6.x.
 	  </p>
-	  
+	  </li>
       </ul>
       <h2>Versions</h2>
       <br/>
       <ul>
+      <li>
 	  <table border=1 cellpadding=2>
 <tr>
 <td><b>Version</b></td>
@@ -208,6 +219,7 @@
 <td> Mythical </td>
 </tr>
 </table>
+  </li>
       </ul>
 
 
