@@ -32,7 +32,7 @@
 	  <b>Jetty</b> <br/> 
 	  The <a href="http://eclipse.org/jetty">Jetty Web Server</a> provides an HTTP server and Servlet container capable of
 	  serving static and dynamic content either from a standalone or embedded instantiations.   From jetty-7 on, the jetty
-	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:
+	  webserver and other core compoments are hosted by the Eclipse Foundation. The project provides:</p>
 	  <ul>
 	    <li>Asynchronous HTTP Server</a>
 	    <li>Standards based Servlet Container</a>
@@ -42,7 +42,6 @@
 	    <li>OSGi, JNDI, JMX, JASPI, AJP support</li>
 	  </ul>
 	  <br/>
-	  </p>
     </li>
     
     <li>
