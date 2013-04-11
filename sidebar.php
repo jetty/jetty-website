@@ -20,9 +20,5 @@
     </div>
   </div>
 
- # <div class="sideitem">
- #   <h6>Jetty Blog</h6>
- #   <iframe src="http://www.webtide.com/blog.jsp" />
- # </div>
 EOHTML
 ?>
