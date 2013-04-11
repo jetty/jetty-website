@@ -1,12 +1,13 @@
 #!/bin/bash
 
 {
-echo "<html>"
+echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">"
+echo "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
 echo "<head>"
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">"
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"
 echo "<title>Jetty - Powered by Jetty</title>"
-echo "<link rel=stylesheet type=text/css href=\"../css/powered.css\">"
-echo "<link rel=stylesheet type=text/css href=\"../css/docbook.css\">"
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/powered.css\"/>"
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/docbook.css\"/>"
 echo "</head>"
 
 echo "<body bgcolor=\"white\" text=\"black\" link=\"#0000FF\" vlink=\"#840084\" alink=\"#0000FF\">"
