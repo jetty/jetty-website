@@ -21,7 +21,7 @@
 
     <div id="maincontent">
     <div id="midcolumn">
-        <h1>Jetty</h1>
+        <h1>Eclipse Jetty - home of the servlet engine and http server</h1>
         <table> 
           <tr>
             <td><p>Jetty provides an Web server and <a
@@ -34,8 +34,7 @@
             </td>
            </tr>
          </table>
-    
-        
+
         <p>Jetty is used in a wide variety of projects and products, both in development and production. Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters. 
         See the <a href="/jetty/powered">Jetty Powered</a> page for more uses of Jetty.</p>
         <p>The core Jetty project is hosted by the Eclipse Foundation. The <a href="http://jetty.mortbay.org/jetty/">codehaus</a> provides Jetty accessories , integrations, and extensions, as well as hosting older versions of Jetty. See the <a href="http://www.eclipse.org/jetty/about.php">About</a> page for information about the project structure.</p> 
