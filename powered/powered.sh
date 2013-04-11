@@ -38,7 +38,7 @@ echo "        Contact the core Jetty developers at"
 echo "        <span style=\"color:#fd360b\">www.webtide.com</span>"
 echo "      </a>"
 echo "    </span>"
-echo "    <br>"
+echo "    <br/>"
 echo "    <span style=\"font-style:oblique;font-size: 80%\">"
 echo "      private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ... scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery"
 echo "    </span>"
@@ -80,7 +80,7 @@ do
 
     IMAGE* )  
      IMAGE=$ARG
-     echo "<a href=\"$HREF\"><img border=\"0\" src=\"images/$IMAGE\"></a><br/>"
+     echo "<a href=\"$HREF\"><img alt=\"a company logo\" border=\"0\" src=\"images/$IMAGE\"/></a><br/>"
      ;;
 
     NAME* )  
