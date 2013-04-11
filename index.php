@@ -28,7 +28,7 @@
 	for SPDY, Web Sockets, OSGi, JMX, JNDI, JASPI, AJP and many other integrations. These components are open source and 
 	available for commercial use and distribution.</p> 
         <p>Jetty is used in a wide variety of projects and products, both in development and production. Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters. 
-        See the <a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">Jetty Powered</a> page for more uses of Jetty.</p>
+        See the <a href="/jetty/powered">Jetty Powered</a> page for more uses of Jetty.</p>
         <p>The core Jetty project is hosted by the Eclipse Foundation. The <a href="http://jetty.mortbay.org/jetty/">codehaus</a> provides Jetty accessories , integrations, and extensions, as well as hosting older versions of Jetty. See the <a href="http://www.eclipse.org/jetty/about.php">About</a> page for information about the project structure.</p> 
       
         <table>
@@ -60,7 +60,7 @@
                 <li>Frameworks, such as <a href="http://code.google.com/webtoolkit/">GWT</a></li>
                 <li>Tools, such as the <a href="http://www.eclipse.org/">Eclipse IDE</a></li>
                 <li>Devices, such as <a href="http://code.google.com/p/i-jetty/">phones</a></li>
-                <li><a href="http://docs.codehaus.org/display/JETTY/Jetty+Powered">More...</a></li>
+                <li><a href="/jetty/powered">More...</a></li>
               </ul>
             </td>    
           </tr>
