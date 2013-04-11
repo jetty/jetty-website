@@ -25,7 +25,7 @@
     $Nav->addCustomNav("Jetty Powered", "http://docs.codehaus.org/display/JETTY/Jetty+Powered", "_self", 2);
     $Nav->addCustomNav("Licenses", "/jetty/licenses.php", "_self", 2);
 
-    $Nav->addNavSeparator("Resources", "/jetty/");
+    $Nav->addNavSeparator("Resources", null);
     $Nav->addCustomNav("Documentation", "http://www.eclipse.org/jetty/documentation", "_self", 2);
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     #FIXME: $Nav->addCustomNav("FAQ", "", "_self", 2);
@@ -36,7 +36,7 @@
     
     #FIXME: $Nav->addNavSeparator("Plugins", null);
     
-    $Nav->addNavSeparator("Project Management", "/jetty/");
+    $Nav->addNavSeparator("Project Management", null);
     $Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);
     # $Nav->addCustomNav("Bugs", "https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&amp;short_desc_type=allwordssubstr&amp;short_desc=""&amp;product=Jetty&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;status_whiteboard_type=allwordssubstr&amp;status_whiteboard=&amp;keywords_type=allwords&amp;keywords=&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED", "_self", 2);
     $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);
