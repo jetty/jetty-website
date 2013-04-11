@@ -17,7 +17,7 @@
 			<p>
 			        The Jetty Web Server and core components such as Web Sockets, SPDY, OSGi, JASPI, JMX, JNDI, AJP are
 				available from eclipse.  These distributions and its dependencies are provided under the terms and conditions of the <a
-				href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified: 
+				href="http://www.eclipse.org/legal/epl/notice.php">Eclipse Foundation Software User Agreement</a> unless otherwise specified: </p>
 				<ul>
 					<li><a href="http://download.eclipse.org/jetty/">Jetty Downloads</a></li>
 					<li><a href="http://www.eclipse.org/jetty/documentation">Jetty 9 Documentation</a></li>
