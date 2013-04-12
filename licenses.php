@@ -11,6 +11,7 @@
     $html = <<<EOHTML
 
     <div id="midcolumn">
+    <p><img alt="Jetty Logo" src="/jetty/images/jetty-logo-80x22.png"/></p>
         <h1>Licenses</h1>
         <p>
             Jetty 9 (as well as 7 and 8) is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> and <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is free for commercial use and distribution under the terms of either license, with exceptions listed in the <a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/NOTICE.txt">NOTICE</a> file. 

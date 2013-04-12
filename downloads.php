@@ -11,6 +11,7 @@
 	$html = <<<EOHTML
 
 	<div id="midcolumn">
+	<p><img alt="Jetty Logo" src="/jetty/images/jetty-logo-80x22.png"/></p>
 		<h1>Downloads</h1>
 		<div class="homeitem3col">	
 			<h2>Jetty Distributions from Eclipse</h2>

@@ -11,6 +11,7 @@
 	$html = <<<EOHTML
 
 	<div id="midcolumn">
+	<p><img alt="Jetty Logo" src="/jetty/images/jetty-logo-80x22.png"/></p>
 		<h1>Mailing Lists</h1>
 		<p>
 		    Mailing lists are a primary communication channel with the Jetty development team. If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, you can subscribe to one of the following mailing lists.  You may also track svn commits for the Jetty project.
