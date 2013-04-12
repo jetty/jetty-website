@@ -13,16 +13,10 @@
     <div id="midcolumn">
         <h1>Licenses</h1>
         <p>
-            The Jetty project is coordinated between <a href="http://www.eclipse.org/jetty/">Eclipse</a> for the latest core components and the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> for Jetty accessories, extensions, and older versions of Jetty.            
+            Jetty 9 (as well as 7 and 8) is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> and <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is free for commercial use and distribution under the terms of either license, with exceptions listed in the <a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/NOTICE.txt">NOTICE</a> file. 
         </p>
         <p>
-            Jetty 7 is dual licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> and <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License 1.0</a>. Jetty is free for commercial use and distribution under the terms of either license, with exceptions listed in the <a href="http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/trunk/NOTICE.txt">NOTICE</a> file. 
-        </p>
-        <p>
-            The latest Jetty accessories, extensions, and integrations are available from the <a href="http://jetty.mortbay.org/jetty/">codehaus</a> and are licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with exceptions explained in the <a href="http://svn.codehaus.org/jetty/jetty/trunk/NOTICE.txt">NOTICE</a> file.
-        </p>
-        <p>
-            Jetty 6 is distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/NOTICE.txt">NOTICE</a> file.
+            Jetty 6 was distributed solely under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a> with details and exceptions listed in the <a href="http://svn.codehaus.org/jetty/jetty/branches/jetty-6.1/NOTICE.txt">NOTICE</a> file.
         </p>
     </div>
     <div id="rightcolumn">
