@@ -47,9 +47,8 @@
     <li>
 	  <p>
 	  <b>Other</b> <br/> 
-	  Jetty is available in many forms and distributions, including the jetty-maven-plugin, debian and RPMs from 
-	  <a href="http://jetty.codehaus.org">jetty@codehaus</a>
-	  and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
+	  Previous releases of Jetty have been available in many forms and distributions, including the jetty-maven-plugin (which is now hosted at eclipse), debian and RPMs from 
+	  <a href="http://jetty.codehaus.org" rel="nofollow">jetty@codehaus</a> and as part of the <a href="http://geronimo.apache.org/">Geronimo JEE application server</a> from apache.
 	  </p>
     </li>
     </ul>
@@ -66,7 +65,7 @@
 	  <li>
 	  <p>
 	  <b>Codehaus</b><br/>
-	  In 2005, the jetty project moved to <a href="http://codehaus.org">the codehaus</a> for its hosting services and 
+	  In 2005, the jetty project moved to <a href="http://codehaus.org" rel="nofollow">the codehaus</a> for its hosting services and 
 	  open source community.  In 2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
 	  integrations, extensions and packaging of jetty.
 	  </p>
@@ -74,7 +73,7 @@
 	  <li>
 	  <p>
 	  <b>Sourceforge</b><br/>
-	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty">sourceforge.net</a>
+	  From 2000 to 2005, the jetty project was hosted at <a href="http://sourceforge.net/projects/jetty" rel="nofollow">sourceforge.net</a>
 	  where versions 3.x, 4.x and 5.x were produced.
 	  </p>
     </li>

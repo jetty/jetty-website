@@ -38,7 +38,7 @@
         <p>Jetty is used in a wide variety of projects and products, both in development and production. Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters. 
         See the <a href="/jetty/powered">Jetty Powered</a> page for more uses of Jetty.</p>
         <p>The current recommended version for use is Jetty 9 which can be obtained here: <a href="http://download.eclipse.org/jetty">Jetty Downloads</a>.  Also available are the latest maintenance releases of Jetty 8 and Jetty 7.</p>
-        <p>The Jetty project is now hosted entirely at the Eclipse Foundation and has been for a number of years.  Prior releases of Jetty have existed in part or completely under the Jetty project at <a href="http://jetty.codehaus.org" rel="nofollow">the Codehaus</a>. See the <a href="http://www.eclipse.org/jetty/about.php">About</a> page for information about the history of Jetty.</p> 
+        <p>The Jetty project is hosted entirely at the Eclipse Foundation and has been for a number of years.  Prior releases of Jetty have existed in part or completely under the Jetty project at <a href="http://jetty.codehaus.org" rel="nofollow">the Codehaus</a>. See the <a href="http://www.eclipse.org/jetty/about.php">About</a> page for more information about the history of Jetty.</p> 
       
         <table>
           <tr>
