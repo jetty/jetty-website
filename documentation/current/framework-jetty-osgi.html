@@ -14,7 +14,7 @@ body { background-image: url('images/draft-ribbon.png');
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
       </p></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="draft"><h5>DRAFT</h5><p>
           This page contains content that we have migrated from Jetty 7 or Jetty 8 documentation into the correct format, but we have not yet audited it for technical accuracy in Jetty 9.  Be aware that examples or information contained on this page may be incorrect.  Please check back soon as we continue improving the documentation, or submit corrections yourself to this page through <a href="http://github.com/jetty-project/jetty-documentation" style="text-decoration:none">Github</a>. Thank you.
-          </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="framework-jetty-osgi"></a>OSGI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11371">Introduction</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11376">General Setup</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11462">The Jetty OSGi Container</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11596">Deploying Bundles as Webapps</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11665">Deploying Bundles as Jetty ContextHandlers</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11737">Deploying Services as Webapps</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11812">Deploying Services as ContextHandlers</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11866">Support for the OSGi Service Platform Enterprise
+          </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="framework-jetty-osgi"></a>OSGI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11371">Introduction</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11376">General Setup</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11462">The Jetty OSGi Container</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11596">Deploying Bundles as Webapps</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11665">Deploying Bundles as Jetty ContextHandlers</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#services-as-webapps">Deploying Services as Webapps</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11812">Deploying Services as ContextHandlers</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11866">Support for the OSGi Service Platform Enterprise
     Specification</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html#d0e11952">Using JSPs</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11371"></a>Introduction</h3></div></div></div><p>The Jetty OSGi infrastructure provides a Jetty container inside an
     OSGi container. Traditional JavaEE webapps can be deployed, in addition to
     Jetty ContextHandlers, along with OSGi web bundles. In addition, the
@@ -65,7 +65,7 @@ body { background-image: url('images/draft-ribbon.png');
       </tr></table></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11462"></a>The Jetty OSGi Container</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11465"></a>The jetty-osgi-boot jar</h4></div></div></div><p>Now that you have the basic set of Jetty jars installed, you can
       install the <a class="link" href="http://repo1.maven.org/maven2/org/eclipse/jetty/osgi/jetty-osgi-boot/" target="_top">jetty-osgi-boot.jar</a>
       bundle, downloadable from the maven central repo <a class="link" href="http://repo1.maven.org/maven2/org/eclipse/jetty/osgi/jetty-osgi-boot/" target="_top">here.</a></p><p>This bundle will instantiate and make available the Jetty OSGi
-      container.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11477"></a>Customizing the Jetty
+      container.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="customize-jetty-container"></a>Customizing the Jetty
       Container</h4></div></div></div><p>Before going ahead with the install, you may want to customize the
       Jetty container. In general this is done by a combination of System
       properties and the usual jetty xml configuration files. The way you
@@ -195,7 +195,7 @@ Bundle-SymbolicName: com.acme.sample.web</pre></div></dd></dl></div><div class="
 
 &lt;/Configure&gt;
 
-</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11737"></a>Deploying Services as Webapps</h3></div></div></div><p>In addition to listening for bundles whose format or
+</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="services-as-webapps"></a>Deploying Services as Webapps</h3></div></div></div><p>In addition to listening for bundles whose format or
     <code class="code">MANIFEST</code> entries define a webapp or ContextHandler for to be
     deployed, the Jetty OSGi container also listens for the registration of
     OSGi services that are instances of
@@ -411,7 +411,7 @@ Import-Package: org.eclipse.virgo.web.dm;version="[3.0.0,4.0.0)",org.s
         environment containing TLDs that should be considered as discovered
         from the container's classpath.</p><div class="variablelist"><dl><dt><span class="term">org.eclipse.jetty.server.webapp.containerIncludeBundlePattern</span></dt><dd><p>This pattern must be specified as a context attribute of
               the WebAppContext representing the web bundle. Unless you are
-              deploying your own WebAppContext (see <a class="link" href="framework-jetty-osgi.html#services-as-webapps">Deploying Services as
+              deploying your own WebAppContext (see <a class="link" href="framework-jetty-osgi.html#services-as-webapps" title="Deploying Services as Webapps">Deploying Services as
               Webapps</a>), you won't have a reference to the WebAppContext
               to do this. In that case, it can be specified on the
               org.eclipse.jetty.deploy.DeploymentManager, where it will be
@@ -419,7 +419,7 @@ Import-Package: org.eclipse.virgo.web.dm;version="[3.0.0,4.0.0)",org.s
               Jetty OSGi container. The jetty-osgi-boot.jar contains the
               default jettyhome/etc/jetty-deploy.xml file where the
               DeploymentManager is defined. To set the pattern, you will need
-              to provide your own etc files - see the section on <a class="link" href="framework-jetty-osgi.html#customize-jetty-container">customizing the jetty
+              to provide your own etc files - see the section on <a class="link" href="framework-jetty-osgi.html#customize-jetty-container" title="Customizing the Jetty Container">customizing the jetty
               container</a> for how to do this. Here's how the
               jetty-deploy.xml file would look if we defined a pattern that
               matched all bundle symbolic names ending in "tag" and

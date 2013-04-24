@@ -4,11 +4,10 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-config-what"></a>What to Configure in Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-config-what.html#d0e926">Configuring the
-    Server</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#d0e990">Configuring
-    Connectors</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#d0e1050">Configuring
-    Contexts</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#d0e1153">Configuring Web
-    Applications</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#d0e1283">Web Application
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-config-what"></a>What to Configure in Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-config-what.html#intro-jetty-configuration-server">Configuring the
+    Server</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#intro-jetty-configuration-connectors">Configuring Connectors</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#intro-jetty-configuration-contexts">Configuring
+    Contexts</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#intro-jetty-configuration-webapps">Configuring Web
+    Applications</a></span></dt><dt><span class="section"><a href="quickstart-config-what.html#quickstart-config-deployer">Web Application
     Deployment</a></span></dt></dl></div><p>This section gives an overview of the what components of Jetty you
   typically configure using the mechanisms outlined in the previous section.
   <a class="xref" href="basic-architecture.html" title="Jetty 7 Architecture">Jetty 7 Architecture</a> describes the structure of a Jetty
@@ -16,7 +15,7 @@
   vital if you want to change the structure of the server as set up by the
   default configurations in the Jetty distribution. However, for most
   purposes, configuration is a matter of identifying the correct configuration
-  file and modifying existing configuration values.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e926"></a>Configuring the
+  file and modifying existing configuration values.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="intro-jetty-configuration-server"></a>Configuring the
     Server</h3></div></div></div><p>The Server instance is the central coordination object of a Jetty
     server; it provides services and life cycle management for all other Jetty
     server components. In the standard Jetty distribution, the core server
@@ -48,16 +47,14 @@
           other things, the sending of dates and versions in HTTP
           responses.</p></dd><dt><span class="term">Connectors</span></dt><dd><p>The server holds a collection of connectors that receive
           connections for HTTP and the other protocols that Jetty supports.
-          The next section, <a class="xref" href="quickstart-config-what.html#intro-jetty-configuration-connectors">Configuring
-    Connectors</a> describes
+          The next section, <a class="xref" href="quickstart-config-what.html#intro-jetty-configuration-connectors" title="Configuring Connectors">Configuring Connectors</a> describes
           configuration of the connectors themselves. For the server you can
           either set the collection of all connectors or add/remove individual
           connectors.</p></dd><dt><span class="term">Services</span></dt><dd><p>The server can hold additional service objects, sometimes as
           attributes, but often as aggregated LifeCycle beans. Examples of
           services are Login Services and DataSources, which you configure at
           the server level and then inject into the web applications that use
-          them.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e990"></a>Configuring
-    Connectors</h3></div></div></div><p>A Jetty Server Connector is a network end point that accepts
+          them.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="intro-jetty-configuration-connectors"></a>Configuring Connectors</h3></div></div></div><p>A Jetty Server Connector is a network end point that accepts
     connections for one or more protocols which produce requests and/or
     messages for the Jetty server. In the standard Jetty server distribution,
     several provided configuration files add connectors to the server for
@@ -86,7 +83,7 @@
       protocol supported (HTTP, HTTPS, AJP, SPDY), and the nature of the
       implementation (NIO or BIO). From Jetty 9 onwards there is only one
       prime Connector type (ServerConnector), which is NIO based and uses
-      Connection Factories to handle one or more protocols.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1050"></a>Configuring
+      Connection Factories to handle one or more protocols.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="intro-jetty-configuration-contexts"></a>Configuring
     Contexts</h3></div></div></div><p>A Jetty context is a handler that groups other handlers under a
     context path together with associated resources and is roughly equivalent
     to the standard ServletContext API. A context may contain either standard
@@ -181,7 +178,7 @@ Configure a custom context for serving javadoc as static resources
   &lt;/Set&gt;
 &lt;/Configure&gt;
 
-</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1153"></a>Configuring Web
+</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="intro-jetty-configuration-webapps"></a>Configuring Web
     Applications</h3></div></div></div><p>The servlet specification defines a web application, which when
     packaged as a zip is called WAR file (Web application ARchive). Jetty
     implements both WAR files and unpacked web applications as a specialized
@@ -205,7 +202,7 @@ Configure a custom context for serving javadoc as static resources
     file (or unpacked web application), typically a web application contains
     much of its own configuration and deploying a WAR is often just a matter
     of dropping the WAR file in to the webapps directory that is scanned by
-    the <a class="link" href="quickstart-config-what.html#quickstart-config-deployer">jetty
+    the <a class="link" href="quickstart-config-what.html#quickstart-config-deployer" title="Web Application Deployment">jetty
     deployer</a>.</p><p>If you need to configure something within a web application, often
     you do so by unpacking the WAR file and editing the
     <code class="filename">web.xml</code> and other configuration files. However, both
@@ -286,7 +283,7 @@ Configure a custom context for serving javadoc as static resources
 </pre></div><p>This creates and configures the LoginService as an aggregate bean
       on the server. When a web application is deployed that declares a realm
       called "Test Realm," the server beans are searched for a matching Login
-      Service.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1283"></a>Web Application
+      Service.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-config-deployer"></a>Web Application
     Deployment</h3></div></div></div><p>Jetty is capable of deploying a variety of Web Application formats.
     This is accomplished via scans of the
     <code class="filename">${jetty.home}/webapps</code> directory for contexts to
