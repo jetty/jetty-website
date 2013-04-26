@@ -4,15 +4,15 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="advanced-security-topics"></a>Chapter&nbsp;24.&nbsp;Advanced Security Topics</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="advanced-security-topics.html#configuring-spnego">Spnego Support</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-spnego"></a>Spnego Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="advanced-security-topics.html#d0e12431">Configuring Jetty and Spnego</a></span></dt><dt><span class="section"><a href="advanced-security-topics.html#d0e12492">
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="advanced-security-topics"></a>Chapter&nbsp;24.&nbsp;Advanced Security Topics</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="advanced-security-topics.html#configuring-spnego">Spnego Support</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-spnego"></a>Spnego Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="advanced-security-topics.html#d0e12637">Configuring Jetty and Spnego</a></span></dt><dt><span class="section"><a href="advanced-security-topics.html#d0e12698">
       Configuring Firefox
-    </a></span></dt><dt><span class="section"><a href="advanced-security-topics.html#d0e12510">
+    </a></span></dt><dt><span class="section"><a href="advanced-security-topics.html#d0e12716">
       Configuring Internet Explorer
     </a></span></dt></dl></div><p>
     Spnego or Simple and Protected GSSAPI Negotiation Mechanism is a way for users to be seamlessly authenticated when running on a Windows or Active Directory based network.  Jetty supports this type of authentication and authorization through the JDK so you must be using a JDK that supports it, which recent versions of Java 6 and 7 do.  Also important to note is that this is an incredibly fragile setup where everything needs to be configured just right for things to work, otherwise it can fail in fun and exciting, not to mention obscure ways.
   </p><p>
     There is a substantial amount of configuration and testing required to enable this feature as well as knowledge and access to central systems on a Windows network such as the Active Domain Controller and the ability to create and maintain service users.
-  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12431"></a>Configuring Jetty and Spnego</h3></div></div></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12637"></a>Configuring Jetty and Spnego</h3></div></div></div><p>
       To run with spengo enabled the following command line options are required:
     </p><pre class="screen">
 
@@ -105,7 +105,7 @@ $ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapU
 
     </pre><p>
       This step should give you the keytab file which should then be copied over to the machine running this http server and referenced from the configuration files. For our testing we put the keytab into the etc directory of jetty and referenced it from there.
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12492"></a>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12698"></a>
       Configuring Firefox
     </h3></div></div></div><p>
       The follows steps have been required to inform Firefox that it should use a negotiation dialog to authenticate.
@@ -117,7 +117,7 @@ $ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapU
           set network.negotiate-auth.delegation-uris to http://,https://
         </p></li><li class="listitem"><p>
           set network.negotiate-auth.trusted-uris to http://,https://
-        </p></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12510"></a>
+        </p></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12716"></a>
       Configuring Internet Explorer
     </h3></div></div></div><p>
       The follows steps have been required to inform Internet Explorer that it should use a negotiation dialog to authenticate.

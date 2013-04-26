@@ -4,12 +4,12 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-runner"></a>Use Jetty without an installed distribution</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-runner.html#jetty-runner-preparation">Preparation</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12117">Deploying a simple context</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12146">Deploying multiple contexts</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12162">Changing the default port</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12170">Using jetty.xml files</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12181">Full configuration reference</a></span></dt></dl></div><p>The idea of the jetty-runner is extremely simple &#8211; run a webapp
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-runner"></a>Use Jetty without an installed distribution</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-runner.html#jetty-runner-preparation">Preparation</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12323">Deploying a simple context</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12352">Deploying multiple contexts</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12368">Changing the default port</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12376">Using jetty.xml files</a></span></dt><dt><span class="section"><a href="jetty-runner.html#d0e12387">Full configuration reference</a></span></dt></dl></div><p>The idea of the jetty-runner is extremely simple &#8211; run a webapp
   directly from the command line using a single jar and as much default
   configuration as possible. Of course, if your webapp is not so
   straightforward, the jetty-runner has command line options which allow you
   to customize the execution environment.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-runner-preparation"></a>Preparation</h3></div></div></div><p>You will need the jetty-runner jar:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p><a class="link" href="http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-runner/" target="_top">Get</a>
-        the jetty-runner jar, from <a class="link" href="http://search.maven.org/#browse" target="_top">maven central</a></p></li></ol></div><p></p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12117"></a>Deploying a simple context</h3></div></div></div><p>Let's assume we have a very simple webapp, that does not need any
+        the jetty-runner jar, from <a class="link" href="http://search.maven.org/#browse" target="_top">maven central</a></p></li></ol></div><p></p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12323"></a>Deploying a simple context</h3></div></div></div><p>Let's assume we have a very simple webapp, that does not need any
     resources from its environment, nor any configuration apart from the
     defaults. Starting it is as simple as doing the following:</p><div class="informalexample"><pre class="screen">
 
@@ -29,7 +29,7 @@
 
       </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>When using a context xml file, the application being deployed is
       not even required to be a fully-fledged webapp. It can simply be a Jetty
-      <a class="link" href="basic-architecture.html#what-is-a-context" title="Contexts">context</a>.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12146"></a>Deploying multiple contexts</h3></div></div></div><p>If you have more than one webapp that must be deployed, simply
+      <a class="link" href="basic-architecture.html#what-is-a-context" title="Contexts">context</a>.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12352"></a>Deploying multiple contexts</h3></div></div></div><p>If you have more than one webapp that must be deployed, simply
     provide them all on the command line. You can control the context paths
     for them using the "--path" parameter. Here's an example of deploying 2
     wars (although either or both of them could be unpacked directories
@@ -47,13 +47,13 @@
       </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The command line switches override configuration file settings.
       So, for example, you could set the context path for the webapp inside
       the context xml file, and use the --path switch to override it on the
-      command line.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12162"></a>Changing the default port</h3></div></div></div><p>By default the jetty-runner will listen on port 8080. You can easily
+      command line.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12368"></a>Changing the default port</h3></div></div></div><p>By default the jetty-runner will listen on port 8080. You can easily
     change this on the command line using the "--port" command. Here's an
     example that runs our simple.war on port 9090:</p><div class="informalexample"><pre class="screen">
 
 &gt; java -jar jetty-runner.jar --port 9090 simple.war
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12170"></a>Using jetty.xml files</h3></div></div></div><p>Instead of, or in addition to using command line switches, you can
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12376"></a>Using jetty.xml files</h3></div></div></div><p>Instead of, or in addition to using command line switches, you can
     use one or more jetty.xml files to configure the environment for your
     webapps. Here's an example where we apply two different jetty.xml
     files:</p><div class="informalexample"><pre class="screen">
@@ -62,7 +62,7 @@
 
       </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Switches on the command line take precendence over those defined
       in configuration files, so you can use the command line as
-      overrides.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12181"></a>Full configuration reference</h3></div></div></div><p>You can see the fill set of configuration options using the --help
+      overrides.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e12387"></a>Full configuration reference</h3></div></div></div><p>You can see the fill set of configuration options using the --help
     switch:</p><div class="informalexample"><pre class="screen">
 
 &gt; java -jar jetty-runner.jar --help
@@ -123,7 +123,7 @@ Context opts:
 
             </pre></div><p>Then, to stop jetty from a different terminal, you need to
           supply the same port and key information. For this you'll either
-          need a local installation of jetty, the<a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin"> jetty-maven-plugin</a>, the j<a class="link" href="jetty-ant.html" title="Using the Ant Jetty Plugin">etty-ant plugin</a>, or write a custom class.
+          need a local installation of jetty, the<a class="link" href="jetty-maven-plugin.html" title="Jetty Maven Plugin"> jetty-maven-plugin</a>, the j<a class="link" href="jetty-ant.html" title="Using the Ant Jetty Plugin">etty-ant plugin</a>, or write a custom class.
           Here's how to use a jetty installation to perform a stop:</p><div class="informalexample"><pre class="screen">
 
 &gt; java -jar start.jar --stop-port 8181 --stop-key abc123 --stop
