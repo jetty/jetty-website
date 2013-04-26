@@ -1,0 +1,46 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Asynchronous ProxyServlet</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-extras.html" title="Chapter&nbsp;19.&nbsp;Bundled Servlets, Filters, and Handlers"><link rel="prev" href="default-servlet.html" title="Default Servlet"><link rel="next" href="cgi-servlet.html" title="CGI Servlet"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><center xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></center><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Asynchronous ProxyServlet</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="default-servlet.html">Prev</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;19.&nbsp;Bundled Servlets, Filters, and Handlers</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="cgi-servlet.html">Next</a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/support.jsp">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="proxy-servlet"></a>Asynchronous ProxyServlet</h2></div></div></div><p>
+		Forwards requests to another server either as a standard web reverse proxy (as defined by RFC2616) or as a transparent reverse proxy.
+	</p><p>
+		To facilitate JMX monitoring, the HttpClient instance is set as context attribute, prefixed with the servlet's name and exposed by the mechanism provided by ContextHandler.MANAGED_ATTRIBUTES.
+	</p><p>
+		The following init parameters may be used to configure the servlet:
+	</p><div class="variablelist"><dl><dt><span class="term">hostHeader</span></dt><dd><p>
+			  	forces the host header to a particular value
+			  </p></dd><dt><span class="term">viaHost</span></dt><dd><p>
+					the name to use in the Via header: Via: http/1.1 &lt;viaHost&gt;
+				</p></dd><dt><span class="term">whiteList</span></dt><dd><p>
+			  	comma-separated list of allowed proxy hosts
+			  </p></dd><dt><span class="term">blackList</span></dt><dd><p>
+			    comma-separated list of forbidden proxy hosts
+			  </p></dd></dl></div><p>
+		In addition, there are a number of init parameters that can be used to configure the HttpClient instance used internally for the proxy.
+	</p><div class="variablelist"><dl><dt><span class="term">maxThreads</span></dt><dd><p>Default Value: 256</p><p>The max number of threads of HttpClient's Executor</p></dd><dt><span class="term">maxConnections</span></dt><dd><p>Default Value: 32768</p><p>
+					The max number of connections per destination.  RFC 2616 suggests that 2 connections should be opened per each destination, but browsers commonly open 6 or more. If this HttpClient is used for load testing, it is common to have only one destination (the server to load test), and it is recommended to set this value to a high value (at least as much as the threads present in the executor).
+				</p></dd><dt><span class="term">idleTimeout</span></dt><dd><p>Default Value: 30000</p><p>
+					The idle timeout in milliseconds that a connection can be idle, that is without traffic of bytes in either direction.
+				</p></dd><dt><span class="term">timeout</span></dt><dd><p>Default Value: 60000</p><p>
+					The total timeout in milliseconds for the request/response conversation.
+				</p></dd><dt><span class="term">requestBufferSize</span></dt><dd><p>Default Value: 4096</p><p>
+					The size of the request buffer the request is written into.
+				</p></dd><dt><span class="term">responseBufferSize</span></dt><dd><p>Default Value: 4096</p><p>
+					The size of the response buffer the response is written into.
+				</p></dd></dl></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="default-servlet.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-extras.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="cgi-servlet.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Default Servlet&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;CGI Servlet</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" class="jetty-callout"><p>
+        See an error or something missing?
+        <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+            <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
