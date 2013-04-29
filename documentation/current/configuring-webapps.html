@@ -27,9 +27,9 @@
     ordering of these Configurations is significant as subsequent
     Configurations tend to build on information extracted or setup in
     foregoing Configurations. These are the default list, in order, of
-    Configurations that are applied to each <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">org.eclipse.jetty.webapp.WebAppContex</a>t:</p><div class="table"><a name="d0e3214"></a><p class="title"><b>Table&nbsp;5.1.&nbsp;Default Configuration classes</b></p><div class="table-contents"><table summary="Default Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebInfConfiguration.html" target="_top">org.eclipse.jetty.webapp.WebInfConfiguration</a></td><td>Extracts war, orders jars and defines classpath</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.WebXmlConfiguration</a></td><td>Processes a WEB-INF/web.xml file</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/MetaInfConfiguration.html" target="_top">org.eclipse.jetty.webapp.MetaInfConfiguration</a></td><td>Looks in container and webapp jars for META-INF/resources
+    Configurations that are applied to each <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">org.eclipse.jetty.webapp.WebAppContex</a>t:</p><div class="table"><a name="d0e3278"></a><p class="title"><b>Table&nbsp;5.1.&nbsp;Default Configuration classes</b></p><div class="table-contents"><table summary="Default Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebInfConfiguration.html" target="_top">org.eclipse.jetty.webapp.WebInfConfiguration</a></td><td>Extracts war, orders jars and defines classpath</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.WebXmlConfiguration</a></td><td>Processes a WEB-INF/web.xml file</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/MetaInfConfiguration.html" target="_top">org.eclipse.jetty.webapp.MetaInfConfiguration</a></td><td>Looks in container and webapp jars for META-INF/resources
             and META-INF/web-fragment.xml</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/FragmentConfiguration.html" target="_top">org.eclipse.jetty.webapp.FragmentConfiguration</a></td><td>Processes all discovered META-INF/web-fragment.xml
-            files</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/JettyWebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.JettyWebXmlConfiguration</a></td><td>Processes a WEB-INF/jetty-web.xml file</td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3250"></a>Anatomy of a Configuration Class</h4></div></div></div><p>A Configuration class is called 5 times in different phases of the
+            files</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/JettyWebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.JettyWebXmlConfiguration</a></td><td>Processes a WEB-INF/jetty-web.xml file</td></tr></tbody></table></div></div><br class="table-break"><p></p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3314"></a>Anatomy of a Configuration Class</h4></div></div></div><p>A Configuration class is called 5 times in different phases of the
       WebAppContext's lifecycle:</p><div class="variablelist"><dl><dt><span class="term">preConfigure</span></dt><dd><p>As the WebAppContext is starting up this phase is executed.
             The Configuration should discover any of the resources it will
             need during the subsequent phases.</p></dd><dt><span class="term">configure</span></dt><dd><p>This phase is where the work of the class is done, usually
@@ -49,7 +49,7 @@
       JettyWebXmlConfiguration. The cycle begins again for the configure()
       phase and again for the postConfigure() phases. The cycle is repeated
       <span class="emphasis"><em>in reverse order</em></span> for the deconfigure() and
-      eventually the destroy() phases.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3291"></a>Extending Container Support by Creating Extra
+      eventually the destroy() phases.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3355"></a>Extending Container Support by Creating Extra
       Configurations</h4></div></div></div><p>As we have seen, there is a default set of Configurations that
       support basic deployment of a webapp. You will notice that we have not
       mentioned JavaEE features such as JNDI, nor advanced servlet spec
@@ -62,24 +62,24 @@
       deployment delay. We will see in the section <a class="link" href="configuring-webapps.html#webapp-context-attributes" title="Other Configuration">Other Configuration</a> another
       helpful webapp facility that Jetty provides for cutting down the time
       spent analysing jars.</p><p>Jetty makes use of the flexibility of Configurations to make JNDI
-      and annotation support pluggable.</p><p>Firstly, lets look at how Configurations help enable JNDI.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3303"></a>Example: JNDI Configurations</h5></div></div></div><p>JNDI lookups within web applications require the container to
+      and annotation support pluggable.</p><p>Firstly, lets look at how Configurations help enable JNDI.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3367"></a>Example: JNDI Configurations</h5></div></div></div><p>JNDI lookups within web applications require the container to
         hookup resources defined in the container's environment to that of the
         web application. To acheive that, we use 2 extra
-        Configurations:</p><div class="table"><a name="d0e3308"></a><p class="title"><b>Table&nbsp;5.2.&nbsp;JNDI Configuration classes</b></p><div class="table-contents"><table summary="JNDI Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/plus/webapp/EnvConfiguration.html" target="_top">org.eclipse.jetty.plus.webapp.EnvConfiguration</a></td><td>Creates java:comp/env for the webapp, applies a
+        Configurations:</p><div class="table"><a name="d0e3372"></a><p class="title"><b>Table&nbsp;5.2.&nbsp;JNDI Configuration classes</b></p><div class="table-contents"><table summary="JNDI Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/plus/webapp/EnvConfiguration.html" target="_top">org.eclipse.jetty.plus.webapp.EnvConfiguration</a></td><td>Creates java:comp/env for the webapp, applies a
                 WEB-INF/jetty-env.xml file</td></tr><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/plus/webapp/PlusConfiguration.html" target="_top">org.eclipse.jetty.plus.webapp.PlusConfiguration</a></td><td>Processes JNDI related aspects of WEB-INF/web.xml and
                 hooks up naming entries</td></tr></tbody></table></div></div><br class="table-break"><p>These configurations must be added in
         <span class="emphasis"><em>exactly</em></span> the order shown above and should be
         inserted <span class="emphasis"><em>immediately before</em></span> the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/JettyWebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.JettyWebXmlConfiguration</a>
         class in the list of configurations. To fully support JNDI, you need
         to do a couple of other things, full details of which you can find
-        <a class="link" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI">here</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3339"></a>Example: Annotation Configurations</h5></div></div></div><p>We need just one extra Configuration class to help provide
-        servlet annotation scanning:</p><div class="table"><a name="d0e3344"></a><p class="title"><b>Table&nbsp;5.3.&nbsp;Annotation Configuration classes</b></p><div class="table-contents"><table summary="Annotation Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/annotations.AnnotationConfiguration.html" target="_top">org.eclipse.jetty.annotations.AnnotationConfiguration</a></td><td>Scan container and web app jars looking for
+        <a class="link" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI">here</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3403"></a>Example: Annotation Configurations</h5></div></div></div><p>We need just one extra Configuration class to help provide
+        servlet annotation scanning:</p><div class="table"><a name="d0e3408"></a><p class="title"><b>Table&nbsp;5.3.&nbsp;Annotation Configuration classes</b></p><div class="table-contents"><table summary="Annotation Configuration classes" border="1"><colgroup><col><col></colgroup><tbody><tr><td><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/annotations.AnnotationConfiguration.html" target="_top">org.eclipse.jetty.annotations.AnnotationConfiguration</a></td><td>Scan container and web app jars looking for
                 @WebServlet, @WebFilter, @WebListener etc</td></tr></tbody></table></div></div><br class="table-break"><p>The above configuration class must be <span class="emphasis"><em>inserted
         immediately before</em></span> the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/JettWebXmlConfiguration.html" target="_top">org.eclipse.jetty.webapp.JettyWebXmlConfiguration</a>
         class in the list of configurations. To fully support annotations, you
         need to do a couple of other things, details of which can be found
-        here.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3363"></a>How to Set the List of Configurations</h4></div></div></div><p>You have a number of options for how to make Jetty use a different
-      list of Configurations.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3368"></a>Setting the list directly on the WebAppContext</h5></div></div></div><p>If you have only one webapp that you wish to affect, this may be
+        here.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3427"></a>How to Set the List of Configurations</h4></div></div></div><p>You have a number of options for how to make Jetty use a different
+      list of Configurations.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3432"></a>Setting the list directly on the WebAppContext</h5></div></div></div><p>If you have only one webapp that you wish to affect, this may be
         the easiest option. You will, however, either need to have a context
         xml file that represents your web app, or you need to call the
         equivalent in code. Let's see an example of how we would add in the
@@ -105,7 +105,7 @@
   &lt;/Set&gt;
 
 &lt;/Configure&gt;</pre><p>Of course, you can also use this method to reduce the
-        Configurations applied to a specific WebAppContext.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3380"></a>Setting the list for all webapps via the Deployer</h5></div></div></div><p>If you use the <a class="link" href="deployment-architecture.html" title="Deployment Architecture">deployer</a>, you can set up the
+        Configurations applied to a specific WebAppContext.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3444"></a>Setting the list for all webapps via the Deployer</h5></div></div></div><p>If you use the <a class="link" href="deployment-architecture.html" title="Deployment Architecture">deployer</a>, you can set up the
         list of Configuration classes on the <a class="link" href="deployment-architecture.html#default-web-app-provider" title="Understanding the Default WebAppProvider">WebAppProvider</a>. They will
         then be applied to each WebAppContext deployed by the deployer:</p><pre class="programlisting">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
@@ -140,7 +140,7 @@
       &lt;/New&gt;
     &lt;/Arg&gt;
   &lt;/Call&gt;
-&lt;/Configure&gt; </pre></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3393"></a>Adding or inserting to an existing list</h5></div></div></div><p>Instead of having to enumerate the list in its entirety, you can
+&lt;/Configure&gt; </pre></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e3457"></a>Adding or inserting to an existing list</h5></div></div></div><p>Instead of having to enumerate the list in its entirety, you can
         simply nominate classes that you want to add, and indicate whereabouts
         in the list you want them inserted. Let's look at an example of using
         this method to add in Configuration support for JNDI - as usual you
@@ -172,7 +172,7 @@
 </pre><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">org.eclipse.jetty.webapp.Configuration.ClassList</a>
         class provides these methods for insertion:</p><div class="variablelist"><dl><dt><span class="term">addAfter</span></dt><dd><p>inserts the supplied list of Configuration class names
               after the given Configuration class name</p></dd><dt><span class="term">addBefore</span></dt><dd><p>inserts the supplied list of Configuration class names
-              before the given Configuration class name</p></dd></dl></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="webapp-context-attributes"></a>Other Configuration</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3421"></a>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</h4></div></div></div><p>This is a context attribute that can be set on<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top"> an
+              before the given Configuration class name</p></dd></dl></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="webapp-context-attributes"></a>Other Configuration</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3485"></a>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</h4></div></div></div><p>This is a context attribute that can be set on<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top"> an
       org.eclipse.jetty.webapp.WebAppContext</a> to control which parts of
       the <span class="emphasis"><em>container's</em></span> classpath should be processed for
       things like annotations, META-INF/resources, META-INF/web-fragment.xml
@@ -197,7 +197,7 @@
     &lt;/Call&gt;
 
 &lt;/Configure&gt;</pre><p>Note that the order of the patterns defines the ordering of the
-      scanning of the jars or class directories.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3448"></a>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</h4></div></div></div><p>Similarly to the previous context attribute, this attribute
+      scanning of the jars or class directories.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e3512"></a>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</h4></div></div></div><p>Similarly to the previous context attribute, this attribute
       controls which jars are processed for things like annotations and
       META-INF resources. However, this attribute controls which jars from the
       <span class="emphasis"><em>webapp's</em></span> classpath (usually WEB-INF/lib) are
