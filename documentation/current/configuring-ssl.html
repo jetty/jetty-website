@@ -40,11 +40,11 @@
       replace one that is expiring.</p><p>The examples below generate only basic keys and certificates. You
       should read the full manuals of the tools you are using if you want to
       specify:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>the key size</p></li><li class="listitem"><p>the certificate expiration date</p></li><li class="listitem"><p>alternate security providers</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-key-pairs-and-certificates-JDK-keytool"></a>Generating Keys and Certificates with JDK's keytool</h5></div></div></div><p>The following command generates a key pair and certificate
-        directly into file <code class="filename">keystore</code>:</p><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The DSA key algorithm certificate produces an error after
+        directly into file <code class="filename">keystore</code>:</p><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>The DSA key algorithm certificate produces an error after
           loading several pages. In a browser, it displays a message "Could
           not establish an encrypted connection because certificate presented
           by localhost has an invalid signature." The solution is to use RSA
-          for the key algorithm.</p></div><p>This command prompts for information about the certificate and
+          for the key algorithm.</p></td></tr></table></div><p>This command prompts for information about the certificate and
         for passwords to protect both the keystore and the keys within it. The
         only mandatory response is to provide the fully qualified host name of
         the server at the "first and last name" prompt. For example:</p><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA
@@ -131,12 +131,12 @@ $</pre><p>You now have the minimal requirements to run an SSL connection
         <code class="filename">jetty.crt</code> as generated with OpenSSL. You need to
         enter the details for the certificate again.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="loading-keys-and-certificates"></a>Loading Keys and Certificates</h4></div></div></div><p>Once a CA has sent you a certificate, or if you generated your own
       certificate without <code class="code">keytool</code>, you need to load it into a JSSE
-      keystore.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>You need both the private key and the certificate in the JSSE
+      keystore.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>You need both the private key and the certificate in the JSSE
         keystore. You should load the certificate into the keystore used to
         generate the CSR with <code class="code">keytool</code>. If your key pair is not already in a keystore
         (for example, because it has been generated with OpenSSL), you need to use the PKCS12 format to load
         both key and certificate (see <a class="link" href="configuring-ssl.html#loading-keys-and-certificates-via-pkcks12" title="Loading Keys and Certificates via PKCS12">PKCKS12 Keys &amp;
-        Certificates</a>).</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="loading-certificates-with-keytool"></a>Loading Certificates with keytool</h5></div></div></div><p>You can use <code class="code">keytool</code> to load a certificate in PEM form directly
+        Certificates</a>).</p></td></tr></table></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="loading-certificates-with-keytool"></a>Loading Certificates with keytool</h5></div></div></div><p>You can use <code class="code">keytool</code> to load a certificate in PEM form directly
         into a keystore. The PEM format is a text encoding of certificates; it
         is produced by OpenSSL, and is returned by some CAs. An example PEM
         file is:</p><pre class="screen">jetty.crt
@@ -201,9 +201,9 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
               </a>
               or via<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html#setExcludeCipherSuites(java.lang.String...)" target="_top">
                   SslContext.setExcludeCipherSuites(java.lang.String...)</a>.
-          </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>It's crucial that you use the exact names of the cipher suites as used/known by the JDK.
+          </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>It's crucial that you use the exact names of the cipher suites as used/known by the JDK.
               You can get them by obtaining an instance of SSLEngine and call getSupportedCipherSuites().
-              Tools like ssllabs.com might report slightly different names which will be ignored.</p></div><p>Both setIncludeCipherSuites and setExcludeCipherSuites can be feed by the exact cipher suite
+              Tools like ssllabs.com might report slightly different names which will be ignored.</p></td></tr></table></div><p>Both setIncludeCipherSuites and setExcludeCipherSuites can be feed by the exact cipher suite
               name used in the jdk or by using regular expressions.
           </p><p>
               Here's a couple of examples on how to include only RC4 cipher suites. All of them will protect the
@@ -244,9 +244,9 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
                 <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>RSA_WITH_3DES_EDE_CBC_SHA<strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
               <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
             <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-            </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
+            </pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
                   need to specify specific cipher suites. This configuration will adapt to any
-                  additions/removals of cipher suites to new versions of the JDK.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2787"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
+                  additions/removals of cipher suites to new versions of the JDK.</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2788"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
       <code class="code">SslConnectionFactory</code> instance to be used when accepting network
       connections, which in turn is injected into an instance of
       <code class="code">ServerConnector</code>. For example from <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"sslConnector"</span> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>

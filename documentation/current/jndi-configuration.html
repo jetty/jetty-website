@@ -60,7 +60,7 @@
     <code class="code">java:comp/env/jdbc</code>, JMS connection factories under
     <code class="code">java:comp/env/jms</code>, JavaMail connection factories under <code class="code">
     java:comp/env/mail</code> and URL connection factories under
-    <code class="code">java:comp/env/url</code>. For example:</p><div class="table"><a name="d0e7741"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;DataSource Declaration Conventions</b></p><div class="table-contents"><table summary="DataSource Declaration Conventions" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h3></div></div></div><p>Here is an example of configuring a
+    <code class="code">java:comp/env/url</code>. For example:</p><div class="table"><a name="d0e7742"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;DataSource Declaration Conventions</b></p><div class="table-contents"><table summary="DataSource Declaration Conventions" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h3></div></div></div><p>Here is an example of configuring a
     <code class="code">javax.sql.DataSource</code>. Jetty can use any DataSource
     implementation available on its classpath. In this example, the DataSource
     is from the <a class="link" href="http://db.apache.org/derby" target="_top">Derby</a>
@@ -101,12 +101,12 @@
 
     ...
   }
-}</pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Careful! When configuring Resources, ensure that the type of
+}</pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>Careful! When configuring Resources, ensure that the type of
       object you configure matches the type of object you expect to look up in
       <code class="code">java:comp/env</code>. For database connection factories, this
       means that the object you register as a Resource
       <span class="emphasis"><em>must</em></span> implement the
-      <code class="code">javax.sql.DataSource</code>&nbsp;interface.</p></div><p>For more examples of datasource configurations, see <a class="xref" href="jndi-datasource-examples.html" title="Datasource Examples">Datasource Examples</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jms-queues-topics-connectionfactories"></a>Configuring JMS Queues, Topics and ConnectionFactories</h3></div></div></div><p>Jetty can bind any implementation of the JMS destinations and
+      <code class="code">javax.sql.DataSource</code>&nbsp;interface.</p></td></tr></table></div><p>For more examples of datasource configurations, see <a class="xref" href="jndi-datasource-examples.html" title="Datasource Examples">Datasource Examples</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jms-queues-topics-connectionfactories"></a>Configuring JMS Queues, Topics and ConnectionFactories</h3></div></div></div><p>Jetty can bind any implementation of the JMS destinations and
     connection factories. You just need to ensure the implementation Jars are
     available on Jetty's classpath. Here is an example of binding an <a class="link" href="http://activemq.apache.org" target="_top">ActiveMQ</a> in-JVM connection
     factory:</p><div class="informalexample"><pre class="programlisting"><strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">'wac'</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.webapp.WebAppContext"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
@@ -149,11 +149,11 @@
     MailSessionReference</code> instance. The result is that an application
     can look up <code class="code"> java:comp/env/mail/Session</code>&nbsp; at runtime and obtain
     access to a <code class="code">javax.mail.Session</code>&nbsp; that has the necessary
-    configuration to permit it to send email via SMTP.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>You can set the password to be plain text, or use Jetty's <a class="link" href="configuring-security-secure-passwords.html" title="Secure Password Obfuscation">Secure Password
+    configuration to permit it to send email via SMTP.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>You can set the password to be plain text, or use Jetty's <a class="link" href="configuring-security-secure-passwords.html" title="Secure Password Obfuscation">Secure Password
       Obfuscation</a> (OBF:) mechanism to make the config file a little
       more secure from prying eyes. Remember that you cannot use the other Jetty
       encryption mechanisms of MD5 and Crypt because they do not allow you to recover the original
-      password, which the mail system requires.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-xa-transactions"></a>Configuring XA Transactions</h3></div></div></div><p>If you want to perform distributed transactions with your resources,
+      password, which the mail system requires.</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-xa-transactions"></a>Configuring XA Transactions</h3></div></div></div><p>If you want to perform distributed transactions with your resources,
     you need a <span class="emphasis"><em>transaction manager</em></span> that supports the JTA
     interfaces, and that you can look up as <code class="code">java:comp/UserTransaction</code>
     in your webapp. Jetty does not ship with one as standard, but you can plug
