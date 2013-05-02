@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Spnego Support</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-security-topics.html" title="Chapter&nbsp;25.&nbsp;Advanced Security Topics"><link rel="prev" href="jaas-support.html" title="JAAS Support"><link rel="next" href="frameworks.html" title="Chapter&nbsp;26.&nbsp;Frameworks"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Spnego Support</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-security-topics.html" title="Chapter&nbsp;25.&nbsp;Advanced Security Topics"><link rel="prev" href="jaas-support.html" title="JAAS Support"><link rel="next" href="frameworks.html" title="Chapter&nbsp;26.&nbsp;Frameworks"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"></script><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -14,15 +14,15 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spnego-support"></a>Spnego Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="spnego-support.html#d0e13907">Configuring Jetty and Spnego</a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e13968">
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spnego-support"></a>Spnego Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="spnego-support.html#d0e13909">Configuring Jetty and Spnego</a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e13970">
       Configuring Firefox
-    </a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e13986">
+    </a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e13988">
       Configuring Internet Explorer
     </a></span></dt></dl></div><p>
     Spnego or Simple and Protected GSSAPI Negotiation Mechanism is a way for users to be seamlessly authenticated when running on a Windows or Active Directory based network.  Jetty supports this type of authentication and authorization through the JDK so you must be using a JDK that supports it, which recent versions of Java 6 and 7 do.  Also important to note is that this is an incredibly fragile setup where everything needs to be configured just right for things to work, otherwise it can fail in fun and exciting, not to mention obscure ways.
   </p><p>
     There is a substantial amount of configuration and testing required to enable this feature as well as knowledge and access to central systems on a Windows network such as the Active Domain Controller and the ability to create and maintain service users.
-  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13907"></a>Configuring Jetty and Spnego</h3></div></div></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13909"></a>Configuring Jetty and Spnego</h3></div></div></div><p>
       To run with spengo enabled the following command line options are required:
     </p><pre class="screen">
 
@@ -39,59 +39,65 @@
 
     </pre><p>
       Spengo Authentication must be enabled in the webapp in the following way.  The name of the role will be different for your network.
-    </p><div class="informalexample"><pre class="programlisting">
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
- <strong class="hl-tag" style="color: #000096">&lt;security-constraint&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;web-resource-collection&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;web-resource-name&gt;</strong>Secure Area<strong class="hl-tag" style="color: #000096">&lt;/web-resource-name&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;url-pattern&gt;</strong>/secure/me/*<strong class="hl-tag" style="color: #000096">&lt;/url-pattern&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;/web-resource-collection&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;auth-constraint&gt;</strong>
-     <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">&lt;!-- this is the domain that the user is a member of --&gt;</span>
-     <strong class="hl-tag" style="color: #000096">&lt;role-name&gt;</strong>MORTBAY.ORG<strong class="hl-tag" style="color: #000096">&lt;/role-name&gt;</strong>  
-   <strong class="hl-tag" style="color: #000096">&lt;/auth-constraint&gt;</strong>
- <strong class="hl-tag" style="color: #000096">&lt;/security-constraint&gt;</strong>
- <strong class="hl-tag" style="color: #000096">&lt;login-config&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;auth-method&gt;</strong>SPNEGO<strong class="hl-tag" style="color: #000096">&lt;/auth-method&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;realm-name&gt;</strong>Test Realm<strong class="hl-tag" style="color: #000096">&lt;/realm-name&gt;</strong>
-   <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">&lt;!-- optionally to add custom error page --&gt;</span>
-   <strong class="hl-tag" style="color: #000096">&lt;spnego-login-config&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;spengo-error-page&gt;</strong>/loginError.html?param=foo<strong class="hl-tag" style="color: #000096">&lt;/spnego-error-page&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;/spnego-login-config&gt;</strong>
- <strong class="hl-tag" style="color: #000096">&lt;/login-config&gt;</strong>
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>Secure Area</web-resource-name>
+     <url-pattern>/secure/me/*</url-pattern>
+   </web-resource-collection>
+   <auth-constraint>
+     <!-- this is the domain that the user is a member of -->
+     <role-name>MORTBAY.ORG</role-name>  
+   </auth-constraint>
+ </security-constraint>
+ <login-config>
+   <auth-method>SPNEGO</auth-method>
+   <realm-name>Test Realm</realm-name>
+   <!-- optionally to add custom error page -->
+   <spnego-login-config>
+     <spengo-error-page>/loginError.html?param=foo</spnego-error-page>
+   </spnego-login-config>
+ </login-config>
 
-      </pre></div><p>     
+      ]]>
+    </script></div><p>     
       A corresponding UserRealm needs to be created either programmatically if embedded, via the jetty.xml or in a context file for the webapp.
     </p><p>
       This is what the configuration within a jetty xml file would look like.
-    </p><div class="informalexample"><pre class="programlisting">
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
-  <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.security.SpnegoLoginService"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-         <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"name"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>Test Realm<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-         <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"config"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/etc/spnego.properties<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+  <Call name="addBean">
+     <Arg>
+       <New class="org.eclipse.jetty.security.SpnegoLoginService">
+         <Set name="name">Test Realm</Set>
+         <Set name="config"><Property name="jetty.home" default="."/>/etc/spnego.properties</Set>
+       </New>
+     </Arg>
+   </Call>
 
-      </pre></div><p>
+      ]]>
+    </script></div><p>
       This is what the configuration within a context xml file would look like.
-    </p><div class="informalexample"><pre class="programlisting">
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
- <strong class="hl-tag" style="color: #000096">&lt;Get</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"securityHandler"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"loginService"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.security.SpnegoLoginService"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-       <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"name"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>Test Realm<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong> 
-       <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"config"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;SystemProperty</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>/etc/spnego.properties
-      <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-     <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"checkWelcomeFiles"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
- <strong class="hl-tag" style="color: #000096">&lt;/Get&gt;</strong>
+ <Get name="securityHandler">
+   <Set name="loginService">
+     <New class="org.eclipse.jetty.security.SpnegoLoginService">
+       <Set name="name">Test Realm</Set> 
+       <Set name="config">
+        <SystemProperty name="jetty.home" default="."/>/etc/spnego.properties
+      </Set>
+     </New>
+   </Set>
+   <Set name="checkWelcomeFiles">true</Set>
+ </Get>
 
-      </pre></div><p>
+      ]]>
+    </script></div><p>
       There are a number of important configuration files with spnego that are required.  The default values for these configuration files from this test example are found in the jetty-distribution.
     </p><div class="variablelist"><dl><dt><span class="term">spnego.properties</span></dt><dd><p>
             configures the user realm with runtime properties
@@ -115,7 +121,7 @@ $ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapU
 
     </pre><p>
       This step should give you the keytab file which should then be copied over to the machine running this http server and referenced from the configuration files. For our testing we put the keytab into the etc directory of jetty and referenced it from there.
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13968"></a>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13970"></a>
       Configuring Firefox
     </h3></div></div></div><p>
       The follows steps have been required to inform Firefox that it should use a negotiation dialog to authenticate.
@@ -127,7 +133,7 @@ $ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapU
           set network.negotiate-auth.delegation-uris to http://,https://
         </p></li><li class="listitem"><p>
           set network.negotiate-auth.trusted-uris to http://,https://
-        </p></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13986"></a>
+        </p></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13988"></a>
       Configuring Internet Explorer
     </h3></div></div></div><p>
       The follows steps have been required to inform Internet Explorer that it should use a negotiation dialog to authenticate.
@@ -159,7 +165,9 @@ $ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapU
             The server is not local to the browser, it can't be running on localhost.
           </p></li><li class="listitem"><p>
             The client's Kerberos system is authenticated to a domain controller
-          </p></li></ul></div></td></tr></table></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jaas-support.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-security-topics.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="frameworks.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">JAAS Support&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;26.&nbsp;Frameworks</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+          </p></li></ul></div></td></tr></table></div></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jaas-support.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-security-topics.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="frameworks.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">JAAS Support&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;26.&nbsp;Frameworks</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">

@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Chapter&nbsp;15.&nbsp;NPN</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;III.&nbsp;Advanced Topics Guide"><link rel="prev" href="jetty-jmx-annotations.html" title="Jetty JMX Annotations"><link rel="next" href="spdy.html" title="Chapter&nbsp;16.&nbsp;SPDY"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Chapter&nbsp;15.&nbsp;NPN</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;III.&nbsp;Advanced Topics Guide"><link rel="prev" href="jetty-jmx-annotations.html" title="Jetty JMX Annotations"><link rel="next" href="spdy.html" title="Chapter&nbsp;16.&nbsp;SPDY"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"></script><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -43,55 +43,59 @@
     register instances of SSLSocket or SSLEngine with a ClientProvider or
     ServerProvider (depending on whether the application is a client or server
     application). Refer to NextProtoNego Javadocs and to the examples below
-    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e8873"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">
+    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e8875"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
+      <![CDATA[
 SSLContext sslContext = ...;
-SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-string">"localhost"</span>, server.getLocalPort());
+SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket("localhost", server.getLocalPort());
 
-NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">new</span> NextProtoNego.ClientProvider()
+NextProtoNego.put(sslSocket, new NextProtoNego.ClientProvider()
 {
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">boolean</span> supports()
+    @Override
+    public boolean supports()
     {
-        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">return</span> true;
+        return true;
     }
 
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">void</span> unsupported()
+    @Override
+    public void unsupported()
     {
     }
 
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> String selectProtocol(List&lt;String&gt; protocols)
+    @Override
+    public String selectProtocol(List<String> protocols)
     {
-        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">return</span> protocols.get(<span class="hl-number">0</span>);
+        return protocols.get(0);
     }
 });
-</pre></div></div><br class="example-break"><p>The NPN implementation calls
+]]>
+    </script></div></div><br class="example-break"><p>The NPN implementation calls
     <code class="code">NextProtoNego.ClientProvider</code> methods <code class="code">supports(),
     unsupported()</code> and <code class="code">selectProtocol(List&lt;String&gt;)</code>,
     so that the client application can decide:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>whether to support NPN.</p></li><li class="listitem"><p>whether the server supports NPN.</p></li><li class="listitem"><p>to select one of the protocols the server supports.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="server-example"></a>Server Example</h3></div></div></div><p>The example for SSLEngine is identical, and you just need to replace
-    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e8902"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><pre class="programlisting">
+    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e8904"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
+      <![CDATA[
 SSLSocket sslSocket = ...;
-NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">new</span> NextProtoNego.ServerProvider()
+NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
 {
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">void</span> unsupported()
+    @Override
+    public void unsupported()
     {
     }
 
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> List&lt;String&gt; protocols()
+    @Override
+    public List<String> protocols()
     {
-       <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">return</span> Arrays.asList(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-string">"http/1.1"</span>);
+       return Arrays.asList("http/1.1");
     }
 
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-annotation">@Override</span>
-    <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">public</span> <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">void</span> protocolSelected(String protocol)
+    @Override
+    public void protocolSelected(String protocol)
     {
-       System.out.println(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-string">"Protocol Selected is: "</span> + protocol);
+       System.out.println("Protocol Selected is: " + protocol);
     }
 });
-</pre></div></div><br class="example-break"><p>The NPN implementation calls
+]]>
+    </script></div></div><br class="example-break"><p>The NPN implementation calls
     <code class="code">NextProtoNego.ServerProvider</code> methods <code class="code">unsupported(),
     protocols()</code> and <code class="code">protocolSelected(String),</code> so that the
     server application can</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>know whether the client supports NPN.</p></li><li class="listitem"><p>provide the list of protocols the server supports.</p></li><li class="listitem"><p>know which protocol the client chooses.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-implementation"></a>Implementation Details</h3></div></div></div><p>It is common that the NextProtoNego.ServerProvider and the
@@ -111,33 +115,35 @@ NextProtoNego.put(sslSocket, <span xmlns:jfetch="java:org.eclipse.jetty.xslt.too
     class generates a hidden field in the anonymous inner class, causing the
     memory leak, so you must avoid doing so.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-tests"></a>Unit Tests</h3></div></div></div><p>You can write and run unit tests that use the NPN implementation.
     The solution that we use with Maven is to specify an additional command
-    line argument to the Surefire plugin:</p><div class="informalexample"><pre class="programlisting">
-<strong class="hl-tag" style="color: #000096">&lt;project&gt;</strong>
+    line argument to the Surefire plugin:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
+<project>
 
-<strong class="hl-tag" style="color: #000096">&lt;properties&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;npn-version&gt;</strong>1.1.1.v20121030<strong class="hl-tag" style="color: #000096">&lt;/npn-version&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/properties&gt;</strong>
+<properties>
+    <npn-version>1.1.1.v20121030</npn-version>
+</properties>
 
-<strong class="hl-tag" style="color: #000096">&lt;build&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;plugins&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;plugin&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;artifactId&gt;</strong>maven-surefire-plugin<strong class="hl-tag" style="color: #000096">&lt;/artifactId&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;configuration&gt;</strong>
-                <strong class="hl-tag" style="color: #000096">&lt;argLine&gt;</strong>
+<build>
+    <plugins>
+        <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <argLine>
                     -Xbootclasspath/p:/Users/jesse/.m2/repository/org/mortbay/jetty/npn/npn-boot/${npn-version}/npn-boot-${npn-version}.jar
-                <strong class="hl-tag" style="color: #000096">&lt;/argLine&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;/configuration&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/plugin&gt;</strong>
+                </argLine>
+            </configuration>
+        </plugin>
 
         ...
 
-    <strong class="hl-tag" style="color: #000096">&lt;/plugins&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/build&gt;</strong>
+    </plugins>
+</build>
 
 ...
 
-<strong class="hl-tag" style="color: #000096">&lt;/project&gt;</strong>
-</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
+</project>
+]]>
+    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
     way:</p><pre class="screen">NextProtoNego.debug = true;</pre><p>Since the NextProtoNego class is in the boot classpath, we chose not
     to use logging libraries because we do not want to override application
     logging library choices; therefore the logging is performed directly on
@@ -158,7 +164,9 @@ $ ./make/scripts/hgforest.sh update &lt;tag-name&gt;
   </pre><p>The list of OpenJDK tags can be obtained from <a class="link" href="http://hg.openjdk.java.net/jdk7u/jdk7u/tags" target="_top">this
     page</a>.</p><p>Then you need to compare and incorporate the OpenJDK source changes
     into the modified OpenJDK classes at the <a class="link" href="https://github.com/jetty-project/jetty-npn" target="_top">NPN GitHub
-    Repository</a>.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-jmx-annotations.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spdy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Jetty JMX Annotations&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;16.&nbsp;SPDY</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+    Repository</a>.</p></div></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-jmx-annotations.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spdy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Jetty JMX Annotations&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;16.&nbsp;SPDY</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">

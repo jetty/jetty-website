@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Preventing Memory Leaks</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="troubleshooting.html" title="Chapter&nbsp;32.&nbsp;Troubleshooting"><link rel="prev" href="troubleshooting-locked-files-on-windows.html" title="Troubleshooting Locked Files on Windows"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Preventing Memory Leaks</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="troubleshooting.html" title="Chapter&nbsp;32.&nbsp;Troubleshooting"><link rel="prev" href="troubleshooting-locked-files-on-windows.html" title="Troubleshooting Locked Files on Windows"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"></script><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -65,29 +65,33 @@
               that traps the thread context classloader.</td></tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-preventers"></a>Configuring Preventers</h4></div></div></div><p>You can individually enable each preventer by adding an instance
       to a Server with the <code class="code"> addBean(Object)</code> call. Here's an
       example of how to do it in code with the <code class="code">
-      org.eclipse.jetty.util.preventers.AppContextLeakPreventer</code>:</p><div class="informalexample"><pre class="programlisting">
+      org.eclipse.jetty.util.preventers.AppContextLeakPreventer</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      <![CDATA[
 
-Server server = <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">new</span> Server();
-server.addBean(<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-keyword">new</span> AppContextLeakPreventer());
+Server server = new Server();
+server.addBean(new AppContextLeakPreventer());
 
-        </pre></div><p>You can add the equivalent in code to the
+        ]]>
+    </script></div><p>You can add the equivalent in code to the
       <code class="code">$JETTY_HOME/etc/jetty.xml</code> file or any jetty xml file that
       is configuring a Server instance. Be aware that if you have more than
       one Server instance in your JVM, you should configure these preventers
       on just <span class="emphasis"><em>one</em></span> of them. Here's the example from code
-      put into xml:</p><div class="informalexample"><pre class="programlisting">
+      put into xml:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.Server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
 
-   <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.util.preventers.AppContextLeakPreventer"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-   <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+   <Call name="addBean">
+    <Arg>
+      <New class="org.eclipse.jetty.util.preventers.AppContextLeakPreventer"/>
+    </Arg>
+   </Call>
 
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>
+</Configure>
 
-        </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jsp-bugs"></a>JSP Bugs: Permgen Problems</h3></div></div></div><p>The JSP engine in Jetty is Jasper. This was originally developed
+        ]]>
+    </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jsp-bugs"></a>JSP Bugs: Permgen Problems</h3></div></div></div><p>The JSP engine in Jetty is Jasper. This was originally developed
     under the Apache Tomcat project, but over time many different project have
     forked it. All Jetty versions up to 6 used Apache-based Jasper
     exclusively, with Jetty 6 using Apache Jasper only for JSP 2.0. With the
@@ -142,7 +146,9 @@ java -Xmx1024m -Xms1024m
       ByteBuffer allocation problem if you have disabled either of these
       options. For example, if you're on Windows, you may have disabled the
       use of memory-mapped buffers for the static file cache on the
-      DefaultServlet to avoid the file-locking problem.</p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="troubleshooting-locked-files-on-windows.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="troubleshooting.html">Up</a></td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">Troubleshooting Locked Files on Windows&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+      DefaultServlet to avoid the file-locking problem.</p></div></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="troubleshooting-locked-files-on-windows.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="troubleshooting.html">Up</a></td><td width="40%" align="right">&nbsp;</td></tr><tr><td width="40%" align="left" valign="top">Troubleshooting Locked Files on Windows&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">

@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Hot Deployment</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;7.&nbsp;Deploying to Jetty"><link rel="prev" href="static-content-deployment.html" title="Configuring Static Content Deployment"><link rel="next" href="deployment-architecture.html" title="Deployment Architecture"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Hot Deployment</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;7.&nbsp;Deploying to Jetty"><link rel="prev" href="static-content-deployment.html" title="Configuring Static Content Deployment"><link rel="next" href="deployment-architecture.html" title="Deployment Architecture"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"></script><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -25,37 +25,41 @@
         <code class="literal">monitoredDirName</code>.</p><p>A value of <code class="literal">0</code> disables the continuous hot
         deployment scan, Web Applications will be deployed on startup
         only.</p></dd></dl></div><p>The default location for this configuration is in the
-  <code class="filename">${jetty.home}/etc/jetty-deploy.xml</code> file.</p><div class="informalexample"><pre class="programlisting"><span class="hl-directive" style="color: maroon">&lt;?xml version="1.0"?&gt;</span>
-<strong class="hl-tag" style="color: blue">&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;Configure</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"Server"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.Server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
+  <code class="filename">${jetty.home}/etc/jetty-deploy.xml</code> file.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
 
-  <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"DeploymentManager"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.DeploymentManager"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"contexts"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"Contexts"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"setContextAttribute"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>.*/servlet-api-[^/]*\.jar$<strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+  <Call name="addBean">
+    <Arg>
+      <New id="DeploymentManager" class="org.eclipse.jetty.deploy.DeploymentManager">
+        <Set name="contexts">
+          <Ref refid="Contexts" />
+        </Set>
+        <Call name="setContextAttribute">
+          <Arg>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</Arg>
+          <Arg>.*/servlet-api-[^/]*\.jar$</Arg>
+        </Call>
 
-        <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"webappprovider"</span> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addAppProvider"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.deploy.providers.WebAppProvider"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"monitoredDirName"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>/webapps<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"defaultsDescriptor"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.home"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"."</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>/etc/webdefault.xml<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"scanInterval"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>1<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"extractWars"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>true<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
-<strong class="hl-tag" style="color: #000096">&lt;/Configure&gt;</strong>    </pre></div><p>See <a class="xref" href="deployment-architecture.html#default-web-app-provider" title="Understanding the Default WebAppProvider">Understanding the Default WebAppProvider</a> for more configuration
+        <Call id="webappprovider" name="addAppProvider">
+          <Arg>
+            <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
+              <Set name="monitoredDirName"><Property name="jetty.home" default="." />/webapps</Set>
+              <Set name="defaultsDescriptor"><Property name="jetty.home" default="." />/etc/webdefault.xml</Set>
+              <Set name="scanInterval">1</Set>
+              <Set name="extractWars">true</Set>
+            </New>
+          </Arg>
+        </Call>
+      </New>
+    </Arg>
+  </Call>
+</Configure>    ]]>
+    </script></div><p>See <a class="xref" href="deployment-architecture.html#default-web-app-provider" title="Understanding the Default WebAppProvider">Understanding the Default WebAppProvider</a> for more configuration
   details.</p><p>See also <a class="xref" href="deployment-architecture.html" title="Deployment Architecture">Deployment Architecture</a> for detailed
-  conceptual information.</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="static-content-deployment.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-deployment.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="deployment-architecture.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Configuring Static Content Deployment&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Deployment Architecture</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+  conceptual information.</p></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="static-content-deployment.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-deployment.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="deployment-architecture.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Configuring Static Content Deployment&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Deployment Architecture</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">

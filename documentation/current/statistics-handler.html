@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Statistics Handler</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-extras.html" title="Chapter&nbsp;20.&nbsp;Bundled Servlets, Filters, and Handlers"><link rel="prev" href="cross-origin-filter.html" title="Cross Origin Filter"><link rel="next" href="moved-context-handler.html" title="Moved Context Handler"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Statistics Handler</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-extras.html" title="Chapter&nbsp;20.&nbsp;Bundled Servlets, Filters, and Handlers"><link rel="prev" href="cross-origin-filter.html" title="Cross Origin Filter"><link rel="next" href="moved-context-handler.html" title="Moved Context Handler"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushJava.js"></script><script type="text/javascript" src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushXml.js"></script><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shCore.css"><link type="text/css" rel="stylesheet" href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeDefault.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -34,35 +34,37 @@
 			Detailed statistics on connection duration and number of requests are only collated when a connection is closed. The current and maximum number of connections are the only "live" statistics. To learn how to turn on connector statistics please see Jetty Statistics tutorial, although this is not recommended and it is best to use a JMX agent to select statistics only when needed.
 		</p><p>
 			The following example shows how to turn on connector statistics in jetty xml.  This example comes from within <code class="filename">jetty-http.xml</code>.
-		</p><div class="informalexample"><pre class="programlisting">
+		</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
-  <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.ServerConnector"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"server"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"Server"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"factories"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Array</strong> <span class="hl-attribute" style="color: #F5844C">type</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.ConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;Item&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.HttpConnectionFactory"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-                <strong class="hl-tag" style="color: #000096">&lt;Arg</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"config"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"httpConfig"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-            <strong class="hl-tag" style="color: #000096">&lt;/Item&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;/Array&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"host"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.host"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"port"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Property</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"jetty.port"</span> <span class="hl-attribute" style="color: #F5844C">default</span>=<span class="hl-value" style="color: #993300">"8080"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"idleTimeout"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>30000<strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-        <span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">&lt;!-- Enable Connector Statistics --&gt;</span>
-        <strong class="hl-tag" style="color: #000096">&lt;Call</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"addBean"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;Arg&gt;</strong>
-              <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"ConnectorStatistics"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.ConnectorStatistics"</span><strong class="hl-tag" style="color: #000096">/&gt;</strong>
-          <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-        <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/Arg&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Call&gt;</strong>
+  <Call name="addConnector">
+    <Arg>
+      <New class="org.eclipse.jetty.server.ServerConnector">
+        <Arg name="server"><Ref refid="Server" /></Arg>
+        <Arg name="factories">
+          <Array type="org.eclipse.jetty.server.ConnectionFactory">
+            <Item>
+              <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                <Arg name="config"><Ref refid="httpConfig" /></Arg>
+              </New>
+            </Item>
+          </Array>
+        </Arg>
+        <Set name="host"><Property name="jetty.host" /></Set>
+        <Set name="port"><Property name="jetty.port" default="8080" /></Set>
+        <Set name="idleTimeout">30000</Set>
+        <!-- Enable Connector Statistics -->
+        <Call name="addBean">
+          <Arg>
+              <New id="ConnectorStatistics" class="org.eclipse.jetty.server.ConnectorStatistics"/>
+          </Arg>
+        </Call>
+      </New>
+    </Arg>
+  </Call>
 
-			</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="request-statistics"></a>Request Statistics</h3></div></div></div><p>
+			]]>
+    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="request-statistics"></a>Request Statistics</h3></div></div></div><p>
 			To collect request statistics a StatisticsHandler must be configured as one of the handlers of the server. Typically this can be done as the top level handler, but you may choose to configure a statistics handler for just one context by creating a context configuration file. 
 			 Please note that <code class="filename">jetty-stats.xml</code> has to appear in the command line after the main Jetty configuration file as shown below.  It should be able to be uncommented in the start.ini file.
 		</p><pre class="screen">
@@ -71,18 +73,22 @@ $ java -jar start.jar OPTIONS=default etc/jetty.xml etc/jetty-stats.xml
 
 		</pre><p>
 			Alternately, if you are making multiple changes to the Jetty configuration, you could include statistics handler configuration into your own jetty xml configuration. The following fragment shows how to configure a top level statistics handler:
-		</p><div class="informalexample"><pre class="programlisting">
+		</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <![CDATA[
 
-	<strong class="hl-tag" style="color: #000096">&lt;Get</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"oldhandler"</span> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"handler"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"handler"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;New</strong> <span class="hl-attribute" style="color: #F5844C">id</span>=<span class="hl-value" style="color: #993300">"StatsHandler"</span> <span class="hl-attribute" style="color: #F5844C">class</span>=<span class="hl-value" style="color: #993300">"org.eclipse.jetty.server.handler.StatisticsHandler"</span><strong class="hl-tag" style="color: #000096">&gt;</strong>
-      <strong class="hl-tag" style="color: #000096">&lt;Set</strong> <span class="hl-attribute" style="color: #F5844C">name</span>=<span class="hl-value" style="color: #993300">"handler"</span><strong class="hl-tag" style="color: #000096">&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;Ref</strong> <span class="hl-attribute" style="color: #F5844C">refid</span>=<span class="hl-value" style="color: #993300">"oldhandler"</span><strong class="hl-tag" style="color: #000096"> /&gt;</strong><strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
-    <strong class="hl-tag" style="color: #000096">&lt;/New&gt;</strong>
-  <strong class="hl-tag" style="color: #000096">&lt;/Set&gt;</strong>
+	<Get id="oldhandler" name="handler" />
+  <Set name="handler">
+    <New id="StatsHandler" class="org.eclipse.jetty.server.handler.StatisticsHandler">
+      <Set name="handler"><Ref refid="oldhandler" /></Set>
+    </New>
+  </Set>
 
-			</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="session-statistics"></a>Session Statistics</h3></div></div></div><p>
+			]]>
+    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="session-statistics"></a>Session Statistics</h3></div></div></div><p>
 			Session handling is built into Jetty for any servlet or webapp context. Detailed statistics on session duration are only collated when a session is closed. The current, minimum, and maximum number of sessions are the only "live" statistics. The session statistics are enabled by default and do not need to be configured.
-		</p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="cross-origin-filter.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-extras.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="moved-context-handler.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Cross Origin Filter&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Moved Context Handler</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+		</p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="cross-origin-filter.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-extras.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="moved-context-handler.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Cross Origin Filter&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Moved Context Handler</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
         <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
             <span class="website">Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">
