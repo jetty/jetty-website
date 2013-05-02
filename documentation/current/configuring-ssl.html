@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Configuring SSL</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors"><link rel="prev" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors"><link rel="next" href="setting-port80-access.html" title="Setting Port 80 Access for a Non-Root User"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Configuring SSL</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors"><link rel="prev" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors"><link rel="next" href="setting-port80-access.html" title="Setting Port 80 Access for a Non-Root User"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -40,14 +40,14 @@
       replace one that is expiring.</p><p>The examples below generate only basic keys and certificates. You
       should read the full manuals of the tools you are using if you want to
       specify:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>the key size</p></li><li class="listitem"><p>the certificate expiration date</p></li><li class="listitem"><p>alternate security providers</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-key-pairs-and-certificates-JDK-keytool"></a>Generating Keys and Certificates with JDK's keytool</h5></div></div></div><p>The following command generates a key pair and certificate
-        directly into file <code class="filename">keystore</code>:</p><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>The DSA key algorithm certificate produces an error after
+        directly into file <code class="filename">keystore</code>:</p><div class="screenexample"><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA</pre></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>The DSA key algorithm certificate produces an error after
           loading several pages. In a browser, it displays a message "Could
           not establish an encrypted connection because certificate presented
           by localhost has an invalid signature." The solution is to use RSA
           for the key algorithm.</p></td></tr></table></div><p>This command prompts for information about the certificate and
         for passwords to protect both the keystore and the keys within it. The
         only mandatory response is to provide the fully qualified host name of
-        the server at the "first and last name" prompt. For example:</p><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA
+        the server at the "first and last name" prompt. For example:</p><div class="screenexample"><pre class="screen">$ keytool -keystore keystore -alias jetty -genkey -keyalg RSA
  Enter keystore password:  password
  What is your first and last name?
    [Unknown]:  jetty.eclipse.org
@@ -67,20 +67,20 @@
 
  Enter key password for &lt;jetty&gt;
          (RETURN if same as keystore password):
- $</pre><p>You now have the minimal requirements to run an SSL connection
+ $</pre></div><p>You now have the minimal requirements to run an SSL connection
         and could proceed directly to <a class="link" href="configuring-ssl.html#configuring-sslcontextfactory" title="Configuring SslContextFactory">configure an SSL
         connector</a>. However the browser will not trust the certificate
         you have generated, and prompts the user to this effect. While what
         you have at this point is often sufficient for testing, most public
         sites need a trusted certificate, as shown in the section <a class="link" href="configuring-ssl.html#generating-csr-from-keytool" title="Generating a CSR with keytool">generating a CSR with
         keytool</a>.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-keys-and-certificates-openssl"></a>Generating Keys and Certificates with OpenSSL</h5></div></div></div><p>The following command generates a key pair in the file
-        <code class="filename">jetty.key</code>:</p><pre class="screen">$ openssl genrsa -des3 -out jetty.key</pre><p>You might also want to use the <code class="filename">-rand</code> file
+        <code class="filename">jetty.key</code>:</p><div class="screenexample"><pre class="screen">$ openssl genrsa -des3 -out jetty.key</pre></div><p>You might also want to use the <code class="filename">-rand</code> file
         argument to provide an arbitrary file that helps seed the random
         number generator.</p><p>The following command generates a certificate for the key into
-        the file <code class="filename"> jetty.crt</code>:</p><pre class="screen">$ openssl req -new -x509 -key jetty.key -out jetty.crt</pre><p>The next command prompts for information about the certificate
+        the file <code class="filename"> jetty.crt</code>:</p><div class="screenexample"><pre class="screen">$ openssl req -new -x509 -key jetty.key -out jetty.crt</pre></div><p>The next command prompts for information about the certificate
         and for passwords to protect both the keystore and the keys within it.
         The only mandatory response is to provide the fully qualified host
-        name of the server at the "Common Name" prompt. For example:</p><pre class="screen">$ openssl genrsa -des3 -out jetty.key
+        name of the server at the "Common Name" prompt. For example:</p><div class="screenexample"><pre class="screen">$ openssl genrsa -des3 -out jetty.key
  Generating RSA private key, 512 bit long modulus
  ...........................++++++++++++
  ..++++++++++++
@@ -105,7 +105,7 @@ $ openssl req -new -x509 -key jetty.key -out jetty.crt
  Common Name (eg, YOUR name) []:jetty.eclipse.org
  Email Address []:
 
-$</pre><p>You now have the minimal requirements to run an SSL connection
+$</pre></div><p>You now have the minimal requirements to run an SSL connection
         and could proceed directly to <a class="xref" href="configuring-ssl.html#loading-keys-and-certificates" title="Loading Keys and Certificates">Loading Keys and Certificates</a> to load these keys and
         certificates into a JSSE keystore. However the browser will not trust
         the certificate you have generated, and prompts the user to this
@@ -124,9 +124,9 @@ $</pre><p>You now have the minimal requirements to run an SSL connection
       sections), but all involve a step that generates a certificate signing
       request (CSR).</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-csr-from-keytool"></a>Generating a CSR with keytool</h5></div></div></div><p>The following command generates the file
         <code class="filename">jetty.csr</code> using <code class="code">keytool</code> for a key/cert already in
-        the keystore:</p><pre class="screen">$ keytool -certreq -alias jetty -keystore keystore -file jetty.csr</pre></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-csr-from-openssl"></a>Generating a CSR from OpenSSL</h5></div></div></div><p>The following command generates the file
+        the keystore:</p><div class="screenexample"><pre class="screen">$ keytool -certreq -alias jetty -keystore keystore -file jetty.csr</pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="generating-csr-from-openssl"></a>Generating a CSR from OpenSSL</h5></div></div></div><p>The following command generates the file
         <code class="filename">jetty.csr</code> using OpenSSL for a key in the file
-        <code class="filename">jetty.key</code>:</p><pre class="screen">$ openssl req -new -key jetty.key -out jetty.csr</pre><p>Notice that this command uses only the existing key from
+        <code class="filename">jetty.key</code>:</p><div class="screenexample"><pre class="screen">$ openssl req -new -key jetty.key -out jetty.csr</pre></div><p>Notice that this command uses only the existing key from
         <code class="filename">jetty.key</code> file, and not a certificate in
         <code class="filename">jetty.crt</code> as generated with OpenSSL. You need to
         enter the details for the certificate again.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="loading-keys-and-certificates"></a>Loading Keys and Certificates</h4></div></div></div><p>Once a CA has sent you a certificate, or if you generated your own
@@ -139,7 +139,7 @@ $</pre><p>You now have the minimal requirements to run an SSL connection
         Certificates</a>).</p></td></tr></table></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="loading-certificates-with-keytool"></a>Loading Certificates with keytool</h5></div></div></div><p>You can use <code class="code">keytool</code> to load a certificate in PEM form directly
         into a keystore. The PEM format is a text encoding of certificates; it
         is produced by OpenSSL, and is returned by some CAs. An example PEM
-        file is:</p><pre class="screen">jetty.crt
+        file is:</p><div class="screenexample"><pre class="screen">jetty.crt
 -----BEGIN CERTIFICATE-----
 MIICSDCCAfKgAwIBAgIBADANBgkqhkiG9w0BAQQFADBUMSYwJAYDVQQKEx1Nb3J0
 IEJheSBDb25zdWx0aW5nIFB0eS4gTHRkLjEOMAwGA1UECxMFSmV0dHkxGjAYBgNV
@@ -154,21 +154,21 @@ aW5nIFB0eS4gTHRkLjEOMAwGA1UECxMFSmV0dHkxGjAYBgNVBAMTEWpldHR5Lm1v
 cnRiYXkub3JnggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEEBQADQQA6NkaV
 OtXzP4ayzBcgK/qSCmF44jdcARmrXhiXUcXzjxsLjSJeYPJojhUdC2LQKy+p4ki8
 Rcz6oCRvCGCe5kDB
------END CERTIFICATE-----</pre><p>The following command loads a PEM encoded certificate in the
-        <code class="filename">jetty.crt</code> file into a JSSE keystore:</p><pre class="screen">$ keytool -keystore keystore -import -alias jetty -file jetty.crt -trustcacerts</pre><p>If the certificate you receive from the CA is not in a format
+-----END CERTIFICATE-----</pre></div><p>The following command loads a PEM encoded certificate in the
+        <code class="filename">jetty.crt</code> file into a JSSE keystore:</p><div class="screenexample"><pre class="screen">$ keytool -keystore keystore -import -alias jetty -file jetty.crt -trustcacerts</pre></div><p>If the certificate you receive from the CA is not in a format
         that <code class="code">keytool</code> understands, you can use the <code class="code">openssl</code> command
-        to convert formats:</p><pre class="screen">$ openssl x509 -in jetty.der -inform DER -outform PEM -out jetty.crt</pre></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="loading-keys-and-certificates-via-pkcks12"></a>Loading Keys and Certificates via PKCS12</h5></div></div></div><p>If you have a key and certificate in separate files, you need to
+        to convert formats:</p><div class="screenexample"><pre class="screen">$ openssl x509 -in jetty.der -inform DER -outform PEM -out jetty.crt</pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="loading-keys-and-certificates-via-pkcks12"></a>Loading Keys and Certificates via PKCS12</h5></div></div></div><p>If you have a key and certificate in separate files, you need to
         combine them into a PKCS12 format file to load into a new keystore.
         The certificate can be one you generated yourself or one returned from
         a CA in response to your CSR.</p><p>The following OpenSSL command combines the keys in
         <code class="filename">jetty.key</code> and the certificate in the
         <code class="filename">jetty.crt</code> file into the
-        <code class="filename">jetty.pkcs12</code> file:</p><pre class="screen">$ openssl pkcs12 -inkey jetty.key -in jetty.crt -export -out jetty.pkcs12</pre><p>If you have a chain of certificates, because your CA is an
-        intermediary, build the PKCS12 file as follows:</p><pre class="screen">$ cat example.crt intermediate.crt [intermediate2.crt] ... rootCA.crt &gt; cert-chain.txt
-$ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs12</pre><p>The order of certificates must be from server to rootCA, as per
+        <code class="filename">jetty.pkcs12</code> file:</p><div class="screenexample"><pre class="screen">$ openssl pkcs12 -inkey jetty.key -in jetty.crt -export -out jetty.pkcs12</pre></div><p>If you have a chain of certificates, because your CA is an
+        intermediary, build the PKCS12 file as follows:</p><div class="screenexample"><pre class="screen">$ cat example.crt intermediate.crt [intermediate2.crt] ... rootCA.crt &gt; cert-chain.txt
+$ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs12</pre></div><p>The order of certificates must be from server to rootCA, as per
         RFC2246 section 7.4.2.</p><p>OpenSSL asks for an <span class="emphasis"><em>export password</em></span>. A
         non-empty password is required to make the next step work.
-        Then load the resulting PKCS12 file into a JSSE keystore with <code class="code">keytool</code>:</p><pre class="screen">$ keytool -importkeystore -srckeystore jetty.pkcs12 -srcstoretype PKCS12 -destkeystore keystore</pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-sslcontextfactory"></a>Configuring SslContextFactory</h4></div></div></div><p>The generated SSL certificates held in the key store are
+        Then load the resulting PKCS12 file into a JSSE keystore with <code class="code">keytool</code>:</p><div class="screenexample"><pre class="screen">$ keytool -importkeystore -srckeystore jetty.pkcs12 -srcstoretype PKCS12 -destkeystore keystore</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-sslcontextfactory"></a>Configuring SslContextFactory</h4></div></div></div><p>The generated SSL certificates held in the key store are
       configured on Jetty by injection an instance of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">
       SslContextFactory</a> object and passing it to the connector's
       SslConnectionFactory, which is done in the jetty distribution by both in
@@ -177,7 +177,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
       Since SPDY is able to handle HTTPS also, typically you will configure
       jetty to use one of these configuration files or the other, which can be
       done other on the command line or by editing the start.ini file.</p><p>These configuration files create an SslContextFactory instance
-      with the ID "sslContextFactory":</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      with the ID "sslContextFactory":</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
   <Set name="KeyStorePath"><Property name="jetty.home" default="." />/etc/keystore</Set>
   <Set name="KeyStorePassword">OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</Set>
@@ -210,7 +210,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
           </p><p>
               Here's a couple of examples on how to include only RC4 cipher suites. All of them will protect the
               server from the <a class="link" href="https://www.google.com/search?q=beast+attack" target="_top">BEAST</a> attack.
-          </p><p>Include a preferred set of cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+          </p><p>Include a preferred set of cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
               <Set name="IncludeCipherSuites">
                 <Array type="String">
@@ -220,7 +220,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
                 </Array>
               </Set>
               ]]>
-        </script></div><p>Include all RC4 cipher suites by using a regex:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+        </script></div><p>Include all RC4 cipher suites by using a regex:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
               <Set name="IncludeCipherSuites">
                 <Array type="String">
@@ -228,7 +228,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
                 </Array>
               </Set>
               ]]>
-        </script></div><p>Exclude all non RC4 cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+        </script></div><p>Exclude all non RC4 cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
             <Set name="ExcludeCipherSuites">
               <Array type="String">
@@ -254,10 +254,10 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
             ]]>
         </script></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
                   need to specify specific cipher suites. This configuration will adapt to any
-                  additions/removals of cipher suites to new versions of the JDK.</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2790"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
+                  additions/removals of cipher suites to new versions of the JDK.</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2635"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
       <code class="code">SslConnectionFactory</code> instance to be used when accepting network
       connections, which in turn is injected into an instance of
-      <code class="code">ServerConnector</code>. For example from <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      <code class="code">ServerConnector</code>. For example from <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Call id="sslConnector" name="addConnector">
   <Arg>
     <New class="org.eclipse.jetty.server.ServerConnector">

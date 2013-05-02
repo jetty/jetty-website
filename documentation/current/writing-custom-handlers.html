@@ -8,7 +8,7 @@ body { background-image: url('images/draft-ribbon.png');
        /* I think that's just a bit too distracting for the reader... */
        /* background-attachment: fixed; */
        /* background-position: center center; */
-     }</style><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="jetty-handlers.html" title="Chapter&nbsp;18.&nbsp;Handlers"><link rel="prev" href="jetty-handlers.html" title="Chapter&nbsp;18.&nbsp;Handlers"><link rel="next" href="advanced-embedding.html" title="Chapter&nbsp;19.&nbsp;Embedding"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+     }</style><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="jetty-handlers.html" title="Chapter&nbsp;18.&nbsp;Handlers"><link rel="prev" href="jetty-handlers.html" title="Chapter&nbsp;18.&nbsp;Handlers"><link rel="next" href="advanced-embedding.html" title="Chapter&nbsp;19.&nbsp;Embedding"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -35,7 +35,7 @@ body { background-image: url('images/draft-ribbon.png');
   Handlers vs. Servlets.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="handler-api"></a>The Handler API</h3></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/Handler.html" target="_top">Handler</a>
     interface provides Jetty's core of content generation or manipulation.
     Classes that implement this interface are used to coordinate requests,
-    filter requests and generate content.</p><p>The core API of the Handler interface is: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+    filter requests and generate content.</p><p>The core API of the Handler interface is: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException]]>
         </script></div><p>An implementation of this method can handle a request, pass the
@@ -62,7 +62,7 @@ body { background-image: url('images/draft-ribbon.png');
       However, as the request and response may be wrapped by handlers, filters
       and servlets, it is not possible to pass the implementation directly.
       The following mantra retrieves the core implementation objects from
-      under any wrappers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      under any wrappers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[Request base_request = request instanceof Request ? (Request)request : HttpConnection.getCurrentConnection().getRequest();
 Response base_response = response instanceof Response ? (Response)response : HttpConnection.getCurrentConnection().getResponse();]]>
         </script></div><p>Notice that if the handler passes the request on to another
@@ -78,13 +78,13 @@ Response base_response = response instanceof Response ? (Response)response : Htt
       authorization to REQUEST dispatches.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="handling-requests"></a>Handling Requests</h3></div></div></div><p>A Handler may handle a request by:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><a class="xref" href="writing-custom-handlers.html#generating-response" title="Generating a Response">Generating a Response</a></p></li><li class="listitem"><p><a class="xref" href="writing-custom-handlers.html#filtering-request-or-response" title="Filtering the Request and/or Response">Filtering the Request and/or Response</a></p></li><li class="listitem"><p><a class="xref" href="writing-custom-handlers.html#passing-request-and-response" title="Passing the Request and Response to Another Handler">Passing the Request and Response to Another Handler</a></p></li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="generating-response"></a>Generating a Response</h4></div></div></div><p>The <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/embedded/OneHandler.html" target="_top">OneHandler</a>
       embedded example shows how a simple handler can generate a
       response.</p><p>You can use the normal servlet response API, which will typically
-      set some status, content headers and then write out the content:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      set some status, content headers and then write out the content:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[ response.setContentType("text/html");
  response.setStatus(HttpServletResponse.SC_OK);
  response.getWriter().println("<h1>Hello OneHandler</h1>");]]>
         </script></div><p>It is also very important that a handler indicate that it has
       completed handling the request and that the request should not be passed
-      to other handlers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      to other handlers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[ Request base_request = (request instanceof Request) ? (Request)request:HttpConnection.getCurrentConnection().getRequest();
  base_request.setHandled(true);              
 ]]>
@@ -94,7 +94,7 @@ Response base_response = response instanceof Response ? (Response)response : Htt
           content.</p></li><li class="listitem"><p>Associating a session with a request.</p></li><li class="listitem"><p>Associating a security principal with a request.</p></li><li class="listitem"><p>Changing the URI and paths during a request dispatch forward
           to another resource.</p></li></ul></div><p>You can also update the context of the request:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Setting the current threads context classloader.</p></li><li class="listitem"><p>Setting thread locals to identify the current
           ServletContext.</p></li></ul></div><p>Typically Jetty passes a modified request to another handler and
-      undoes modifications in a finally block afterwards:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      undoes modifications in a finally block afterwards:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[ try
  {
     base_request.setSession(a_session);

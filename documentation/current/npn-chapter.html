@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Chapter&nbsp;15.&nbsp;NPN</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;III.&nbsp;Advanced Topics Guide"><link rel="prev" href="jetty-jmx-annotations.html" title="Jetty JMX Annotations"><link rel="next" href="spdy.html" title="Chapter&nbsp;16.&nbsp;SPDY"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Chapter&nbsp;15.&nbsp;NPN</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced.html" title="Part&nbsp;III.&nbsp;Advanced Topics Guide"><link rel="prev" href="jetty-jmx-annotations.html" title="Jetty JMX Annotations"><link rel="next" href="spdy.html" title="Chapter&nbsp;16.&nbsp;SPDY"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -22,7 +22,9 @@
     SPDY-specific in any way. Jetty's NPN implementation, although hosted
     under the umbrella of the Jetty project, is independent of Jetty (the
     servlet container); you can use it in any other Java network
-    server.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-starting"></a>Starting the JVM</h3></div></div></div><p>To enable NPN support, start the JVM as follows:</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>where <code class="filename">path_to_npn_boot_jar</code> is the path on the
+    server.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-starting"></a>Starting the JVM</h3></div></div></div><p>To enable NPN support, start the JVM as follows:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
+          <![CDATA[java -Xbootclasspath/p:<path_to_npn_boot_jar> ...            ]]>
+        </script></div><p>where <code class="filename">path_to_npn_boot_jar</code> is the path on the
     file system for the NPN Boot Jar file, for example, one at the Maven
     coordinates org.mortbay.jetty.npn:npn-boot.</p><p>Be aware that the current versions of the npn packages no longer
     align with Jetty versions. Look at the dates in those file paths before
@@ -43,7 +45,7 @@
     register instances of SSLSocket or SSLEngine with a ClientProvider or
     ServerProvider (depending on whether the application is a client or server
     application). Refer to NextProtoNego Javadocs and to the examples below
-    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e8875"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
+    for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e8695"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[
 SSLContext sslContext = ...;
 SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket("localhost", server.getLocalPort());
@@ -72,7 +74,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ClientProvider()
     <code class="code">NextProtoNego.ClientProvider</code> methods <code class="code">supports(),
     unsupported()</code> and <code class="code">selectProtocol(List&lt;String&gt;)</code>,
     so that the client application can decide:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>whether to support NPN.</p></li><li class="listitem"><p>whether the server supports NPN.</p></li><li class="listitem"><p>to select one of the protocols the server supports.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="server-example"></a>Server Example</h3></div></div></div><p>The example for SSLEngine is identical, and you just need to replace
-    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e8904"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
+    the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e8724"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[
 SSLSocket sslSocket = ...;
 NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
@@ -115,7 +117,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
     class generates a hidden field in the anonymous inner class, causing the
     memory leak, so you must avoid doing so.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-tests"></a>Unit Tests</h3></div></div></div><p>You can write and run unit tests that use the NPN implementation.
     The solution that we use with Maven is to specify an additional command
-    line argument to the Surefire plugin:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    line argument to the Surefire plugin:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 <project>
 
@@ -144,7 +146,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
 </project>
 ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
-    way:</p><pre class="screen">NextProtoNego.debug = true;</pre><p>Since the NextProtoNego class is in the boot classpath, we chose not
+    way:</p><div class="screenexample"><pre class="screen">NextProtoNego.debug = true;</pre></div><p>Since the NextProtoNego class is in the boot classpath, we chose not
     to use logging libraries because we do not want to override application
     logging library choices; therefore the logging is performed directly on
     <code class="code">System.err.</code></p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-license-details"></a>License Details</h3></div></div></div><p>The NPN implementation relies on modification of a few OpenJDK
@@ -154,14 +156,14 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
     classes of the Jetty project.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-versions"></a>Versions</h3></div></div></div><p>The NPN implementation, relying on modifications of OpenJDK classes,
     updates every time there are updates to the modified OpenJDK
     classes.</p><div class="table"><a name="npn-openjdk-versions"></a><p class="title"><b>Table&nbsp;15.1.&nbsp;NPN vs. OpenJDK versions</b></p><div class="table-contents"><table summary="NPN vs. OpenJDK versions" border="1"><colgroup><col align="left" class="npn"><col align="left" class="openjdk"></colgroup><thead><tr><th align="left">NPN version</th><th align="left">OpenJDK version</th></tr></thead><tbody><tr><td align="left">1.0.0.v20120402</td><td align="left">1.7.0 - 1.7.0u2 - 1.7.0u3</td></tr><tr><td align="left">1.1.0.v20120525</td><td align="left">1.7.0u4 - 1.7.0u5</td></tr><tr><td align="left">1.1.1.v20121030</td><td align="left">1.7.0u6 - 1.7.0u7</td></tr><tr><td align="left">1.1.3.v20130313</td><td align="left">1.7.0u9 - 1.7.0u10 - 1.7.0u11</td></tr><tr><td align="left">1.1.4.v20130313</td><td align="left">1.7.0u13</td></tr><tr><td align="left">1.1.5.v20130313</td><td align="left">1.7.0u15 - 1.7.0u17 - 1.7.0u21</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-build"></a>How to build NPN</h3></div></div></div><p>This section is for Jetty developers that need to update the NPN
-    implementation with the OpenJDK versions.</p><p>Clone the OpenJDK repository with the following command:</p><pre class="screen">
+    implementation with the OpenJDK versions.</p><p>Clone the OpenJDK repository with the following command:</p><div class="screenexample"><pre class="screen">
 $ hg clone http://hg.openjdk.java.net/jdk7/jdk7 jdk7
 $ cd jdk7
 $ ./get_source.sh
-  </pre><p>To update the source to a specific tag, use the following
-    command:</p><pre class="screen">
+  </pre></div><p>To update the source to a specific tag, use the following
+    command:</p><div class="screenexample"><pre class="screen">
 $ ./make/scripts/hgforest.sh update &lt;tag-name&gt;
-  </pre><p>The list of OpenJDK tags can be obtained from <a class="link" href="http://hg.openjdk.java.net/jdk7u/jdk7u/tags" target="_top">this
+  </pre></div><p>The list of OpenJDK tags can be obtained from <a class="link" href="http://hg.openjdk.java.net/jdk7u/jdk7u/tags" target="_top">this
     page</a>.</p><p>Then you need to compare and incorporate the OpenJDK source changes
     into the modified OpenJDK classes at the <a class="link" href="https://github.com/jetty-project/jetty-npn" target="_top">NPN GitHub
     Repository</a>.</p></div></div></div><script type="text/javascript">

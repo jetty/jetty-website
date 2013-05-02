@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Using Persistent Sessions</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="session-management.html" title="Chapter&nbsp;11.&nbsp;Session Management"><link rel="prev" href="session-management.html" title="Chapter&nbsp;11.&nbsp;Session Management"><link rel="next" href="session-clustering-jdbc.html" title="Session Clustering with a Database"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Using Persistent Sessions</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="session-management.html" title="Chapter&nbsp;11.&nbsp;Session Management"><link rel="prev" href="session-management.html" title="Chapter&nbsp;11.&nbsp;Session Management"><link rel="next" href="session-clustering-jdbc.html" title="Session Clustering with a Database"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -24,7 +24,7 @@
     have its own unique SessionManager instance. Enabling persistence is as
     simple as configuring the <code class="code">HashSessionManager</code> as the
     SessionManager for a webapp and telling it where on disk to store the
-    sessions:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    sessions:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -55,7 +55,7 @@
     environment to be available when sessions are activated.</p><p>Using <code class="code">SessionManager.setLazyLoad(true)</code>, Jetty loads
     sessions lazily either when it receives the first request for a session,
     or the session scavenger runs for the first time, whichever happens first.
-    Here's how the configuration looks in XML:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    Here's how the configuration looks in XML:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Set name="sessionHandler">
   <New class="org.eclipse.jetty.servlet.SessionHandler">
     <Arg>
@@ -66,7 +66,7 @@
   </New>
 </Set>      ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="enabling-persistence-for-jetty-maven-plugin"></a>Enabling Persistence for the Jetty Maven Plugin</h3></div></div></div><p>To enable session persistence for the Jetty Maven plugin, set up the
-    HashSessionManager in the configuration section like so:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    HashSessionManager in the configuration section like so:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<plugin>
   <groupId>org.eclipse.jetty</groupId>
   <artifactId>jetty-maven-plugin</artifactId>

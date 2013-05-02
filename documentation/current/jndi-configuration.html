@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Configuring JNDI</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI"><link rel="prev" href="using-jetty-jndi.html" title="Working with Jetty JNDI"><link rel="next" href="jndi-datasource-examples.html" title="Datasource Examples"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Configuring JNDI</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="jndi.html" title="Chapter&nbsp;12.&nbsp;Configuring JNDI"><link rel="prev" href="using-jetty-jndi.html" title="Working with Jetty JNDI"><link rel="next" href="jndi-datasource-examples.html" title="Datasource Examples"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -19,7 +19,7 @@
     at runtime that you either cannot or cannot conveniently code into a
     <code class="code">web.xml env-entry</code>. In such cases, you can use <code class="code">
     org.eclipse.jetty.plus.jndi.EnvEntry</code>, and even override an entry of
-    the same name in <code class="filename"> web.xml</code>.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    the same name in <code class="filename"> web.xml</code>.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<New class="org.eclipse.jetty.plus.jndi.EnvEntry">
   <Arg></Arg>
   <Arg>mySpecialValue</Arg>
@@ -39,7 +39,7 @@
     <code class="code">javax.naming.Referenceables</code></a>. Be aware that if you take
     advantage of this feature, your web application is <span class="emphasis"><em>not
     portable</em></span>.</p><p>To use the <code class="code">env-entry</code> configured above, use code in your
-    <code class="filename">servlet/filter/etc.</code>, such as:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+    <code class="filename">servlet/filter/etc.</code>, such as:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[import javax.naming.InitialContext;
 
 public class MyClass {
@@ -64,13 +64,13 @@ public class MyClass {
     <code class="code">java:comp/env/jdbc</code>, JMS connection factories under
     <code class="code">java:comp/env/jms</code>, JavaMail connection factories under <code class="code">
     java:comp/env/mail</code> and URL connection factories under
-    <code class="code">java:comp/env/url</code>. For example:</p><div class="table"><a name="d0e7784"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;DataSource Declaration Conventions</b></p><div class="table-contents"><table summary="DataSource Declaration Conventions" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h3></div></div></div><p>Here is an example of configuring a
+    <code class="code">java:comp/env/url</code>. For example:</p><div class="table"><a name="d0e7604"></a><p class="title"><b>Table&nbsp;12.1.&nbsp;DataSource Declaration Conventions</b></p><div class="table-contents"><table summary="DataSource Declaration Conventions" width="100%" border="1"><colgroup><col><col><col></colgroup><thead><tr><th align="center">Resource Type</th><th align="center">Name in <code class="code">jetty.xml</code></th><th align="center">Environment Lookup</th></tr></thead><tbody><tr><td>javax.sql.DataSource</td><td>jdbc/myDB</td><td>java:comp/env/jdbc/myDB</td></tr><tr><td>javax.jms.QueueConnectionFactory</td><td>jms/myQueue</td><td>java:comp/env/jms/myQueue</td></tr><tr><td>javax.mail.Session</td><td>mail/myMailService</td><td>java:comp/env/mail/myMailService</td></tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-datasources"></a>Configuring DataSources</h3></div></div></div><p>Here is an example of configuring a
     <code class="code">javax.sql.DataSource</code>. Jetty can use any DataSource
     implementation available on its classpath. In this example, the DataSource
     is from the <a class="link" href="http://db.apache.org/derby" target="_top">Derby</a>
     relational database, but you can use any implementation of a
     <code class="code">javax.sql.DataSource</code>. This example configures it as scoped to
-    a web app with the id of <span class="emphasis"><em> wac</em></span>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    a web app with the id of <span class="emphasis"><em> wac</em></span>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="myds" class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg><Ref refid="wac"/></Arg>
@@ -91,13 +91,13 @@ public class MyClass {
     <code class="code">resource-ref</code> set up in your <code class="code">web.xml</code>, it is
     available from application lookups as <code class="code">
     java:comp/env/jdbc/myds</code>.</p><p>Here's an example <code class="filename">web.xml</code> declaration for the
-    datasource above:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    datasource above:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<resource-ref>
   <res-ref-name>jdbc/myds</res-ref-name>
   <res-type>javax.sql.DataSource</res-type>
   <res-auth>Container</res-auth>
 </resource-ref>  ]]>
-        </script></div><p>To look up your DataSource in your <code class="filename">servlet/filter/etc.</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+        </script></div><p>To look up your DataSource in your <code class="filename">servlet/filter/etc.</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
@@ -119,7 +119,7 @@ public class MyClass {
       <code class="code">javax.sql.DataSource</code>&nbsp;interface.</p></td></tr></table></div><p>For more examples of datasource configurations, see <a class="xref" href="jndi-datasource-examples.html" title="Datasource Examples">Datasource Examples</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jms-queues-topics-connectionfactories"></a>Configuring JMS Queues, Topics and ConnectionFactories</h3></div></div></div><p>Jetty can bind any implementation of the JMS destinations and
     connection factories. You just need to ensure the implementation Jars are
     available on Jetty's classpath. Here is an example of binding an <a class="link" href="http://activemq.apache.org" target="_top">ActiveMQ</a> in-JVM connection
-    factory:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    factory:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg><Ref refid='wac'/></Arg>
@@ -131,14 +131,14 @@ public class MyClass {
     </Arg>
   </New>
 </Configure>]]>
-        </script></div><p>The entry in <code class="filename">web.xml</code> would be:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+        </script></div><p>The entry in <code class="filename">web.xml</code> would be:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<resource-ref>
   <res-ref-name>jms/connectionFactory</res-ref-name>
   <res-type>javax.jms.ConnectionFactory</res-type>
   <res-auth>Container</res-auth>
 </resource-ref>]]>
         </script></div><p>TODO: put in an example of a QUEUE from progress demo</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-mail-with-jndi"></a>Configuring Mail</h3></div></div></div><p>Jetty also provides infrastructure for access to
-    <code class="code">javax.mail.Sessions</code> from within an application:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    <code class="code">javax.mail.Sessions</code> from within an application:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="mail" class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg><Ref refid="wac"/></Arg>
@@ -177,14 +177,14 @@ public class MyClass {
     <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/plus/jndi/Transaction.html" target="_top">JNDI
     Transaction</a> object in a Jetty config file. The following example
     configures the <a class="link" href="http://www.atomikos.com/" target="_top">Atomikos</a>
-    transaction manager:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    transaction manager:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<New id="tx" class="org.eclipse.jetty.plus.jndi.Transaction">
   <Arg>
     <New class="com.atomikos.icatch.jta.J2eeUserTransaction"/>
   </Arg>
 </New>]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-links"></a>Configuring Links</h3></div></div></div><p>Generally, the name you set for your <code class="code">Resource</code> should be
-    the same name you use for it in <code class="filename">web.xml</code>. For example:</p><p>In a context xml file:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    the same name you use for it in <code class="filename">web.xml</code>. For example:</p><p>In a context xml file:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="myds" class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg><Ref refid="wac"/></Arg>
@@ -197,7 +197,7 @@ public class MyClass {
     </Arg>
   </New>
 </Configure>]]>
-        </script></div><p>In <code class="filename">web.xml</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+        </script></div><p>In <code class="filename">web.xml</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<resource-ref>
   <res-ref-name>jdbc/mydatasource</res-ref-name>
   <res-type>javax.sql.DataSource</res-type>
@@ -212,7 +212,7 @@ public class MyClass {
     org.eclipse.jetty.plus.jndi.Resource</code> by using an
     <code class="code">org.eclipse.jetty.plus.jndi.Link</code>. For the example above, you
     can refer to the <code class="code">jdbc/mydatasource</code> resource as <code class="code">
-    jdbc/mydatasource1</code> as follows:</p><p>In a context xml file declare <code class="code">jdbc/mydatasource</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    jdbc/mydatasource1</code> as follows:</p><p>In a context xml file declare <code class="code">jdbc/mydatasource</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="myds" class="org.eclipse.jetty.plus.jndi.Resource">
     <Arg><Ref refid="wac"/></Arg>
@@ -228,14 +228,14 @@ public class MyClass {
         </script></div><p>Then in a <code class="filename">WEB-INF/jetty-env.xml</code> file, link the
     name <code class="code">jdbc/mydatasource</code> to the name you want to reference it
     as in <code class="filename">web.xml</code>, which in this case is
-    <code class="code">jdbc/mydatasource1</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    <code class="code">jdbc/mydatasource1</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<New id="map1" class="org.eclipse.jetty.plus.jndi.Link">
   <Arg><Ref refid='wac'/></Arg>
   <Arg>jdbc/mydatasource1</Arg> <!-- name in web.xml -->
   <Arg>jdbc/mydatasource</Arg>  <!-- name in container environment -->
 </New>]]>
         </script></div><p>Now you can refer to <code class="code">jdbc/mydatasource1</code> in the
-    <code class="filename">web.xml</code> like this:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+    <code class="filename">web.xml</code> like this:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<resource-ref>
   <res-ref-name>jdbc/mydatasource1</res-ref-name>
   <res-type>javax.sql.DataSource</res-type>

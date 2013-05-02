@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Using Maven</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;21.&nbsp;Maven and Jetty"><link rel="prev" href="maven-and-jetty.html" title="Chapter&nbsp;21.&nbsp;Maven and Jetty"><link rel="next" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+   <title>Using Maven</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;21.&nbsp;Maven and Jetty"><link rel="prev" href="maven-and-jetty.html" title="Chapter&nbsp;21.&nbsp;Maven and Jetty"><link rel="next" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -28,11 +28,11 @@
         example</a></p></li></ul></div><p>Maven uses convention over configuration, so it is best to use the
     project structure Maven recommends. You can use <span class="emphasis"><em><a class="link" href=""></a><a class="link" href="http://maven.apache.org/guides/introduction/introduction-to-archetypes.html" target="_top">archetypes</a><a class="link" href=""></a></em></span>
     to quickly setup Maven projects, but we will set up the structure manually
-    for this simple tutorial example:</p><pre class="screen">&gt; mkdir JettyMavenHelloWorld
+    for this simple tutorial example:</p><div class="screenexample"><pre class="screen">&gt; mkdir JettyMavenHelloWorld
 &gt; cd JettyMavenHelloWorld
-&gt; mkdir -p src/main/java/org/example</pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-helloworld-class"></a>Creating the HelloWorld Class</h4></div></div></div><p>Use an editor to create the file
+&gt; mkdir -p src/main/java/org/example</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-helloworld-class"></a>Creating the HelloWorld Class</h4></div></div></div><p>Use an editor to create the file
       <code class="filename">src/main/java/org/example/HelloWorld.java</code> with the
-      following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.example;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +68,7 @@ public class HelloWorld extends AbstractHandler
 }   ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-embedded-pom-descriptor"></a>Creating the POM Descriptor</h4></div></div></div><p>The <code class="filename">pom.xml</code> file declares the project name
       and its dependencies. Use an editor to create the file
-      <code class="filename">pom.xml</code> with the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      <code class="filename">pom.xml</code> with the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -112,11 +112,11 @@ public class HelloWorld extends AbstractHandler
   </build>
 </project>   ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="buildng-and-running-embedded-helloworld"></a>Building and Running Embedded HelloWorld</h4></div></div></div><p>You can now compile and execute the HelloWorld class by using
-      these commands:</p><pre class="screen">&gt; mvn clean compile exec:java  </pre><p>You can point your browser to <code class="code">http://localhost:8080</code>
+      these commands:</p><div class="screenexample"><pre class="screen">&gt; mvn clean compile exec:java  </pre></div><p>You can point your browser to <code class="code">http://localhost:8080</code>
       to see the hello world page. You can observe what Maven is doing for you
       behind the scenes by using the <code class="code">mvn dependency:tree</code> command,
       which reveals the transitive dependency resolved and downloaded
-      as:</p><pre class="screen">&gt; mvn dependency:tree
+      as:</p><div class="screenexample"><pre class="screen">&gt; mvn dependency:tree
 [INFO] Scanning for projects...
 [INFO] Searching repository for plugin with prefix: 'dependency'.
 [INFO] ------------------------------------------------------------------------
@@ -137,16 +137,16 @@ public class HelloWorld extends AbstractHandler
 [INFO] Total time: 4 seconds
 [INFO] Finished at: Thu Jan 24 16:19:08 EST 2013
 [INFO] Final Memory: 11M/68M
-[INFO] ------------------------------------------------------------------------      </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="developing-standard-webapp-with-jetty-and-maven"></a>Developing a Standard WebApp with Jetty and Maven</h3></div></div></div><p>The previous section demonstrated how to use Maven with an
+[INFO] ------------------------------------------------------------------------      </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="developing-standard-webapp-with-jetty-and-maven"></a>Developing a Standard WebApp with Jetty and Maven</h3></div></div></div><p>The previous section demonstrated how to use Maven with an
     application that embeds Jetty. Now we will examine instead how to develop
     a standard webapp with Maven and Jetty. First create the Maven structure
     (you can use the <a class="link" href="???" target="_top">maven webapp archetype</a> instead
-    if you prefer):</p><pre class="screen">&gt; mkdir JettyMavenHelloWarApp
+    if you prefer):</p><div class="screenexample"><pre class="screen">&gt; mkdir JettyMavenHelloWarApp
 &gt; cd JettyMavenHelloWebApp
 &gt; mkdir -p src/main/java/org/example
-&gt; mkdir -p src/main/webapp/WEB-INF</pre><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-servlet"></a>Creating a Servlet</h4></div></div></div><p>Use an editor to create the file
+&gt; mkdir -p src/main/webapp/WEB-INF</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-servlet"></a>Creating a Servlet</h4></div></div></div><p>Use an editor to create the file
       <code class="filename">src/main/java/org/example/HelloServlet.java</code> with
-      the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.example;
 
 import java.io.IOException;
@@ -167,7 +167,7 @@ public class HelloServlet extends HttpServlet
 }]]>
         </script></div><p>You need to declare this servlet in the deployment descriptor, so
       edit the file <code class="filename">src/main/webapp/WEB-INF/web.xml</code> and
-      add the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+      add the following contents:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app 
    xmlns="http://java.sun.com/xml/ns/javaee" 
@@ -190,7 +190,7 @@ public class HelloServlet extends HttpServlet
       and its dependencies. Use an editor to create the file
       <code class="filename">pom.xml</code> with the following contents, noting
       particularly the declaration of the<a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">
-      jetty-maven-plugin</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+      jetty-maven-plugin</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -228,12 +228,12 @@ public class HelloServlet extends HttpServlet
 </project>   ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-and-running-web-application"></a>Building and Running the Web Application</h4></div></div></div><p>Now you can both build and run the web application without needing
       to assemble it into a war by using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">jetty-maven-plugin</a> via the
-      command:</p><pre class="screen">&gt; mvn jetty:run</pre><p>You can see the static and dynamic content at
+      command:</p><div class="screenexample"><pre class="screen">&gt; mvn jetty:run</pre></div><p>You can see the static and dynamic content at
       <code class="code"></code>http://localhost:8080/hello</p><p>There are a great deal of configuration options available for the
       jetty-maven-plugin to help you build and run your webapp. The full
       reference is at <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Configuring the Jetty
       Maven Plugin</a>.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="building-war-file"></a>Building a WAR file</h4></div></div></div><p>You can create a Web Application Archive (WAR) file from the
-      project with the command:</p><pre class="screen">&gt; mvn package    </pre><p>The resulting war file is in the <code class="filename">target</code>
+      project with the command:</p><div class="screenexample"><pre class="screen">&gt; mvn package    </pre></div><p>The resulting war file is in the <code class="filename">target</code>
       directory and may be deployed on any standard servlet server,
       including<a class="link" href="configuring-deployment.html" title="Chapter&nbsp;7.&nbsp;Deploying to Jetty"> Jetty</a>.</p></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
