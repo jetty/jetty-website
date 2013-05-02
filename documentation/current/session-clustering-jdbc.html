@@ -31,7 +31,7 @@
     </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7068"></a>Configuring the JDBCSessionIdManager</h3></div></div></div><p>
       You need to configure an <code class="code">org.eclipse.jetty.server.session.JDBCSessionIdManager</code> instance, either in embedded code or in a <code class="filename">jetty.xml</code> file. Here is an example of a jetty.xml setup:
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
         
 <Set name="sessionIdManager">
         <New id="jdbcidmgr" class="org.eclipse.jetty.server.session.JDBCSessionIdManager">
@@ -51,10 +51,10 @@
       </Call>
       
     ]]>
-    </script></div><p>
+        </script></div><p>
     Notice that the JDBCSessionIdManager needs access to a database. The <code class="filename">jetty.xml</code> above configures it with the name of a <code class="code">javax.sql.DataSource</code> that is defined elsewhere. Consult Jetty Naming Resources for more information on how to configure database access with Jetty. If you don't want to use a DataSource, you can configure JDBC Driver information instead. Here's an example:
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
       
 <Set name="sessionIdManager">
       <New id="jdbcidmgr" class="org.eclipse.jetty.server.session.JDBCSessionIdManager">
@@ -77,10 +77,10 @@
     </Call>
     
   ]]>
-    </script></div><p>
+        </script></div><p>
   As Jetty configuration files are direct mappings of XML to Java, it is straightforward to see how to do this in code, but here's an example anyway:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
     
 Server server = new Server();
      ...
@@ -90,7 +90,7 @@ idMgr.setDriverInfo("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/sessio
 idMgr.setScavengeInterval(60);
 server.setSessionIdManager(idMgr);
  ]]>
-    </script></div><p>
+        </script></div><p>
   You must configure the JDBCSessionIdManager with a workerName that is unique across the cluster. Typically the name relates to the physical node on which the instance is executing. If this name is not unique, your load balancer might fail to distribute your sessions correctly.
 </p><p>
   You can also configure how often the persistent session mechanism sweeps the database looking for old, expired sessions with the scavengeInterval setting. The default value is 60 seconds. We recommend that you not increase the frequency because doing so increases the load on the database with very little gain; old, expired sessions can harmlessly sit in the database.
@@ -99,7 +99,7 @@ server.setSessionIdManager(idMgr);
 </p><p>
   From a context xml file, you reference the Server instance as a Ref:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
     
 <Ref name="Server" id="Server">
     <Call id="jdbcIdMgr" name="getAttribute">
@@ -120,12 +120,12 @@ server.setSessionIdManager(idMgr);
   </Set>
   
 ]]>
-    </script></div><p>
+        </script></div><p>
 From a
 <code class="filename">WEB-INF/jetty-web.xml</code>
 file, you can reference the Server instance directly:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
   
 <Get name="server">
   <Get id="jdbcIdMgr" name="sessionIdManager"/>
@@ -143,8 +143,8 @@ file, you can reference the Server instance directly:
 </Set>
 
 ]]>
-    </script></div><p>If you're embedding this in code:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div><p>If you're embedding this in code:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 //assuming you have already set up the JDBCSessionIdManager as shown earlier
 //and have a reference to the Server instance:
@@ -156,7 +156,7 @@ jdbcMgr.setIdManager(server.getSessionIdManager());
 wac.setSessionHandler(jdbcMgr);
 
 ]]>
-    </script></div></div></div><script type="text/javascript">
+        </script></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="using-persistent-sessions.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="session-management.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="session-clustering-mongodb.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Using Persistent Sessions&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Session Clustering with MongoDB</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?

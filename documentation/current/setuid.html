@@ -22,7 +22,7 @@
   framework that can permit users and processes superuser-like abilities. Please refer to the Solaris documentation for
   more information.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13444"></a>Configuring the Setuid feature</h3></div></div></div><p>In the Jetty <code class="filename">etc</code> directory you will find the following jetty-setuid.xml file which can
     be modified to suit your needs.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
@@ -52,14 +52,14 @@
 </Configure>
 
       ]]>
-    </script></div><p>Options:</p><div class="variablelist"><dl><dt><span class="term">startServerAsPrivileged</span></dt><dd><p>set this to true if you will start the server up as the root user</p></dd><dt><span class="term">umask</span></dt><dd><p>the umask setting you would like the process to have, optionally you may remove this line to leave it
+        </script></div><p>Options:</p><div class="variablelist"><dl><dt><span class="term">startServerAsPrivileged</span></dt><dd><p>set this to true if you will start the server up as the root user</p></dd><dt><span class="term">umask</span></dt><dd><p>the umask setting you would like the process to have, optionally you may remove this line to leave it
           unchanged.</p></dd><dt><span class="term">username</span></dt><dd><p>the name of the user you would like tthe process to run under after starting, set to <span class="emphasis"><em>
           jetty</em></span> by default</p></dd><dt><span class="term">groupname</span></dt><dd><p>the name of the group you would like the process to run under after starting, set to <span class="emphasis"><em>
           jetty</em></span> by default</p></dd></dl></div><p>Additionally if you would like to set the file descriptor limits in the process you can uncomment the
     appropriate section above and set the soft and hard values accordingly.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13490"></a>Enabling SetUID on startup</h3></div></div></div><p>The <code class="filename">jetty-setuid.xml</code> file runs as a wrapper around the typical Jetty server
     configuration so you must set this xml file to be processed before any others. This is already configured yet
     commented out in the normal <code class="filename">start.ini</code> file in the root of the jetty-distribution.</p><p>Open the <code class="filename">start.ini</code> file and look for the following section:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
        
 #===========================================================
 # Enable SetUID
@@ -73,7 +73,7 @@
 #===========================================================
 
       ]]>
-    </script></div><p>Uncomment the OPTIONS line which will set the setuid libraries to be loaded when Jetty starts along with the
+        </script></div><p>Uncomment the OPTIONS line which will set the setuid libraries to be loaded when Jetty starts along with the
     line following which will process the <code class="filename">jetty-setuid.xml</code> file when jetty starts up. Take care
     when modifying this file when the SetUID feature is in play as it <span class="emphasis"><em>MUST</em></span> be the first xml file
     to be processed.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13517"></a>Supported Operating Systems</h3></div></div></div><p>The Setuid feature leverages the the JNI setup with the jvm so part of the feature is C code compiled for the

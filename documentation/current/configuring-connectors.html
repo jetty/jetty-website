@@ -46,7 +46,7 @@
       passed to the connector constructor. In Jetty XML (that is, in <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
           <code class="filename">jetty-http.xml</code>
         </a>), you can do this with:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
+          <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
   <Arg name="server"><Ref refid="Server" /></Arg>
   <Arg name="factories">
     <Array type="org.eclipse.jetty.server.ConnectionFactory">
@@ -55,28 +55,28 @@
   </Arg>
   <!-- set connector fields here -->
 </New> ]]>
-    </script></div><p>You can see the other arguments that can be passed when
+        </script></div><p>You can see the other arguments that can be passed when
       constructing a <code class="code">ServerConnector</code> in the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html#ServerConnector%28org.eclipse.jetty.server.Server,%20java.util.concurrent.Executor,%20org.eclipse.jetty.util.thread.Scheduler,%20org.eclipse.jetty.io.ByteBufferPool,%20int,%20int,%20org.eclipse.jetty.server.ConnectionFactory...%29" target="_top">Javadoc</a>.
       Typically the defaults are sufficient for almost all deployments.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-connectors-network-settings"></a>Network Settings.</h3></div></div></div><p>You configure connector network settings by calling setters on the
       connector before it is started. For example, you can set the port with
       the Jetty XML:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
+          <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
   <Arg name="server"><Ref refid="Server" /></Arg>
   <Arg name="factories"><!-- insert one or more factories here --></Arg>
 
   <Set name="port">8080</Set>
 </New>   ]]>
-    </script></div><p>Values in Jetty XML can also be parameterized so that they may be
+        </script></div><p>Values in Jetty XML can also be parameterized so that they may be
       passed from property files or set on the command line. Thus typically
       the port is set within Jetty XML, but uses the <code class="code">Property</code>
       element to be customizable:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
+          <![CDATA[<New class="org.eclipse.jetty.server.ServerConnector">
   <Arg name="server"><Ref refid="Server" /></Arg>
   <Arg name="factories"><!-- insert one or more factories here --></Arg>
 
   <Set name="port"><Property name="jetty.port" default="8080"/></Set>
 </New>  ]]>
-    </script></div><p>The network settings that you can set on the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
+        </script></div><p>The network settings that you can set on the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">
           <code class="code">ServerConnector</code>
         </a> include:</p><div class="table"><a name="d0e2128"></a><p class="title"><b>Table&nbsp;4.1.&nbsp;Connector Configuration</b></p><div class="table-contents"><table summary="Connector Configuration" border="1"><colgroup><col><col></colgroup><thead><tr><th>Field</th><th>Description</th></tr></thead><tbody><tr><td>host</td><td>The network interface this connector binds to as an IP
               address or a hostname. If null or 0.0.0.0, bind to all
@@ -116,7 +116,7 @@
           <code class="filename">example-jetty-spdy.xml</code>
         </a>.</p><p>A typical configuration of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HttpConfiguration.html" target="_top">
       HttpConfiguration</a> is:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+          <![CDATA[<New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
   <Set name="secureScheme">https</Set>
   <Set name="securePort"><Property name="jetty.tls.port" default="8443" /></Set>
   <Set name="outputBufferSize">32768</Set>
@@ -127,12 +127,12 @@
     <Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg>
   </Call>
 </New>]]>
-    </script></div><p>This example adds a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_top">
+        </script></div><p>This example adds a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ForwardedRequestCustomizer.html" target="_top">
           <code class="code">ForwardedRequestCustomizer</code>
         </a> to process the <a class="link" href="http://en.wikipedia.org/wiki/X-Forwarded-For" target="_top">X-Forward-For</a>
       and related proxy headers. <code class="filename">jetty-https.xml</code> can, by
       reference, use the instance created with an ID "httpConfig":</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<Call name="addConnector">
+          <![CDATA[<Call name="addConnector">
   <Arg>
     <New class="org.eclipse.jetty.server.ServerConnector">
       <Arg name="server"><Ref refid="Server" /></Arg>
@@ -149,18 +149,18 @@
     </New>
   </Arg>
 </Call>]]>
-    </script></div><p>For SSL based connectors (in
+        </script></div><p>For SSL based connectors (in
       <code class="filename">jetty-https.xml</code> and <code class="filename">
       jetty-spdy.xml</code>), the common "httpConfig" instance is used as
       the basis to create an SSL specific configuration with ID
       "tlsHttpConfig":</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New id="tlsHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+          <![CDATA[<New id="tlsHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
   <Arg><Ref refid="httpConfig"/></Arg>
   <Call name="addCustomizer">
     <Arg><New class="org.eclipse.jetty.server.SecureRequestCustomizer"/></Arg>
   </Call>
 </New>]]>
-    </script></div><p>This adds a <code class="code">SecureRequestCustomizer</code>
+        </script></div><p>This adds a <code class="code">SecureRequestCustomizer</code>
       which adds SSL Session IDs and certificate information as request
       attributes.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e2284"></a>SSL Context Configuration</h3></div></div></div><p>The SSL/TSL connectors for HTTPS and SPDY require a certificate to
       establish a secure connection. Jetty holds certificates in standard JVM
@@ -184,7 +184,7 @@
       instances.</p><p>The simplest example in the Jetty distribution is <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-http.xml" target="_top">
           <code class="filename">jetty-http.xml</code>
         </a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"?>
+          <![CDATA[<?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <!-- ============================================================= -->
@@ -226,12 +226,12 @@
 
 </Configure>
 ]]>
-    </script></div><p>Here the connector has only a single
+        </script></div><p>Here the connector has only a single
       <code class="code">ConnectionFactory</code>, and when a new connection is accepted,
       it is the <code class="code">HttpConnectionFactory</code> that creates an
       <code class="code">HttpConnection.</code></p><p>A more complex example involving multiple connection factories is
       <code class="filename">jetty-spdy.xml</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+          <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
@@ -370,7 +370,7 @@
 
 </Configure>
 ]]>
-    </script></div><p>In this case five connection factories are created and linked
+        </script></div><p>In this case five connection factories are created and linked
       together by their protocol names:</p><div class="variablelist"><dl><dt><span class="term">"SSL-npn"</span></dt><dd><p>The default protocol is identified by the first connection factory,
             which in this case is a <code class="code">SslConnectionFactory</code>
             instantiated with "npn" as the next protocol. Thus accepted

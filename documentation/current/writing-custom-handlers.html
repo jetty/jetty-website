@@ -36,9 +36,9 @@ body { background-image: url('images/draft-ribbon.png');
     interface provides Jetty's core of content generation or manipulation.
     Classes that implement this interface are used to coordinate requests,
     filter requests and generate content.</p><p>The core API of the Handler interface is: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+          <![CDATA[public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException]]>
-    </script></div><p>An implementation of this method can handle a request, pass the
+        </script></div><p>An implementation of this method can handle a request, pass the
     request onto another handler (or servlet), or it can modify and/or wrap
     the request and then pass it on. This gives three styles of
     handler:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Coordinating Handlers - Handlers that route requests to other
@@ -63,9 +63,9 @@ body { background-image: url('images/draft-ribbon.png');
       and servlets, it is not possible to pass the implementation directly.
       The following mantra retrieves the core implementation objects from
       under any wrappers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[Request base_request = request instanceof Request ? (Request)request : HttpConnection.getCurrentConnection().getRequest();
+          <![CDATA[Request base_request = request instanceof Request ? (Request)request : HttpConnection.getCurrentConnection().getRequest();
 Response base_response = response instanceof Response ? (Response)response : HttpConnection.getCurrentConnection().getResponse();]]>
-    </script></div><p>Notice that if the handler passes the request on to another
+        </script></div><p>Notice that if the handler passes the request on to another
       handler, it should use the request/response objects passed in, and not
       the base objects. This is to preserve any wrapping done by up stream
       handlers.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="dispatch"></a>The Dispatch</h4></div></div></div><p>The dispatch argument indicates the state of the handling of the
@@ -79,23 +79,23 @@ Response base_response = response instanceof Response ? (Response)response : Htt
       embedded example shows how a simple handler can generate a
       response.</p><p>You can use the normal servlet response API, which will typically
       set some status, content headers and then write out the content:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[ response.setContentType("text/html");
+          <![CDATA[ response.setContentType("text/html");
  response.setStatus(HttpServletResponse.SC_OK);
  response.getWriter().println("<h1>Hello OneHandler</h1>");]]>
-    </script></div><p>It is also very important that a handler indicate that it has
+        </script></div><p>It is also very important that a handler indicate that it has
       completed handling the request and that the request should not be passed
       to other handlers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[ Request base_request = (request instanceof Request) ? (Request)request:HttpConnection.getCurrentConnection().getRequest();
+          <![CDATA[ Request base_request = (request instanceof Request) ? (Request)request:HttpConnection.getCurrentConnection().getRequest();
  base_request.setHandled(true);              
 ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="filtering-request-or-response"></a>Filtering the Request and/or Response</h4></div></div></div><p>Once the base request or response object is obtained, you can
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="filtering-request-or-response"></a>Filtering the Request and/or Response</h4></div></div></div><p>Once the base request or response object is obtained, you can
       modify it. Typically you would make modifications to accomplish:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Breaking the URI into contextPath, servletPath and pathInfo
           components.</p></li><li class="listitem"><p>Associating a resource base with a request for static
           content.</p></li><li class="listitem"><p>Associating a session with a request.</p></li><li class="listitem"><p>Associating a security principal with a request.</p></li><li class="listitem"><p>Changing the URI and paths during a request dispatch forward
           to another resource.</p></li></ul></div><p>You can also update the context of the request:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Setting the current threads context classloader.</p></li><li class="listitem"><p>Setting thread locals to identify the current
           ServletContext.</p></li></ul></div><p>Typically Jetty passes a modified request to another handler and
       undoes modifications in a finally block afterwards:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[ try
+          <![CDATA[ try
  {
     base_request.setSession(a_session);
     next_handler.handle(target,request,response,dispatch);
@@ -104,7 +104,7 @@ Response base_response = response instanceof Response ? (Response)response : Htt
  {
     base_request.setSession(old_session);
  }]]>
-    </script></div><p>The classes that implement the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerWrapper.html" target="_top">HandlerWrapper</a>
+        </script></div><p>The classes that implement the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/handler/HandlerWrapper.html" target="_top">HandlerWrapper</a>
       class are typically handler filters of this style.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="passing-request-and-response"></a>Passing the Request and Response to Another Handler</h4></div></div></div><p>A handler might simply inspect the request and use the target,
       request URI or other information to select another handler to pass the
       request to. These handlers typically implement the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/HandlerContainer.html" target="_top">HandlerContainer</a>

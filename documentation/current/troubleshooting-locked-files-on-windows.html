@@ -14,24 +14,24 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="troubleshooting-locked-files-on-windows"></a>Troubleshooting Locked Files on Windows</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#d0e18646">Remedy</a></span></dt><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#d0e18693">Alternate Remedy</a></span></dt></dl></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="troubleshooting-locked-files-on-windows"></a>Troubleshooting Locked Files on Windows</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#d0e18642">Remedy</a></span></dt><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#d0e18689">Alternate Remedy</a></span></dt></dl></div><p>
     Jetty buffers static content for webapps such as HTML files, CSS files, images, etc. If you are using NIO connectors, Jetty uses memory-mapped files to do this. The problem is that on Windows, memory mapping a file causes the file to lock, so that you cannot update or replace the file. Effectively this means that you have to stop Jetty to update a file.
-  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18646"></a>Remedy</h3></div></div></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18642"></a>Remedy</h3></div></div></div><p>
     Jetty provides a configuration switch in the <code class="filename">webdefault.xml</code> file for the DefaultServlet that enables or disables the use of memory-mapped files. If you are running on Windows and are having file-locking problems, you should set this switch to disable memory-mapped file buffers.
   </p><p>
     The default <code class="filename">webdefault.xml</code> file is found in the jetty distribution under the <code class="filename">etc/</code> directory or in the <code class="filename">jetty-webapp-9.0.2-SNAPSHOT.jar</code> artifact at <code class="filename">org/eclipse/jetty/webapp/webdefault.xml</code>. Edit the file in the distribution or extract it to a convenient disk location and edit it to change <code class="code">useFileMappedBuffer</code> to false.  The easiest option is to simply edit the default file contained in the jetty distribution itself.
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <init-param>
    <param-name>useFileMappedBuffer</param-name>
    <param-value>true</param-value> <!-- change to false -->
  </init-param>
  
     ]]>
-    </script></div><p>
+        </script></div><p>
     Make sure to apply your custom <code class="filename">webdefault.xml</code> file to all of your webapps. You can do that by changing the configuration of the Deployment Manager in <code class="filename">etc/jetty-deploy.xml</code>.
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <Call id="webappprovider" name="addAppProvider">
   <Arg>
     <New class="org.eclipse.jetty.deploy.providers.WebAppProvider">
@@ -48,10 +48,10 @@
 </Call>
 
     ]]>
-    </script></div><p>
+        </script></div><p>
     Alternatively, if you have individually configured your webapps with context xml files, you need to call the <code class="code">WebAppContext.setDefaultsDescriptor(String path)</code> method:
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <New id="myWebAppContext"  class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="contextPath">/</Set>
   <Set name="war">./webapps/fredapp</Set>
@@ -61,10 +61,10 @@
 </New>
 
     ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18693"></a>Alternate Remedy</h3></div></div></div><p>
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e18689"></a>Alternate Remedy</h3></div></div></div><p>
     You can force a <code class="code">WebAppContext</code> to always copy a web app directory on deployment to avoid the file locking issue. Configure this in a context deployment file as follows:
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <New id="myWebAppContext"  class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="contextPath">/</Set>
   <Set name="war">./webapps/fredapp</Set>
@@ -74,10 +74,10 @@
 </New>
 
     ]]>
-    </script></div><p>
+        </script></div><p>
     You can also configure the default Jetty Servlet directly in the <code class="filename">web.xml</code>. For example:
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <web-app ...>
  ...
  <servlet>
@@ -93,7 +93,7 @@
  </web-app>
  
     ]]>
-    </script></div><p>
+        </script></div><p>
     This might completely redefine the default servlet configuration (not sure about that, if anyone can confirm). You could still simply extract the webdefault file as explained above, and copy-paste the complete default servlet definition in your web.xml, changing that <code class="code">useFileMappedBuffer</code> parameter to false.
   </p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()

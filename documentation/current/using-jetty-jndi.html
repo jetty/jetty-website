@@ -19,14 +19,14 @@
     <code class="code">java:comp/env</code> naming environment of the webapp during
     execution. Specifically, you can configure support for the following
     <code class="filename">web.xml</code> elements:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <env-entry/>
 <resource-ref/>
 <resource-env-ref/>
 
       ]]>
-    </script></div><p><a class="link" href="jndi-configuration.html#configuring-jndi-env-entries" title="Configuring JNDI env-entries">Configuring
+        </script></div><p><a class="link" href="jndi-configuration.html#configuring-jndi-env-entries" title="Configuring JNDI env-entries">Configuring
     env-entries</a> shows you how to set up overrides for <code class="code">
     env-entry</code> elements in <code class="filename">web.xml</code>, while <a class="link" href="jndi-configuration.html#configuring-resource-refs-and-resource-env-refs" title="Configuring resource-refs and resource-env-refs">Configuring
     <code class="code">resource-refs</code> and <code class="code">resource-env-refs</code></a> discusses how to configure
@@ -38,7 +38,7 @@
       environment so that you can then hook into your webapp via <code class="code">env-entry,
       resource-ref</code> and <code class="code">resource-env-refs</code> in <code class="filename">web.xml</code>. You create these bindings
       by using declarations of the following types:</p><div class="variablelist"><dl><dt><span class="term"><code class="code">org.eclipse.jetty.plus.jndi.EnvEntry</code></span></dt><dd><p>for <code class="code">env-entry</code> type of entries</p></dd><dt><span class="term"><code class="code">org.eclipse.jetty.plus.jndi.Resource</code></span></dt><dd><p>for all other type of resources</p></dd><dt><span class="term"><code class="code">org.eclipse.jetty.plus.jndi.Transaction</code></span></dt><dd><p>for a JTA manager</p></dd><dt><span class="term"><code class="code">org.eclipse.jetty.plus.jndi.Link</code></span></dt><dd><p>for link between a <code class="filename">web.xml</code> resource name and a naming entry</p></dd></dl></div><p>Declarations of each of these types follow the same general pattern:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <New class="org.eclipse.jetty.plus.jndi.xxxx">
   <Arg><!-- scope --></Arg>
@@ -47,7 +47,7 @@
 </New>
 
         ]]>
-    </script></div><p>You can place these declarations into three different
+        </script></div><p>You can place these declarations into three different
       files, depending on your needs and the <a class="link" href="using-jetty-jndi.html#jndi-name-scope" title="Scope of Resource Names">scope</a> of the resources being
       declared.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jndi-where-to-declare"></a>Deciding Where to Declare Resources</h3></div></div></div><p>You can define naming resources in three places:</p><div class="variablelist"><dl><dt><span class="term">jetty.xml</span></dt><dd><p>Naming resources defined in a
               <code class="filename">jetty.xml</code> file are <a class="link" href="using-jetty-jndi.html#jndi-name-scope" title="Scope of Resource Names">scoped</a> at either the JVM level
@@ -68,7 +68,7 @@
               visible to all application code. You represent this scope by a
               <code class="code">null</code> first parameter to the resource declaration. 
               For example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
   <Arg></Arg>  <!-- empty arg -->
@@ -81,10 +81,10 @@
 </New>
 
                 ]]>
-    </script></div></dd><dt><span class="term">Server scope</span></dt><dd><p>The name is unique to a Server instance, and is only
+        </script></div></dd><dt><span class="term">Server scope</span></dt><dd><p>The name is unique to a Server instance, and is only
               visible to code associated with that instance. You represent this scope by referencing the Server instance as the first
               parameter to the resource declaration. For example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <Configure id="Server" class="org.eclipse.jetty.Server">
   <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
@@ -99,11 +99,11 @@
 </Configure>
 
                 ]]>
-    </script></div></dd><dt><span class="term">Webapp scope</span></dt><dd><p>The name is unique to the WebAppContext instance, and
+        </script></div></dd><dt><span class="term">Webapp scope</span></dt><dd><p>The name is unique to the WebAppContext instance, and
               is only visible to code associated with that instance. You represent this scope by referencing the WebAppContext instance
               as the first parameter to the resource declaration. 
               For example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
   <New id="cf" class="org.eclipse.jetty.plus.jndi.Resource">
@@ -118,7 +118,7 @@
 </Configure>
 
                 ]]>
-    </script></div></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="binding-objects-into-jetty-jndi"></a>What Can Be Bound as a Resource?</h3></div></div></div><p>You can bind four types of objects into a Jetty JNDI reference:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>An ordinary POJO instance.</p></li><li class="listitem"><p>A <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
+        </script></div></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="binding-objects-into-jetty-jndi"></a>What Can Be Bound as a Resource?</h3></div></div></div><p>You can bind four types of objects into a Jetty JNDI reference:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>An ordinary POJO instance.</p></li><li class="listitem"><p>A <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html" target="_top">
             javax.naming.Reference</a> instance.</p></li><li class="listitem"><p>An object instance that implements the <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Referenceable.html" target="_top">
             javax.naming.Referenceable</a> interface.</p></li><li class="listitem"><p>A link between a name as referenced in
             <code class="filename">web.xml</code> and as referenced in the Jetty

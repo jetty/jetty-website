@@ -32,13 +32,9 @@ body { background-image: url('images/draft-ribbon.png');
     $JETTY_HOME/lib/jsp/org.eclipse.jdt.core-3.7.1.jar. You will need to
     define a SystemProperty that prevents the jsp engine from defaulting to
     the in-JVM compiler. </p><p>Here's the property definition to add to
-    $JETTY_HOME/start.ini:</p><div class="informalexample"><pre class="programlisting">
-
- -Dorg.apache.jasper.compiler.disablejsr199=true
-
-      </pre></div><p>Alternatively, you can define this SystemProperty in a
+    $JETTY_HOME/start.ini:</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>Alternatively, you can define this SystemProperty in a
     $JETTY_HOME/etc/jetty.xml file:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
   <Call class="java.lang.System"  name="setProperty">
     <Arg>org.apache.jasper.compiler.disablejsr199</Arg>
@@ -46,7 +42,7 @@ body { background-image: url('images/draft-ribbon.png');
   </Call>
 
       ]]>
-    </script></div><p>If you are using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Maven Jetty
+        </script></div><p>If you are using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Maven Jetty
     Plugin</a>, then you have a number of options:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>define the SystemProperty inside the pom.xml of your webapp
         using either the <a class="link" href="http://mojo.codehaus.org/properties-maven-plugin/" target="_top">Properties
         Maven Plugin</a> or the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Maven
@@ -83,7 +79,7 @@ body { background-image: url('images/draft-ribbon.png');
     parameters and JSP runtime recompilation. Here is a factoring out of the
     various options:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Check the JSP files for possible recompilation on every request:
         </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <init-param>
         <param-name>development></param-name>
@@ -91,10 +87,10 @@ body { background-image: url('images/draft-ribbon.png');
 </init-param>
 
         ]]>
-    </script></div></li><li class="listitem"><p>Only check approximately every N seconds, where a request will
+        </script></div></li><li class="listitem"><p>Only check approximately every N seconds, where a request will
         trigger the time-lapse calculation. This example checks every 60
         seconds: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <init-param>
         <param-name>development></param-name>
@@ -106,11 +102,11 @@ body { background-image: url('images/draft-ribbon.png');
 </init-param>
 
         ]]>
-    </script></div></li><li class="listitem"><p>Do no checking whatsoever, but still compile the JSP on the very
+        </script></div></li><li class="listitem"><p>Do no checking whatsoever, but still compile the JSP on the very
         first hit. (Note: this ''reload-interval'' parameter is shorthand for
         a ''development=false'' and ''checkInterval=0'' combination.):
         </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <init-param>
         <param-name>reload-interval></param-name>
@@ -118,10 +114,10 @@ body { background-image: url('images/draft-ribbon.png');
 </init-param>
 
         ]]>
-    </script></div></li><li class="listitem"><p>Don't do any request-time checking, but instead start a
+        </script></div></li><li class="listitem"><p>Don't do any request-time checking, but instead start a
         background thread to do checks every N seconds. This example checks
         every 60 seconds: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <init-param>
         <param-name>development></param-name>
@@ -133,12 +129,12 @@ body { background-image: url('images/draft-ribbon.png');
 </init-param>
  
         ]]>
-    </script></div></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modifying-configuration"></a>Modifying the Configuration</h3></div></div></div><p>There are several options for modifying the JspServlet
+        </script></div></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="modifying-configuration"></a>Modifying the Configuration</h3></div></div></div><p>There are several options for modifying the JspServlet
     configuration.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="overriding-webdefault.xml"></a>Overriding <code class="filename">webdefault.xml</code></h4></div></div></div><p>You can make a copy of the <a class="link" href="webdefault-xml.html" title="webdefault.xml">$JETTY_HOME/etc/webdefault.xml</a> that
       ships with Jetty, apply your changes, and use it instead of the shipped
       version. The example below shows how to do this when using the Jetty
       Maven plugin.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
   <plugin>
     <groupId>org.eclipse.jetty</groupId>
@@ -149,13 +145,13 @@ body { background-image: url('images/draft-ribbon.png');
       </webApp>
   </plugin>
         ]]>
-    </script></div><p>If you're using the Jetty distro, and you want to change the JSP
+        </script></div><p>If you're using the Jetty distro, and you want to change the JSP
       settings for just one or a few of your webapps, copy the
       <code class="filename">$<a class="link" href="webdefault-xml.html" title="webdefault.xml">JETTY_HOME/etc/webdefault.xml</a></code>
       file somewhere, modify it, and then use a <a class="link" href="quickstart-config-what.html#intro-jetty-configuration-contexts" title="Configuring Contexts">context xml</a> file to
       set this file as the defaultsDescriptor for your webapp. Here's a
       snippet:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
  <Configure class=>"org.eclipse.jetty.webapp.WebAppContext">
  
@@ -166,14 +162,14 @@ body { background-image: url('images/draft-ribbon.png');
  </Configure>
 
         ]]>
-    </script></div><p>If you want to change the JSP settings for all webapps, edit
+        </script></div><p>If you want to change the JSP settings for all webapps, edit
       the<code class="filename"> $JETTY_HOME/etc/webdefaults.xml</code> file directly
       instead.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-jsp-servlet-in-web.xml"></a>Configuring the JSP Servlet in
       <code class="filename">web.xml</code></h4></div></div></div><p>Another option is to add an entry for the JSPServlet to the
       <code class="filename">WEB-INF/web.xml</code> file of your webapp. You can use
       the entry in <a class="link" href="webdefault-xml.html" title="webdefault.xml">$JETTY_HOME/etc/webdefault.xml</a> as a
       starting point.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
  <servlet id=>"jsp">
      <servlet-name>jsp</servlet-name>
@@ -214,7 +210,7 @@ body { background-image: url('images/draft-ribbon.png');
 
 
         ]]>
-    </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jstl-taglibs-for-jetty7-jetty8"></a>Using JSTL Taglibs</h3></div></div></div><p>The JavaServer Pages Standlard Tag Library (JSTL) is part of the
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jstl-taglibs-for-jetty7-jetty8"></a>Using JSTL Taglibs</h3></div></div></div><p>The JavaServer Pages Standlard Tag Library (JSTL) is part of the
     jetty distribution (in <code class="code">$JETTY_HOME/lib/jsp</code>) and is
     automatically on the classpath.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jsf-taglibs"></a>Using JSF Taglibs</h3></div></div></div><p>The following sections provide information about using JSF taglibs
     with Jetty Standalone and the Jetty Maven Plugin.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-standalone"></a>Using JSF Taglibs with Jetty Distribution</h4></div></div></div><p>If you want to use JSF with your webapp, you need to copy the jsf
@@ -229,7 +225,7 @@ body { background-image: url('images/draft-ribbon.png');
       webapp classpath, so you need to make your JSF jars dependencies of the
       plugin and <span class="emphasis"><em>not</em></span> the webapp itself. For
       example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
    <plugin>
     <groupId>org.eclipse.jetty</groupId>
@@ -255,7 +251,7 @@ body { background-image: url('images/draft-ribbon.png');
   </plugin>
 
         ]]>
-    </script></div></div></div></div></div><script type="text/javascript">
+        </script></div></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="deployment-architecture.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-logging.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Deployment Architecture&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;9.&nbsp;Jetty Logging</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?

@@ -48,13 +48,13 @@
     You can find the source code
     <a class="link" href="http://git.eclipse.org/gitroot/jetty/org.eclipse.jetty.toolchain.git" target="_top">here</a>,
     while the Maven coordinates are:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <dependency>
     <groupId>org.eclipse.jetty.toolchain.setuid</groupId>
     <artifactId>jetty-setuid-java</artifactId>
 </dependency>
 ]]>
-    </script></div><p>Jetty's SetUID module provides an implementation for Linux and OSX.</p><p>Since the SetUID feature requires native code, you may need to build it
+        </script></div><p>Jetty's SetUID module provides an implementation for Linux and OSX.</p><p>Since the SetUID feature requires native code, you may need to build it
     for your environment.</p><p>In order to use Jetty's SetUID module, you need to copy file
     <code class="filename">jetty-setuid-java-&lt;version&gt;.jar</code> into
     <code class="filename">$jetty.home/lib</code>, and make sure that the native library file
@@ -66,13 +66,13 @@
     Alternatively, follow the next section that specifies how to create a Jetty XML config
     file for Jetty's SetUID.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-jetty-config-file"></a>Creating a Jetty Config File</h4></div></div></div><p>Jetty SetUID module works by replacing the usual <code class="classname">org.eclipse.jetty.server.Server</code>
       instance with a <code class="classname">org.eclipse.jetty.setuid.SetUIDServer</code> instance.</p><p>Create a Jetty config file as follows:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"?>
+          <![CDATA[<?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/jetty/configure_9_0.dtd">
 <Configure id="Server" class="org.eclipse.jetty.setuid.SetUIDServer">
   <Set name="umask">UMASK</Set>
   <Set name="uid">USERID</Set>
 </Configure>]]>
-    </script></div><p>where you replace:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><em>UMASK</em></span> with the <code class="code">umask</code> setting you want the process to have.</p><div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><p>You must enter it in decimal. That is, if you want the effect of umask 022, you must enter</p><pre class="screen">&lt;Set name="umask"&gt;18&lt;/Set&gt;</pre></li><li class="listitem"><p>If you prefer octal, enter</p><pre class="screen">&lt;Set name="umaskOctal"&gt;022&lt;/Set&gt;</pre></li><li class="listitem"><p>You can remove this line if you don't want to change this the <code class="code">umask</code> at runtime.</p></li><li class="listitem"><p>Set it to 002 if you get an error to the effect that root
+        </script></div><p>where you replace:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><em>UMASK</em></span> with the <code class="code">umask</code> setting you want the process to have.</p><div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><p>You must enter it in decimal. That is, if you want the effect of umask 022, you must enter</p><pre class="screen">&lt;Set name="umask"&gt;18&lt;/Set&gt;</pre></li><li class="listitem"><p>If you prefer octal, enter</p><pre class="screen">&lt;Set name="umaskOctal"&gt;022&lt;/Set&gt;</pre></li><li class="listitem"><p>You can remove this line if you don't want to change this the <code class="code">umask</code> at runtime.</p></li><li class="listitem"><p>Set it to 002 if you get an error to the effect that root
               does not have permission to write to the log file.</p></li></ul></div></li><li class="listitem"><p><span class="emphasis"><em>USERID</em></span> with the ID of the user you want
           the process to execute as once the ports have been opened.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-jetty-for-setuid"></a>Configuring Jetty for SetUID</h4></div></div></div><p>The easiest way to do this is to edit the
       <code class="filename">$jetty.home/start.ini</code> file:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>uncomment <code class="code">--exec</code></p></li><li class="listitem"><p>add <code class="filename">-Djava.library.path=lib/setuid</code>,

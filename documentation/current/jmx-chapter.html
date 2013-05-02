@@ -43,7 +43,7 @@
           section in the jetty.home/start.ini file is uncommented.
         </p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="jmx-embedded-jetty"></a>Embedded Jetty</h5></div></div></div><p>When running Jetty embedded into an application, create and
         configure an MBeanContainer instance as follows:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 Server _server = new Server();
 
@@ -56,7 +56,7 @@ _server.addBean(mbContainer);
 mbContainer.addBean(Log.getLog());
 
           ]]>
-    </script></div><p>Notice that Jetty creates the MBeanContainer immediately after
+        </script></div><p>Notice that Jetty creates the MBeanContainer immediately after
         creating the Server, and immediately after registering it as an
         EventListener of the Server's Container object.</p><p>Because logging is initialized prior to the MBeanContainer, it
         is necessary to register the logger manually via
@@ -65,7 +65,7 @@ mbContainer.addBean(Log.getLog());
       etc/jetty-jmx.xml</code> file into your webapp project somewhere,
       such as <code class="filename">src/etc,</code> then add a &lt;jettyconfig&gt;
       element to the plugin &lt;configuration&gt;:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <plugin>
   <groupid>org.eclipse.jetty</groupid>
@@ -78,13 +78,13 @@ mbContainer.addBean(Log.getLog());
 </plugin>
 
         ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="enabling-jmxconnectorserver-for-remote-access"></a>Enabling JMXConnectorServer for Remote Access</h4></div></div></div><p>There are two ways of enabling remote connectivity so that
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="enabling-jmxconnectorserver-for-remote-access"></a>Enabling JMXConnectorServer for Remote Access</h4></div></div></div><p>There are two ways of enabling remote connectivity so that
       JConsole can connect to visualize MBeans.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Use the <code class="code">com.sun.management.jmxremote</code> system
           property on the command line. Unfortunately, this solution does not
           play well with firewalls and it is not flexible.</p></li><li class="listitem"><p>Use Jetty's <code class="code">ConnectorServer</code> class. To enable use
           of this class, uncomment the correspondent portion in
           <code class="filename">etc/jetty-jmx.xml,</code> like this:</p></li></ul></div><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <New id="ConnectorServer" class="org.eclipse.jetty.jmx.ConnectorServer">
   <Arg>
@@ -100,7 +100,7 @@ mbContainer.addBean(Log.getLog());
 </New>
 
         ]]>
-    </script></div><p>This configuration snippet starts an RMIRegistry and a
+        </script></div><p>This configuration snippet starts an RMIRegistry and a
       JMXConnectorServer both on port 1099 (by default), so that firewalls
       should open just that one port to allow connections from
       JConsole.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="securing-remote-access"></a>Securing Remote Access</h5></div></div></div><p>JMXConnectorServer several options to restrict access. For a
@@ -111,7 +111,7 @@ mbContainer.addBean(Log.getLog());
         configuration, where the <code class="filename"> jmx.password</code> and
         <code class="filename">jmx.access</code> files have the format specified in the
         blog entry above:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <New id="ConnectorServer" class="org.eclipse.jetty.jmx.ConnectorServer">
   <Arg>
@@ -143,7 +143,7 @@ mbContainer.addBean(Log.getLog());
 </New>
 
           ]]>
-    </script></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="custom-monitor-applcation"></a>Custom Monitor Application</h4></div></div></div><p>Using the JMX API, you can also write a custom application to
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="custom-monitor-applcation"></a>Custom Monitor Application</h4></div></div></div><p>Using the JMX API, you can also write a custom application to
       monitor your Jetty server. To allow this application to connect to your
       Jetty server, you need to uncomment the last section of your <code class="filename">
       etc/jetty-jmx.xml</code> configuration file and optionally modify

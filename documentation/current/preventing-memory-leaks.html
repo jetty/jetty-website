@@ -66,19 +66,19 @@
       to a Server with the <code class="code"> addBean(Object)</code> call. Here's an
       example of how to do it in code with the <code class="code">
       org.eclipse.jetty.util.preventers.AppContextLeakPreventer</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 Server server = new Server();
 server.addBean(new AppContextLeakPreventer());
 
         ]]>
-    </script></div><p>You can add the equivalent in code to the
+        </script></div><p>You can add the equivalent in code to the
       <code class="code">$JETTY_HOME/etc/jetty.xml</code> file or any jetty xml file that
       is configuring a Server instance. Be aware that if you have more than
       one Server instance in your JVM, you should configure these preventers
       on just <span class="emphasis"><em>one</em></span> of them. Here's the example from code
       put into xml:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
 
@@ -91,7 +91,7 @@ server.addBean(new AppContextLeakPreventer());
 </Configure>
 
         ]]>
-    </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jsp-bugs"></a>JSP Bugs: Permgen Problems</h3></div></div></div><p>The JSP engine in Jetty is Jasper. This was originally developed
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jsp-bugs"></a>JSP Bugs: Permgen Problems</h3></div></div></div><p>The JSP engine in Jetty is Jasper. This was originally developed
     under the Apache Tomcat project, but over time many different project have
     forked it. All Jetty versions up to 6 used Apache-based Jasper
     exclusively, with Jetty 6 using Apache Jasper only for JSP 2.0. With the
@@ -120,11 +120,7 @@ server.addBean(new AppContextLeakPreventer());
       and tries to resize the heap, but fails because the machine is out of
       swap space. One suggested work around is to ensure that the JVM never
       tries to resize the heap, by setting min heap size to max heap
-      size:</p><div class="informalexample"><pre class="programlisting">
-
-java -Xmx1024m -Xms1024m
-
-        </pre></div><p>Another workaround is to ensure you have configured sufficient
+      size:</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>Another workaround is to ensure you have configured sufficient
       swap space on your device to accommodate all programs you are running
       concurrently.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="direct-byte-buffers"></a>Direct ByteBuffers</h4></div></div></div><p>Exhausting native memory is another issue related to JVM bugs. The
       symptoms to look out for are the process size growing, but heap use

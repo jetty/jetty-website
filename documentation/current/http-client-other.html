@@ -19,14 +19,14 @@
     <code class="classname">java.net.CookieStore</code>, a class that is part of the JDK. When new requests are made, the
     cookie store is consulted and if there are matching cookies (that is, cookies that are not expired and that match
     domain and path of the request) then they are added to the requests.</p><p>Applications can programmatically access the cookie store to find the cookies that have been set:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 CookieStore cookieStore = httpClient.getCookieStore();
 List<HttpCookie> cookies = cookieStore.get(URI.create("http://domain.com/path"));
 
       ]]>
-    </script></div><p>Applications can also programmatically set cookies as if they were returned from a HTTP response:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div><p>Applications can also programmatically set cookies as if they were returned from a HTTP response:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 CookieStore cookieStore = httpClient.getCookieStore();
 HttpCookie cookie = new HttpCookie("foo", "bar");
@@ -36,8 +36,8 @@ cookie.setMaxAge(TimeUnit.DAYS.toSeconds(1));
 cookieStore.add(URI.create("http://domain.com"), cookie);
 
       ]]>
-    </script></div><p>You can remove cookies that you do not want to be sent in future HTTP requests:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div><p>You can remove cookies that you do not want to be sent in future HTTP requests:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 CookieStore cookieStore = httpClient.getCookieStore();
 URI uri = URI.create("http://domain.com");
@@ -46,16 +46,16 @@ for (HttpCookie cookie : cookies)
     cookieStore.remove(uri, cookie);
 
       ]]>
-    </script></div><p>If you want to totally disable cookie handling, you can install a <code class="code">HttpCookieStore.Empty</code> instance
+        </script></div><p>If you want to totally disable cookie handling, you can install a <code class="code">HttpCookieStore.Empty</code> instance
     in this way:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 httpClient.setCookieStore(new HttpCookieStore.Empty());
 
       ]]>
-    </script></div><p>You can enable cookie filtering by installing a cookie store that performs the filtering logic in this
+        </script></div><p>You can enable cookie filtering by installing a cookie store that performs the filtering logic in this
     way:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 httpClient.setCookieStore(new GoogleOnlyCookieStore());
 
@@ -70,9 +70,9 @@ public class GoogleOnlyCookieStore extends HttpCookieStore
 }
 
       ]]>
-    </script></div><p>The example above will retain only cookies that come from the <code class="code">google.com</code> domain or
+        </script></div><p>The example above will retain only cookies that come from the <code class="code">google.com</code> domain or
     sub-domains.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-authentication"></a>Authentication Support</h3></div></div></div><p>Jetty HTTP client supports the "Basic" and "Digest" authentication mechanisms defined by <a class="link" href="http://www.ietf.org/rfc/rfc2617.txt" target="_top">RFC 2617</a>.</p><p>You can configure authentication credentials in the HTTP client instance as follows:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 URI uri = new URI("http://domain.com/secure");
 String realm = "MyRealm";
@@ -89,18 +89,18 @@ ContentResponse response = httpClient
         .get(5, TimeUnit.SECONDS);
 
       ]]>
-    </script></div><p>Jetty HTTP client tests authentication credentials against the challenge(s) the server issues, and if they
+        </script></div><p>Jetty HTTP client tests authentication credentials against the challenge(s) the server issues, and if they
     match it automatically sends the right authentication headers to the server for authentication. If the
     authentication is successful, it caches the result and reuses it for subsequent requests for the same domain and
     matching URIs.</p><p>Successful authentications are cached, but it is possible to clear them in order to force authentication
     again:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 httpClient.getAuthenticationStore().clearAuthenticationResults();
 
       ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-proxy"></a>Proxy Support</h3></div></div></div><p>Jetty HTTP client can be configured to use a forward proxy:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="http-client-proxy"></a>Proxy Support</h3></div></div></div><p>Jetty HTTP client can be configured to use a forward proxy:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 ProxyConfiguration proxyConfig = new ProxyConfiguration("proxyHost", proxyPort);
 // Do not proxy requests for localhost:8080
@@ -111,7 +111,7 @@ httpClient.setProxyConfiguration(proxyConfig);
 ContentResponse response = httpClient.GET(uri);
 
       ]]>
-    </script></div><p>You specify the proxy host and port, and optionally also the origins that you do not want to be proxied, and
+        </script></div><p>You specify the proxy host and port, and optionally also the origins that you do not want to be proxied, and
     then set the proxy configuration on the <code class="code">HttpClient</code> instance.</p><p>Configured in this way, <code class="code">HttpClient</code> makes requests to the proxy (for plain-text HTTP requests) or
     establishes a tunnel via HTTP CONNECT (for encrypted HTTPS requests).</p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()

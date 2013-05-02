@@ -178,14 +178,14 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
       jetty to use one of these configuration files or the other, which can be
       done other on the command line or by editing the start.ini file.</p><p>These configuration files create an SslContextFactory instance
       with the ID "sslContextFactory":</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+          <![CDATA[<New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
   <Set name="KeyStorePath"><Property name="jetty.home" default="." />/etc/keystore</Set>
   <Set name="KeyStorePassword">OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</Set>
   <Set name="KeyManagerPassword">OBF:1u2u1wml1z7s1z7a1wnl1u2g</Set>
   <Set name="TrustStorePath"><Property name="jetty.home" default="." />/etc/keystore</Set>
   <Set name="TrustStorePassword">OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</Set>
 </New>]]>
-    </script></div><p>This example uses the keystore distributed with jetty. To use your
+        </script></div><p>This example uses the keystore distributed with jetty. To use your
       own keystore you need to update at least the following settings:</p><div class="variablelist"><dl><dt><span class="term">KeyStorePath</span></dt><dd><p>You can either replace the provided keystore with your own,
             or change the configuration to point to a different file. Note
             that as a keystore is vital security information, it can be
@@ -211,7 +211,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
               Here's a couple of examples on how to include only RC4 cipher suites. All of them will protect the
               server from the <a class="link" href="https://www.google.com/search?q=beast+attack" target="_top">BEAST</a> attack.
           </p><p>Include a preferred set of cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
               <Set name="IncludeCipherSuites">
                 <Array type="String">
                     <Item>TLS_RSA_WITH_RC4_128_MD5</Item>
@@ -220,16 +220,16 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
                 </Array>
               </Set>
               ]]>
-    </script></div><p>Include all RC4 cipher suites by using a regex:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+        </script></div><p>Include all RC4 cipher suites by using a regex:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+          <![CDATA[
               <Set name="IncludeCipherSuites">
                 <Array type="String">
                     <Item>.*RC4.*</Item>
                 </Array>
               </Set>
               ]]>
-    </script></div><p>Exclude all non RC4 cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+        </script></div><p>Exclude all non RC4 cipher suites:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
+          <![CDATA[
             <Set name="ExcludeCipherSuites">
               <Array type="String">
                 <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
@@ -252,13 +252,13 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
               </Array>
             </Set>
             ]]>
-    </script></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
+        </script></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>It is recommended to use the IncludeCipherSuites with the regex unless you've reasons you
                   need to specify specific cipher suites. This configuration will adapt to any
                   additions/removals of cipher suites to new versions of the JDK.</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2790"></a>Configuring SSL Connector and Port</h4></div></div></div><p>This <code class="code">SslContextFactory</code> instance created above is injected into a
       <code class="code">SslConnectionFactory</code> instance to be used when accepting network
       connections, which in turn is injected into an instance of
       <code class="code">ServerConnector</code>. For example from <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/config/etc/jetty-https.xml" target="_top">jetty-https.xml</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<Call id="sslConnector" name="addConnector">
+          <![CDATA[<Call id="sslConnector" name="addConnector">
   <Arg>
     <New class="org.eclipse.jetty.server.ServerConnector">
       <Arg name="server"><Ref refid="Server" /></Arg>
@@ -283,7 +283,7 @@ $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs
       </New>
   </Arg>
 </Call>]]>
-    </script></div><p>Note also that the SSL connector port is set directly on the
+        </script></div><p>Note also that the SSL connector port is set directly on the
       ServerConnector instance.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="renewing-certificates"></a>Renewing Certificates</h4></div></div></div><p>If you are updating your configuration to use a newer certificate,
       as when the old one is expiring, just load the newer certificate as
       described in the section, <a class="xref" href="configuring-ssl.html#loading-keys-and-certificates" title="Loading Keys and Certificates">Loading Keys and Certificates</a>. If you imported the key and

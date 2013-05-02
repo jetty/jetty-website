@@ -35,18 +35,8 @@ body { background-image: url('images/draft-ribbon.png');
     higher level of abstraction, hide the technicalities, and allow you to use either Comet long polling or WebSockets
     transparently.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="test-client-and-server"></a>Test Client and Server</h3></div></div></div><p>The simplest way to get started is to download three Jars: The Jetty aggregate Jar that contains all of
     Jetty; the jetty-websocket test Jar that contains a client and server; and the servlet Jar. You can do this using a
-    browser or with the following command line <code class="code">wgets:</code></p><div class="informalexample"><pre class="programlisting">
-
-
-wget -O jetty-all.jar --user-agent=demo \
-  http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/7.6.2.v20120308/jetty-all-7.6.2.v20120308.jar
-wget -O jetty-websocket-tests.jar --user-agent=demo \
-  http://repo2.maven.org/maven2/org/eclipse/jetty/jetty-websocket/7.6.2.v20120308/jetty-websocket-7.6.2.v20120308-tests.jar
-wget --user-agent=demo \
-    http://repo2.maven.org/maven2/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar
-
-      </pre></div><p>To run a simple test server (use <code class="code">&#8211;help</code> to see more options):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+    browser or with the following command line <code class="code">wgets:</code></p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>To run a simple test server (use <code class="code">&#8211;help</code> to see more options):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 
  java -cp jetty-websocket-tests.jar:jetty-all.jar:servlet-api-2.5.jar \
@@ -56,8 +46,8 @@ wget --user-agent=demo \
    --verbose
 
       ]]>
-    </script></div><p>You can test the server with the test client (use <code class="code">&#8211;help</code> to see more options):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div><p>You can test the server with the test client (use <code class="code">&#8211;help</code> to see more options):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
  java -cp jetty-websocket-tests.jar:jetty-all.jar:servlet-api-2.5.jar \
    org.eclipse.jetty.websocket.TestClient \
@@ -66,7 +56,7 @@ wget --user-agent=demo \
 
 
       ]]>
-    </script></div><p>The output from the test client is similar to ping. You can use the options you discover by using <code class="code">
+        </script></div><p>The output from the test client is similar to ping. You can use the options you discover by using <code class="code">
     &#8211;help</code> to try out different types of tests, including fragmentation and aggregation of WebSocket
     frames.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-browser"></a>Using a Browser</h3></div></div></div><p>Using a Java client is not compelling unless you want to write a desktop application that uses WebSocket (a
     viable idea). But most WebSocket users want to use the browser as a client. So point your browser at the TestServer
@@ -79,7 +69,7 @@ wget --user-agent=demo \
     document's location. Call back functions are registered for open, message and close events. The <code class="code">
     org.ietf.websocket.test-echo-broadcast</code> subprotocol is specified as this echoes all received messages to all
     other broadcast connections, providing the semantic a chat room requires:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
  java -cp je
 join: function(name) {
@@ -92,10 +82,10 @@ join: function(name) {
 },
 
       ]]>
-    </script></div><p>When the WebSocket successfully connects to the server, it calls the <code class="code">onopen</code> callback, which
+        </script></div><p>When the WebSocket successfully connects to the server, it calls the <code class="code">onopen</code> callback, which
     changes the appearance of the chat room to prompt for a chat message. It also sends a message saying the user has
     joined the room:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 _onopen: function(){
   $('join').className='hidden';
@@ -105,9 +95,9 @@ _onopen: function(){
 },
 
       ]]>
-    </script></div><p>To send a message, you format a string as <code class="code">username:chat text</code> and then call the WebSocket <code class="code">
+        </script></div><p>To send a message, you format a string as <code class="code">username:chat text</code> and then call the WebSocket <code class="code">
     send</code> method:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 
 _send: function(user,message){
@@ -122,10 +112,10 @@ chat: function(text) {
 },
 
       ]]>
-    </script></div><p>When the browser receives a WebSocket message over the connection, the system calls the <code class="code">
+        </script></div><p>When the browser receives a WebSocket message over the connection, the system calls the <code class="code">
     onmessage</code> callback with a message object. The Jetty implementation looks for the username and colon, strips
     out any markup, and then appends the message to the chat room:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 _onmessage: function(m) {
   if (m.data){
@@ -148,9 +138,9 @@ _onmessage: function(m) {
 },
 
       ]]>
-    </script></div><p>If the server closes the connection, or if the browser times it out, then the <code class="code">onclose</code> callback
+        </script></div><p>If the server closes the connection, or if the browser times it out, then the <code class="code">onclose</code> callback
     is called. This nulls out the chat room and reverts to the starting position:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
  onclose: function(m) {
   this._ws=null;
@@ -161,7 +151,7 @@ _onmessage: function(m) {
 }
 
       ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="understanding-how-server-works"></a>Understanding How the Server Works</h3></div></div></div><p>The <a class="link" href="http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/tags/jetty-7.4.0.v20110414/jetty-websocket/src/main/java/org/eclipse/jetty/websocket/" target="_top">TestServer.java
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="understanding-how-server-works"></a>Understanding How the Server Works</h3></div></div></div><p>The <a class="link" href="http://dev.eclipse.org/svnroot/rt/org.eclipse.jetty/jetty/tags/jetty-7.4.0.v20110414/jetty-websocket/src/main/java/org/eclipse/jetty/websocket/" target="_top">TestServer.java
     server side code</a> for this chat room uses an embedded Jetty server and is written against the Jetty WebSocket
     APIs that are not part of the WebSocket standard. There is not yet even a proposed standard for serverside
     WebSocket APIs, but it is a topic for consideration with the servlet 3.1 JSR.</p><p>The test server is an extension of an <a class="link" href="http://wiki.eclipse.org/Jetty/Tutorial/Embedding_Jetty" target="_top">
@@ -169,7 +159,7 @@ _onmessage: function(m) {
     the required port, creates a <a class="link" href="http://download.eclipse.org/jetty/7.4.0.v20110414/xref/org/eclipse/jetty/websocket/WebSocketHandler.html" target="_top">
     WebSocketHandler</a> and a <a class="link" href="http://download.eclipse.org/jetty/7.4.0.v20110414/xref/org/eclipse/jetty/server/handler/ResourceHandler.html" target="_top">ResourceHandler"</a> and
     chains them together:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
  public TestServer(int port)
 {
@@ -195,11 +185,11 @@ _onmessage: function(m) {
 
 
       ]]>
-    </script></div><p>The resource handler is responsible for serving the static content like HTML and Javascript. The
+        </script></div><p>The resource handler is responsible for serving the static content like HTML and Javascript. The
     WebSocketHandler looks for WebSocket handshake requests and handles them by calling the <code class="code">
     doWebSocketConnect</code> method, which we have extended to create a WebSocket depending on the sub protocol
     passed:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 
 _wsHandler = new WebSocketHandler()
@@ -222,7 +212,7 @@ _wsHandler = new WebSocketHandler()
 
 
       ]]>
-    </script></div><p>A simplification of the test <a class="link" href="http://download.eclipse.org/jetty/7.4.0.v20110414/xref/org/eclipse/jetty/websocket/WebSocket.html" target="_top">
+        </script></div><p>A simplification of the test <a class="link" href="http://download.eclipse.org/jetty/7.4.0.v20110414/xref/org/eclipse/jetty/websocket/WebSocket.html" target="_top">
     WebSocket</a> from the test server follows. It excludes the shared code for the other protocols supported. Like
     the Javascript API, there is an <code class="code">onOpen, onClose</code> and <code class="code">onMessage</code> callback. The <code class="code">
     onOpen</code> callback is passed in a <a class="link" href="http://download.eclipse.org/jetty/7.4.0.v20110414/xref/org/eclipse/jetty/websocket/WebSocket.html#107" target="_top">
@@ -230,7 +220,7 @@ _wsHandler = new WebSocketHandler()
     collection of all known WebSockets, and <code class="code">onClose</code> removes the WebSocket. The implementation of <code class="code">
     onMessage</code> is to simply iterate through that collection and to send the received message to each
     WebSocket:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 ConcurrentLinkedQueue _broadcast =
     new ConcurrentLinkedQueue();
@@ -265,7 +255,7 @@ class TestEchoBroadcastWebSocket implements WebSocket.OnTextMessage
 }
 
       ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="do-not-do-it"></a>Don&#8217;t do it this way!</h3></div></div></div><p>Now you know the basics of how WebSockets work, we repeat the warning that you should not do it this
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="do-not-do-it"></a>Don&#8217;t do it this way!</h3></div></div></div><p>Now you know the basics of how WebSockets work, we repeat the warning that you should not do it this
     way&#8211;unless you are a framework developer. Even then, you probably want to use the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/websocket/WebSocketServlet.html" target="_top">WebSocketServlet</a> and a non embedded
     Jetty, but the basic concepts are the same. The strength of the Jetty solution is that it terminates both WebSocket
     connections and HTTP requests in the same environment, so that mixed frameworks and applications are easy to

@@ -31,7 +31,7 @@
     </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7158"></a>Configuring the MongoDBSessionIdManager</h3></div></div></div><p>
       You need to configure an <code class="code">org.eclipse.jetty.nosql.mongodb.MongoSessionIdManager</code> instance, either in embedded code or in a jetty.xml file. Here is an example of a jetty.xml setup:
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
         
 <Set name="sessionIdManager">
         <New id="mongoIdMgr" class="org.eclipse.jetty.nosql.mongodb.MongoSessionIdManager">
@@ -50,12 +50,12 @@
       </Call>
       
     ]]>
-    </script></div><p>
+        </script></div><p>
     Notice that the MongoSessionIdManager needs access to a mongodb cluster. The default settings are for localhost and default port for mongo db.
   </p><p>
     The more complex setup is to configure with remote mongodb instances, this is an example of how that would look.
   </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
       
 <New id="mongodb" class="com.mongodb.Mongo">
       <Arg>
@@ -95,10 +95,10 @@
     </Set>
     
   ]]>
-    </script></div><p>
+        </script></div><p>
   As Jetty configuration files are direct mappings of XML to Java, it is straightforward to see how to do this in code, but here's an example anyway:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
     
 Server server = new Server();
      ...
@@ -107,7 +107,7 @@ Server server = new Server();
  idMgr.setScavengePeriod(60);
  server.setSessionIdManager(idMgr);
   ]]>
-    </script></div><p>
+        </script></div><p>
   The MongoDB Session Id Manager has slightly different options then some of our more traditional session options. The mongodb session id manager has the same scavenge timers which govern the setting of a valid session to invalid after a certain period of inactivity. New to this session id manager is the extra purge setting which governs removal from the mongodb cluster. This can be configured through the 'purge' option. Purge is by default set to true and by default runs daily for each node on the cluster. Also able to be configured is the age in which an invalid session will be retained which is set to 1 day by default. This means that invalid sessions will be removed after lingering in the mongodb instance for a day. There is also an option for purging valid sessions that have not been used recently. The default time for this is 1 week. You can disable these behaviors by setting purge to false.
 </p><p>
   You must configure the MongoSessionIdManager with a workerName that is unique across the cluster. Typically the name relates to the physical node on which the instance is executing. If this name is not unique, your load balancer might fail to distribute your sessions correctly.
@@ -128,7 +128,7 @@ Server server = new Server();
 </p><p>
   From a context xml file, you reference the Server instance as a Ref:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
     
 <Ref name="Server" id="Server">
     <Call id="mongoIdMgr" name="getSessionIdManager"/>
@@ -147,10 +147,10 @@ Server server = new Server();
   </Set>
   
 ]]>
-    </script></div><p>
+        </script></div><p>
 From a WEB-INF/jetty-web.xml file, you can reference the Server instance directly:
 </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
   
 <Get name="server">
   <Get id="mongoIdMgr" name="sessionIdManager"/>
@@ -168,8 +168,8 @@ From a WEB-INF/jetty-web.xml file, you can reference the Server instance directl
 </Set>
 
 ]]>
-    </script></div><p>If you're embedding this in code:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+        </script></div><p>If you're embedding this in code:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
+          <![CDATA[
 
 //assuming you have already set up the MongoSessionIdManager as shown earlier
  //and have a reference to the Server instance:
@@ -181,7 +181,7 @@ From a WEB-INF/jetty-web.xml file, you can reference the Server instance directl
  wac.setSessionHandler(mongoMgr);
  
 ]]>
-    </script></div></div></div><script type="text/javascript">
+        </script></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="session-clustering-jdbc.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="session-management.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jndi.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Session Clustering with a Database&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;12.&nbsp;Configuring JNDI</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?

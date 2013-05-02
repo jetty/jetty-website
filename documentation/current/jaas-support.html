@@ -35,7 +35,7 @@
 		</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13579"></a>Step 1</h4></div></div></div><p>
 				Configure a jetty <code class="code">org.eclipse.jetty.jaas.JAASLoginService</code> to match the &lt;realm-name&gt; in your web.xml file. For example, if the <code class="filename">web.xml</code> contains a realm called "xyz" like so:
 			</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <login-config>
   <auth-method>FORM</auth-method>
@@ -47,10 +47,10 @@
 </login-config>
 
 			]]>
-    </script></div><p>
+        </script></div><p>
 			Then the following JAASLoginService would be declared in a jetty configuration file:
 		</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
     <Call name="addBean">
       <Arg>
@@ -62,17 +62,11 @@
     </Call>
 
 			]]>
-    </script></div><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="images/caution.png"></td><th align="left">Caution</th></tr><tr><td align="left" valign="top"><p>
+        </script></div><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="images/caution.png"></td><th align="left">Caution</th></tr><tr><td align="left" valign="top"><p>
 				The name of the realm-name that you declare in <code class="filename">web.xml</code> must match exactly the Name element in your jetty config file.
 			</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13604"></a>Step 2</h4></div></div></div><p>
 			Set up your <code class="code">LoginModule</code> in a configuration file, following the <a class="link" href="http://java.sun.com/j2se/1.4.2/docs/api/javax/security/auth/login/Configuration.html" target="_top">syntax rules</a> :
-		</p><div class="informalexample"><pre class="programlisting">
-
-xyz {
-<span class="hl-attribute" style="color: #F5844C">       com.acme.SomeLoginModule required debug</span>=true<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-    }<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-
-			</pre></div><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="images/caution.png"></td><th align="left">Caution</th></tr><tr><td align="left" valign="top"><p>
+		</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Caution"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Caution]" src="images/caution.png"></td><th align="left">Caution</th></tr><tr><td align="left" valign="top"><p>
 				It is imperative that the application name on the first line is exactly the same as the <code class="code">LoginModuleName</code> from your jetty config file.
 			</p></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13624"></a>Step 3</h4></div></div></div><p>
 			You now need to invoke jetty with support for jaas. This involves 3 elements:
@@ -99,7 +93,7 @@ $ java -Djava.security.auth.login.config=mylogin.conf -jar start.jar OPTIONS=jaa
 				</p></li></ul></div><p>
 			Here's an example of setting each of these (to their default values):
 		</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 
 <New class="org.eclipse.jetty.jaas.JAASLoginService">
   <Set name="Name">Test JAAS Realm</Set>
@@ -118,7 +112,7 @@ $ java -Djava.security.auth.login.config=mylogin.conf -jar start.jar OPTIONS=jaa
 </New>
 
 			]]>
-    </script></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13690"></a>RoleCheckPolicy</h4></div></div></div><p>
+        </script></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13690"></a>RoleCheckPolicy</h4></div></div></div><p>
 				The RoleCheckPolicy must be an implementation of the <code class="classname">org.eclipse.jetty.jaas.RoleCheckPolicy</code> interface and its purpose is to help answer the question "is User X in Role Y" for role-based authorization requests. The default implementation distributed with jetty is the <code class="classname">org.eclipse.jetty.jaas.StrictRoleCheckPolicy</code>, which will assess a user as having a particular role iff that role is at the top of the stack of roles that have been temporarily pushed onto the user or if the user has no temporarily assigned roles, the role is amongst those configured for the user.
 			</p><p>
 				Roles can be temporarily assigned to a user programmatically by using the pushRole(String rolename) method of the <code class="classname">org.eclipse.jetty.jaas.JAASUserPrincipal</code> class.
@@ -146,23 +140,7 @@ $ java -Djava.security.auth.login.config=mylogin.conf -jar start.jar OPTIONS=jaa
 				The JDBCLoginModule stores user passwords and roles in a database that are accessed via JDBC calls. You can configure the JDBC connection information, as well as the names of the table and columns storing the username and credential, and the name of the table and columns storing the roles.
 			</p><p>
 				Here is an example login module configuration file entry for it using an HSQLDB driver:
-			</p><div class="informalexample"><pre class="programlisting">
-
-jdbc {
-      org.eclipse.jetty.jaas.spi.JDBCLoginModule required
-<span class="hl-attribute" style="color: #F5844C">      debug</span>="true"
-<span class="hl-attribute" style="color: #F5844C">      dbUrl</span>="jdbc:hsqldb:."
-<span class="hl-attribute" style="color: #F5844C">      dbUserName</span>="sa"
-<span class="hl-attribute" style="color: #F5844C">      dbDriver</span>="org.hsqldb.jdbcDriver"
-<span class="hl-attribute" style="color: #F5844C">      userTable</span>="myusers"
-<span class="hl-attribute" style="color: #F5844C">      userField</span>="myuser"
-<span class="hl-attribute" style="color: #F5844C">      credentialField</span>="mypassword"
-<span class="hl-attribute" style="color: #F5844C">      userRoleTable</span>="myuserroles"
-<span class="hl-attribute" style="color: #F5844C">      userRoleUserField</span>="myuser"
-<span class="hl-attribute" style="color: #F5844C">      userRoleRoleField</span>="myrole"<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-      }<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-
-				</pre></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>
 				There is no particular schema required for the database tables storing the authentication and role information. The properties userTable, userField, credentialField, userRoleTable, userRoleUserField, userRoleRoleField configure the names of the tables and the columns within them that are used to format the following queries:
 			</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
 						<code class="code">select &lt;credentialField&gt; from &lt;userTable&gt; where &lt;userField&gt; =?</code>
@@ -176,73 +154,17 @@ jdbc {
 				Similar to the JDBCLoginModule, but this LoginModule uses a DataSource to connect to the database instead of a jdbc driver. The DataSource is obtained by doing a jndi lookup on <code class="code">java:comp/env/${dnJNDIName}</code>
 			</p><p>
 				Here is a sample login module configuration for it:
-			</p><div class="informalexample"><pre class="programlisting">
-
-ds {
-     org.eclipse.jetty.jaas.spi.DataSourceLoginModule required
-<span class="hl-attribute" style="color: #F5844C">     debug</span>="true"
-<span class="hl-attribute" style="color: #F5844C">     dbJNDIName</span>="ds"
-<span class="hl-attribute" style="color: #F5844C">     userTable</span>="myusers"
-<span class="hl-attribute" style="color: #F5844C">     userField</span>="myuser"
-<span class="hl-attribute" style="color: #F5844C">     credentialField</span>="mypassword"
-<span class="hl-attribute" style="color: #F5844C">     userRoleTable</span>="myuserroles"
-<span class="hl-attribute" style="color: #F5844C">     userRoleUserField</span>="myuser"
-<span class="hl-attribute" style="color: #F5844C">     userRoleRoleField</span>="myrole"<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-    }<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-
-				</pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13814"></a>PropertyFileLoginModule</h4></div></div></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13814"></a>PropertyFileLoginModule</h4></div></div></div><p>
 				With this login module implementation, the authentication and role information is read from a property file.
-			</p><div class="informalexample"><pre class="programlisting">
-
-props {
-        org.eclipse.jetty.jaas.spi.PropertyFileLoginModule required
-<span class="hl-attribute" style="color: #F5844C">        debug</span>="true"
-<span class="hl-attribute" style="color: #F5844C">        file</span>="/somewhere/somefile.props"<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-      }<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-
-				</pre></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>
 				The file parameter is the location of a properties file of the same format as the etc/realm.properties example file. The format is:
-			</p><div class="informalexample"><pre class="programlisting">
-
-&lt;username&gt;: &lt;password&gt;[,&lt;rolename&gt; ...]
-
-				</pre></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>
 				Here's an example:
-			</p><div class="informalexample"><pre class="programlisting">
-
-fred: OBF:1xmk1w261u9r1w1c1xmq,user,admin
-harry: changeme,user,developer
-tom: MD5:164c88b302622e17050af52c89945d44,user
-dick: CRYPT:adpexzg3FUZAk,admin
-
-				</pre></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>
 				The contents of the file are fully read in and cached in memory the first time a user requests authentication.
 			</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13834"></a>LdapLoginModule</h4></div></div></div><p>
 				Here's an example:
-			</p><div class="informalexample"><pre class="programlisting">
-
-ldaploginmodule {
-   org.eclipse.jetty.jaas.spi.LdapLoginModule required
-<span class="hl-attribute" style="color: #F5844C">   debug</span>="true"
-<span class="hl-attribute" style="color: #F5844C">   contextFactory</span>="com.sun.jndi.ldap.LdapCtxFactory"
-<span class="hl-attribute" style="color: #F5844C">   hostname</span>="ldap.example.com"
-<span class="hl-attribute" style="color: #F5844C">   port</span>="389"
-<span class="hl-attribute" style="color: #F5844C">   bindDn="cn</span>=Directory Manager"
-<span class="hl-attribute" style="color: #F5844C">   bindPassword</span>="directory"
-<span class="hl-attribute" style="color: #F5844C">   authenticationMethod</span>="simple"
-<span class="hl-attribute" style="color: #F5844C">   forceBindingLogin</span>="false"
-<span class="hl-attribute" style="color: #F5844C">   userBaseDn="ou=people,dc</span>=alcatel"
-<span class="hl-attribute" style="color: #F5844C">   userRdnAttribute</span>="uid"
-<span class="hl-attribute" style="color: #F5844C">   userIdAttribute</span>="uid"
-<span class="hl-attribute" style="color: #F5844C">   userPasswordAttribute</span>="userPassword"
-<span class="hl-attribute" style="color: #F5844C">   userObjectClass</span>="inetOrgPerson"
-<span class="hl-attribute" style="color: #F5844C">   roleBaseDn="ou=groups,dc=example,dc</span>=com"
-<span class="hl-attribute" style="color: #F5844C">   roleNameAttribute</span>="cn"
-<span class="hl-attribute" style="color: #F5844C">   roleMemberAttribute</span>="uniqueMember"
-<span class="hl-attribute" style="color: #F5844C">   roleObjectClass</span>="groupOfUniqueNames"<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-   }<span xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="hl-comment">;</span>
-
-				</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13842"></a>Writing your Own LoginModule</h3></div></div></div><p>
+			</p><div class="informalexample"><script type="syntaxhighlighter"></script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13842"></a>Writing your Own LoginModule</h3></div></div></div><p>
 			If you want to implement your own custom LoginModule, there are two classes to be familiar with <code class="classname">org.eclipse.jetty.jaas.spi.AbstractLoginModule</code> and <code class="classname">org.eclipse.jetty.jaas.spi.UserInfo</code>.
 		</p><p>
 			The <code class="classname">org.eclipse.jetty.jaas.spi.AbstractLoginModule</code> implements all of the <code class="classname">javax.security.auth.spi.LoginModule</code> methods. All you need to do is to implement the getUserInfo method to return a <code class="classname">org.eclipse.jetty.jaas.UserInfo</code> instance which encapsulates the username, password and role names (note: as java.lang.Strings) for a user.
@@ -251,7 +173,7 @@ ldaploginmodule {
 		</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e13869"></a>Other Goodies</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13872"></a>RequestParameterCallback</h4></div></div></div><p>
 				As all servlet containers intercept and process a form submission with action j_security_check, it is usually not possible to insert any extra input fields onto a login form with which to perform authentication: you may only pass <code class="code">j_username</code> and <code class="code">j_password</code>. For those rare occasions when this is not good enough, and you require more information from the user in order to authenticate them, you can use the JAAS callback handler <code class="classname">org.eclipse.jetty.jaas.callback.RequestParameterCallback</code>. This callback handler gives you access to all parameters that were passed in the form submission. To use it, in the login() method of your custom login module, add the RequestParameterCallback to the list of callback handlers the login module uses, tell it which params you are interested in, and then get the value of the parameter back. Here's an example:
 			</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 
 public class FooLoginModule extends AbstractLoginModule
 {
@@ -282,7 +204,7 @@ public class FooLoginModule extends AbstractLoginModule
      }
 
 				]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13889"></a>Example JAAS WebApp</h4></div></div></div><p>
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13889"></a>Example JAAS WebApp</h4></div></div></div><p>
 				An example webapp using jaas can be found in our git repo:
 			</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
 						<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/tests/test-webapps/test-jaas-webapp" target="_top">http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/tree/tests/test-webapps/test-jaas-webapp</a>

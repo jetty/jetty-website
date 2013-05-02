@@ -22,7 +22,7 @@
     SPDY-specific in any way. Jetty's NPN implementation, although hosted
     under the umbrella of the Jetty project, is independent of Jetty (the
     servlet container); you can use it in any other Java network
-    server.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-starting"></a>Starting the JVM</h3></div></div></div><p>To enable NPN support, start the JVM as follows:</p><div class="informalexample"><pre class="programlisting">java -Xbootclasspath/p:&lt;path_to_npn_boot_jar&gt; ...            </pre></div><p>where <code class="filename">path_to_npn_boot_jar</code> is the path on the
+    server.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-starting"></a>Starting the JVM</h3></div></div></div><p>To enable NPN support, start the JVM as follows:</p><div class="informalexample"><script type="syntaxhighlighter"></script></div><p>where <code class="filename">path_to_npn_boot_jar</code> is the path on the
     file system for the NPN Boot Jar file, for example, one at the Maven
     coordinates org.mortbay.jetty.npn:npn-boot.</p><p>Be aware that the current versions of the npn packages no longer
     align with Jetty versions. Look at the dates in those file paths before
@@ -44,7 +44,7 @@
     ServerProvider (depending on whether the application is a client or server
     application). Refer to NextProtoNego Javadocs and to the examples below
     for further details about client and server provider methods.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="client-example"></a>Client Example</h3></div></div></div><div class="example"><a name="d0e8875"></a><p class="title"><b>Example&nbsp;Client Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 SSLContext sslContext = ...;
 SSLSocket sslSocket = (SSLSocket)context.getSocketFactory().createSocket("localhost", server.getLocalPort());
 
@@ -68,12 +68,12 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ClientProvider()
     }
 });
 ]]>
-    </script></div></div><br class="example-break"><p>The NPN implementation calls
+        </script></div></div><br class="example-break"><p>The NPN implementation calls
     <code class="code">NextProtoNego.ClientProvider</code> methods <code class="code">supports(),
     unsupported()</code> and <code class="code">selectProtocol(List&lt;String&gt;)</code>,
     so that the client application can decide:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>whether to support NPN.</p></li><li class="listitem"><p>whether the server supports NPN.</p></li><li class="listitem"><p>to select one of the protocols the server supports.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="server-example"></a>Server Example</h3></div></div></div><p>The example for SSLEngine is identical, and you just need to replace
     the SSLSocket instance with an SSLEngine instance.</p><div class="example"><a name="d0e8904"></a><p class="title"><b>Example&nbsp;Server Example.&nbsp;</b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java">
-      <![CDATA[
+          <![CDATA[
 SSLSocket sslSocket = ...;
 NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
 {
@@ -95,7 +95,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
     }
 });
 ]]>
-    </script></div></div><br class="example-break"><p>The NPN implementation calls
+        </script></div></div><br class="example-break"><p>The NPN implementation calls
     <code class="code">NextProtoNego.ServerProvider</code> methods <code class="code">unsupported(),
     protocols()</code> and <code class="code">protocolSelected(String),</code> so that the
     server application can</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>know whether the client supports NPN.</p></li><li class="listitem"><p>provide the list of protocols the server supports.</p></li><li class="listitem"><p>know which protocol the client chooses.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-implementation"></a>Implementation Details</h3></div></div></div><p>It is common that the NextProtoNego.ServerProvider and the
@@ -116,7 +116,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
     memory leak, so you must avoid doing so.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-tests"></a>Unit Tests</h3></div></div></div><p>You can write and run unit tests that use the NPN implementation.
     The solution that we use with Maven is to specify an additional command
     line argument to the Surefire plugin:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[
+          <![CDATA[
 <project>
 
 <properties>
@@ -143,7 +143,7 @@ NextProtoNego.put(sslSocket, new NextProtoNego.ServerProvider()
 
 </project>
 ]]>
-    </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="npn-debugging"></a>Debugging</h3></div></div></div><p>You can enable debug logging for the NPN implementation in this
     way:</p><pre class="screen">NextProtoNego.debug = true;</pre><p>Since the NextProtoNego class is in the boot classpath, we chose not
     to use logging libraries because we do not want to override application
     logging library choices; therefore the logging is performed directly on

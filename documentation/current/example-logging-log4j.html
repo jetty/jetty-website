@@ -38,95 +38,12 @@ Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>loggi
 19:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
 20:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-log4j12-1.6.6.jar</strong></span></pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5598"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
     <code class="filename">${jetty.home}/resources/jetty-logging.properties</code>,
-    make sure it contains just the following</p><pre class="programlisting"># Configure Jetty for SLf4j Logging
-org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
-</pre><p>This will tell Jetty to use the Slf4jLog implementation for its
+    make sure it contains just the following</p><p><script type="syntaxhighlighter"></script></p><p>This will tell Jetty to use the Slf4jLog implementation for its
     internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5611"></a>Configuring Log4j</h3></div></div></div><p>Next you will need a
     <code class="filename">${jetty.home}/resources/log4j.properties</code> file for
-    configuring Log4j.</p><p>Example <code class="filename">resources/log4j.properties</code> file</p><pre class="programlisting"># Basic Log4j Configuration with STDOUT and File logging
-log4j.rootLogger=INFO, stdout, filer
-
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
-
-log4j.appender.filer=org.apache.log4j.RollingFileAppender
-log4j.appender.filer.layout=org.apache.log4j.PatternLayout
-log4j.appender.filer.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
-log4j.appender.filer.File=${jetty.home}/logs/jetty.log
-log4j.appender.filer.DatePattern='.'yyyy-MM-dd
-log4j.appender.filer.MaxFileSize=10MB
-log4j.appender.filer.MaxBackupIndex=4
-log4j.appender.filer.append=true
-</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>The use of <code class="filename">${jetty.home}/logs</code> is a handy
+    configuring Log4j.</p><p>Example <code class="filename">resources/log4j.properties</code> file</p><p><script type="syntaxhighlighter"></script></p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>The use of <code class="filename">${jetty.home}/logs</code> is a handy
         way to always get a reference to the standard Jetty logs
-        directory</p></td></tr></table></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5634"></a>Scripted Installation of Log4j</h3></div></div></div><pre class="programlisting">#!/bin/bash
-# -------------------------------------------
-# FOR DEMONSTRATION PURPOSES ONLY
-# USE AT YOUR OWN RISK
-# -------------------------------------------
-
-if [ ! -f start.ini ] ; then
-    echo "ERROR: Not in \${jetty.home} directory"
-    exit -1
-fi
-
-if [ -d lib/logging ] ; then
-    echo "ERROR: Existing lib/logging directory exists."
-    echo "       Remove any existing logging implementations"
-    echo "       before running this script, as conflicting logging"
-    echo "       implementations can cause problems."
-    echo "       Then remove the lib/logging directory entirely."
-    exit -1
-fi
-
-mkdir lib/logging
-pushd lib/logging
-
-curl -O http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.6/slf4j-log4j12-1.6.6.jar
-curl -O http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar
-curl -O http://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar
-
-popd
-
-if (grep -E "OPTIONS=.*logging.*" start.ini) 
-then
-    echo "Logging already present in start.ini"
-else
-    echo "Adding logging to start.ini"
-    echo "" &gt;&gt; start.ini
-    echo "# Adding lib/logging to server classpath" &gt;&gt; start.ini
-    echo "OPTIONS=logging" &gt;&gt; start.ini
-fi
-
-cat &lt;&lt; EOFP &gt; resources/jetty-logging.properties
-org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
-EOFP
-
-if [ -f resources/log4j.properties ]
-then
-    echo "Using existing resources/log4j.properties"
-else
-    echo "Creating new resources/log4j.properties"
-    cat &lt;&lt; EOFL &gt; resources/log4j.properties
-# Basic Log4j Configuration with STDOUT and File logging
-log4j.rootLogger=INFO, stdout, filer
-
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
-
-log4j.appender.filer=org.apache.log4j.RollingFileAppender
-log4j.appender.filer.layout=org.apache.log4j.PatternLayout
-log4j.appender.filer.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
-log4j.appender.filer.File=\${jetty.home}/logs/jetty.log
-log4j.appender.filer.DatePattern='.'yyyy-MM-dd
-log4j.appender.filer.MaxFileSize=10MB
-log4j.appender.filer.MaxBackupIndex=4
-log4j.appender.filer.append=true
-EOFL
-fi
-</pre><p>This will use curl to download the JARs, setup the
+        directory</p></td></tr></table></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5634"></a>Scripted Installation of Log4j</h3></div></div></div><p><script type="syntaxhighlighter"></script>This will use curl to download the JARs, setup the
     <code class="filename">start.ini</code>, and lastly the
     <code class="filename">resources</code> directory suitable for using log4j</p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()

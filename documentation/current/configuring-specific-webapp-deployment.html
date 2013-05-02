@@ -30,25 +30,25 @@
             directory)</p></dd><dt><span class="term">contextPath</span></dt><dd><p>the context path to use for the web application</p></dd></dl></div><p>For example, here is a descriptor file that deploys the file
       <code class="filename">/opt/myapp/myapp.war</code> to the context path
       <code class="filename">/wiki</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="contextPath">/wiki</Set>
   <Set name="war">/opt/myapp/myapp.war</Set>
 </Configure>        ]]>
-    </script></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>You can use the <code class="code">SystemProperty</code> and
+        </script></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Note"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Note]" src="images/note.png"></td><th align="left">Note</th></tr><tr><td align="left" valign="top"><p>You can use the <code class="code">SystemProperty</code> and
         <code class="code">Property</code> elements in your descriptor file. For example,
         if you set the system property <code class="code">myapp.home=/opt/myapp</code>, you
         can rewrite the previous example as:</p></td></tr></table></div><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
   <Set name="contextPath">/wiki</Set>
   <Set name="war"><SystemProperty name="myapp.home"/>/myapp.war</Set>
 </Configure>]]>
-    </script></div><p>If you need to change the home path for your application, you can
+        </script></div><p>If you need to change the home path for your application, you can
       simply change the system property. This is useful if you frequently
       switch among multiple versions of an app.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-advanced-descriptor-files"></a>Configuring Advanced Descriptor Files</h4></div></div></div><p>If you look at the documentation for the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top"><code class="code">WebAppContext</code></a>
       class, you notice that there are a lot more properties than just the two
@@ -58,7 +58,7 @@
       making changes to the temporary unpacked WAR because such changes do not
       persist, and therefore do not apply the next time the web application
       deploys.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -66,14 +66,14 @@
   <Set name="war"><SystemProperty name="myapp.home"/>/myapp.war</Set>
   <Set name="extractWAR">false</Set>
 </Configure>        ]]>
-    </script></div><p>The next example retrieves the JavaEE Servlet context and sets an
+        </script></div><p>The next example retrieves the JavaEE Servlet context and sets an
       initialization parameter on it. You can also use the
       <code class="code">setAttribute</code> method to set a Servlet context attribute.
       However, since the <code class="filename"> web.xml</code> for the web application
       is processed after the deployment descriptor, the <code class="filename">
       web.xml</code> values overwrite like-named attributes from the
       deployment descriptor.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -86,13 +86,13 @@
     </Call>
   </Get>
 </Configure>        ]]>
-    </script></div><p>The following example sets a special <code class="filename">web.xml</code>
+        </script></div><p>The following example sets a special <code class="filename">web.xml</code>
       override descriptor. This descriptor is processed after the web
       application's <code class="filename">web.xml</code>, so may override like-named
       attributes. This feature is useful if you want to add parameters or
       additional Servlet mappings without breaking open a packed WAR
       file.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -100,12 +100,12 @@
   <Set name="war"><SystemProperty name="myapp.home"/>/myapp.war</Set>
   <Set name="overrideDescriptor">/opt/myapp/overlay-web.xml</Set>
 </Configure>        ]]>
-    </script></div><p>The next example configures not only the web application context,
+        </script></div><p>The next example configures not only the web application context,
       but also a database connection pool (see <a class="xref" href="jndi-datasource-examples.html" title="Datasource Examples">Datasource Examples</a> that our application can then use.
       If the <code class="filename"> web.xml</code> does not include a reference to
       this data source, you can use the override descriptor mechanism (the
       previous example), to include it.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml">
-      <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
+          <![CDATA[<?xml version="1.0"  encoding="ISO-8859-1"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
@@ -125,7 +125,7 @@
     </New>
   </Arg>
 </New>        ]]>
-    </script></div></div></div></div><script type="text/javascript">
+        </script></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="automatic-webapp-deployment.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-deployment.html">Up</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="static-content-deployment.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Automatic Web Application Deployment&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring Static Content Deployment</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
