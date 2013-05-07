@@ -14,35 +14,46 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="release-testing"></a>Testing a Jetty Release</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="release-testing.html#testing-cometd">Testing CometD</a></span></dt></dl></div><p>To test a Jetty release, complete the following steps for each release you want to test:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Download the staged release:</p><div class="screenexample"><pre class="screen">
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="release-testing"></a>Testing a Jetty Release</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="release-testing.html#testing-cometd">Testing CometD</a></span></dt></dl></div><p>To test a Jetty release, complete the following steps for each release
+  you want to test:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Download the staged release:</p><div class="screenexample"><pre class="screen">
 
  wget https://oss.sonatype.org/content/repositories/jetty-[reponumber]/org/eclipse/jetty/jetty-distribution/[jetty-version]/jetty-distribution-9.[jetty-minor-version].tar.gz
 
       </pre></div></li><li class="listitem"><p>Extract to a directory of your choice.</p></li><li class="listitem"><p>Start jetty:</p><div class="screenexample"><pre class="screen">
 
- cd [installdir] ; java -jar start.jar OPTIONS=rewrite etc/jetty-rewrite.xml etc/jetty-ssl.xml etc/jetty-https.xml
+ cd [installdir] ; java -jar start.jar etc/jetty-ssl.xml etc/jetty-https.xml
  
-      </pre></div></li><li class="listitem"><p>If there are no exceptions, proceed. Otherwise, investigate.</p></li><li class="listitem"><p>Open http://localhost:8080/ in a browser. In the examples section click "Test Jetty Webapp". You should see
-      the <code class="filename">test.war</code> webapp.</p></li><li class="listitem"><p>Go through ALL the tests and verify that everything works as expected.</p></li><li class="listitem"><p>Verify that hot deployment works.</p><div class="screenexample"><pre class="screen">
+      </pre></div></li><li class="listitem"><p>If there are no exceptions, proceed. Otherwise,
+      investigate.</p></li><li class="listitem"><p>Open http://localhost:8080/ in a browser. In the examples section
+      click "Test Jetty Webapp". You should see the
+      <code class="filename">test.war</code> webapp.</p></li><li class="listitem"><p>Go through ALL the tests and verify that everything works as
+      expected.</p></li><li class="listitem"><p>In the examples section click "JAAS Test" and verify that
+      everything works as expected.</p></li><li class="listitem"><p>In the examples section click "JNDI Test" and verify that
+      everything works as expected.</p></li><li class="listitem"><p>In the examples section click "Servlet 3.1 Test" and verify that
+      everything works as expected.</p></li><li class="listitem"><p>Verify that hot deployment works.</p><div class="screenexample"><pre class="screen">
 
  cd [installdir] ;
  touch [pathToJettyDistribution]/webapps/test.xml
  
-      </pre></div></li><li class="listitem"><p>Verify that <code class="filename">test.war</code> gets redeployed in <code class="filename">STDOUT</code>.</p></li><li class="listitem"><p>Verify that the spdy example webapp and spdy-proxy do work</p><div class="screenexample"><pre class="screen">
+      </pre></div></li><li class="listitem"><p>Verify that <code class="filename">test.war</code> gets redeployed in
+      <code class="filename">STDOUT</code>.</p></li><li class="listitem"><p>Verify that the spdy example webapp and spdy-proxy do work</p><div class="screenexample"><pre class="screen">
 
  cd jetty_src/jetty-spdy/spdy-example-webapp
  mvn jetty:run-forked
  
-      </pre></div></li><li class="listitem"><p>Browse to https://localhost:8443 and verify that all looks ok</p></li><li class="listitem"><p>Stop the server with CTRL+C and restart it in proxy mode:</p><div class="screenexample"><pre class="screen">
+      </pre></div></li><li class="listitem"><p>Browse to https://localhost:8443 and verify that all looks
+      ok</p></li><li class="listitem"><p>Stop the server with CTRL+C and restart it in proxy mode:</p><div class="screenexample"><pre class="screen">
 
  mvn -Pproxy jetty:run-forked
  
-      </pre></div></li><li class="listitem"><p>Browse to http://localhost:8080 and https://localhost:8443 and verify that all looks ok</p></li></ol></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="testing-cometd"></a>Testing CometD</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Clone CometD.</p><div class="screenexample"><pre class="screen">
+      </pre></div></li><li class="listitem"><p>Browse to http://localhost:8080 and https://localhost:8443 and
+      verify that all looks ok</p></li></ol></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="testing-cometd"></a>Testing CometD</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Clone CometD.</p><div class="screenexample"><pre class="screen">
 
  clone git://github.com/cometd/cometd.git
  git clone git://github.com/cometd/cometd.git
  
-        </pre></div></li><li class="listitem"><p>Edit <code class="filename">pom.xml</code> and update <code class="filename">jetty-version.</code></p><div class="screenexample"><pre class="screen">
+        </pre></div></li><li class="listitem"><p>Edit <code class="filename">pom.xml</code> and update
+        <code class="filename">jetty-version.</code></p><div class="screenexample"><pre class="screen">
 
     &lt;properties&gt;
         &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
@@ -62,10 +73,12 @@
 
  mvn clean install
   
-        </pre></div></li><li class="listitem"><p>Be patient.</p></li><li class="listitem"><p>Run the loadtest as it is described here: http://cometd.org/documentation/2.x/howtos/loadtesting. Keep
-        the default values, but make sure that you raise the clients setting to 1000. Run the loadtest until ''JIT
-        compilation time'' is close to a value of zero (about 10k calls).</p></li><li class="listitem"><p>Make sure that the performance results are reasonably fast. On a MacBook Pro i7 2.6ghz dualcore produces
-        the following:</p><div class="screenexample"><pre class="screen">
+        </pre></div></li><li class="listitem"><p>Be patient.</p></li><li class="listitem"><p>Run the loadtest as it is described here:
+        http://cometd.org/documentation/2.x/howtos/loadtesting. Keep the
+        default values, but make sure that you raise the clients setting to
+        1000. Run the loadtest until ''JIT compilation time'' is close to a
+        value of zero (about 10k calls).</p></li><li class="listitem"><p>Make sure that the performance results are reasonably fast. On a
+        MacBook Pro i7 2.6ghz dualcore produces the following:</p><div class="screenexample"><pre class="screen">
 
  ========================================
 Statistics Started at Fri Mar 09 13:44:35 CET 2012
@@ -134,8 +147,9 @@ Messages - Wall Latency Min/Ave/Max = 2/123/430 ms
 Messages - Network Latency Min/Ave/Max = 1/114/417 ms
 Thread Pool - Concurrent Threads max = 239 | Queue Size max = 1002 | Queue Latency avg/max = 12/101 ms
 
-        </pre></div></li><li class="listitem"><p>Deploy <code class="filename">cometd.war</code> to the <code class="filename">webapps</code> directory of the
-        jetty-distribution tested above.</p><div class="screenexample"><pre class="screen">
+        </pre></div></li><li class="listitem"><p>Deploy <code class="filename">cometd.war</code> to the
+        <code class="filename">webapps</code> directory of the jetty-distribution
+        tested above.</p><div class="screenexample"><pre class="screen">
 
  cp cometd-demo/target/cometd-demo-[version].war [pathToJetty]/jetty-distribution-[jetty-version]/webapps/
  
