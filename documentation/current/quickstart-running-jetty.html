@@ -14,7 +14,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-running-jetty"></a>Running Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-running-jetty.html#changing-jetty-port">Changing the Jetty Port</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#starting-https">Starting HTTPS</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#stopping-jetty">Stopping Jetty</a></span></dt></dl></div><p>To start Jetty on the default port of 8080, run the following
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-running-jetty"></a>Running Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-running-jetty.html#quickstart-changing-jetty-port">Changing the Jetty Port</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#quickstart-starting-https">Starting HTTPS</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#quickstart-stopping-jetty">Stopping Jetty</a></span></dt></dl></div><p>To start Jetty on the default port of 8080, run the following
   command:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar</pre></div><p>You should see about twenty lines of logged INFO statements similar to
   the following, informing you of the components being started:</p><div class="informalexample"><div class="screenexample"><pre class="screen">2012-10-22 16:02:24.988:INFO:oejs.Server:main: jetty-9.0.0-M2 
 2012-10-22 16:02:25.040:INFO:oejs.NCSARequestLog:main: Opened /home/gregw/src/jetty-9/jetty-distribution/target/distribution/logs/2012_10_22.request.log
@@ -23,20 +23,20 @@
 2012-10-22 16:02:25.357:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/] at interval 1 
 2012-10-22 16:02:25.688:INFO:oejd.DeploymentManager:main: Deployable added:/home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/test.xml 
 2012-10-22 16:02:25.725:INFO:oejw.WebInfConfiguration:main: Extract jar:file:/home/gregw/src/jetty-9/jetty-distribution/target/distribution/webapps/test.war!/ to /tmp/jetty-0.0.0.0-8080-test.war-_test-any-/webapp
-2012-10-22 16:02:26.097:INFO:oejsh.ContextHandler:main: started o.e.j.w.WebAppContext@4e3ceb07{/test,file:/tmp/jetty-0.0.0.0-8080-test.war-_test-any-/webapp/,AVAILABLE}{/test.war}</pre></div></div><p>You also see some warnings like:</p><div class="informalexample"><div class="screenexample"><pre class="screen">2012-10-22 16:02:24.748:WARN::main: test-realm is deployed. DO NOT USE IN PRODUCTION! 
-2012-10-22 16:02:25.582:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!  </pre></div></div><p>These warnings are telling you that some demonstration web
-  applications and services are deployed and that you should remove them
-  before putting the server into production. You can ignore these warnings
-  while testing, or you can see <a class="link" href="quickstart-deploying-webapps.html" title="Deploying Web Applications">Deploying Web Applications</a> to
-  learn how to remove them.</p><p>After starting Jetty, you can test it by pointing a browser or any
-  HTTP client at port 8080 of the machine. If you are running the browser on
-  the same machine as the Jetty instance, the URL to use is:<code class="code">
-  http://localhost:8080/</code> and your browser or HTTP client should see the
-  Jetty welcome page and be able to follow the links to some test web
-  applications.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="changing-jetty-port"></a>Changing the Jetty Port</h3></div></div></div><p>If you see the following exception, you already have something
-    running on the port that Jetty is configured to run on and you either need
-    to shut down whatever that process is, or configure Jetty to run on
-    another port.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
+2012-10-22 16:02:26.097:INFO:oejsh.ContextHandler:main: started o.e.j.w.WebAppContext@4e3ceb07{/test,file:/tmp/jetty-0.0.0.0-8080-test.war-_test-any-/webapp/,AVAILABLE}{/test.war}</pre></div></div><p>You also see some warnings like:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
+          <![CDATA[
+2012-10-22 16:02:24.748:WARN::main: test-realm is deployed. DO NOT USE IN PRODUCTION! 
+2012-10-22 16:02:25.582:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
+    ]]>
+        </script></div><p>These warnings are telling you that some demonstration web applications and services are deployed, and that you
+  should remove them before putting the server into production. You can ignore these warnings while testing, or you can
+  see <a class="link" href="quickstart-deploying-webapps.html" title="Deploying Web Applications">Deploying Web Applications</a> to learn how to remove
+  them.</p><p>After starting Jetty, you can test it by pointing a browser or any HTTP client at port 8080 of the machine. If
+  you are running the browser on the same machine as the Jetty instance, the URL to use is:<code class="code">
+  http://localhost:8080/</code> and your browser or HTTP client should see the Jetty welcome page and be able to follow
+  the links to some test web applications.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-changing-jetty-port"></a>Changing the Jetty Port</h3></div></div></div><p>If you see the following exception, you already have something running on the port that Jetty is configured
+    to run on, and you need to either shut down whatever that process is, or configure Jetty to run on another
+    port.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
           <![CDATA[
 java.net.BindException: Address already in use 
   at sun.nio.ch.Net.bind0(Native Method) 
@@ -44,30 +44,28 @@ java.net.BindException: Address already in use
   at sun.nio.ch.Net.bind(Net.java:336) 
   at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:199)
       ]]>
-        </script></div><p>You can configure Jetty to run on a different port by setting the
-    <code class="code">jetty.port</code> Property on the command line:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar jetty.port=8081</pre></div><p>As alternatives, you can set this property in the
-    <code class="filename">start.ini</code> file or by editing the use of the property
-    in the <code class="filename">etc/jetty-http.xml</code> configuration file. The way
-    this works is that it defines a property that is the
-    <code class="filename">etc/jetty-http.xml</code> configuration file uses to inject
-    a port value into the ServerConnector defined there. For more information
-    see the <a class="link" href=""> Quickstart Configuration
-    Guide</a> and <a class="link" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors">Configuring
-    Connectors</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="starting-https"></a>Starting HTTPS</h3></div></div></div><p>By values set in the <code class="filename">start.ini</code> file, Jetty
-    starts the HTTP connector that is defined in
-    <code class="filename">etc/jetty-http.xml</code>. To also start the HTTPS connector
-    defined in <code class="filename"> etc/jetty-https.xml</code> you can simply append
-    this configuration file to the command line:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar etc/jetty-https.xml</pre></div><p>You can now test this connector by pointing your browser to:</p><p><code class="code">https://localhost:8443/</code></p><p>Alternately, you can edit the <code class="filename">start.ini</code> file
-    and uncomment the line that includes the HTTPS configuration file and then
-    start Jetty without any extra command line arguments. Note that you can
-    also change the SSL port with the <code class="literal">jetty.tls.port</code>
-    Property:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar jetty.tls.port=8444 etc/jetty-https.xml</pre></div><p>The job of the <code class="filename">start.jar</code> command is to
-    interpret the command line and <code class="filename"> start.ini</code> arguments
-    in order to build a java classpath and list of properties and
-    configuration files to pass to the main class of the Jetty XML
-    configuration mechanism. The <code class="filename">start.jar</code> mechanism has
-    many options which are documented in <a class="xref" href="advanced-jetty-start.html" title="Chapter&nbsp;17.&nbsp;Starting Jetty">Chapter&nbsp;17, <i>Starting Jetty</i></a>; you can see them in summary by using the
-    command:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar --help</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="stopping-jetty"></a>Stopping Jetty</h3></div></div></div><p>If you have started Jetty from the command line, it is safe to stop
+        </script></div><p>You can configure Jetty to run on a different port by setting the <code class="code">jetty.port</code> Property on the
+    command line:</p><p>
+      <code class="code">&gt; java -jar start.jar jetty.port=8081</code>
+    </p><p>As alternatives, you can set this property in the <code class="filename">start.ini</code> file or by editing the use
+    of the property in the <code class="filename">etc/jetty-http.xml</code> configuration file. This works by
+    defining a property that the <code class="filename">etc/jetty-http.xml</code> configuration file uses to inject a port
+    value into the ServerConnector defined there. For more information see the <a class="link" href="">
+    Quickstart Configuration Guide</a> and <a class="link" href="configuring-connectors.html" title="Chapter&nbsp;4.&nbsp;Configuring Jetty Connectors">Configuring
+Connectors.</a>
+</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-starting-https"></a>Starting HTTPS</h3></div></div></div><p>By values set in the <code class="filename">start.ini</code> file, Jetty starts the HTTP connector that is defined in
+    <code class="filename">etc/jetty-http.xml</code>. To also start the HTTPS connector defined in <code class="filename">
+    etc/jetty-https.xml</code>, append this configuration file to the command line:</p><p>
+      <code class="code">&gt; java -jar start.jar etc/jetty-https.xml</code>
+    </p><p>You can now test this connector by pointing your browser to:</p><p>
+      <code class="code">https://localhost:8443/</code>
+    </p><p>Alternately, you can edit the <code class="filename">start.ini</code> file and uncomment the line that includes the
+    HTTPS configuration file and then start Jetty without any extra command line arguments. You can also
+    change the SSL port with the <code class="literal">jetty.tls.port</code> property:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar jetty.tls.port=8444 etc/jetty-https.xml</pre></div><p>The job of the <code class="code">start.jar</code> command is to interpret the command line and <code class="filename">
+    start.ini</code> arguments to build a Java classpath and list of properties and configuration files to
+    pass to the main class of the Jetty XML configuration mechanism. The <code class="code">start.jar</code> mechanism has many
+    options which are documented in <a class="xref" href="advanced-jetty-start.html" title="Chapter&nbsp;17.&nbsp;Starting Jetty">Chapter&nbsp;17, <i>Starting Jetty</i></a>; you can see them in summary by using the
+    command:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar --help</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-stopping-jetty"></a>Stopping Jetty</h3></div></div></div><p>If you have started Jetty from the command line, it is safe to stop
     it using the normal Ctrl-C key sequence to abort it. This triggers an
     orderly shutdown of the server.</p><p>However, you might have started the server with some advanced
     <code class="code">start.jar</code> options so that it runs in the background:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar -DSTOP.PORT=8881 -DSTOP.KEY=magic --daemon &amp;</pre></div><p>You should shut down this server with the command:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar -DSTOP.PORT=8881 -DSTOP.KEY=magic --stop</pre></div></div></div><script type="text/javascript">
