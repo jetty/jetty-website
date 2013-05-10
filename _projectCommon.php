@@ -33,6 +33,7 @@
     $Nav->addCustomNav("Documentation", "/jetty/documentation", "_self", 2);
     $Nav->addCustomNav("Downloads", "/jetty/downloads.php", "_self", 2);
     $Nav->addCustomNav("Maven Plugin", "/jetty/documentation/current/jetty-maven-plugin.html", "_self", 2);
+    $Nav->addCustomNav("Eclipse Tooling", "http://marketplace.eclipse.org/search/site/jetty?f[0]=im_taxonomy_vocabulary_3%3A31", "_self", 2);
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
     $Nav->addCustomNav("JavaDoc", "http://download.eclipse.org/jetty/stable-9/apidocs/", "_self", 2);
     $Nav->addCustomNav("Source XRef", "http://download.eclipse.org/jetty/stable-9/xref/", "_self", 2);
