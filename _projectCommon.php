@@ -48,5 +48,5 @@
     $Nav->addCustomNav("Source", "http://git.eclipse.org/c/jetty", "_self", 2);
     
     $Nav->addNavSeparator("Professional Services", null);
-    $Nav->addCustomNav("Training and Consulting", "http://marketplace.eclipse.org/search/site/jetty&amp;f[0]=im_taxonomy_vocabulary_3%3A34", "_self", 2);
+    $Nav->addCustomNav("Training and Consulting", "http://marketplace.eclipse.org/search/site/jetty?f[0]=im_taxonomy_vocabulary_3%3A34", "_self", 2);
 ?>
