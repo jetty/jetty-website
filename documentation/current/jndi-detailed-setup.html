@@ -14,14 +14,16 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jndi-detailed-setup"></a>Detailed Setup</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations">Setting Up the List of Configurations</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#applying-jndi-to-single-webapp">Enabling JNDI for a Single WebApp</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#d0e7606">Enabling JNDI for a Deployer</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath">Adding JNDI Implementation Jars to the Jetty Classpath</a></span></dt></dl></div><p>The following sections describe the finer points of configuring JNDI in Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jndi-setting-up-list-of-configurations"></a>Setting Up the List of Configurations</h3></div></div></div><p>When deploying a webapp, Jetty has an extensible list of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">configurations</a>
-      that it applies to the webapp in a specific order. These configurations
-      do things like parse the <code class="filename">web.xml</code>, set up the classpath
-      for the webapp, and parse jetty specific <code class="filename">WEB-INF/jetty-web.xml</code> files.</p><p>To use JNDI with Jetty, you need additional attributes that do
-      things like read <code class="filename">WEB-INF/jetty-env.xml</code>, set up a
-      <code class="code">java:comp/env context</code>, and hook up JNDI entries from the
-      environment into your webapp. The list below shows the two extra
-      elements and the order you must use when you add them:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jndi-detailed-setup"></a>Detailed Setup</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations">Setting Up the List of Configurations</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#applying-jndi-to-single-webapp">Enabling JNDI for a Single WebApp</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#d0e7630">Enabling JNDI for a Deployer</a></span></dt><dt><span class="section"><a href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath">Adding JNDI Implementation Jars to the Jetty Classpath</a></span></dt></dl></div><p>The following sections describe the finer points of configuring JNDI
+  in Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jndi-setting-up-list-of-configurations"></a>Setting Up the List of Configurations</h3></div></div></div><p>When deploying a webapp, Jetty has an extensible list of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/Configuration.html" target="_top">configurations</a>
+    that it applies to the webapp in a specific order. These configurations do
+    things like parse the <code class="filename">web.xml</code>, set up the classpath
+    for the webapp, and parse jetty specific
+    <code class="filename">WEB-INF/jetty-web.xml</code> files.</p><p>To use JNDI with Jetty, you need additional attributes that do
+    things like read <code class="filename">WEB-INF/jetty-env.xml</code>, set up a
+    <code class="code">java:comp/env context</code>, and hook up JNDI entries from the
+    environment into your webapp. The list below shows the two extra elements
+    and the order you must use when you add them:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
 <Array id="plusConfig" type="java.lang.String">
@@ -35,20 +37,20 @@
 </Array>
 
         ]]>
-        </script></div><p>This augmented list of configurations for JNDI is predefined for
-      you in the <code class="code"> etc/jetty-plus.xml</code> file. The <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section shows you how to enable
-      it. Be aware that the <code class="code">etc/jetty-plus.xml</code> file enables JNDI for
-      <span class="bold"><strong>all</strong></span> webapps. The file also contains
-      other (commented out) alternatives for enabling JNDI with webapps, such
-      as creating a separate deployer just for deploying JNDI-enabled
-      webapps.</p><p>Now skip down to <a class="link" href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI
-      Implementation Jars to the Jetty Classpath</a> if you want to use
-      JNDI with all webapps. If you only want to use JNDI with specific
-      webapps, read on.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="applying-jndi-to-single-webapp"></a>Enabling JNDI for a Single WebApp</h3></div></div></div><p>If you have only a few webapps that you want to use with JNDI, you
-      can apply the augmented list of configurations specifically to those
-      webapps. To do that, create a context XML file for each webapp, and set
-      up the configuration classes. Here's an example of how that should
-      look:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+        </script></div><p>This augmented list of configurations for JNDI is predefined for you
+    in the <code class="code"> etc/jetty-plus.xml</code> file. The <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section shows you how to
+    enable it. Be aware that the <code class="code">etc/jetty-plus.xml</code> file enables
+    JNDI for <span class="bold"><strong>all</strong></span> webapps. The file also
+    contains other (commented out) alternatives for enabling JNDI with
+    webapps, such as creating a separate deployer just for deploying
+    JNDI-enabled webapps.</p><p>Now skip down to <a class="link" href="jndi-detailed-setup.html#adding-jndi-implementation-jars-to-jetty-classpath" title="Adding JNDI Implementation Jars to the Jetty Classpath">Adding JNDI
+    Implementation Jars to the Jetty Classpath</a> if you want to use JNDI
+    with all webapps. If you only want to use JNDI with specific webapps, read
+    on.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="applying-jndi-to-single-webapp"></a>Enabling JNDI for a Single WebApp</h3></div></div></div><p>If you have only a few webapps that you want to use with JNDI, you
+    can apply the augmented list of configurations specifically to those
+    webapps. To do that, create a context XML file for each webapp, and set up
+    the configuration classes. Here's an example of how that should
+    look:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
 <Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext">
@@ -67,14 +69,15 @@
 </Configure>
 
         ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7606"></a>Enabling JNDI for a Deployer</h3></div></div></div><p>Another alternative to enabling JNDI for all webapps (see <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a>, or just individual webapps
-      (see <a class="link" href="jndi-detailed-setup.html#applying-jndi-to-single-webapp" title="Enabling JNDI for a Single WebApp">Enabling JNDI for a
-      Single WebApp</a>) is to create a specific Deployer instance that enables JNDI for all weabpps it deploys. That way, you can <a class="link" href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations" title="Setting Up the List of Configurations">set up</a> the
-      configurations once to apply them to every webapp you drop
-      into the nominated directory738211;in this way you keep your JNDI-enabled
-      webapps separate from the non-JNDI enabled webapps. The
-      <code class="filename">etc/jetty-plus.xml</code> file has an example of this (commented
-      out):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7630"></a>Enabling JNDI for a Deployer</h3></div></div></div><p>Another alternative to enabling JNDI for all webapps (see <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a>, or just individual webapps
+    (see <a class="link" href="jndi-detailed-setup.html#applying-jndi-to-single-webapp" title="Enabling JNDI for a Single WebApp">Enabling JNDI for a
+    Single WebApp</a>) is to create a specific Deployer instance that
+    enables JNDI for all weabpps it deploys. That way, you can <a class="link" href="jndi-detailed-setup.html#jndi-setting-up-list-of-configurations" title="Setting Up the List of Configurations">set up</a> the
+    configurations once to apply them to every webapp you drop into the
+    nominated directory738211;in this way you keep your JNDI-enabled webapps
+    separate from the non-JNDI enabled webapps. The
+    <code class="filename">etc/jetty-plus.xml</code> file has an example of this
+    (commented out):</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
   
   <!-- =========================================================== -->
@@ -99,29 +102,30 @@
   </Ref>
 
         ]]>
-        </script></div><p>This creates a new deployer that looks for things to deploy
-      in the <code class="filename">webapps-plus</code> directory and sets up the JNDI
-      configurations for them.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>If you do this, you need to either supply the
-        <code class="filename">etc/jetty-plus.xml</code> file last on the runline, or move it
-        to after the <code class="filename">etc/jetty-deploy.xml</code> file reference in
-        <code class="filename">start.ini</code>. This is because this section of the
-        <code class="filename">etc/jetty-plus.xml</code> file refers to the DeploymentManager,
-        which is created in the <code class="filename">etc/jetty-deploy.xm</code> file.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="adding-jndi-implementation-jars-to-jetty-classpath"></a>Adding JNDI Implementation Jars to the Jetty Classpath</h3></div></div></div><p>Now that you have the JNDI configuration for the webapp/s set up,
-      you need to ensure that the JNDI implementation Jars are on the Jetty
-      classpath. These jars are optional, so are not there by default. You add
-      these into the classpath by using startup time OPTIONS.</p><p>In the <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section, we
-      showed you how to use <code class="filename">start.ini</code> to accomplish this in a permanent
-      fashion. Instead, you can supply the <span class="emphasis"><em>plus</em></span> OPTION on the command line so
-      it is valid for that run only. Here's how to do it:</p><div class="informalexample"><div class="screenexample"><pre class="screen">
+        </script></div><p>This creates a new deployer that looks for things to deploy in the
+    <code class="filename">webapps-plus</code> directory and sets up the JNDI
+    configurations for them.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>If you do this, you need to either supply the
+      <code class="filename">etc/jetty-plus.xml</code> file last on the runline, or
+      move it to after the <code class="filename">etc/jetty-deploy.xml</code> file
+      reference in <code class="filename">start.ini</code>. This is because this
+      section of the <code class="filename">etc/jetty-plus.xml</code> file refers to
+      the DeploymentManager, which is created in the
+      <code class="filename">etc/jetty-deploy.xm</code> file.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="adding-jndi-implementation-jars-to-jetty-classpath"></a>Adding JNDI Implementation Jars to the Jetty Classpath</h3></div></div></div><p>Now that you have the JNDI configuration for the webapp/s set up,
+    you need to ensure that the JNDI implementation Jars are on the Jetty
+    classpath. These jars are optional, so are not there by default. You add
+    these into the classpath by using startup time OPTIONS.</p><p>In the <a class="link" href="jndi.html#jndi-quick-setup" title="Quick Setup">Quick Setup</a> section,
+    we showed you how to use <code class="filename">start.ini</code> to accomplish this
+    in a permanent fashion. Instead, you can supply OPTION on the command line
+    so it is valid for that run only. Here's how to do it:</p><div class="informalexample"><div class="screenexample"><pre class="screen">
 
-$ java -jar start.jar OPTIONS=plus
+$ java -jar start.jar OPTIONS=jndi,plus
 
-        </pre></div></div><p>Be aware that if you haven't set up the configurations that enable JNDI
-      for individual webapps, you need to use the
-      <code class="filename">etc/jetty-plus.xml</code> file, which you can also do on the
-      runline:</p><div class="informalexample"><div class="screenexample"><pre class="screen">
+        </pre></div></div><p>Be aware that if you haven't set up the configurations that enable
+    JNDI for individual webapps, you need to use the
+    <code class="filename">etc/jetty-plus.xml</code> file, which you can also do on the
+    runline:</p><div class="informalexample"><div class="screenexample"><pre class="screen">
 
-$ java -jar start.jar OPTIONS=plus etc/jetty-plus.xml
+$ java -jar start.jar OPTIONS=jndi,plus etc/jetty-plus.xml
 
         </pre></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
