@@ -50,33 +50,19 @@ public class FileServer {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10929"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">
-            <code class="code">Server server = new Server(8080);</code>
-          </span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10929"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
               Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
-            </p></dd><dt><span class="term">
-            <code class="code">ResourceHandler resource_handler = new ResourceHandler();</code>
-          </span></dt><dd><p>
+            </p></dd><dt><span class="term">Line 18: Create ResourceHandler</span></dt><dd><p>
               The ResourceHandler is the object that will actually handle the request for a given file.  It is a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.
-            </p></dd><dt><span class="term">
-            <code class="code">resource_handler.setResourceBase(".");</code>
-          </span></dt><dd><p>
+            </p></dd><dt><span class="term">Lines 19 - 21: Configure ResourceHandler</span></dt><dd><p>
               Setting the resource base indicates where the files should be served out of.  In this example it is the current directory but it can be configured to anything that the jvm has access to.
-            </p></dd><dt><span class="term">
-            <code class="code">HandlerList handlers = new HandlerList();</code>
-          </span></dt><dd><p>
-              A HandlerList is just like it sounds, a list of handlers that can be processed sequentially to try and resolve a filename to serve.
-            </p></dd><dt><span class="term">
-            <code class="code">handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });</code>
-          </span></dt><dd><p>
-              This shows one method of chaining the resource handler with the DefaultHandler which terminates the handler chain and is able to serve out things like a flav.ico, return a 404 on a missing resource, etc.
-            </p></dd><dt><span class="term">
-            <code class="code">server.setHandler(handlers);</code>
-          </span></dt><dd><p>Set the handler list to the server so it knows about it.</p></dd><dt><span class="term">
-            <code class="code">server.start()</code>
-          </span></dt><dd><p>Start things up!</p></dd></dl></div><p>
+            </p></dd><dt><span class="term">Lines 22 - 24: Establish Handler Chain</span></dt><dd><p>
+              A HandlerList is just like it sounds, a list of handlers that can be processed sequentially to try and resolve a filename to serve.  This shows one method of chaining the resource handler with the DefaultHandler which terminates the handler chain and is able to serve out things like a flav.ico, return a 404 on a missing resource, etc.  Finally, set the handler list to the server so it knows about it.
+            </p></dd><dt><span class="term">Lines 25 - 26: Start Server</span></dt><dd><p>
+              Start things up!  By using the server.join() the server thread will join with the current thread.  See <a class="xref" href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" target="_top">???</a> for more details. 
+            </p></dd></dl></div><p>
         After you have started things up you should be able to navigate to http://localhost:8080/index.html (assuming one is in the resource base directory) and you are good to go.
-      </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10998"></a>Maven Coordinates</h4></div></div></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10968"></a>Maven Coordinates</h4></div></div></div><p>
         To use this example in your project you will need the following maven dependencies declared.
       </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[

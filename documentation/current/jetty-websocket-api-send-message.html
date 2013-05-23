@@ -17,7 +17,7 @@
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-websocket-api-send-message"></a>Send Messages to Remote Endpoint</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-websocket-api-send-message.html#blocking">Blocking Send Message</a></span></dt><dt><span class="section"><a href="jetty-websocket-api-send-message.html#partial">Send Partial Message</a></span></dt><dt><span class="section"><a href="jetty-websocket-api-send-message.html#pingpong">Send Ping / Pong Control Frame</a></span></dt><dt><span class="section"><a href="jetty-websocket-api-send-message.html#async">Async Send Message</a></span></dt></dl></div><p>The most important feature of the Session is access to the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/websocket/api/RemoteEndpoint.html" target="_top"><code class="classname">org.eclipse.jetty.websocket.api.RemoteEndpoint
   </code></a>needed to send messages.</p><p>With RemoteEndpoint you can choose to send TEXT or BINARY WebSocket
   messages, or the WebSocket PING and PONG control frames.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="blocking"></a>Blocking Send Message</h3></div></div></div><p>Most calls are blocking in nature, and will not return until the
-    send has completed (or has thrown an exception).</p><div class="example"><a name="d0e16176"></a><p class="title"><b>Example&nbsp;28.1.&nbsp;Send Binary Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+    send has completed (or has thrown an exception).</p><div class="example"><a name="d0e16146"></a><p class="title"><b>Example&nbsp;28.1.&nbsp;Send Binary Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a BINARY message to remote endpoint
@@ -32,7 +32,7 @@ catch (IOException e)
 }]]>
         </script></p><p>How to send a simple Binary message using the RemoteEndpoint. This
       will block until the message is sent, possibly throwing an IOException
-      if unable to send the message.</p></div></div><br class="example-break"><div class="example"><a name="d0e16184"></a><p class="title"><b>Example&nbsp;28.2.&nbsp;Send Text Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      if unable to send the message.</p></div></div><br class="example-break"><div class="example"><a name="d0e16154"></a><p class="title"><b>Example&nbsp;28.2.&nbsp;Send Text Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a TEXT message to remote endpoint
@@ -49,7 +49,7 @@ catch (IOException e)
       if unable to send the message.</p></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="partial"></a>Send Partial Message</h3></div></div></div><p>If you have a large message to send, and want to send it in pieces
     and parts, you can utilize the partial message sending methods of
     RemoteEndpoint. Just be sure you finish sending your message (<code class="code">isLast
-    == true</code>)</p><div class="example"><a name="d0e16200"></a><p class="title"><b>Example&nbsp;28.3.&nbsp;Send Partial Binary Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+    == true</code>)</p><div class="example"><a name="d0e16170"></a><p class="title"><b>Example&nbsp;28.3.&nbsp;Send Partial Binary Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a BINARY message to remote endpoint
@@ -69,7 +69,7 @@ catch (IOException e)
         </script></p><p>How to send a Binary message in 2 parts, using the partial message
       support in RemoteEndpoint. This will block until each part of the
       message is sent, possibly throwing an IOException if unable to send the
-      partial message.</p></div></div><br class="example-break"><div class="example"><a name="d0e16208"></a><p class="title"><b>Example&nbsp;28.4.&nbsp;Send Partial Text Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      partial message.</p></div></div><br class="example-break"><div class="example"><a name="d0e16178"></a><p class="title"><b>Example&nbsp;28.4.&nbsp;Send Partial Text Message (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a TEXT message to remote endpoint
@@ -88,7 +88,7 @@ catch (IOException e)
       support in RemoteEndpoint. This will block until each part of the
       message is sent, possibly throwing an IOException if unable to send the
       partial message.</p></div></div><br class="example-break"></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="pingpong"></a>Send Ping / Pong Control Frame</h3></div></div></div><p>You can also send Ping and Pong control frames using the
-    RemoteEndpoint.</p><div class="example"><a name="d0e16221"></a><p class="title"><b>Example&nbsp;28.5.&nbsp;Send Ping Control Frame (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+    RemoteEndpoint.</p><div class="example"><a name="d0e16191"></a><p class="title"><b>Example&nbsp;28.5.&nbsp;Send Ping Control Frame (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a PING to remote endpoint
@@ -105,7 +105,7 @@ catch (IOException e)
         </script></p><p>How to send a Ping control frame, with a payload of <code class="code">"You
       There?"</code> (arriving at Remote Endpoint as a byte array payload).
       This will block until the message is sent, possibly throwing an
-      IOException if unable to send the ping frame.</p></div></div><br class="example-break"><div class="example"><a name="d0e16232"></a><p class="title"><b>Example&nbsp;28.6.&nbsp;Send Pong Control Frame (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      IOException if unable to send the ping frame.</p></div></div><br class="example-break"><div class="example"><a name="d0e16202"></a><p class="title"><b>Example&nbsp;28.6.&nbsp;Send Pong Control Frame (Blocking)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Blocking Send of a PONG to remote endpoint
@@ -128,7 +128,7 @@ catch (IOException e)
         message)</code></a></p></li><li class="listitem"><p><a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/websocket/api/RemoteEndpoint.html#sendStringByFuture(java.lang.String)" target="_top"><code class="code">RemoteEndpoint.sendStringByFuture(String
         message)</code></a></p></li></ul></div><p>Both return a <code class="code">Future&lt;Void&gt;</code> that can be used to
     test for success and failure of the message send using standard <a class="link" href="http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html" target="_top"><code class="classname">java.util.concurrent.Future</code></a>
-    behavior.</p><div class="example"><a name="d0e16270"></a><p class="title"><b>Example&nbsp;28.7.&nbsp;Send Binary Message (Async Simple)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+    behavior.</p><div class="example"><a name="d0e16240"></a><p class="title"><b>Example&nbsp;28.7.&nbsp;Send Binary Message (Async Simple)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a BINARY message to remote endpoint
@@ -136,7 +136,7 @@ ByteBuffer buf = ByteBuffer.wrap(new byte[] { 0x11, 0x22, 0x33, 0x44 });
 remote.sendBytesByFuture(buf);]]>
         </script></p><p>How to send a simple Binary message using the RemoteEndpoint. The
       message will be enqueued for outgoing write, but you will not know if it
-      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16278"></a><p class="title"><b>Example&nbsp;28.8.&nbsp;Send Binary Message (Async, Wait Till Success)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16248"></a><p class="title"><b>Example&nbsp;28.8.&nbsp;Send Binary Message (Async, Wait Till Success)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a BINARY message to remote endpoint
@@ -154,7 +154,7 @@ catch (ExecutionException | InterruptedException e)
 }]]>
         </script></p><p>How to send a simple Binary message using the RemoteEndpoint,
       tracking the <code class="code">Future&lt;Void&gt;</code> to know if the send
-      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16289"></a><p class="title"><b>Example&nbsp;28.9.&nbsp;Send Binary Message (Async, timeout of send)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16259"></a><p class="title"><b>Example&nbsp;28.9.&nbsp;Send Binary Message (Async, timeout of send)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a BINARY message to remote endpoint
@@ -184,14 +184,14 @@ catch (TimeoutException e)
         </script></p><p>How to send a simple Binary message using the RemoteEndpoint,
       tracking the <code class="code">Future&lt;Void&gt;</code> and waiting only prescribed
       amount of time for the send to complete, cancelling the message if the
-      timeout occurs.</p></div></div><br class="example-break"><div class="example"><a name="d0e16300"></a><p class="title"><b>Example&nbsp;28.10.&nbsp;Send Text Message (Async Simple)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      timeout occurs.</p></div></div><br class="example-break"><div class="example"><a name="d0e16270"></a><p class="title"><b>Example&nbsp;28.10.&nbsp;Send Text Message (Async Simple)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a TEXT message to remote endpoint
 remote.sendStringByFuture("Hello World");]]>
         </script></p><p>How to send a simple Text message using the RemoteEndpoint. The
       message will be enqueued for outgoing write, but you will not know if it
-      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16308"></a><p class="title"><b>Example&nbsp;28.11.&nbsp;Send Text Message (Async, Wait Till Success)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16278"></a><p class="title"><b>Example&nbsp;28.11.&nbsp;Send Text Message (Async, Wait Till Success)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a TEXT message to remote endpoint
@@ -208,7 +208,7 @@ catch (ExecutionException | InterruptedException e)
 }]]>
         </script></p><p>How to send a simple Binary message using the RemoteEndpoint,
       tracking the <code class="code">Future&lt;Void&gt;</code> to know if the send
-      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16319"></a><p class="title"><b>Example&nbsp;28.12.&nbsp;Send Text Message (Async, timeout of send)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+      succeeded or failed.</p></div></div><br class="example-break"><div class="example"><a name="d0e16289"></a><p class="title"><b>Example&nbsp;28.12.&nbsp;Send Text Message (Async, timeout of send)</b></p><div class="example-contents"><p><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[RemoteEndpoint remote = session.getRemote();
 
 // Async Send of a TEXT message to remote endpoint
