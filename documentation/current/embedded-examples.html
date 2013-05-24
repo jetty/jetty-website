@@ -1,0 +1,174 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Embedded Examples</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet-api, cometd, http, spdy, eclipse, maven, java, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="advanced-embedding.html" title="Chapter&nbsp;18.&nbsp;Embedding"><link rel="prev" href="embedding-jetty.html" title="Embedding Jetty"><link rel="next" href="advanced-extras.html" title="Chapter&nbsp;19.&nbsp;Bundled Servlets, Filters, and Handlers"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com"><tr><td style="width: 50%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Embedded Examples</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="embedding-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;18.&nbsp;Embedding</th><td width="20%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/support.jsp">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedded-examples"></a>Embedded Examples</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="embedded-examples.html#embedded-file-server">Simple File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#embedded-split-file-server">Split File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#adding-embedded-examples">Adding Examples</a></span></dt></dl></div><p>
+    Jetty has a rich history of being embedded into a wide variety of applications.  In this section we will walk you through a number of our simple examples under our embedded-jetty-examples project in our git repository.
+  </p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Live Files</h3><p>
+      These files are pulled directly from our git repository when this document is generated.  If the line numbers do not line up feel free to fix this documentation in github and give us a pull request, or at least open an issue to notify us of the discrepancy.
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-file-server"></a>Simple File Server</h3></div></div></div><p>
+    This example shows how to create a simple file server in jetty.  It is perfectly suitable for test cases where you need an actual web server to obtain a file from, it could easily be configured to serve files from a directory under src/test/resources.  Note that this does not have any logic for caching of files, either within the server or setting the appropriate headers on the response.  It is simply a few lines that illustate how easy it is to serve out some files.
+  </p><div class="example"><a name="d0e10922"></a><p class="title"><b>Example&nbsp;18.1.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/FileServer.java" target="_top">FileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+          <![CDATA[package org.eclipse.jetty.embedded;
+
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
+
+/** Simple Jetty FileServer.
+ * This is a simple example of Jetty configured as a FileServer.
+ */
+public class FileServer {
+
+    public static void main(String[] args) throws Exception {
+        Server server = new Server(8080);
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.setDirectoriesListed(true);
+        resource_handler.setWelcomeFiles(new String[] { "index.html" });
+        resource_handler.setResourceBase(".");
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[] { resource_handler, new DefaultHandler() });
+        server.setHandler(handlers);
+        server.start();
+        server.join();
+    }
+}
+]]>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10931"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
+            Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
+          </p></dd><dt><span class="term">Line 18: Create ResourceHandler</span></dt><dd><p>
+            The ResourceHandler is the object that will actually handle the request for a given file.  It is a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.
+          </p></dd><dt><span class="term">Lines 19 - 21: Configure ResourceHandler</span></dt><dd><p>
+            Setting the resource base indicates where the files should be served out of.  In this example it is the current directory but it can be configured to anything that the jvm has access to.
+          </p></dd><dt><span class="term">Lines 22 - 24: Establish Handler Chain</span></dt><dd><p>
+            A HandlerList is just like it sounds, a list of handlers that can be processed sequentially to try and resolve a filename to serve.  This shows one method of chaining the resource handler with the DefaultHandler which terminates the handler chain and is able to serve out things like a flav.ico, return a 404 on a missing resource, etc.  Finally, set the handler list to the server so it knows about it.
+          </p></dd><dt><span class="term">Lines 25 - 26: Start Server</span></dt><dd><p>
+            Start things up!  By using the server.join() the server thread will join with the current thread.  See
+            <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" target="_top">Thread.join()</a>
+          for more details.
+        </p></dd></dl></div><p>
+      After you have started things up you should be able to navigate to http://localhost:8080/index.html (assuming one is in the resource base directory) and you are good to go.
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10970"></a>Maven Coordinates</h4></div></div></div><p>
+      To use this example in your project you will need the following maven dependencies declared.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-server</artifactId>
+  <version>9.0.3.v20130506</version>
+</dependency>
+
+      ]]>
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-split-file-server"></a>Split File Server</h3></div></div></div><p>
+    This example builds on the <a class="link" href="">Simple File Server</a> to show how chaining multiple ResourceHandlers together can let you aggregate mulitple directories to serve content on a single path and how you can link these together with ContextHandlers.
+  </p><div class="example"><a name="d0e10987"></a><p class="title"><b>Example&nbsp;18.2.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SplitFileServer.java" target="_top">SplitFileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+          <![CDATA[package org.eclipse.jetty.embedded;
+
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
+import org.eclipse.jetty.util.resource.Resource;
+
+/**
+ * A {@link ContextHandlerCollection} handler may be used to direct a request to
+ * a specific Context. The URI path prefix and optional virtual host is used to
+ * select the context.
+ * 
+ */
+public class SplitFileServer {
+
+    public static void main(String[] args) throws Exception {
+        Server server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(8090);
+        server.setConnectors(new Connector[] { connector });
+        ContextHandler context0 = new ContextHandler();
+        context0.setContextPath("/");
+        ResourceHandler rh0 = new ResourceHandler();
+        rh0.setBaseResource(Resource.newResource(MavenTestingUtils.getTestResourceDir("dir0")));
+        context0.setHandler(rh0);
+        ContextHandler context1 = new ContextHandler();
+        context1.setContextPath("/");
+        ResourceHandler rh1 = new ResourceHandler();
+        rh1.setBaseResource(Resource.newResource(MavenTestingUtils.getTestResourceDir("dir1")));
+        context1.setHandler(rh1);
+        ContextHandlerCollection contexts = new ContextHandlerCollection();
+        contexts.setHandlers(new Handler[] { context0, context1 });
+        server.setHandler(contexts);
+        server.start();
+        System.err.println(server.dump());
+        server.join();
+    }
+}
+]]>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10996"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 22 - 25: Create Server Object</span></dt><dd><p>
+            Create the Server object and a corresponding ServerConnector and then set the port for the connector.  In this example the server will listen on port 8090.  If you set this to port 0 then when the server has been started you can called <code class="code">connector.getLocalPort()</code> to programmatically get the port the server started on.
+          </p></dd><dt><span class="term">Line 27 - 30: Create Context Handler and ResourceHandler</span></dt><dd><p>
+            Create a Context Handler and ResourceHandler.  The ContextHandler is getting set to <code class="code">/</code> path but this could be anything you like for builing out your url.  Note how we are setting the ResourceBase using our jetty maven testing utilities to get the proper resource directory, you needn't use these, you simply need to supply the paths you are looking to serve content from.
+          </p></dd><dt><span class="term">Lines 31 - 35: Configure Another</span></dt><dd><p>
+            Rinse and repeat the previous item, only specifying a different resource base.
+          </p></dd><dt><span class="term">Lines 36, 37: Aggregate Contexts</span></dt><dd><p>
+            Create a ContextHandlerCollection and set the context handlers to it.  This will let jetty process urls against the declared contexts in order to match up content.
+          </p></dd><dt><span class="term">Lines 39 - 41: Start Server</span></dt><dd><p>
+            Start things up!  By using the server.join() the server thread will join with the current thread.  See
+            <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" target="_top">Thread.join()</a>
+            for more details.  Also note the usage of the <code class="code">server.dump()</code> call, this will print to stderr the configuration of the entire server object, threadpools, classpaths and all.  This can be incredibly useful for debugging your application when your contexts, servlets or webapp paths don't seem right.  It also prints out the chain of handlers so you can more easily follow through the order of operation.
+          </p></dd></dl></div><p>
+      After you have started things up you should be able to navigate to http://localhost:8090/index.html (assuming one is in the resource base directory) and you are good to go.  Any requests for files will be looked for in the first resource handler, then the second, and so on and so forth.
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11044"></a>Maven Coordinates</h4></div></div></div><p>
+      To use this example as is in your project you will need the following maven dependencies declared.  We would recommend not using the toolchain dependency in your actual application.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+<dependency>  
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-server</artifactId>
+  <version>9.0.3.v20130506</version>
+</dependency>
+<dependency>
+  <groupId>org.eclipse.jetty.toolchain</groupId>
+  <artifactId>jetty-test-helper</artifactId>
+  <version>2.2</version>
+</dependency>
+
+      ]]>
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="adding-embedded-examples"></a>Adding Examples</h3></div></div></div><p>
+      If you would like to add an example to this list, fork the documentation project from github (see the blue bar at the bottom of this page) and add the new page.  Feel free to add the example contents directly as a <code class="code">programlisting</code> using <code class="code">language="java"</code> and we will take it from there.
+    </p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="embedding-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-embedding.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Embedding Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;19.&nbsp;Bundled Servlets, Filters, and Handlers</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
+        See an error or something missing?
+        <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+            <span class="website"><i class="icon-github"></i> Github!</span></a></span></p></div><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
