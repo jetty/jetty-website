@@ -14,7 +14,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedded-examples"></a>Embedded Examples</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="embedded-examples.html#embedded-file-server">Simple File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#embedded-split-file-server">Split File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#adding-embedded-examples">Adding Examples</a></span></dt></dl></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="embedded-examples"></a>Embedded Examples</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="embedded-examples.html#embedded-file-server">Simple File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#embedded-split-file-server">Split File Server</a></span></dt><dt><span class="section"><a href="embedded-examples.html#embedded-minimal-servlet">Minimal Servlet</a></span></dt><dt><span class="section"><a href="embedded-examples.html#adding-embedded-examples">Adding Examples</a></span></dt></dl></div><p>
     Jetty has a rich history of being embedded into a wide variety of applications.  In this section we will walk you through a number of our simple examples under our embedded-jetty-examples project in our git repository.
   </p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Live Files</h3><p>
       These files are pulled directly from our git repository when this document is generated.  If the line numbers do not line up feel free to fix this documentation in github and give us a pull request, or at least open an issue to notify us of the discrepancy.
@@ -151,6 +151,69 @@ public class SplitFileServer {
   <groupId>org.eclipse.jetty.toolchain</groupId>
   <artifactId>jetty-test-helper</artifactId>
   <version>2.2</version>
+</dependency>
+
+      ]]>
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-minimal-servlet"></a>Minimal Servlet</h3></div></div></div><p>
+    This example shows the bare minimum required for deploying a servlet into jetty.  Note that this is strictly a servlet, not a servlet in the context of a web application, that example comes later.  This is purely just a servlet deployed and mounted on a context and able to process requests.  This example is excellent for situations where you have a simple servlet that you need to unit test, just mount it on a context and issue requests using your favorite http client library (like our Jetty client found in <a class="xref" href="http-client.html" title="Chapter&nbsp;26.&nbsp;HTTP Client">Chapter&nbsp;26, <i>HTTP Client</i></a>).
+  </p><div class="example"><a name="d0e11060"></a><p class="title"><b>Example&nbsp;18.3.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/MinimalServlets.java" target="_top">MinimalServlets.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+          <![CDATA[package org.eclipse.jetty.embedded;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.ServletHandler;
+
+public class MinimalServlets {
+
+    public static void main(String[] args) throws Exception {
+        Server server = new Server(8080);
+        ServletHandler handler = new ServletHandler();
+        server.setHandler(handler);
+        handler.addServletWithMapping(HelloServlet.class, "/*");
+        server.start();
+        server.join();
+    }
+
+    public static class HelloServlet extends HttpServlet {
+
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+            response.setContentType("text/html");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().println("<h1>Hello SimpleServlet</h1>");
+        }
+    }
+}
+]]>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11069"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 14: Create Server Object</span></dt><dd><p>
+            Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
+          </p></dd><dt><span class="term">Line 15,16: Create ServletHandler</span></dt><dd><p>
+            The ServletHandler is a dead simple way to create a context handler that is backed by an instance of a Servlet.  This handler then needs to be registered with the Server object.
+          </p></dd><dt><span class="term">Lines 17: Register Servlet with path</span></dt><dd><p>
+            Passing in the class for the servlet allows jetty to instantite and instance of that servlet and mount it on a given context path.
+          </p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Important</h3><p>
+              This is a raw Servlet, not a servlet that has been configured through a <code class="filename">web.xml</code> or anything like that.
+            </p></div></dd><dt><span class="term">Lines 18, 19: Start Server</span></dt><dd><p>
+            Start things up!  By using the server.join() the server thread will join with the current thread.  See
+            <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" target="_top">Thread.join()</a>
+            for more details.
+          </p></dd><dt><span class="term">Lines 22 - 30: Hello World Servlet</span></dt><dd><p>
+            It is really simple to create useful servlets for testing behaviors, sometimes you just need a http server to run a unit test against that will return test content and wiring up a servlet like this makes it trivial.      
+          </p></dd></dl></div><p>
+      After you have started things up you should be able to navigate to http://localhost:8080/ and you are good to go.
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11114"></a>Maven Coordinates</h4></div></div></div><p>
+      To use this example in your project you will need the following maven dependencies declared.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+<dependency>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-servlet</artifactId>
+  <version>9.0.3.v20130506</version>
 </dependency>
 
       ]]>
