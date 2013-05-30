@@ -14,9 +14,9 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="high-load"></a>High Load</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="high-load.html#d0e15832">Load Generation for Load Testing</a></span></dt><dt><span class="section"><a href="high-load.html#d0e15857">Operating System Tuning</a></span></dt></dl></div><p>Configuring Jetty for high load, whether for load testing or for
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="high-load"></a>High Load</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="high-load.html#d0e15838">Load Generation for Load Testing</a></span></dt><dt><span class="section"><a href="high-load.html#d0e15863">Operating System Tuning</a></span></dt></dl></div><p>Configuring Jetty for high load, whether for load testing or for
   production, requires that the operating system, the JVM, Jetty, the
-  application, the network and the load generation all be tuned.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15832"></a>Load Generation for Load Testing</h3></div></div></div><p>The load generation machines must have their OS, JVM, etc., tuned
+  application, the network and the load generation all be tuned.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15838"></a>Load Generation for Load Testing</h3></div></div></div><p>The load generation machines must have their OS, JVM, etc., tuned
     just as much as the server machines.</p><p>The load generation should not be over the local network on the
     server machine, as this has unrealistic performance and latency as well as
     different packet sizes and transport characteristics.</p><p>The load generator should generate a realistic load:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>A common mistake is that load generators often open relatively
@@ -38,11 +38,11 @@
         or fewer users. The Jetty HttpClient is an ideal choice for building a
         load generator, as it is asynchronous and can simulate many thousands
         of connections (see the Cometd Load Tester for a good example of a
-        realistic load generator).</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15857"></a>Operating System Tuning</h3></div></div></div><p>Both the server machine and any load generating machines need to be
-    tuned to support many TCP/IP connections and high throughput.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e15862"></a>Linux</h4></div></div></div><p>Linux does a reasonable job of self-configuring TCP/IP, but there
+        realistic load generator).</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15863"></a>Operating System Tuning</h3></div></div></div><p>Both the server machine and any load generating machines need to be
+    tuned to support many TCP/IP connections and high throughput.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e15868"></a>Linux</h4></div></div></div><p>Linux does a reasonable job of self-configuring TCP/IP, but there
       are a few limits and defaults that you should increase. You can
       configure most of them in <code class="filename">/etc/security/limits.conf</code>
-      or via <code class="code"> sysctl</code>.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15873"></a>TCP Buffer Sizes</h5></div></div></div><p>You should increase TCP buffer sizes to at least 16MB for 10G
+      or via <code class="code"> sysctl</code>.</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15879"></a>TCP Buffer Sizes</h5></div></div></div><p>You should increase TCP buffer sizes to at least 16MB for 10G
         paths and tune the autotuning (although you now need to consider
         buffer bloat).</p><div class="screenexample"><pre class="screen">
 
@@ -51,7 +51,7 @@ $ sysctl -w net.core.wmem_max=16777216
 $ sysctl -w net.ipv4.tcp_rmem="4096 87380 16777216"
 $ sysctl -w net.ipv4.tcp_wmem="4096 16384 16777216"
  
-        </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15880"></a>Queue Sizes</h5></div></div></div><p><code class="code">net.core.somaxconn</code> controls the size of the
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15886"></a>Queue Sizes</h5></div></div></div><p><code class="code">net.core.somaxconn</code> controls the size of the
         connection listening queue. The default value is 128; if you are
         running a high-volume server and connections are getting refused at a
         TCP level, you need to increase this. This is a very tweakable setting
@@ -71,7 +71,7 @@ $ sysctl -w net.core.netdev_max_backlog=16384
 $ sysctl -w net.ipv4.tcp_max_syn_backlog=8192
 $ sysctl -w net.ipv4.tcp_syncookies=1
  
-        </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15896"></a>Ports</h5></div></div></div><p>If many outgoing connections are made (for example, on load
+        </pre></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15902"></a>Ports</h5></div></div></div><p>If many outgoing connections are made (for example, on load
         generators), the operating system might run low on ports. Thus it is
         best to increase the port range, and allow reuse of sockets in
         TIME_WAIT:</p><div class="screenexample"><pre class="screen">
@@ -79,7 +79,7 @@ $ sysctl -w net.ipv4.tcp_syncookies=1
 $ sysctl -w net.ipv4.ip_local_port_range="1024 65535"
 $ sysctl -w net.ipv4.tcp_tw_recycle=1
 
-        </pre></div><div class="section"><div class="titlepage"></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15904"></a>File Descriptors</h6></div></div></div><p>Busy servers and load generators may run out of file
+        </pre></div><div class="section"><div class="titlepage"></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15910"></a>File Descriptors</h6></div></div></div><p>Busy servers and load generators may run out of file
             descriptors as the system defaults are normally low. These can be
             increased for a specific user in
             <code class="filename">/etc/security/limits.conf</code>:</p><div class="screenexample"><pre class="screen">
@@ -87,7 +87,7 @@ $ sysctl -w net.ipv4.tcp_tw_recycle=1
 theusername            hard nofile     40000
 theusername            soft nofile     40000
 
-            </pre></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15914"></a>Congestion Control</h6></div></div></div><p>Linux supports pluggable congestion control algorithms. To
+            </pre></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15920"></a>Congestion Control</h6></div></div></div><p>Linux supports pluggable congestion control algorithms. To
             get a list of congestion control algorithms that are available in
             your kernel run:</p><div class="screenexample"><pre class="screen">
 
@@ -99,11 +99,11 @@ $ sysctl net.ipv4.tcp_available_congestion_control
 
 $ sysctl -w net.ipv4.tcp_congestion_control=cubic
 
-            </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15925"></a>Mac OS</h6></div></div></div><p>TBD</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15930"></a>Windows</h6></div></div></div><p>TBD</p></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15935"></a>Network Tuning</h5></div></div></div><p>Intermediaries such as nginx can use a non-persistent HTTP/1.0
-        connection. Make sure to use persistent HTTP/1.1 connections.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15940"></a>JVM Tuning</h5></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Tune the <a class="link" href="garbage-collection.html#examples" target="_top">Garbage
-            Collection</a></p></li><li class="listitem"><p>Allocate sufficient memory</p></li><li class="listitem"><p>Use the -server option</p></li><li class="listitem"><p>Jetty Tuning</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15958"></a>Connectors</h5></div></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15961"></a>Acceptors</h6></div></div></div><p>The standard rule of thumb for the number of Accepters to
-          configure is one per CPU on a given machine.</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15966"></a>Low Resource Limits</h6></div></div></div><p>Must not be configured for less than the number of expected
-          connections.</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15971"></a>Thread Pool</h6></div></div></div><p>Configure with goal of limiting memory usage maximum
+            </pre></div></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15931"></a>Mac OS</h6></div></div></div><p>TBD</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15936"></a>Windows</h6></div></div></div><p>TBD</p></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15941"></a>Network Tuning</h5></div></div></div><p>Intermediaries such as nginx can use a non-persistent HTTP/1.0
+        connection. Make sure to use persistent HTTP/1.1 connections.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15946"></a>JVM Tuning</h5></div></div></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Tune the <a class="link" href="garbage-collection.html#examples" target="_top">Garbage
+            Collection</a></p></li><li class="listitem"><p>Allocate sufficient memory</p></li><li class="listitem"><p>Use the -server option</p></li><li class="listitem"><p>Jetty Tuning</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e15964"></a>Connectors</h5></div></div></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15967"></a>Acceptors</h6></div></div></div><p>The standard rule of thumb for the number of Accepters to
+          configure is one per CPU on a given machine.</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15972"></a>Low Resource Limits</h6></div></div></div><p>Must not be configured for less than the number of expected
+          connections.</p></div><div class="section"><div class="titlepage"><div><div><h6 class="title"><a name="d0e15977"></a>Thread Pool</h6></div></div></div><p>Configure with goal of limiting memory usage maximum
           available. Typically &gt;50 and &lt;500</p></div></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="garbage-collection.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="optimizing.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="limit-load.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Garbage Collection&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Limiting Load</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
