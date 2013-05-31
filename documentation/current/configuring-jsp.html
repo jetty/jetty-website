@@ -17,11 +17,14 @@
       </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuring-jsp"></a>Chapter&nbsp;8.&nbsp;Configuring JSP Support</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="configuring-jsp.html#jsp-support">Configuring JSP</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jsp-support"></a>Configuring JSP</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-jsp.html#compiling-jsps">Compiling JSPs</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#configuring-jsp-for-jetty">Configuring JSP for Jetty</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#modifying-configuration">Modifying the Configuration</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jstl-taglibs-for-jetty7-jetty8">Using JSTL Taglibs</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jsf-taglibs">Using JSF Taglibs</a></span></dt></dl></div><p>This document provides information about configuring JSP.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="compiling-jsps"></a>Compiling JSPs</h3></div></div></div><p>To compile <code class="filename">.jsp</code> files into Java classes, you
     need a Java compiler. You can acquire a Java compiler from the JVM if you
     are using a full JDK, or from a third party Jar.</p><p>By default, the jsp engine used by Jetty will try to use the
-    compiler that is part of the JDK. </p><p>If you do not have a full JDK, then you can configure the jsp engine
+    compiler that is part of the JDK. <span class="bold"><strong>NOTE:</strong></span>
+    when using the JDK compiler, your class files will
+    <span class="emphasis"><em>not</em></span> be saved to disk unless you use the
+    <code class="code">saveBytecode</code> init-param as described below.</p><p>If you do not have a full JDK, then you can configure the jsp engine
     to use the Eclipse Java Compiler that Jetty ships in the distro in
     $JETTY_HOME/lib/jsp/org.eclipse.jdt.core-3.7.1.jar. You will need to
     define a SystemProperty that prevents the jsp engine from defaulting to
-    the in-JVM compiler. </p><p>Here's the property definition to add to
+    the in-JVM compiler.</p><p>Here's the property definition to add to
     $JETTY_HOME/start.ini:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
           <![CDATA[
 
@@ -51,11 +54,12 @@
     engine. This page lists the configuration parameters, their meanings and
     their default settings. All parameters are set on the
     <code class="code">org.apache.jasper.JspServlet</code> instance defined in the <a class="link" href="webdefault-xml.html" title="webdefault.xml">webdefault.xml</a> file.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>Be careful: for all of the parameters below, if the value you set
-      doesn't take effect, try using all lower case instead of camel case, as
-      JSP is inconsistent in its parameter naming strategy.</p></div><div class="table"><a name="d0e5650"></a><p class="title"><b>Table&nbsp;8.1.&nbsp;Understanding JSP Parameters</b></p><div class="table-contents"><table summary="Understanding JSP Parameters" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th align="left">init param</th><th align="left">Description</th><th align="left">Default</th><th align="left">webdefault.xml</th></tr></thead><tbody><tr><td>development</td><td><code class="code">development=true</code>, recompilation checks occur
+      doesn't take effect, try using all lower case instead of camel case, or
+      capitalizing only some of the words in the name, as JSP is inconsistent
+      in its parameter naming strategy.</p></div><div class="table"><a name="d0e5659"></a><p class="title"><b>Table&nbsp;8.1.&nbsp;Understanding JSP Parameters</b></p><div class="table-contents"><table summary="Understanding JSP Parameters" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th align="left">init param</th><th align="left">Description</th><th align="left">Default</th><th align="left">webdefault.xml</th></tr></thead><tbody><tr><td>development</td><td><code class="code">development=true</code>, recompilation checks occur
             on each request. See also <code class="code">
             modificationTestInterval</code>.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>fork</td><td>Should Ant fork its java compiles of JSP pages?</td><td>TRUE</td><td>FALSE</td></tr><tr><td>keepgenerated</td><td>Do you want to keep the generated Java files
-            around?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>saveByteCode</td><td>If class files are generated as byte arrays, should they be
+            around?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>saveBytecode</td><td>If class files are generated as byte arrays, should they be
             saved to disk at the end of compilations?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>trimSpaces</td><td>Should white spaces between directives or actions be
             trimmed?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>enablePooling</td><td>Determines whether tag handler pooling is enabled.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>mappedFile</td><td>Support for mapped Files. Generates a servlet that has a
             print statement per line of the JSP file./</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>sendErrorToClient</td><td>If false, stack traces, etc., are sent to std error instead

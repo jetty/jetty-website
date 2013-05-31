@@ -14,13 +14,13 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-mongodb"></a>Session Clustering with MongoDB</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7785">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7802">Configuring the MongoDBSessionIdManager</a></span></dt><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7868">Configuring a MongoSessionManager</a></span></dt></dl></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-mongodb"></a>Session Clustering with MongoDB</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7794">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7811">Configuring the MongoDBSessionIdManager</a></span></dt><dt><span class="section"><a href="session-clustering-mongodb.html#d0e7877">Configuring a MongoSessionManager</a></span></dt></dl></div><p>
     Jetty can support session clustering by persisting sessions into MongoDB. Each Jetty instance locally caches sessions for which it has received requests, writing any changes to the session through to the cluster as the request exits the server. Sessions must obey the Serialization contract, and servlets must call the Session.setAttribute() method to ensure that changes are persisted.
   </p><p>
     The persistent session mechanism works in conjunction with a load balancer that supports stickiness. Stickiness can be based on various data items, such as source IP address or characteristics of the session ID or a load-balancer specific mechanism. For those load balancers that examine the session ID, the Jetty persistent session mechanism appends a node ID to the session ID, which can be used for routing.
   </p><p>
     In this type of solution, the traffic on the network needs to be carefully watched and tends to be the bottleneck. You are probably investigating this solution in order to scale to large amount of users and sessions, so careful attention should be paid to your usage scenario. Applications with a heavy write profile to their sessions will consume more network bandwidth then profiles that are predominately read oriented. We recommend using this session manager with largely read based session scenarios.
-  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7785"></a>Configuration</h3></div></div></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7794"></a>Configuration</h3></div></div></div><p>
       There are two components to session management in Jetty: a session ID manager and a session manager.
     </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
           The session ID manager ensures that session IDs are unique across all webapps hosted on a Jetty instance, and thus there should only be one session ID manager per Jetty instance.
@@ -28,7 +28,7 @@
           The session manager handles the session lifecycle (create/update/invalidate/expire) on behalf of a web application, so there is one session manager per web application instance.
         </p></li></ul></div><p>
       These managers also cooperate and collaborate with the <code class="code">org.eclipse.jetty.server.session.SessionHandler</code> to enable cross-context dispatch.
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7802"></a>Configuring the MongoDBSessionIdManager</h3></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7811"></a>Configuring the MongoDBSessionIdManager</h3></div></div></div><p>
       You need to configure an <code class="code">org.eclipse.jetty.nosql.mongodb.MongoSessionIdManager</code> instance, either in embedded code or in a jetty.xml file. Here is an example of a jetty.xml setup:
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -123,7 +123,7 @@ Server server = new Server();
         How old should an invalid session be before it is eligible to be purged?
       </p></dd><dt><span class="term">purgeValidAge</span></dt><dd><p>
         How old should a valid session be before it is eligible to be marked invalid and purged? Should this occur at all?
-      </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7868"></a>Configuring a MongoSessionManager</h3></div></div></div><p>
+      </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7877"></a>Configuring a MongoSessionManager</h3></div></div></div><p>
   The way you configure a MongoSessionManager depends on whether you're configuring from a context xml file or a jetty-web.xml file or code. The basic difference is how you get a reference to the Jetty <code class="code">org.eclipse.jetty.server.Server</code> instance.
 </p><p>
   From a context xml file, you reference the Server instance as a Ref:

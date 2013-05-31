@@ -15,10 +15,10 @@
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-logging-log4j"></a>Example: Logging with Apache Log4j</h2></div></div></div><p>This page describes how to Configure Jetty for Logging with <a class="link" href="http://logging.apache.org/log4j/" target="_top">Apache Log4j</a>.</p><p>The basic configuration for Logging with Apache Log4j is to use <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for
-  Log4j</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6385"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.6/slf4j-log4j12-1.6.6.jar" target="_top">slf4j-log4j12-1.6.6.jar</a></code></span></dt><dd><p>This is the Slf4j binding layer for Log4j.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>This is the basic Slf4j API that Jetty's Slf4jLog
+  Log4j</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6394"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.6/slf4j-log4j12-1.6.6.jar" target="_top">slf4j-log4j12-1.6.6.jar</a></code></span></dt><dd><p>This is the Slf4j binding layer for Log4j.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>This is the basic Slf4j API that Jetty's Slf4jLog
             implementation uses.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar" target="_top">log4j-1.2.7.jar</a></code></span></dt><dd><p>This is the <a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.6.6/slf4j-parent-1.6.6.pom" target="_top">version
             of log4j that slf4j-log4j12-1.6.6 was written
-            against</a>.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6419"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
+            against</a>.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6428"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
     them into place and tell Jetty to load them on each startup.</p><p>Create a <code class="filename">${jetty.home}/lib/logging/</code> directory
     and place the 3 files you downloaded there.</p><div class="informalexample"><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 520
@@ -36,14 +36,14 @@ total 520
 Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>logging</strong></span>, resources, websocket]
 18:               1.2.17 | ${jetty.home}/lib/logging/<span class="bold"><strong>log4j-1.2.17.jar</strong></span>
 19:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
-20:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-log4j12-1.6.6.jar</strong></span></pre></div></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6481"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
+20:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-log4j12-1.6.6.jar</strong></span></pre></div></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6490"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
     <code class="filename">${jetty.home}/resources/jetty-logging.properties</code>,
     make sure it contains just the following</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
           <![CDATA[# Configure Jetty for SLf4j Logging
 org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
 ]]>
         </script></p><p>This will tell Jetty to use the Slf4jLog implementation for its
-    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6494"></a>Configuring Log4j</h3></div></div></div><p>Next you will need a
+    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6503"></a>Configuring Log4j</h3></div></div></div><p>Next you will need a
     <code class="filename">${jetty.home}/resources/log4j.properties</code> file for
     configuring Log4j.</p><p>Example <code class="filename">resources/log4j.properties</code> file</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
           <![CDATA[# Basic Log4j Configuration with STDOUT and File logging
@@ -64,7 +64,7 @@ log4j.appender.filer.append=true
 ]]>
         </script></p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>The use of <code class="filename">${jetty.home}/logs</code> is a handy
         way to always get a reference to the standard Jetty logs
-        directory</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6517"></a>Scripted Installation of Log4j</h3></div></div></div><p><script type="syntaxhighlighter" class="brush: bash;toolbar: false">
+        directory</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6526"></a>Scripted Installation of Log4j</h3></div></div></div><p><script type="syntaxhighlighter" class="brush: bash;toolbar: false">
           <![CDATA[#!/bin/bash
 # -------------------------------------------
 # FOR DEMONSTRATION PURPOSES ONLY
