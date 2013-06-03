@@ -49,7 +49,7 @@
     others.</p><p>To see a list of all goals supported by the Jetty Maven plugin,
     do:</p><div class="screenexample"><pre class="screen">mvn jetty:help</pre></div><p>To see the detailed list of parameters that can be configured for a
     particular goal, in addition to its description, do:</p><div class="screenexample"><pre class="screen">mvn jetty:help -Ddetail=true -Dgoal= goal-name</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jetty-container"></a>Configuring the Jetty Container</h3></div></div></div><p>These configuration elements set up the Jetty environment in which
-    your webapp executes. They are common to most goals:</p><div class="variablelist"><dl><dt><span class="term">httpConnector</span></dt><dd><p>Optional. If not specified, Jetty will create a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">ServerConnector</a>
+    your webapp executes. They are common to most goals:</p><div class="variablelist"><dl><dt><span class="term"><a name="maven-http-connector"></a>httpConnector</span></dt><dd><p>Optional. If not specified, Jetty will create a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/server/ServerConnector.html" target="_top">ServerConnector</a>
           instance listening on port 8080. You can change this default port
           number by using the system property <code class="code">jetty.port</code> on the
           command line, for example, <code class="code">mvn -Djetty.port=9999
@@ -59,11 +59,14 @@
                 default it is 8080.</p></dd><dt><span class="term">host</span></dt><dd><p>The particular interface for the connector to listen on.
                 By default, all interfaces.</p></dd><dt><span class="term">name</span></dt><dd><p>The name of the connector, which is useful for <a class="link" href="serving-webapp-from-particular-port.html" title="Serving a WebApp from a Particular Port/Connector">configuring
                 contexts to respond only on particular
-                connectors</a>.</p></dd><dt><span class="term">maxIdleTime</span></dt><dd><p>Maximum idle time for a connection.</p></dd><dt><span class="term">soLinger</span></dt><dd><p>The socket linger time.</p></dd></dl></div><p> You could instead configure the connectors in a standard
-          <a class="link" href="jetty-xml-config.html" title="jetty.xml">jetty xml config file</a> and
-          put its location into the <code class="code"> <a class="link" href="jetty-maven-plugin.html#jettyXml">jettyXml</a></code> parameter.</p></dd><dt><a name="jettyXml"></a><span class="term">jettyXml</span></dt><dd><p>Optional. The location of a <code class="filename"> <a class="link" href="jetty-xml-config.html" title="jetty.xml">jetty.xml</a> </code> file to
-          apply in addition to any plugin configuration parameters. You might
-          use it if you have other webapps, handlers, specific types of
+                connectors</a>.</p></dd><dt><span class="term">maxIdleTime</span></dt><dd><p>Maximum idle time for a connection.</p></dd><dt><span class="term">soLinger</span></dt><dd><p>The socket linger time.</p></dd></dl></div><p>You could instead configure the connectors in a standard <a class="link" href="jetty-xml-config.html" title="jetty.xml">jetty xml config file</a> and put its
+          location into the <code class="code"> <a class="link" href="jetty-maven-plugin.html#jettyXml">jettyXml</a></code> parameter. Note that since
+          jetty-9.0 it is no longer possible to configure a <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">https connector</a> directly in the
+          pom.xml: you need to <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">use jetty
+          xml config files to do it</a>.</p></dd><dt><a name="jettyXml"></a><span class="term">jettyXml</span></dt><dd><p>Optional. A comma separated list of locations of <code class="filename">
+          <a class="link" href="jetty-xml-config.html" title="jetty.xml">jetty xml</a> </code> files
+          to apply in addition to any plugin configuration parameters. You
+          might use it if you have other webapps, handlers, specific types of
           connectors etc., to deploy, or if you have other Jetty objects that
           you cannot configure from the plugin.</p></dd><dt><span class="term">scanIntervalSeconds</span></dt><dd><p>The pause in seconds between sweeps of the webapp to check for
           changes and automatically hot redeploy if any are detected. By
@@ -112,8 +115,194 @@
           of the <code class="code">plugin</code> instead.</p></dd><dt><span class="term">excludedGoals</span></dt><dd><p>Optional. A list of jetty plugin goal names that will cause
           the plugin to print an informative message and exit. Useful if you
           want to prevent users from executing goals that you know cannot work
-          with your project.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-your-webapp"></a>Configuring Your WebApp</h3></div></div></div><p>These configuration parameters apply to your webapp. They are common
-    to almost all goals.</p><div class="variablelist"><dl><dt><span class="term">webApp</span></dt><dd><p>Represents an extension to the class <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.hml" target="_top">org.eclipse.jetty.webapp.WebAppContext</a>.
+          with your project.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="maven-config-https"></a>Configuring a Https Connector</h4></div></div></div><p>In order to configure a https connector, you need to use jetty xml
+      configuration files. This example uses files copied directly from the
+      jetty distribution etc/ directory, although you can of course make up
+      your own xml file or files. We will use the following files:</p><div class="variablelist"><dl><dt><span class="term">jetty.xml</span></dt><dd><p>Sets up various characteristics of the <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/java/org/eclipse/jetty/server/Server.java" target="_top"><code class="classname">org.eclipse.jetty.server.Server</code></a>
+            instance for the plugin to use. Importantly, it sets up the <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/jetty-server/src/main/java/org/eclipse/jetty/server/HttpConfiguration.java" target="_top"><code class="classname">org.eclipse.jetty.server.HttpConfiguration</code></a>
+            element that we can refer to in subsequent xml files that
+            configure the connectors. Here's the relevant section:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[    <New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+      <Set name="secureScheme">https</Set>
+      <Set name="securePort"><Property name="jetty.secure.port" default="8443" /></Set>
+      <Set name="outputBufferSize">32768</Set>
+      <Set name="requestHeaderSize">8192</Set>
+      <Set name="responseHeaderSize">8192</Set>
+      <Set name="sendServerVersion">true</Set>
+      <Set name="sendDateHeader">false</Set>
+      <Set name="headerCacheSize">512</Set>
+
+      <!-- Uncomment to enable handling of X-Forwarded- style headers
+      <Call name="addCustomizer">
+        <Arg><New class="org.eclipse.jetty.server.ForwardedRequestCustomizer"/></Arg>
+      </Call>
+      -->
+    </New>
+]]>
+        </script></div></dd><dt><span class="term">jetty-ssl.xml</span></dt><dd><p>Set up ssl which will be used by the https connector. Here's
+            the <code class="filename">jetty-ssl.xml</code> file from the
+            jetty-distribution:</p><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<!-- ============================================================= -->
+<!-- Configure a TLS (SSL) Context Factory                         -->
+<!-- This configuration must be used in conjunction with jetty.xml -->
+<!-- and either jetty-https.xml or jetty-spdy.xml (but not both)   -->
+<!-- ============================================================= -->
+<Configure id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+  <Set name="KeyStorePath"><Property name="jetty.home" default="." />/<Property name="jetty.keystore" default="etc/keystore"/></Set>
+  <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
+  <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="OBF:1u2u1wml1z7s1z7a1wnl1u2g"/></Set>
+  <Set name="TrustStorePath"><Property name="jetty.home" default="." />/<Property name="jetty.truststore" default="etc/keystore"/></Set>
+  <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
+  <Set name="EndpointIdentificationAlgorithm"></Set>
+  <Set name="ExcludeCipherSuites">
+    <Array type="String">
+      <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_RSA_EXPORT_WITH_RC4_40_MD5</Item>
+      <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+      <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+      <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
+    </Array>
+  </Set>
+
+  <!-- =========================================================== -->
+  <!-- Create a TLS specific HttpConfiguration based on the        -->
+  <!-- common HttpConfiguration defined in jetty.xml               -->
+  <!-- Add a SecureRequestCustomizer to extract certificate and    -->
+  <!-- session information                                         -->
+  <!-- =========================================================== -->
+  <New id="sslHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
+    <Arg><Ref refid="httpConfig"/></Arg>
+    <Call name="addCustomizer">
+      <Arg><New class="org.eclipse.jetty.server.SecureRequestCustomizer"/></Arg>
+    </Call>
+  </New>
+
+</Configure>
+]]>
+        </script></dd><dt><span class="term">jetty-https.xml</span></dt><dd><p>Set up the https connector using the HttpConfiguration from
+            <code class="filename">jetty.xml</code> and the ssl configuration
+            from<code class="filename"> jetty-ssl.xml</code>:</p><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<!-- ============================================================= -->
+<!-- Configure a HTTPS connector.                                  -->
+<!-- This configuration must be used in conjunction with jetty.xml -->
+<!-- and jetty-ssl.xml.                                            -->
+<!-- ============================================================= -->
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+  <!-- =========================================================== -->
+  <!-- Add a HTTPS Connector.                                      -->
+  <!-- Configure an o.e.j.server.ServerConnector with connection   -->
+  <!-- factories for TLS (aka SSL) and HTTP to provide HTTPS.      -->
+  <!-- All accepted TLS connections are wired to a HTTP connection.-->
+  <!--                                                             -->
+  <!-- Consult the javadoc of o.e.j.server.ServerConnector,        -->
+  <!-- o.e.j.server.SslConnectionFactory and                       -->
+  <!-- o.e.j.server.HttpConnectionFactory for all configuration    -->
+  <!-- that may be set here.                                       -->
+  <!-- =========================================================== -->
+  <Call id="httpsConnector" name="addConnector">
+    <Arg>
+      <New class="org.eclipse.jetty.server.ServerConnector">
+        <Arg name="server"><Ref refid="Server" /></Arg>
+          <Arg name="factories">
+            <Array type="org.eclipse.jetty.server.ConnectionFactory">
+              <Item>
+                <New class="org.eclipse.jetty.server.SslConnectionFactory">
+                  <Arg name="next">http/1.1</Arg>
+                  <Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
+                </New>
+              </Item>
+              <Item>
+                <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                  <Arg name="config"><Ref refid="sslHttpConfig"/></Arg>
+                </New>
+              </Item>
+            </Array>
+          </Arg>
+          <Set name="host"><Property name="jetty.host" /></Set>
+          <Set name="port"><Property name="jetty.https.port" default="8443" /></Set>
+          <Set name="idleTimeout">30000</Set>
+        </New>
+    </Arg>
+  </Call>
+</Configure>
+]]>
+        </script></dd></dl></div><p>Now you need to let the plugin know to apply the files
+      above:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<plugin>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-maven-plugin</artifactId>
+  <configuration>
+    <jettyXml>jetty.xml,jetty-ssl.xml,jetty-https.xml</jettyXml>
+  </configuration>
+</plugin>]]>
+        </script></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-exclamation-sign"></i> Caution</h3><p>Just like with an installed distribution of Jetty, the ordering
+        of the xml files is significant.</p></div><p>You can also use jetty xml files to configure a http connector for
+      the plugin to use. Here we use the same
+      <code class="filename">jetty-http.xml</code> file from the Jetty
+      distribution:</p><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<!-- ============================================================= -->
+<!-- Configure the Jetty Server instance with an ID "Server"       -->
+<!-- by adding a HTTP connector.                                   -->
+<!-- This configuration must be used in conjunction with jetty.xml -->
+<!-- ============================================================= -->
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+  <!-- =========================================================== -->
+  <!-- Add a HTTP Connector.                                       -->
+  <!-- Configure an o.e.j.server.ServerConnector with a single     -->
+  <!-- HttpConnectionFactory instance using the common httpConfig  -->
+  <!-- instance defined in jetty.xml                               -->
+  <!--                                                             -->
+  <!-- Consult the javadoc of o.e.j.server.ServerConnector and     -->
+  <!-- o.e.j.server.HttpConnectionFactory for all configuration    -->
+  <!-- that may be set here.                                       -->
+  <!-- =========================================================== -->
+  <Call name="addConnector">
+    <Arg>
+      <New class="org.eclipse.jetty.server.ServerConnector">
+        <Arg name="server"><Ref refid="Server" /></Arg>
+        <Arg name="factories">
+          <Array type="org.eclipse.jetty.server.ConnectionFactory">
+            <Item>
+              <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+                <Arg name="config"><Ref refid="httpConfig" /></Arg>
+              </New>
+            </Item>
+          </Array>
+        </Arg>
+        <Set name="host"><Property name="jetty.host" /></Set>
+        <Set name="port"><Property name="jetty.port" default="8080" /></Set>
+        <Set name="idleTimeout"><Property name="http.timeout" default="30000"/></Set>
+      </New>
+    </Arg>
+  </Call>
+
+</Configure>
+]]>
+        </script><p>Now we add it to the list of configs for the plugin to
+      apply:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<plugin>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-maven-plugin</artifactId>
+  <configuration>
+    <jettyXml>jetty.xml,jetty-http.xml,jetty-ssl.xml,jetty-https.xml</jettyXml>
+  </configuration>
+</plugin>]]>
+        </script></div><p>Alternatively, you can use the <a class="link" href="jetty-maven-plugin.html#maven-http-connector"><span class="bold"><strong>httpConnector</strong></span></a> configuration element inside
+      the pom instead as described above.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-your-webapp"></a>Configuring Your WebApp</h3></div></div></div><p>These configuration parameters apply to your webapp. They are common
+    to almost all goals.</p><div class="variablelist"><dl><dt><span class="term">webApp</span></dt><dd><p>Represents an extension to the class <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.hml" target="_top"><code class="classname">org.eclipse.jetty.webapp.WebAppContext</code></a>.
           You can use any of the setter methods on this object to configure
           your webapp. Here are a few of the most useful ones:</p><div class="variablelist"><dl><dt><span class="term">contextPath</span></dt><dd><p>The context path for your webapp. By default, this is
                 set to <code class="code">/</code>.</p></dd><dt><span class="term">descriptor</span></dt><dd><p>The path to the <code class="filename">web.xml</code> file for
@@ -285,7 +474,7 @@
     without assembling the WAR of the current module. Unlike
     <code class="code">run-war</code>, the phase in which this plugin executes is not bound
     to the "package" phase. For example, you might want to start Jetty on the
-    "test-compile" phase and stop Jetty on the "test-phase".</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13451"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">war</span></dt><dd><p>The location of the WAR file. This defaults to <code class="code">
+    "test-compile" phase and stop Jetty on the "test-phase".</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13542"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">war</span></dt><dd><p>The location of the WAR file. This defaults to <code class="code">
             /Users/jesse/docsync/jetty-documentation/target/jetty-documentation-9.0.3.v20130506</code>, but
             you can override the default by setting this parameter.</p></dd></dl></div><p>Here's the configuration:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -326,7 +515,7 @@
         
         ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-run-forked-goal"></a>jetty:run-forked</h3></div></div></div><p>This goal allows you to start the webapp in a new JVM, optionally
-    passing arguments to that new JVM.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13474"></a>Configuration</h4></div></div></div><p>NOTE: unfortunately, unlike most of the other goals, this one does
+    passing arguments to that new JVM.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13565"></a>Configuration</h4></div></div></div><p>NOTE: unfortunately, unlike most of the other goals, this one does
       NOT support a <span class="bold"><strong> webApp</strong></span> parameter to
       configure the webapp. Therefore, if your webapp requires a lot of
       configuration, it will be difficult to switch between eg
@@ -442,7 +631,7 @@
     the <a class="link" href="http://maven.apache.org/plugins/maven-war-plugin/" target="_top">
     maven-war-plugin</a>, or if your project does not use the <a class="link" href="http://maven.apache.org/plugins/maven-war-plugin/" target="_top">maven-war-plugin</a>
     to handle the overlays, it can fall back to a simple algorithm to
-    determine the ordering of resources.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13763"></a>With maven-war-plugin</h4></div></div></div><p>The maven-war-plugin has a rich set of capabilities for merging
+    determine the ordering of resources.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13854"></a>With maven-war-plugin</h4></div></div></div><p>The maven-war-plugin has a rich set of capabilities for merging
       resources. The jetty:run and jetty:run-forked goals are able to
       interpret most of them and apply them during execution of your
       unassembled webapp. This is probably best seen by looking at a concrete
@@ -514,7 +703,7 @@ WebAppY:
       the jetty-maven-plugin.</p><p>Moreover, due to the <code class="code">exclusions</code> specified above, a
       request for the resource <code class="code"> bar.jsp</code> would only be satisfied
       from <code class="code">com.acme.Y.war.</code> Similarly as <code class="code">baz.jsp</code> is
-      excluded, a request for it would result in a 404 error.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13810"></a>Without maven-war-plugin</h4></div></div></div><p>The algorithm is fairly simple, is based on the ordering of
+      excluded, a request for it would result in a 404 error.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13901"></a>Without maven-war-plugin</h4></div></div></div><p>The algorithm is fairly simple, is based on the ordering of
       declaration of the dependent wars, and does not support exclusions. The
       configuration parameter <code class="code">&lt;baseAppFirst&gt;</code> (see the
       section on <a class="link" href="jetty-maven-plugin.html#configuring-your-webapp" title="Configuring Your WebApp">Configuring Your
