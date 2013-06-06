@@ -24,9 +24,16 @@
         <h1>Jetty</h1>
         <table> 
           <tr>
-            <td><p>Jetty provides an Web server and <a
+            <td><p>Jetty provides a <a href="http://en.wikipedia.org/wiki/Web_server">Web server</a> and <a
   href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container, plus support
-  for SPDY, Web Sockets, OSGi, JMX, JNDI, JASPI, AJP and many other integrations. These components are open source and 
+  for 
+  <a href="http://en.wikipedia.org/wiki/SPDY">SPDY</a>, 
+  <a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket</a>, 
+  <a href="http://en.wikipedia.org/wiki/OSGi">OSGi</a>, 
+  <a href="http://en.wikipedia.org/wiki/JMX">JMX</a>, 
+  <a href="http://en.wikipedia.org/wiki/JNDI">JNDI</a>, 
+  <a href="http://en.wikipedia.org/wiki/Java_Authentication_and_Authorization_Service">JAAS</a> 
+  and many other integrations. These components are open source and 
   available for commercial use and distribution.</p>
             </td>
             <td align="right">
