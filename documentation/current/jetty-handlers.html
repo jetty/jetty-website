@@ -14,9 +14,9 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="jetty-handlers"></a>Chapter&nbsp;17.&nbsp;Handlers</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="jetty-handlers.html#rewrite-handler">Rewrite Handler</a></span></dt><dt><span class="section"><a href="writing-custom-handlers.html">Writing Custom Handlers</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="rewrite-handler"></a>Rewrite Handler</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-handlers.html#d0e10079">Quick Start</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10098">Configuring Rules</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10114">Embedded Example</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10122">Rules</a></span></dt></dl></div><p>
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="jetty-handlers"></a>Chapter&nbsp;17.&nbsp;Handlers</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="jetty-handlers.html#rewrite-handler">Rewrite Handler</a></span></dt><dt><span class="section"><a href="writing-custom-handlers.html">Writing Custom Handlers</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="rewrite-handler"></a>Rewrite Handler</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-handlers.html#d0e10169">Quick Start</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10188">Configuring Rules</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10204">Embedded Example</a></span></dt><dt><span class="section"><a href="jetty-handlers.html#d0e10212">Rules</a></span></dt></dl></div><p>
     The RewriteHandler matches a request against a set of rules, and modifies the request accordingly for any rules that match. The most common use is to rewrite request URIs, but it is capable of much more: rules can also be configured to redirect the response, set a cookie or response code on the response, modify the header, etc.
-  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10079"></a>Quick Start</h3></div></div></div><p>
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10169"></a>Quick Start</h3></div></div></div><p>
       The standard Jetty distribution bundle contains the <code class="literal">jetty-rewrite</code> module JAR, at <code class="filename">lib/jetty-rewrite-*.jar</code>, and a sample configuration file, at <code class="filename">etc/jetty-rewrite.xml</code>. To enable the rewrite module, using the sample configuration file, start up Jetty with this command:
     </p><div class="screenexample"><pre class="screen">
 
@@ -24,7 +24,7 @@ $ java -jar start.jar OPTIONS=default,rewrite etc/jetty.xml etc/jetty-rewrite.xm
 
     </pre></div></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>
       If you are running the standard Jetty distribution with the sample test webapp, there will be a demo of the rewrite module at http://localhost:8080/rewrite/
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10098"></a>Configuring Rules</h3></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10188"></a>Configuring Rules</h3></div></div></div><p>
       The rules are configured using <code class="filename">jetty.xml</code> syntax. This example file shows how to add the rewrite handler for the entire server:
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -75,7 +75,7 @@ $ java -jar start.jar OPTIONS=default,rewrite etc/jetty.xml etc/jetty-rewrite.xm
       ]]>
         </script></div><p>
       See <code class="filename">etc/jetty-rewrite.xml</code> for more configuration examples.
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10114"></a>Embedded Example</h3></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10204"></a>Embedded Example</h3></div></div></div><p>
       This is an example for embedded Jetty, which does the same thing as the configuration file example above:
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[
@@ -105,7 +105,7 @@ $ java -jar start.jar OPTIONS=default,rewrite etc/jetty.xml etc/jetty-rewrite.xm
   server.setHandler(rewrite);
   
       ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10122"></a>Rules</h3></div></div></div><p>There are several types of rules that are written extending useful base rule classes.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10127"></a>PatternRule</h4></div></div></div><p>
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10212"></a>Rules</h3></div></div></div><p>There are several types of rules that are written extending useful base rule classes.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10217"></a>PatternRule</h4></div></div></div><p>
         Matches against the request URI using the servlet pattern syntax.
       </p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/CookiePatternRule.html" target="_top">CookiePatternRule</a></span></dt><dd><p> 
               Adds a cookie to the response.
@@ -117,23 +117,23 @@ $ java -jar start.jar OPTIONS=default,rewrite etc/jetty.xml etc/jetty-rewrite.xm
               Sends the response code (status or error).
             </p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/RewritePatternRule.html" target="_top">RewritePatternRule</a></span></dt><dd><p>
               Rewrite the URI by replacing the matched request path with a fixed string.
-            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10168"></a>RegexRule</h4></div></div></div><p>
+            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10258"></a>RegexRule</h4></div></div></div><p>
         Matches against the request URI using regular expressions.
       </p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/RedirectRegexRule.html" target="_top">RedirectRegexRule</a></span></dt><dd><p>
               Redirect the response.
             </p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/RewriteRegexRule.html" target="_top">RewriteRegexRule</a></span></dt><dd><p>
               Rewrite the URI by matching with a regular expression. (The replacement string may use Template:$n to replace the nth capture group.)
-            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10188"></a>HeaderRule</h4></div></div></div><p>
+            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10278"></a>HeaderRule</h4></div></div></div><p>
         Match against request headers.  Match either on a header name + specific value, or on the presence of a header (with any value).
       </p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/ForwardedSchemeHeaderRule.html" target="_top">ForwardedSchemaHeaderRule</a></span></dt><dd><p>
               Set the scheme on the request (defaulting to https).
-            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10201"></a>Others</h4></div></div></div><p>
+            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10291"></a>Others</h4></div></div></div><p>
         Oddball rules that defy classification.
       </p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/MsieSslRule.html" target="_top">MsieSslRule</a></span></dt><dd><p>
               Disables the keep alive for SSL from IE5 or IE6.
             </p></dd><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/LegacyRule.html" target="_top">LegacyRule</a></span></dt><dd><p>
               Implements the legacy API of RewriteHandler
-            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10221"></a>RuleContainer</h4></div></div></div><p>
+            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10311"></a>RuleContainer</h4></div></div></div><p>
         Groups rules together. The contained rules will only be processed if the conditions for the RuleContainer evaluate to true.
       </p><div class="variablelist"><dl><dt><span class="term"><a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/rewrite/handler/VirtualHostRuleContainer.html" target="_top">VirtualHostRuleContainer</a></span></dt><dd><p>
               Groups rules that apply only to a specific virtual host or a set of virtual hosts
