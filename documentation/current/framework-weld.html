@@ -18,7 +18,9 @@
 		<a class="link" href="http://seamframework.org/Weld" target="_top">Weld</a> can be used to add support for CDI (Contexts and Dependency Injection) to Servlets, Listeners and Filters.  It is easily configured with Jetty 9.
 	</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="weld-setup-distro"></a>Weld Setup</h3></div></div></div><p>
 			The easiest way to configure weld is within the jetty distribution itself.
-		</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+		</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Filters and Servlets Only</h3><p>
+				At the moment, only filters and servlets are supported for CDI with Weld.  ServletContextListeners can not be configured with CDI (until we sort out the proper solution to the issue).
+			</p></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
 					Create the directory <code class="filename">$jetty.home/lib/weld</code>.
 				</p></li><li class="listitem"><p>
 					Download the <a class="link" href="http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22weld-servlet%22" target="_top">weld-servlet artifact</a> and place it into the newly created directory.
@@ -43,48 +45,13 @@ OPTIONS=weld
         </script></div></li><li class="listitem"><p>
 					Continue editting the <code class="filename">start.ini</code> file and uncomment the lines for <span class="bold"><strong>jndi</strong></span>, <span class="bold"><strong>annotations</strong></span> and <span class="bold"><strong>plus</strong></span>.
 				</p></li><li class="listitem"><p>
-					In your webapp's WEB-INF directory create a file called <code class="filename">jetty-env.xml</code> with the following contents.
+					Ensure your <code class="filename">WEB-INF/web.xml</code> contains the following listeners.
 				</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
-<Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
-    <New id="BeanManager" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg>
-            <Ref id="webAppCtx"/>
-        </Arg>
-        <Arg>BeanManager</Arg>
-        <Arg>
-            <New class="javax.naming.Reference">
-                <Arg>javax.enterprise.inject.spi.BeanManager</Arg>
-                <Arg>org.jboss.weld.resources.ManagerObjectFactory</Arg>
-                <Arg/>
-            </New>
-        </Arg>
-    </New>
-</Configure>
-
-					]]>
-        </script></div></li><li class="listitem"><p>
-					In your webapp's WEB-INF directory create a file called <code class="filename">jetty-web.xml</code> with the following contents.
-				</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
-          <![CDATA[
-
-<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
-<Configure id="webAppCtx" class="org.eclipse.jetty.webapp.WebAppContext">
-    <Call class="org.jboss.weld.environment.jetty.EclipseWeldServletHandler" name="process">
-        <Arg>
-            <Ref id="webAppCtx"/>
-        </Arg>
-    </Call>
-</Configure>
-
-					]]>
-        </script></div></li><li class="listitem"><p>
-					Ensure your <code class="filename">WEB-INF/web.xml</code> contains the following line.
-				</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
-          <![CDATA[
-
+<listener>
+  <listener-class>org.jboss.weld.environment.servlet.BeanManagerResourceBindingListener</listener-class>
+</listener>
 <listener>
   <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 </listener>
@@ -112,9 +79,7 @@ WARNING: Class 'javax.ejb.PrePassivate' not found, interception based on it is n
 2013-05-30 15:49:02.919:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@40a49a3{/simple-web,file:/private/var/folders/br/kbs2g3753c54wmv4j31pnw5r0000gn/T/jetty-0.0.0.0-8080-simple-web.war-_simple-web-any-/webapp/,AVAILABLE}{/simple-web.war}
 2013-05-30 15:49:02.940:INFO:oejs.ServerConnector:main: Started ServerConnector@430e0623{HTTP/1.1}{0.0.0.0:8080}
 
-		</pre></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Important</h3><p>
-				As of the Weld version in use here the Weld project is behind two versions of Jetty in their log messages.  Disregard the note about Jetty 7 being detected!
-			</p></div></div></div><script type="text/javascript">
+		</pre></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="framework-jetty-osgi.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="frameworks.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="optimizing.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">OSGI&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;25.&nbsp;Optimizing Jetty</td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="jetty-callout"><p>
         See an error or something missing?
