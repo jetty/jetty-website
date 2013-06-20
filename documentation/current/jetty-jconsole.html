@@ -14,11 +14,11 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-jconsole"></a>Jetty JConsole</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-jconsole.html#jetty-jconsole-monitoring">Monitoring Jetty with JConsole</a></span></dt><dt><span class="section"><a href="jetty-jconsole.html#d0e9677">Managing Jetty Objects with JConsole</a></span></dt></dl></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jetty-jconsole"></a>Jetty JConsole</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="jetty-jconsole.html#jetty-jconsole-monitoring">Monitoring Jetty with JConsole</a></span></dt><dt><span class="section"><a href="jetty-jconsole.html#d0e9674">Managing Jetty Objects with JConsole</a></span></dt></dl></div><p>
     JConsole is a graphical tool; it allows you to remotely manage and monitor your server and web application status using JMX. When following the instructions given below, please also ensure that you make any necessary changes to any anti-virus software you may be using which may prevent jconsole from running.
   </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-jconsole-monitoring"></a>Monitoring Jetty with JConsole</h3></div></div></div><p>
       To monitor Jetty's server status with JConsole, make sure JConsole is running, and start Jetty with a special system property.
-    </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9633"></a>Starting Jetty Standalone</h4></div></div></div><p>
+    </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9630"></a>Starting Jetty Standalone</h4></div></div></div><p>
         The simplest way to enable support is to open the jetty.home/start.ini file and uncomment the corresponding section so it looks like this:
       </p><div class="screenexample"><pre class="screen">
 
@@ -39,7 +39,7 @@ jetty.jmxrmiport=1099
 etc/jetty-jmx.xml
 #===========================================================
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9640"></a>Starting the Jetty Maven Plugin</h4></div></div></div><p>
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9637"></a>Starting the Jetty Maven Plugin</h4></div></div></div><p>
         If you are running the Jetty Maven Plugin, you must set the system property com.sun.management.jmxremote on Maven before running the plugin. The way to do this is to set your MAVEN_OPTS environment variable (if you're not sure how to do this, consult the Maven documentation).
       </p><p>
         Here is an example that sets the system property on the fly in a BASH shell, before starting Jetty via the plugin:
@@ -49,7 +49,7 @@ $ export MAVEN_OPTS=-Dcom.sun.management.jmxremote
 $ mvn jetty:run
 $ jconsole &amp;        # runs jconsole in the background 
 
-      </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9649"></a>Connecting to your server process</h4></div></div></div><p>
+      </pre></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9646"></a>Connecting to your server process</h4></div></div></div><p>
         When you start Jetty, you see a dialog box from JConsole with a list of running processes to which you can connect. It should look something like so:
       </p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="540"><tr><td align="center"><img src="images/jconsole1.jpg" align="middle" width="540"></td></tr></table></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Finding your process</h3><p>
           If you don't see your Jetty process in the list of processes you can connect to, quickly switch tabs, or close and reopen a new "New Connection" dialog window. This forces JConsole to refresh the list, and recognize your newly-started Jetty process.
@@ -57,7 +57,7 @@ $ jconsole &amp;        # runs jconsole in the background
         Select the start.jar entry and click the "Connect" button. A new JConsole window opens:
       </p><div class="mediaobject" align="center"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="540"><tr><td align="center"><img src="images/jconsole2.jpg" align="middle" width="540"></td></tr></table></div><p>
         From this window you can monitor memory usage, thread usage, classloading and VM statistics. You can also perform operations such as a manual garbage collect. JConsole is an extremely powerful and useful tool.
-      </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9677"></a>Managing Jetty Objects with JConsole</h3></div></div></div><p>
+      </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9674"></a>Managing Jetty Objects with JConsole</h3></div></div></div><p>
       The MBean tab of JConsole allows access to managed objects within the Java application, including MBeans the JVM provides. If you also want to interact with the Jetty JMX implementation via JConsole, you need to start Jetty JMX in a form that JConsole can access.  See <a class="xref" href="jmx-chapter.html#using-jmx" title="Using Java Management Extensions (JMX)">Using Java Management Extensions (JMX)</a> for more information.
     </p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()

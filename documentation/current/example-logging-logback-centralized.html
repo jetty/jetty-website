@@ -18,7 +18,7 @@
   configuration for the Jetty Server and all Web Applications that are
   deployed on the server. Routing all logging events from even the Web
   Applications down to a single configuration on the Server side.</p><p>The example below will present how to accomplish this with Jetty and
-  Slf4j, using Logback to manage the final writing of logs to disk.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7187"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.0.7/logback-classic-1.0.7.jar" target="_top">logback-classic-1.0.7.jar</a></code></span></dt><dd><p>This is the underlying logging framework and adaption layer
+  Slf4j, using Logback to manage the final writing of logs to disk.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7184"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.0.7/logback-classic-1.0.7.jar" target="_top">logback-classic-1.0.7.jar</a></code></span></dt><dd><p>This is the underlying logging framework and adaption layer
             for Slf4j</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.0.7/logback-core-1.0.7.jar" target="_top">logback-core-1.0.7.jar</a></code></span></dt><dd><p>The common implementation classes for the Logback
             project.</p></dd><dt><span class="term"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.6.6/log4j-over-slf4j-1.6.6.jar" target="_top"><code class="filename">log4j-over-slf4j-1.6.6.jar</code></a></span></dt><dd><p>The Slf4j Binding JAR for Log4j</p></dd><dt><span class="term"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/jul-to-slf4j/1.6.6/jul-to-slf4j-1.6.6.jar" target="_top"><code class="filename">jul-to-slf4j-1.6.6.jar</code></a></span></dt><dd><p>The Slf4j Binding JAR for java.util.logging</p></dd><dt><span class="term"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.6.6/jcl-over-slf4j-1.6.6.jar" target="_top"><code class="filename">jcl-over-slf4j-1.6.6.jar</code></a></span></dt><dd><p>The Slf4j Binding JAR for Commons Logging</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>This is the basic Slf4j API that Jetty's Slf4jLog
             implementation uses.</p></dd><dt><span class="term"><a class="link" href="http://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp-logging/9.0.0/jetty-webapp-logging-9.0.0.jar" target="_top">jetty-webapp-logging-9.0.0.jar</a></span></dt><dd><p>Provides a custom Deployment Lifecycle Binding to force Web
@@ -30,7 +30,7 @@
         - Apache Log4j API</p></li><li class="listitem"><p><a class="link" href="http://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html" target="_top">java.util.logging.Logger</a>
         - Core java.util.logging API</p></li><li class="listitem"><p><a class="link" href="http://commons.apache.org/proper/commons-logging//commons-logging-1.1/apidocs/org/apache/commons/logging/Log.html" target="_top">org.apache.commons.logging.Log</a>
         - Apache Commons Logging API</p></li></ul></div><p>Any logging event from those APIs will now route down into Logback
-    Classic to work with.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7281"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
+    Classic to work with.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7278"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
     them into place and tell Jetty to load them on each startup.</p><p>Create a ${jetty.home}/lib/logging/ directory and place the 7 files
     you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 632
@@ -61,13 +61,13 @@ Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>loggi
 22:                1.0.7 | ${jetty.home}/lib/logging/<span class="bold"><strong>logback-classic-1.0.7.jar</strong></span>
 23:                1.0.7 | ${jetty.home}/lib/logging/<span class="bold"><strong>logback-core-1.0.7.jar</strong></span>
 24:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
-</pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7357"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
+</pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7354"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
     <code class="filename">${jetty.home}/resources/jetty-logging.properties</code>,
     make sure it contains just the following</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
           <![CDATA[# Configure Jetty for SLf4j Logging
 org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog]]>
         </script></p><p>This will tell Jetty to use the Slf4jLog implementation for its
-    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7370"></a>Forcing Server Logging APIs on Web Applications</h3></div></div></div><p>In order to force all deployed Web Applications to use the Server
+    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7367"></a>Forcing Server Logging APIs on Web Applications</h3></div></div></div><p>In order to force all deployed Web Applications to use the Server
     side implementations for the various Logging APIs, we will utilize a
     custom <a class="link" href="deployment-architecture.html#udm-lifecycle-bindings" title="LifeCycle Bindings">Deployment Lifecycle
     Binding</a> to configure the Web Application ClassLoader
@@ -127,7 +127,7 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
 </Configure>
 ]]>
         </script>The
-    configuration of the start.ini above will use this xml file.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7409"></a>Initializing Jul-to-Slf4j Bridge</h3></div></div></div><p>There is an extra requirement when using the jul-to-slf4j.jar that
+    configuration of the start.ini above will use this xml file.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7406"></a>Initializing Jul-to-Slf4j Bridge</h3></div></div></div><p>There is an extra requirement when using the jul-to-slf4j.jar that
     requires us to inform java.util.logging of the existence of the <a class="link" href="http://slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" target="_top">SLF4JBridgeHandler</a>.</p><p>We'll satisfy this requirement with a new
     <code class="filename">etc/jetty-jul-to-slf4j.xml</code> file, lovingly included in
     the <code class="filename">start.ini</code> above.</p><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
@@ -139,7 +139,7 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
   <Call class="org.slf4j.bridge.SLF4JBridgeHandler" name="install"/>
 </Configure>
 ]]>
-        </script></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7427"></a>Configuring Logback</h3></div></div></div><p>You'll need a
+        </script></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7424"></a>Configuring Logback</h3></div></div></div><p>You'll need a
     <code class="filename">${jetty.home}/resources/logback.xml</code> file to define
     what you want Logback to do. It will be automatically located and loaded
     on Logging startup.</p><p>Example <code class="filename">${jetty.home}/resources/logback.xml</code>
@@ -182,7 +182,7 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
         </script></p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-exclamation-sign"></i> Caution</h3><p>When using the jul-to-slf4j Binding JAR, be sure you also
         utilize the <a class="link" href="http://logback.qos.ch/manual/configuration.html#LevelChangePropagator" target="_top">LevelChangePropagator</a>
         (as referenced in the <a class="link" href="http://slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" target="_top">SLF4JBridgeHandler
-        javadoc</a>.</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7453"></a>Verify start.ini configuration</h3></div></div></div><p>Before you start Jetty, lets verify that our start.ini is correctly
+        javadoc</a>.</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7450"></a>Verify start.ini configuration</h3></div></div></div><p>Before you start Jetty, lets verify that our start.ini is correctly
     setup.</p><p>Run the following command and check the last section of the output.
     It should contain the highlighted entries.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ <span class="bold"><strong>java -jar start.jar --help</strong></span>
 ...
@@ -201,7 +201,7 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
     <span class="bold"><strong>etc/jetty-webapp-logging.xml</strong></span>
     <span class="bold"><strong>etc/jetty-jul-to-slf4j.xml</strong></span>
     <span class="bold"><strong>OPTIONS=logging</strong></span></pre></div><p>You are
-    done.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7475"></a>Start Jetty</h3></div></div></div><p>You are now done configuring Jetty for all logging APIs. Just start
+    done.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7472"></a>Start Jetty</h3></div></div></div><p>You are now done configuring Jetty for all logging APIs. Just start
     Jetty to start utilizing it.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ java -jar start.jar </pre></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>This configuration will capture all Server side logging events
         and route them to the console and logging file handled by Logback. If
         you also want to capture all of the Web Application logging events, be

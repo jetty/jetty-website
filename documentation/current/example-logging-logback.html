@@ -16,10 +16,10 @@
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-logging-logback"></a>Example: Logging with Logback</h2></div></div></div><p>This page describes how to Configure Jetty for Logging with
   <code class="literal"><a class="link" href="http://logback.qos.ch/" target="_top">Logback</a></code>.</p><p>The basic configuration for Logging with Logback is to use <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://logback.qos.ch/" target="_top">Logback Implementation for
-  Slf4j</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6683"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.0.7/logback-classic-1.0.7.jar" target="_top">logback-classic-1.0.7.jar</a></code></span></dt><dd><p>This is the underlying logging framework and adaption layer
+  Slf4j</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6680"></a>The Required JARs</h3></div></div></div><p>There will be 3 JARs you will need to download</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.0.7/logback-classic-1.0.7.jar" target="_top">logback-classic-1.0.7.jar</a></code></span></dt><dd><p>This is the underlying logging framework and adaption layer
             for Slf4j</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/ch/qos/logback/logback-core/1.0.7/logback-core-1.0.7.jar" target="_top">logback-core-1.0.7.jar</a></code></span></dt><dd><p>The common implementation classes for the Logback
             project.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>This is the basic Slf4j API that Jetty's Slf4jLog
-            implementation uses.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6714"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
+            implementation uses.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6711"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
     them into place and tell Jetty to load them on each startup.</p><p>Create a ${jetty.home}/lib/logging/ directory and place the 3 files
     you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 632
@@ -37,13 +37,13 @@ Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>loggi
 18:                1.0.7 | ${jetty.home}/lib/logging/<span class="bold"><strong>logback-classic-1.0.7.jar</strong></span>
 19:                1.0.7 | ${jetty.home}/lib/logging/<span class="bold"><strong>logback-core-1.0.7.jar
 </strong></span>20:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
-</pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6760"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
+</pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6757"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
     <code class="filename">${jetty.home}/resources/jetty-logging.properties</code>,
     make sure it contains just the following</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
           <![CDATA[# Configure Jetty for SLf4j Logging
 org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog]]>
         </script></p><p>This will tell Jetty to use the Slf4jLog implementation for its
-    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6773"></a>Configuring Logback</h3></div></div></div><p>You'll need a
+    internal Logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6770"></a>Configuring Logback</h3></div></div></div><p>You'll need a
     <code class="filename">${jetty.home}/resources/logback.xml</code> file to define
     what you want Logback to do. It will be automatically located and loaded
     on Logging startup.</p><p>Example <code class="filename">${jetty.home}/resources/logback.xml</code>
@@ -78,7 +78,7 @@ org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog]]>
   </root>
 </configuration>
 ]]>
-        </script></p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6789"></a>Scripted Installation of Logback</h3></div></div></div><script type="syntaxhighlighter" class="brush: bash;toolbar: false">
+        </script></p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6786"></a>Scripted Installation of Logback</h3></div></div></div><script type="syntaxhighlighter" class="brush: bash;toolbar: false">
           <![CDATA[#!/bin/bash
 # -------------------------------------------
 # FOR DEMONSTRATION PURPOSES ONLY
