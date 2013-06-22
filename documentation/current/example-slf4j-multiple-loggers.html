@@ -68,7 +68,7 @@
         - Apache Commons Logging API</p></li></ul></div><p>Any logging event from those APIs will now route down into Logback
     Classic to work with.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7036"></a>Configuring Server Classpath</h3></div></div></div><p>In order for the Server to use these new JARs you will need to put
     them into place and tell Jetty to load them on each startup.</p><p>Create a ${jetty.home}/lib/logging/ directory and place the 6 files
-    you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
+    you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.4.v20130621]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 632
 -rw-rw-r-- 1 jetty jetty  17289 Mar 12 16:21 <span class="bold"><strong>jcl-over-slf4j-1.6.6.jar</strong></span>
 -rw-rw-r-- 1 jetty jetty   4955 Mar 12 16:21 <span class="bold"><strong>jul-to-slf4j-1.6.6.jar</strong></span>
@@ -85,7 +85,7 @@ etc/jetty-jul-to-slf4j.xml
 # Adding lib/logging to server classpath
 OPTIONS=logging
 ]]>
-        </script><p>Now verify that the 6 jars will be loaded by server classpath</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ <span class="bold"><strong>java -jar start.jar --version</strong></span> | grep logging
+        </script><p>Now verify that the 6 jars will be loaded by server classpath</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.4.v20130621]$ <span class="bold"><strong>java -jar start.jar --version</strong></span> | grep logging
 Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>logging</strong></span>, resources, websocket]
 18:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>jcl-over-slf4j-1.6.6.jar</strong></span>
 19:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>jul-to-slf4j-1.6.6.jar</strong></span>
@@ -155,7 +155,7 @@ org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog]]>
         utilize the <a class="link" href="http://logback.qos.ch/manual/configuration.html#LevelChangePropagator" target="_top">LevelChangePropagator</a>
         (as referenced in the <a class="link" href="http://slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" target="_top">SLF4JBridgeHandler
         javadoc</a>.</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7163"></a>Start Jetty</h3></div></div></div><p>You are now done configuring Jetty for all logging APIs. Just start
-    Jetty to start utilizing it.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.3.v20130506]$ java -jar start.jar </pre></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>This configuration will capture all Server side logging events
+    Jetty to start utilizing it.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.0.4.v20130621]$ java -jar start.jar </pre></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>This configuration will capture all Server side logging events
         and route them to the console and logging file handled by Logback. If
         you also want to capture all of the Web Application logging events, be
         sure to read <a class="xref" href="example-logging-logback-centralized.html" title="Example: Centralized Logging with Logback">Example: Centralized Logging with Logback</a> for
