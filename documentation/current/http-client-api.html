@@ -79,7 +79,13 @@ ContentResponse response = httpClient.newRequest("http://domain.com/path?query")
     request blocks until the request/response conversation is complete. In this section we will look at Jetty HTTP
     client asynchronous, non-blocking, APIs that are perfectly suited for large content downloads, for parallel
     processing of requests/responses and in all those cases where performance and efficient thread and resource
-    utilization is a key factor.</p><p>A simple asynchronous GET request can be written in this way:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+    utilization is a key factor.</p><p>The asynchronous APIs rely heavily on listeners that are invoked at various staged of request and response
+    processing. These listeners are implemented by applications and may perform any kind of logic.
+    The implementation invokes these listeners in the same thread that is used to process the request or response.
+    Therefore, if the application code in these listeners takes a long time to execute, the request or response
+    processing is delayed until the listener returns.</p><p>If you need to execute application code that takes long time inside a listener, you must spawn your own
+    thread, and remember to deep copy any data provided by the listener that you will need in your code, because
+    when the listener returns the data it provides may be recycled/cleared/destroyed.</p><p>A simple asynchronous GET request can be written in this way:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[
 
 httpClient.newRequest("http://domain.com/path")
@@ -321,7 +327,7 @@ if (response.getStatus() == 200)
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="http-client.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http-client.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http-client-other.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;27.&nbsp;HTTP Client&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Other Features</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-07-16T13:00:35-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-07-17T01:00:38-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
