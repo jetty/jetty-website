@@ -29,7 +29,7 @@
 <plugin>
   <groupId>org.eclipse.jetty</groupId>
   <artifactId>jetty-maven-plugin</artifactId>
-  <version>9.0.4.v20130621</version>
+  <version>&#36;{project.version}</version>
 </plugin>
 
       ]]>
@@ -318,7 +318,7 @@
                 configuration.</p></dd><dt><span class="term">tempDirectory</span></dt><dd><p>The path to a dir that Jetty can use to expand or copy
                 jars and jsp compiles when your webapp is running. The default
                 is
-                <code class="filename">/Users/jesse/docsync/jetty-documentation/target/classes/tmp</code>.</p></dd><dt><span class="term">baseResource</span></dt><dd><p>The path from which Jetty serves static resources.
+                <code class="filename">${project.build.outputDirectory}/tmp</code>.</p></dd><dt><span class="term">baseResource</span></dt><dd><p>The path from which Jetty serves static resources.
                 Defaults to <code class="filename"> src/main/webapp</code>.</p></dd><dt><span class="term">resourceBases</span></dt><dd><p>Use instead of <code class="filename">baseResource</code> if you
                 have multiple dirs from which you want to serve static
                 content. This is an array of dir names.</p></dd><dt><span class="term">baseAppFirst</span></dt><dd><p>Defaults to "true". Controls whether any overlaid wars
@@ -330,9 +330,9 @@
     looks for the constituent parts of a webapp in the Maven default project
     locations, although you can override these in the plugin configuration.
     For example, by default it looks for:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>resources in
-        <code class="filename">/Users/jesse/docsync/jetty-documentation/src/main/webapp</code></p></li><li class="listitem"><p>classes in
-        <code class="filename">/Users/jesse/docsync/jetty-documentation/target/classes</code></p></li><li class="listitem"><p><code class="filename">web.xml</code> in
-        <code class="filename">/Users/jesse/docsync/jetty-documentation/src/main/webapp/WEB-INF/</code></p></li></ul></div><p>The plugin automatically ensures the classes are rebuilt and
+        <code class="filename">${basedir}/src/main/webapp</code></p></li><li class="listitem"><p>classes in
+        <code class="filename">${project.build.outputDirectory}</code></p></li><li class="listitem"><p><code class="filename">web.xml</code> in
+        <code class="filename">${basedir}/src/main/webapp/WEB-INF/</code></p></li></ul></div><p>The plugin automatically ensures the classes are rebuilt and
     up-to-date before deployment. If you change the source of a class and your
     IDE automatically compiles it in the background, the plugin picks up the
     changed class.</p><p>You do not need to assemble the webapp into a WAR, saving time
@@ -364,10 +364,10 @@
             <code class="code">build outputDirectory</code> in your
             <code class="filename">pom.xml</code>.</p></dd><dt><span class="term">testClassesDirectory</span></dt><dd><p>Location of the compiled test classes for your webapp. By
             default this is <code class="filename">
-            /Users/jesse/docsync/jetty-documentation/target/test-classes</code>.</p></dd><dt><span class="term">useTestScope</span></dt><dd><p>If true, the classes from <code class="code">testClassesDirectory</code>
+            ${project.build.testOutputDirectory}</code>.</p></dd><dt><span class="term">useTestScope</span></dt><dd><p>If true, the classes from <code class="code">testClassesDirectory</code>
             and dependencies of scope "test" are placed first on the
             classpath. By default this is false.</p></dd><dt><span class="term">webAppSourceDirectory</span></dt><dd><p>By default, this is set to
-            <code class="filename">/Users/jesse/docsync/jetty-documentation/src/main/webapp</code>. If your static
+            <code class="filename">${basedir}/src/main/webapp</code>. If your static
             sources are in a different location, set this parameter
             accordingly.</p></dd><dt><span class="term">jettyEnvXml</span></dt><dd><p>Optional. Location of a <code class="filename">jetty-env.xml</code>
             file, which allows you to make JNDI bindings that satisfy
@@ -392,7 +392,7 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-maven-plugin</artifactId>
       <configuration>
-        <webAppSourceDirectory>/Users/jesse/docsync/jetty-documentation/src/staticfiles</webAppSourceDirectory>
+        <webAppSourceDirectory>&#36;{basedir}/src/staticfiles</webAppSourceDirectory>
         <webApp>
           <contextPath>/</contextPath>
           <descriptor>&#36;{basedir}/src/over/here/web.xml</descriptor>
@@ -428,7 +428,7 @@
     it to Jetty. If you set a non-zero <code class="code"> scanInterval</code>, Jetty
     watches your <code class="filename">pom.xml</code> and the WAR file; if either
     changes, it redeploys the war.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-war"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">war</span></dt><dd><p>The location of the built WAR file. This defaults to <code class="code">
-            /Users/jesse/docsync/jetty-documentation/target/jetty-documentation-9.0.4.v20130621.war</code>.
+            ${project.build.directory}/${project.build.finalName}.war</code>.
             If this is not sufficient, set it to your custom location.</p></dd></dl></div><p>Here's how to set it:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
@@ -453,7 +453,7 @@
     WEB-INF/lib, WEB-INF/</code> classes and
     <code class="filename">WEB-INF/web.xml</code> for changes and redeploys when
     necessary.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-exploded-war"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">war</span></dt><dd><p>The location of the exploded WAR. This defaults to <code class="code">
-            /Users/jesse/docsync/jetty-documentation/target/jetty-documentation-9.0.4.v20130621</code>, but
+            ${project.build.directory}/${project.build.finalName}</code>, but
             you can override the default by setting this parameter.</p></dd></dl></div><p>Here's how to set it:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
@@ -477,7 +477,7 @@
     <code class="code">run-war</code>, the phase in which this plugin executes is not bound
     to the "package" phase. For example, you might want to start Jetty on the
     "test-compile" phase and stop Jetty on the "test-phase".</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e14076"></a>Configuration</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">war</span></dt><dd><p>The location of the WAR file. This defaults to <code class="code">
-            /Users/jesse/docsync/jetty-documentation/target/jetty-documentation-9.0.4.v20130621</code>, but
+            ${project.build.directory}/${project.build.finalName}</code>, but
             you can override the default by setting this parameter.</p></dd></dl></div><p>Here's the configuration:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
@@ -525,7 +525,7 @@
       executions.</p><p>The available configuration parameters are:</p><div class="variablelist"><dl><dt><span class="term">jettyXml</span></dt><dd><p>The locations of jetty xml configuration files used to
             configure the container in the new JVM.</p></dd><dt><span class="term">contextXml</span></dt><dd><p>Optional. The location of a context xml file to configure
             the webapp in the new JVM.</p></dd><dt><span class="term">contextPath</span></dt><dd><p>Optional. The context path for the webapp in the new JVM.
-            Defaults to <code class="filename"> /jetty-documentation</code>.
+            Defaults to <code class="filename"> /${project.artifactId}</code>.
             Overrides a setting inside a <code class="code">contextXml</code> file.</p></dd><dt><span class="term">webAppSourceDirectory</span></dt><dd><p>Optional. The location of the static resources for your
             webapp. Defaults to <code class="filename"> src/main/webapp</code>.
             Overrides a <code class="code">Set name="baseResource"</code> setting inside a
@@ -539,11 +539,11 @@
             Defaults to <code class="filename"> src/main/webapp/WEB-INF/web.xml</code>.
             Overrides a <code class="code">Set name="descriptor"</code> inside a
             <code class="filename">contextXml</code> file.</p></dd><dt><span class="term">tmpDirectory</span></dt><dd><p>Temporary directory to use for the webapp. Defaults to
-            <code class="code"> ${project.build.directory/tmp</code>.</p></dd><dt><span class="term">classesDirectory</span></dt><dd><p>The location of the compiled classes for the webapp.
+            <code class="code"> ${project.build.directory}/tmp</code>.</p></dd><dt><span class="term">classesDirectory</span></dt><dd><p>The location of the compiled classes for the webapp.
             Defaults to <code class="filename">
-            /Users/jesse/docsync/jetty-documentation/target/classes</code>.</p></dd><dt><span class="term">testClassesDirectory</span></dt><dd><p>The location of the compiled test classes for the webapp.
+            ${project.build.outputDirectory}</code>.</p></dd><dt><span class="term">testClassesDirectory</span></dt><dd><p>The location of the compiled test classes for the webapp.
             Defaults to <code class="filename">
-            /Users/jesse/docsync/jetty-documentation/target/test-classes</code>.</p></dd><dt><span class="term">useTestScope</span></dt><dd><p>&#8211;Defaults to "false". If true, the test classes and
+            ${project.build.testOutputDirectory}</code>.</p></dd><dt><span class="term">useTestScope</span></dt><dd><p>&#8211;Defaults to "false". If true, the test classes and
             dependencies of <code class="code"> &lt;scope&gt;test&gt;/scope&gt;</code> are
             placed on the webapp's classpath.</p></dd><dt><span class="term">useProvidedScope</span></dt><dd><p>Defaults to "false". If true, the dependencies of scope
             "provided" are placed on the jetty container's classpath.</p></dd><dt><span class="term">stopPort</span></dt><dd><p>Mandatory. A port number for jetty to listen on to receive a
@@ -702,7 +702,7 @@ WebAppY:
 </plugin>]]>
         </script></p></div><p>Then executing jetty:run would yield the following
       ordering of resources: <code class="code">com.acme.X.war : com.acme.Y.war:
-      /Users/jesse/docsync/jetty-documentation/src/main/webapp</code>. Note that the current
+      ${project.basedir}/src/main/webapp</code>. Note that the current
       project's resources are placed last in the ordering due to the empty
       &lt;overlay/&gt; element in the maven-war-plugin. You can either use
       that, or specify the
@@ -763,7 +763,7 @@ WebAppY:
     <loginServices>
       <loginService implementation="org.eclipse.jetty.security.HashLoginService">
         <name>Test Realm</name>
-        <config>/Users/jesse/docsync/jetty-documentation/src/etc/realm.properties</config>
+        <config>&#36;{basedir}/src/etc/realm.properties</config>
       </loginService>
     </loginServices>
   </configuration>
@@ -959,7 +959,7 @@ fooprop=222
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jetty-maven-helloworld.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-scanning.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Using Maven&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Files Scanned by the Jetty Maven Plugin</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-08-01T01:00:36-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-08-02T01:00:37-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
