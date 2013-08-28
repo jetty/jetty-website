@@ -17,23 +17,22 @@
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
       </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="configuring-jsp"></a>Chapter&nbsp;8.&nbsp;Configuring JSP Support</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="configuring-jsp.html#jsp-support">Configuring JSP</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="jsp-support"></a>Configuring JSP</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-jsp.html#compiling-jsps">Compiling JSPs</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#configuring-jsp-for-jetty">Configuring JSP for Jetty</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#modifying-configuration">Modifying the Configuration</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jstl-taglibs-for-jetty7-jetty8">Using JSTL Taglibs</a></span></dt><dt><span class="section"><a href="configuring-jsp.html#using-jsf-taglibs">Using JSF Taglibs</a></span></dt></dl></div><p>This document provides information about configuring JSP.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="compiling-jsps"></a>Compiling JSPs</h3></div></div></div><p>To compile <code class="filename">.jsp</code> files into Java classes, you
     need a Java compiler. You can acquire a Java compiler from the JVM if you
-    are using a full JDK, or from a third party Jar.</p><p>By default, the jsp engine used by Jetty will try to use the
+    are using a full JDK, or from a third party Jar.</p><p>By default, the JSP engine Jetty uses tries to use the
     compiler that is part of the JDK. <span class="bold"><strong>NOTE:</strong></span>
-    when using the JDK compiler, your class files will
-    <span class="emphasis"><em>not</em></span> be saved to disk unless you use the
-    <code class="code">saveBytecode</code> init-param as described below.</p><p>If you do not have a full JDK, then you can configure the jsp engine
+    when using the JDK compiler, the system does <span class="emphasis"><em>not</em></span> save your class files to disk unless you use the
+    <code class="code">saveBytecode</code> init-param as described below.</p><p>If you do not have a full JDK, you can configure the JSP engine
     to use the Eclipse Java Compiler that Jetty ships in the distro in
-    $JETTY_HOME/lib/jsp/org.eclipse.jdt.core-3.7.1.jar. You will need to
-    define a SystemProperty that prevents the jsp engine from defaulting to
-    the in-JVM compiler.</p><p>Here's the property definition to add to
-    $JETTY_HOME/start.ini:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
+    <code class="filename">$JETTY_HOME/lib/jsp/org.eclipse.jdt.core-3.7.1.jar</code>. You need to
+    define a SystemProperty that prevents the JSP engine from defaulting to
+    the in-JVM compiler.</p><p>Here is the property definition to add to
+    <code class="filename">$JETTY_HOME/start.ini</code>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
           <![CDATA[
 
  -Dorg.apache.jasper.compiler.disablejsr199=true
 
       ]]>
         </script></div><p>Alternatively, you can define this SystemProperty in a
-    $JETTY_HOME/etc/jetty.xml file:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+    <code class="filename">$JETTY_HOME/etc/jetty.xml</code> file:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
   <Call class="java.lang.System"  name="setProperty">
@@ -42,24 +41,23 @@
   </Call>
 
       ]]>
-        </script></div><p>If you are using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Maven Jetty
-    Plugin</a>, then you have a number of options:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>define the SystemProperty inside the pom.xml of your webapp
+        </script></div><p>If you are using the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Jetty Maven
+    Plugin</a>, you have a number of options:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Define the SystemProperty inside the <code class="filename">pom.xml</code> of your webapp
         using either the <a class="link" href="http://mojo.codehaus.org/properties-maven-plugin/" target="_top">Properties
-        Maven Plugin</a> or the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Maven
-        Jetty Plugin's</a> own <a class="link" href="jetty-maven-plugin.html#setting-system-properties" title="Setting System Properties">system properties
-        configuration</a></p></li><li class="listitem"><p>add a jetty.xml config file and define the SystemProperty in
-        there</p></li><li class="listitem"><p>add the SystemProperty definition to maven's <a class="link" href="http://maven.apache.org/download.cgi" target="_top">MAVEN_OPTS</a>
-        environment variable</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jsp-for-jetty"></a>Configuring JSP for Jetty</h3></div></div></div><p>The JSP engine has many configuration parameters. Some parameters
+        Maven Plugin</a> or the <a class="link" href="jetty-maven-plugin.html" title="Configuring the Jetty Maven Plugin">Jetty Maven Plugin's</a> own <a class="link" href="jetty-maven-plugin.html#setting-system-properties" title="Setting System Properties">system properties
+        configuration.</a></p></li><li class="listitem"><p>Add a <code class="filename">jetty.xml</code> config file and define the SystemProperty in
+        that file.</p></li><li class="listitem"><p>Add the SystemProperty definition to Maven's <a class="link" href="http://maven.apache.org/download.cgi" target="_top">MAVEN_OPTS</a>
+        environment variable.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jsp-for-jetty"></a>Configuring JSP for Jetty</h3></div></div></div><p>The JSP engine has many configuration parameters. Some parameters
     affect only precompilation, and some affect runtime recompilation
-    checking. Parameters also differ between the various versions of the JSP
-    engine. This page lists the configuration parameters, their meanings and
-    their default settings. All parameters are set on the
-    <code class="code">org.apache.jasper.JspServlet</code> instance defined in the <a class="link" href="webdefault-xml.html" title="webdefault.xml">webdefault.xml</a> file.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>Be careful: for all of the parameters below, if the value you set
+    checking. Parameters also differ among the various versions of the JSP
+    engine. This page lists the configuration parameters, their meanings, and
+    their default settings. Set all parameters on the
+    <code class="code">org.apache.jasper.JspServlet</code> instance defined in the <a class="link" href="webdefault-xml.html" title="webdefault.xml"><code class="filename">webdefault.xml</code></a> file.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>Be careful: for all of these parameters, if the value you set
       doesn't take effect, try using all lower case instead of camel case, or
       capitalizing only some of the words in the name, as JSP is inconsistent
-      in its parameter naming strategy.</p></div><div class="table"><a name="d0e5669"></a><p class="title"><b>Table&nbsp;8.1.&nbsp;Understanding JSP Parameters</b></p><div class="table-contents"><table summary="Understanding JSP Parameters" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th align="left">init param</th><th align="left">Description</th><th align="left">Default</th><th align="left">webdefault.xml</th></tr></thead><tbody><tr><td>development</td><td><code class="code">development=true</code>, recompilation checks occur
+      in its parameter naming strategy.</p></div><div class="table"><a name="d0e5685"></a><p class="title"><b>Table&nbsp;8.1.&nbsp;Understanding JSP Parameters</b></p><div class="table-contents"><table summary="Understanding JSP Parameters" border="1"><colgroup><col><col><col><col></colgroup><thead><tr><th align="left">init param</th><th align="left">Description</th><th align="left">Default</th><th align="left"><code class="filename">webdefault.xml</code></th></tr></thead><tbody><tr><td>development</td><td><code class="code">development=true</code>, recompilation checks occur
             on each request. See also <code class="code">
-            modificationTestInterval</code>.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>fork</td><td>Should Ant fork its java compiles of JSP pages?</td><td>TRUE</td><td>FALSE</td></tr><tr><td>keepgenerated</td><td>Do you want to keep the generated Java files
+            modificationTestInterval</code>.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>fork</td><td>Should Ant fork its Java compiles of JSP pages?</td><td>TRUE</td><td>FALSE</td></tr><tr><td>keepgenerated</td><td>Do you want to keep the generated Java files
             around?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>saveBytecode</td><td>If class files are generated as byte arrays, should they be
             saved to disk at the end of compilations?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>trimSpaces</td><td>Should white spaces between directives or actions be
             trimmed?</td><td>FALSE</td><td>&#8211;</td></tr><tr><td>enablePooling</td><td>Determines whether tag handler pooling is enabled.</td><td>TRUE</td><td>&#8211;</td></tr><tr><td>mappedFile</td><td>Support for mapped Files. Generates a servlet that has a
@@ -88,8 +86,7 @@
 </init-param>
 
         ]]>
-        </script></div></li><li class="listitem"><p>Only check approximately every N seconds, where a request will
-        trigger the time-lapse calculation. This example checks every 60
+        </script></div></li><li class="listitem"><p>Only check approximately every N seconds, where a request triggers the time-lapse calculation. This example checks every 60
         seconds: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
@@ -104,7 +101,7 @@
 
         ]]>
         </script></div></li><li class="listitem"><p>Do no checking whatsoever, but still compile the JSP on the very
-        first hit. (Note: this ''reload-interval'' parameter is shorthand for
+        first hit. (Be aware that this ''reload-interval'' parameter is shorthand for
         a ''development=false'' and ''checkInterval=0'' combination.):
         </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -146,7 +143,7 @@
       </webApp>
   </plugin>
         ]]>
-        </script></div><p>If you're using the Jetty distro, and you want to change the JSP
+        </script></div><p>If you are using the Jetty distro, and you want to change the JSP
       settings for just one or a few of your webapps, copy the
       <code class="filename">$<a class="link" href="webdefault-xml.html" title="webdefault.xml">JETTY_HOME/etc/webdefault.xml</a></code>
       file somewhere, modify it, and then use a <a class="link" href="quickstart-config-what.html#intro-jetty-configuration-contexts" title="Configuring Contexts">context xml</a> file to
@@ -212,14 +209,14 @@
 
         ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jstl-taglibs-for-jetty7-jetty8"></a>Using JSTL Taglibs</h3></div></div></div><p>The JavaServer Pages Standlard Tag Library (JSTL) is part of the
-    jetty distribution (in <code class="code">$JETTY_HOME/lib/jsp</code>) and is
+    Jetty distribution (in <code class="code">$JETTY_HOME/lib/jsp</code>) and is
     automatically on the classpath.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-jsf-taglibs"></a>Using JSF Taglibs</h3></div></div></div><p>The following sections provide information about using JSF taglibs
-    with Jetty Standalone and the Jetty Maven Plugin.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-standalone"></a>Using JSF Taglibs with Jetty Distribution</h4></div></div></div><p>If you want to use JSF with your webapp, you need to copy the jsf
+    with Jetty Standalone and the Jetty Maven Plugin.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-standalone"></a>Using JSF Taglibs with Jetty Distribution</h4></div></div></div><p>If you want to use JSF with your webapp, you need to copy the JSF
       implementation Jar (whichever Jar contains the
       <code class="filename">META-INF/*.tld</code> files from your chosen JSF
       implementation) into <code class="filename"> $JETTY_HOME/lib/jsp</code>. This is
-      because the version of the jsp engine from Glassfish that we are using
-      <span class="emphasis"><em>requires</em></span> that the JSF tags are on the container's
+      because the version of the JSP engine from Glassfish that we are using
+      <span class="emphasis"><em>requires</em></span> that the JSF tags be on the container's
       classpath, and <span class="emphasis"><em>not</em></span> on the webapp's
       classpath.</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="using-jsf-taglibs-with-jetty-maven-plugin"></a>Using JSF Taglibs with Jetty Maven Plugin</h4></div></div></div><p>The version of the JSP engine from Glassfish that we are using
       requires that the JSF tags be on the container classpath, and not on the
@@ -257,7 +254,7 @@
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="overlay-deployer.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-logging.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Overlay WebApp Deployer&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;9.&nbsp;Jetty Logging</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-08-28T01:00:28-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-08-28T15:02:34-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
