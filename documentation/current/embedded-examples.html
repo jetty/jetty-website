@@ -21,7 +21,7 @@
       These files are pulled directly from our git repository when this document is generated.  If the line numbers do not line up feel free to fix this documentation in github and give us a pull request, or at least open an issue to notify us of the discrepancy.
     </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-file-server"></a>Simple File Server</h3></div></div></div><p>
     This example shows how to create a simple file server in Jetty.  It is perfectly suitable for test cases where you need an actual web server to obtain a file from, it could easily be configured to serve files from a directory under src/test/resources.  Note that this does not have any logic for caching of files, either within the server or setting the appropriate headers on the response.  It is simply a few lines that illustate how easy it is to serve out some files.
-  </p><div class="example"><a name="d0e11495"></a><p class="title"><b>Example&nbsp;19.1.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/FileServer.java" target="_top">FileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e11581"></a><p class="title"><b>Example&nbsp;19.1.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/FileServer.java" target="_top">FileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Handler;
@@ -49,7 +49,7 @@ public class FileServer {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11504"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11590"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
             Create a basic Jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
           </p></dd><dt><span class="term">Line 18: Create ResourceHandler</span></dt><dd><p>
             The ResourceHandler is the object that will actually handle the request for a given file.  It is a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.
@@ -63,7 +63,7 @@ public class FileServer {
           for more details.
         </p></dd></dl></div><p>
       After you have started things up you should be able to navigate to http://localhost:8080/index.html (assuming one is in the resource base directory) and you are good to go.
-    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11543"></a>Maven Coordinates</h4></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11629"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example in your project you will need the following maven dependencies declared.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -77,7 +77,7 @@ public class FileServer {
       ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-split-file-server"></a>Split File Server</h3></div></div></div><p>
     This example builds on the <a class="link" href="">Simple File Server</a> to show how chaining multiple ResourceHandlers together can let you aggregate mulitple directories to serve content on a single path and how you can link these together with ContextHandlers.
-  </p><div class="example"><a name="d0e11560"></a><p class="title"><b>Example&nbsp;19.2.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SplitFileServer.java" target="_top">SplitFileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e11646"></a><p class="title"><b>Example&nbsp;19.2.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SplitFileServer.java" target="_top">SplitFileServer.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Connector;
@@ -122,7 +122,7 @@ public class SplitFileServer {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11569"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 22 - 25: Create Server Object</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11655"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 22 - 25: Create Server Object</span></dt><dd><p>
             Create the Server object and a corresponding ServerConnector and then set the port for the connector.  In this example the server will listen on port 8090.  If you set this to port 0 then when the server has been started you can called <code class="code">connector.getLocalPort()</code> to programmatically get the port the server started on.
           </p></dd><dt><span class="term">Line 27 - 30: Create Context Handler and ResourceHandler</span></dt><dd><p>
             Create a Context Handler and ResourceHandler.  The ContextHandler is getting set to <code class="code">/</code> path but this could be anything you like for builing out your url.  Note how we are setting the ResourceBase using our jetty maven testing utilities to get the proper resource directory, you needn't use these, you simply need to supply the paths you are looking to serve content from.
@@ -136,7 +136,7 @@ public class SplitFileServer {
             for more details.  Also note the usage of the <code class="code">server.dump()</code> call, this will print to stderr the configuration of the entire server object, threadpools, classpaths and all.  This can be incredibly useful for debugging your application when your contexts, servlets or webapp paths don't seem right.  It also prints out the chain of handlers so you can more easily follow through the order of operation.
           </p></dd></dl></div><p>
       After you have started things up you should be able to navigate to http://localhost:8090/index.html (assuming one is in the resource base directory) and you are good to go.  Any requests for files will be looked for in the first resource handler, then the second, and so on and so forth.
-    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11617"></a>Maven Coordinates</h4></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11703"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example as is in your project you will need the following maven dependencies declared.  We would recommend not using the toolchain dependency in your actual application.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -155,7 +155,7 @@ public class SplitFileServer {
       ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-many-connectors"></a>Multiple Connectors</h3></div></div></div><p>
     This example shows how to configure Jetty to use multiple connectors, specifically so it can process both http and https requests.  Since the meat of this example is the server and connector configuration it only uses a simple HelloHandler but this example should be easily merged with other examples like those deploying servlets or webapps.
-  </p><div class="example"><a name="d0e11631"></a><p class="title"><b>Example&nbsp;19.3.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/ManyConnectors.java" target="_top">ManyConnectors.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e11717"></a><p class="title"><b>Example&nbsp;19.3.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/ManyConnectors.java" target="_top">ManyConnectors.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Connector;
@@ -199,7 +199,7 @@ public class ManyConnectors {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11640"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 18, 19: Discover ${jetty.home}</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11726"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 18, 19: Discover ${jetty.home}</span></dt><dd><p>
             Since this example shows off SSL configuration, we need a keystore with the appropriate key.  These two lines are purely a hack to get access to a keystore that we use in many unit tests and should probably be a direct path to your own keystore (used on line 29).
           </p></dd><dt><span class="term">Line 20: Create Server Object</span></dt><dd><p>
             Create a basic jetty server object without declaring the port.  Since we are configuring connectors directly we'll be setting ports on those connectors.
@@ -219,7 +219,7 @@ public class ManyConnectors {
             Start things up!  By using the server.join() the server thread will join with the current thread.  See
             <a class="link" href="http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" target="_top">Thread.join()</a>
           for more details.
-        </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11707"></a>Maven Coordinates</h4></div></div></div><p>
+        </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11793"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example in your project you will need the following maven dependencies declared.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -239,7 +239,7 @@ public class ManyConnectors {
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-spdy-server"></a>Simple SPDY Server</h3></div></div></div><p>
         This example shows how to create a server with a SPDY connector in Jetty. Clients (mostly browsers) that have a
         SPDY client implementation will talk SPDY to that connector. All others will transparently fall back to HTTP.
-    </p><div class="example"><a name="d0e11721"></a><p class="title"><b>Example&nbsp;19.4.&nbsp;
+    </p><div class="example"><a name="d0e11807"></a><p class="title"><b>Example&nbsp;19.4.&nbsp;
             <a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SpdyServer.java" target="_top">
                 SpdyServer.java
             </a>
@@ -349,7 +349,7 @@ public class SpdyServer {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11732"></a>Walkthrough</h4></div></div></div><p>This will guide you through the code that actually configures the SPDY connector. The remaining code
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11818"></a>Walkthrough</h4></div></div></div><p>This will guide you through the code that actually configures the SPDY connector. The remaining code
             is either self explaining, described in the other embedded examples or in code comments.
         </p><div class="variablelist"><dl><dt><span class="term">Lines 60-63: Create Server Object</span></dt><dd><p>
                         Create a basic jetty server object.
@@ -380,7 +380,7 @@ public class SpdyServer {
                     </p></dd></dl></div><p>
             After you have started things up you should be able to navigate to http://localhost:8080/index.html
             (assuming one is in the resource base directory) and you are good to go.
-        </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11789"></a>Maven Coordinates</h4></div></div></div><p>
+        </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11875"></a>Maven Coordinates</h4></div></div></div><p>
             To use this example in your project you will need the following maven dependencies declared.
         </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -409,7 +409,7 @@ public class SpdyServer {
             ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-secured-hello-handler"></a>Secured Hello Handler</h3></div></div></div><p>
     This example shows how to wrap one handler with another one that handles security.  We have a simple Hello Handler that just return a greeting but add on the restriction that to get this greeting you must authenticate.  Another thing to remember is that this example uses the ConstraintSecurityHandler which is what supports the security mappings inside of the servlet api, it could be easier to show just the SecurityHandler usage, but the constraint provides more configuration power.  If you don't need that you can drop the Constaint bits and use just the SecurityHandler.
-  </p><div class="example"><a name="d0e11803"></a><p class="title"><b>Example&nbsp;19.5.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SecuredHelloHandler.java" target="_top">SecuredHelloHandler.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e11889"></a><p class="title"><b>Example&nbsp;19.5.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/SecuredHelloHandler.java" target="_top">SecuredHelloHandler.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import java.util.Collections;
@@ -449,7 +449,7 @@ public class SecuredHelloHandler {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11812"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11898"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 17: Create Server Object</span></dt><dd><p>
             Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
           </p></dd><dt><span class="term">Lines 18, 19: Login Service</span></dt><dd><p>
             Since this example is for our test webapp, we need to setup a LoginService so this shows how to create a very simple hashmap based one.  The name of the LoginService needs to correspond to what is configured a webapp's <code class="filename">web.xml</code> and since it has a lifecycle of its own we register it as a bean with the Jetty server object so it can be started and stopped according to the lifecycle of the server itself.  In this example the name can be whatever you like since we are not dealing with webapp realms.
@@ -469,7 +469,7 @@ public class SecuredHelloHandler {
           for more details.
         </p></dd></dl></div><p>
       After you have started things up you should be able to navigate to http://localhost:8080/index.html (assuming one is in the resource base directory) and you are good to go.
-    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11875"></a>The Realm Properties File</h4></div></div></div><div class="informalexample"><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11961"></a>The Realm Properties File</h4></div></div></div><div class="informalexample"><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
           <![CDATA[#
 # This file defines users passwords and roles for a HashUserRealm
 #
@@ -492,7 +492,7 @@ user: password,user
 # This entry is for digest auth.  The credential is a MD5 hash of username:realmname:password
 digest: MD5:6e120743ad67abfbc385bc2bb754e297,user
 ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11884"></a>Maven Coordinates</h4></div></div></div><p>
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11970"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example in your project you will need the following maven dependencies declared.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -506,7 +506,7 @@ digest: MD5:6e120743ad67abfbc385bc2bb754e297,user
       ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-minimal-servlet"></a>Minimal Servlet</h3></div></div></div><p>
     This example shows the bare minimum required for deploying a servlet into jetty.  Note that this is strictly a servlet, not a servlet in the context of a web application, that example comes later.  This is purely just a servlet deployed and mounted on a context and able to process requests.  This example is excellent for situations where you have a simple servlet that you need to unit test, just mount it on a context and issue requests using your favorite http client library (like our Jetty client found in <a class="xref" href="http-client.html" title="Chapter&nbsp;27.&nbsp;HTTP Client">Chapter&nbsp;27, <i>HTTP Client</i></a>).
-  </p><div class="example"><a name="d0e11900"></a><p class="title"><b>Example&nbsp;19.6.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/MinimalServlets.java" target="_top">MinimalServlets.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e11986"></a><p class="title"><b>Example&nbsp;19.6.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/MinimalServlets.java" target="_top">MinimalServlets.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import java.io.IOException;
@@ -539,7 +539,7 @@ public class MinimalServlets {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11909"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 14: Create Server Object</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11995"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 14: Create Server Object</span></dt><dd><p>
             Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
           </p></dd><dt><span class="term">Line 15,16: Create ServletHandler</span></dt><dd><p>
             The ServletHandler is a dead simple way to create a context handler that is backed by an instance of a Servlet.  This handler then needs to be registered with the Server object.
@@ -555,7 +555,7 @@ public class MinimalServlets {
             It is really simple to create useful servlets for testing behaviors, sometimes you just need a http server to run a unit test against that will return test content and wiring up a servlet like this makes it trivial.      
           </p></dd></dl></div><p>
       After you have started things up you should be able to navigate to http://localhost:8080/ and you are good to go.
-    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11954"></a>Maven Coordinates</h4></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12040"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example in your project you will need the following maven dependencies declared.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -569,7 +569,7 @@ public class MinimalServlets {
       ]]>
         </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="embedded-one-webapp"></a>Web Application</h3></div></div></div><p>
     This example shows how to deploy a simple webapp with an embedded instance of jetty.  This is useful when you want to manage the lifecycle of a server programmatically, either within a production application or as a simple way to deploying and debugging a full scale application deployement.  In many ways it is easier then traditional deployment since you control the classpath yourself, making this easy to wire up in a test case in maven and issue requests using your favorite http client library (like our Jetty client found in <a class="xref" href="http-client.html" title="Chapter&nbsp;27.&nbsp;HTTP Client">Chapter&nbsp;27, <i>HTTP Client</i></a>).
-  </p><div class="example"><a name="d0e11970"></a><p class="title"><b>Example&nbsp;19.7.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/OneWebApp.java" target="_top">OneWebApp.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
+  </p><div class="example"><a name="d0e12056"></a><p class="title"><b>Example&nbsp;19.7.&nbsp;<a class="link" href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.project.git/plain/examples/embedded/src/main/java/org/eclipse/jetty/embedded/OneWebApp.java" target="_top">OneWebApp.java</a></b></p><div class="example-contents"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.security.HashLoginService;
@@ -595,7 +595,7 @@ public class OneWebApp {
     }
 }
 ]]>
-        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e11979"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 12: Create Server Object</span></dt><dd><p>
+        </script></div></div><br class="example-break"><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12065"></a>Walkthrough</h4></div></div></div><div class="variablelist"><dl><dt><span class="term">Line 12: Create Server Object</span></dt><dd><p>
             Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0 then a randomly available port will be assigned that you can either look in the logs for the port, or programmatically obtain it for use in test cases.
           </p></dd><dt><span class="term">Line 13 - 15: Create and Configure WebAppContext</span></dt><dd><p>
             The WebAppContext is the entity that controls the environment in which a web application lives and breathes.  In this example the context path is being set to <code class="code">"/"</code> so it is suitable for serving root context requests and then we see it setting the location of the war.  A whole host of other configurations are available, ranging from configuring to support annotation scanning in the webapp (through PlusConfiguration) to choosing where the webapp will unpack itself.
@@ -609,7 +609,7 @@ public class OneWebApp {
             for more details.
           </p></dd></dl></div><p>
       After you have started things up you should be able to navigate to http://localhost:8080/ and you are good to go.
-    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12024"></a>Maven Coordinates</h4></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e12110"></a>Maven Coordinates</h4></div></div></div><p>
       To use this example in your project you will need the following maven dependencies declared.
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -630,7 +630,7 @@ public class OneWebApp {
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="embedding-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-embedding.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Embedding Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;20.&nbsp;Bundled Servlets, Filters, and Handlers</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-09-06T01:00:30-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-09-07T01:00:36-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
