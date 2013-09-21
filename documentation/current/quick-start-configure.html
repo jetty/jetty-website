@@ -50,13 +50,13 @@
           rarely edited and only for significant structural changes.</p></dd><dt><span class="term">XML files</span></dt><dd><p>XML files in Jetty or spring IoC format are listed either on
           the command line, ini files or added to the effective command line
           by a module definition. The XML files instantiate and inject the
-          actual java objects that comprise the server, connectors and
+          actual Java objects that comprise the server, connectors and
           contexts. Because Jetty IoC XML files frequently use properties,
           many common configuration tasks can be accomplished without editing
           these XML files. If XML configuration changes are required, the XML
           file should be copied from jetty.home/etc to jetty.base/etc before
           being modified. </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1313"></a>Other Configuration Files</h3></div></div></div><p>In addition to the start configuration files described above, the
-    configuration of the server can use the following file</p><div class="variablelist"><dl><dt><span class="term">Context XML files</span></dt><dd><p>Any XML files in Jetty or spring IoC format that is discovered
+    configuration of the server can use the following file:</p><div class="variablelist"><dl><dt><span class="term">Context XML files</span></dt><dd><p>Any XML files in Jetty or spring IoC format that is discovered
           in the webapps directory are used by the deploy module to
           instantiate and inject HttpContext instances to create a specific
           context. These may be standard web applications or bespoke contexts
@@ -161,11 +161,11 @@ public class ExampleServer {
     directory. Thus configuring Jetty is often a matter of just editing
     existing XML files and altering the configuration values within
     them.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1405"></a>Configuring the Jetty Distribution</h3></div></div></div><p>With a normal distribution of Jetty, the configuration mechanisms
-    introduced above are typically used as follows:</p><div class="variablelist"><dl><dt><span class="term"><code class="filename">$JETTY_HOME/start.ini</code></span></dt><dd><p>Used for global command line options. In the standard jetty
+    introduced above are typically used as follows:</p><div class="variablelist"><dl><dt><span class="term"><code class="filename">$JETTY_HOME/start.ini</code></span></dt><dd><p>Used for global command line options. In the standard Jetty
           distribution since release 9.1 the contents of start.ini have been
           moved to modular ini files under the <code class="code">start.d/</code> .</p></dd><dt><span class="term"><code class="filename">$JETTY_HOME/start.d</code></span></dt><dd><p>A directory of modular ini files that are used to set the
-          OPTION, parameters and configuration files for key jetty modules.
-          These modules may be enable/disabled by renaming the files or since
+          OPTION, parameters and configuration files for key Jetty modules.
+          These modules may be enabled/disabled by renaming the files or since
           release 9.1 by using the --enable or --disable option of
           start.jar</p></dd><dt><span class="term"><code class="filename">$JETTY_HOME/lib/*.xml</code></span></dt><dd><p>Jetty IoC XML files that configure individual features; for
           example <code class="filename">jetty.xml</code> (for the server),
@@ -173,7 +173,7 @@ public class ExampleServer {
           <code class="filename">jetty-https.xml,</code> <code class="filename">
           jetty-jmx.xml</code>.</p></dd><dt><span class="term"><code class="filename">$JETTY_HOME/webapps/*</code></span></dt><dd><p>The directory in which standard WAR files, web applications
           and context IoC XML files are deployed.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1454"></a>Jetty Port Configuration Example</h3></div></div></div><p>The following example examines the common Jetty configuration
-    mechanism using the HTTP port as an example. To run the jetty server from
+    mechanism using the HTTP port as an example. To run the Jetty server from
     the distribution, it is just a matter of running the following
     command:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; java -jar start.jar</strong></span></pre></div><p>The Jetty <code class="filename">distribution uses the start.d/
     </code>directory to define what modules, configuration files and
@@ -182,7 +182,7 @@ public class ExampleServer {
           <![CDATA[--module=http
 jetty.port=8080
 ]]>
-        </script><p>This sets the jetty port parameter and activates the http module as
+        </script><p>This sets the Jetty port parameter and activates the http module as
     defined by the modules/http.mod file, which lists the
     <code class="filename">etc/jetty-http.xml</code> configuration file as an effective
     command line argument. Looking inside that configuration file, we see that
@@ -193,11 +193,11 @@ jetty.port=8080
         </script><p>The effect of this line is to call ServerConnector.setPort(int) with
     either the value of the <code class="filename">jetty.port</code> property if set or
     with the value 80. We can see from the start.ini except above that the
-    jetty.port property line is set to 8080, so out of the box, the jetty
+    jetty.port property line is set to 8080, so out of the box, the Jetty
     distribution will use the default 8080 port set inside the
     start.d/http.ini file.</p><p>If you wish to change the port, then the start.d/http.ini file can
     be edited and the default value there changed to the new port. However
-    this does mean that a file which is part of the jetty distribution has
+    this does mean that a file which is part of the Jetty distribution has
     been modified, which can make future upgrades more difficult. Thus it is
     normally better to create a jetty.base directory and configure a new
     instance of a server there.</p></div></div></div><script type="text/javascript">
@@ -205,7 +205,7 @@ jetty.port=8080
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="quickstart-jetty-coordinates.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="quick-start.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="quickstart-config-what.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Finding Jetty in Maven&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;What to Configure in Jetty</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-09-20T01:00:20-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2013-09-21T01:00:20-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
