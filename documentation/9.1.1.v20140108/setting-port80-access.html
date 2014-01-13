@@ -1,0 +1,138 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Setting Port 80 Access for a Non-Root User</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-connectors.html" title="Chapter&nbsp;6.&nbsp;Configuring Jetty Connectors"><link rel="prev" href="configuring-ssl.html" title="Configuring SSL"><link rel="next" href="configuring-security.html" title="Chapter&nbsp;7.&nbsp;Configuring Security"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.1.1.v20140108</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Setting Port 80 Access for a Non-Root User</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuring-ssl.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;6.&nbsp;Configuring Jetty Connectors<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuring-security.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="setting-port80-access"></a>Setting Port 80 Access for a Non-Root User</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="setting-port80-access.html#using-ipchains">Using ipchains</a></span></dt><dt><span class="section"><a href="setting-port80-access.html#using-iptables">Using iptables</a></span></dt><dt><span class="section"><a href="setting-port80-access.html#configuring-jetty-setuid-feature">Configuring Jetty's SetUID Feature</a></span></dt><dt><span class="section"><a href="setting-port80-access.html#using-xinetd">Using xinetd</a></span></dt><dt><span class="section"><a href="setting-port80-access.html#using-solaris10-user-rights-management-framework">Using the Solaris 10 User Rights Management Framework</a></span></dt></dl></div><p>On Unix-based systems, port 80 is protected; typically only the
+  superuser root can open it. For security reasons, it is not desirable to run
+  the server as root. This page presents several options to access port 80 as
+  a non-root user, including using ipchains, iptables, Jetty's SetUID feature,
+  xinetd, and the Solaris 10 User Rights Management Framework.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-ipchains"></a>Using ipchains</h3></div></div></div><p>On some Linux systems you can use the <span class="emphasis"><em>ipchains
+    REDIRECT</em></span> mechanism to redirect from one port to another inside
+    the kernel (if ipchains is not available, then usually iptables
+    is):</p><div class="screenexample"><pre class="screen"># /sbin/ipchains -I input --proto TCP --dport 80 -j REDIRECT 8080</pre></div><p>This command instructs the system as follows: "Insert into the
+    kernel's packet filtering the following as the first rule to check on
+    incoming packets: if the protocol is TCP and the destination port is 80,
+    redirect the packet to port 8080". Be aware that your kernel must be
+    compiled with support for ipchains (virtually all stock kernels are). You
+    must also have the ipchains command-line utility installed. You can run this command at any time,
+    preferably just once, since it inserts another copy of the rule every time
+    you run it.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-iptables"></a>Using iptables</h3></div></div></div><p>On many Linux systems you can use the iptables REDIRECT mechanism to
+    redirect from one port to another inside the kernel (if iptables is not
+    available, then usually ipchains is).</p><p>You need to add something like the following to the startup scripts
+    or your firewall rules:</p><div class="screenexample"><pre class="screen"># /sbin/iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080</pre></div><p>The underlying model of iptables is different from ipchains, so the
+    forwarding normally happens only to packets originating off-box. You also
+    need to allow incoming packets to port 8080 if you use iptables as a local
+    firewall.</p><p>Be careful to place rules like this one early in your
+    <span class="emphasis"><em>input</em></span> chain. Such rules must precede any rule that
+    accepts the packet, otherwise the redirection won't occur. You can insert
+    as many rules as required if your server needs to listen on multiple
+    ports, as for HTTPS.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-jetty-setuid-feature"></a>Configuring Jetty's SetUID Feature</h3></div></div></div><p><a class="link" href="http://en.wikipedia.org/wiki/Setuid" target="_top">SetUID</a> is a
+    technique that uses Unix-like file system access right to allow users to run
+    an executable that would otherwise require higher privileges.</p><p>Jetty's SetUID module allows you to run Jetty as a normal user even
+    when you need to run Jetty on port 80 or 443.
+    The module is hosted as part of the Jetty ToolChain project and it is released
+    independently from Jetty itself (and as such it has a different version than
+    Jetty releases).
+    You can find the source code
+    <a class="link" href="http://git.eclipse.org/gitroot/jetty/org.eclipse.jetty.toolchain.git" target="_top">here</a>,
+    while the Maven coordinates are:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+<dependency>
+    <groupId>org.eclipse.jetty.toolchain.setuid</groupId>
+    <artifactId>jetty-setuid-java</artifactId>
+</dependency>
+]]>
+        </script></div><p>Jetty's SetUID module provides an implementation for Linux and OSX.</p><p>Since the SetUID feature requires native code, you may need to build it
+    for your environment.</p><p>In order to use Jetty's SetUID module, you need to copy file
+    <code class="filename">jetty-setuid-java-&lt;version&gt;.jar</code> into
+    <code class="filename">$jetty.home/lib</code>, and make sure that the native library file
+    (for Linux this file is called <code class="filename">libsetuid-linux.so</code>) is present
+    in the native library path of the JVM (see also <a class="xref" href="setting-port80-access.html#configuring-jetty-for-setuid" title="Configuring Jetty for SetUID">Configuring Jetty for SetUID</a>).</p><p>Jetty's SetUID module also provides a default configuration file in the Jetty
+    XML format, in file <code class="filename">jetty-setuid-java-&lt;version&gt;-config.jar</code>.
+    This file can be unjarred in <code class="filename">$jetty.home/lib</code> and it will provide
+    a <code class="filename">$jetty.home/etc/jetty-setuid.xml</code> file that you can customize.
+    Alternatively, follow the next section that specifies how to create a Jetty XML config
+    file for Jetty's SetUID.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="creating-jetty-config-file"></a>Creating a Jetty Config File</h4></div></div></div><p>Jetty SetUID module works by replacing the usual <code class="classname">org.eclipse.jetty.server.Server</code>
+      instance with a <code class="classname">org.eclipse.jetty.setuid.SetUIDServer</code> instance.</p><p>Create a Jetty config file as follows:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/jetty/configure_9_0.dtd">
+<Configure id="Server" class="org.eclipse.jetty.setuid.SetUIDServer">
+  <Set name="umask">UMASK</Set>
+  <Set name="uid">USERID</Set>
+</Configure>]]>
+        </script></div><p>where you replace:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p><span class="emphasis"><em>UMASK</em></span> with the <code class="code">umask</code> setting you want the process to have.</p><div class="itemizedlist"><ul class="itemizedlist" type="circle"><li class="listitem"><p>You must enter it in decimal. That is, if you want the effect of umask 022, you must enter</p><div class="screenexample"><pre class="screen">&lt;Set name="umask"&gt;18&lt;/Set&gt;</pre></div></li><li class="listitem"><p>If you prefer octal, enter</p><div class="screenexample"><pre class="screen">&lt;Set name="umaskOctal"&gt;022&lt;/Set&gt;</pre></div></li><li class="listitem"><p>You can remove this line if you don't want to change this the <code class="code">umask</code> at runtime.</p></li><li class="listitem"><p>Set it to 002 if you get an error to the effect that root
+              does not have permission to write to the log file.</p></li></ul></div></li><li class="listitem"><p><span class="emphasis"><em>USERID</em></span> with the ID of the user you want
+          the process to execute as once the ports have been opened.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="configuring-jetty-for-setuid"></a>Configuring Jetty for SetUID</h4></div></div></div><p>The easiest way to do this is to edit the
+      <code class="filename">$jetty.home/start.ini</code> file:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>uncomment <code class="code">--exec</code></p></li><li class="listitem"><p>add <code class="filename">-Djava.library.path=lib/setuid</code>,
+              the path where the native library can be found</p></li><li class="listitem"><p>add an option for SetUID:
+          <code class="code">OPTIONS=Server,jsp,jmx,resources,websocket,ext,jta,plus,jdbc,annotations,setuid</code></p></li><li class="listitem"><p>add <code class="filename">etc/jetty-setuid.xml</code> as the <span class="strong"><strong>first</strong></span>
+          file in the configuration file section. This allows the <code class="code">Server</code> instance to be created
+          as <code class="classname">org.eclipse.jetty.setuid.SetUIDServer</code></p></li></ul></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Important</h3><p>You must ensure that the
+        <code class="filename">etc/jetty-setuid.xml</code> file is <span class="strong"><strong>first</strong></span> in the list of
+        config files.</p></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="running-jetty-as-root-user"></a>Running Jetty as Root User</h4></div></div></div><p>Having edited <code class="filename">start.ini</code> as advised above, to
+      run jetty as the root user:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Switch to the userid of your choice.</p></li><li class="listitem"><p>Optionally set the umask of your choice.</p></li><li class="listitem"><p>Enter the following command: </p><div class="screenexample"><pre class="screen">sudo java -jar start.jar</pre></div></li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-xinetd"></a>Using xinetd</h3></div></div></div><p>With modern Linux flavours, <code class="code">inetd</code> has a newer, better big brother
+    <span class="emphasis"><em><code class="code">xinetd</code></em></span>, that you can use to redirect network traffic.
+    Since <code class="code">xinetd</code> is driven by text files, all you need is a text editor. For
+    detailed information, see <a class="link" href="http://www.xinetd.org/" target="_top">http://www.xinetd.org/</a>.</p><p>There are two ways to give <code class="code">xinetd</code> instructions:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Add a new service to <code class="filename">etc/xinetd.conf</code></p></li><li class="listitem"><p>Add a new file to the directory
+        <code class="filename">etc/xinetd.d</code></p></li></ul></div><p>The format is the same; if you have a look at the file/directory,
+    you will get the picture.</p><p>The following entry redirects all inward TCP traffic on port 80 to
+    port 8888 on the local machine. You can also redirect to other machines
+    for gimp proxying:</p><div class="screenexample"><pre class="screen">service my_redirector
+{
+ type = UNLISTED
+ disable = no
+ socket_type = stream
+ protocol = tcp
+ user = root
+ wait = no
+ port = 80
+ redirect = 127.0.0.1 8888
+ log_type = FILE /tmp/somefile.log
+}</pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="caveats"></a>caveats</h4></div></div></div><p>Be aware of the following:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Include a space on either side of the '=' or it is
+          ignored.</p></li><li class="listitem"><p><code class="code">type = UNLISTED</code> means that the name of the
+          service does not have to be listed in <code class="filename">/etc/services</code>,
+          but then you have to specify port and protocol. If you want to do use an
+          existing service name, for example, http:</p><div class="screenexample"><pre class="screen">service http
+{
+ disable = no
+ socket_type = stream
+ user = root
+ wait = no
+ redirect = 127.0.0.1 8888
+ log_type = FILE /tmp/somefile.log
+}</pre></div><p>Have a browse in <code class="filename">/etc/services</code> and it will all become
+          clear.</p></li><li class="listitem"><p>Logging might present certain security problems, so you might
+          want to leave that out.</p></li></ul></div><p><code class="code">xinetd</code> is a hugely powerful and configurable system, so expect to
+      do some reading.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="using-solaris10-user-rights-management-framework"></a>Using the Solaris 10 User Rights Management Framework</h3></div></div></div><p>Solaris 10 provides a User Rights Management framework that can
+    permit users and processes superuser-like abilities:</p><div class="screenexample"><pre class="screen">usermod -K defaultpriv=basic,net_privaddr myself</pre></div><p>Now the <code class="code">myself</code> user can bind to port 80.</p><p>Refer to the <a class="link" href="http://docs.oracle.com/cd/E23823_01/html/816-4557/prbactm-1.html#scrolltoc" target="_top">
+    Solaris 10</a> and <a class="link" href="http://docs.oracle.com/cd/E23824_01/html/821-1456/prbactm-1.html#scrolltoc" target="_top">
+    Solaris 11 Security Services documentation</a> for more
+    information.</p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-ssl.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-connectors.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-security.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Configuring SSL&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;7.&nbsp;Configuring Security</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-01-13T10:48:32-06:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
