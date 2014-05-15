@@ -1,0 +1,152 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Example: Logging with Apache Log4j</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-logging.html" title="Chapter&nbsp;21.&nbsp;Jetty Logging"><link rel="prev" href="configuring-jetty-request-logs.html" title="Configuring Jetty Request Logs"><link rel="next" href="example-logging-java-util-logging.html" title="Example: Logging with Java's java.util.logging"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.1.3.v20140225</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Example: Logging with Apache Log4j</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuring-jetty-request-logs.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;21.&nbsp;Jetty Logging<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-logging-java-util-logging.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-logging-log4j"></a>Example: Logging with Apache Log4j</h2></div></div></div><p>This page describes how to configure Jetty for logging with <a class="link" href="http://logging.apache.org/log4j/" target="_top">Apache Log4j</a>, which involves using <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for
+  Log4j</a>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14209"></a>The Required JARs</h3></div></div></div><p>You need to download three JARs, which you can do by clicking the following links:</p><div class="variablelist"><dl><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.6/slf4j-log4j12-1.6.6.jar" target="_top">slf4j-log4j12-1.6.6.jar</a></code></span></dt><dd><p>The Slf4j binding layer for Log4j.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar" target="_top">slf4j-api-1.6.6.jar</a></code></span></dt><dd><p>The basic Slf4j API that Jetty's Slf4jLog
+            implementation uses.</p></dd><dt><span class="term"><code class="filename"><a class="link" href="http://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar" target="_top">log4j-1.2.7.jar</a></code></span></dt><dd><p>The<a class="link" href="http://repo1.maven.org/maven2/org/slf4j/slf4j-parent/1.6.6/slf4j-parent-1.6.6.pom" target="_top">version
+            of log4j that slf4j-log4j12-1.6.6 was written
+            against</a>.</p></dd></dl></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14243"></a>Configuring Server Classpath</h3></div></div></div><p>For the Server to use these new JARs you need to put
+    them in place and tell Jetty to load them on each startup. Create a <code class="filename">${jetty.home}/lib/logging/</code> directory
+    and place the three JAR files you downloaded there.</p><div class="informalexample"><div class="screenexample"><pre class="screen">[jetty-distribution-9.1.3.v20140225]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
+total 520
+-rw-rw-r-- 1 jetty jetty 489884 Mar 11 15:40 <span class="bold"><strong>log4j-1.2.17.jar</strong></span>
+-rw-rw-r-- 1 jetty jetty  26176 Mar 11 15:40 <span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
+-rw-rw-r-- 1 jetty jetty   9711 Mar 11 15:40 <span class="bold"><strong>slf4j-log4j12-1.6.6.jar</strong></span>
+</pre></div></div><p>Next you edit the <code class="filename">${jetty.home}/start.ini</code> to get Jetty to
+    load these logging files into the Server classpath. Check for <code class="literal">OPTIONS</code> line
+    with logging defined. If you can't find an <code class="literal">OPTIONS</code> entry with logging, add one at the
+    end of the file.</p><div class="informalexample"><div class="screenexample"><pre class="screen">[jetty-distribution-9.1.3.v20140225]$ grep logging <span class="bold"><strong>start.ini</strong></span> 
+# Adding lib/logging to server classpath
+<span class="bold"><strong>OPTIONS=logging</strong></span>
+</pre></div></div><p>Now verify that the server classpath loads the three JARs.</p><div class="informalexample"><div class="screenexample"><pre class="screen">[jetty-distribution-9.1.3.v20140225]$ <span class="bold"><strong>java -jar start.jar --version</strong></span> | grep logging
+Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>logging</strong></span>, resources, websocket]
+18:               1.2.17 | ${jetty.home}/lib/logging/<span class="bold"><strong>log4j-1.2.17.jar</strong></span>
+19:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-api-1.6.6.jar</strong></span>
+20:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>slf4j-log4j12-1.6.6.jar</strong></span></pre></div></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14305"></a>Configuring Server Logging</h3></div></div></div><p>If you have a
+    <code class="filename">${jetty.home}/resources/jetty-logging.properties</code> file,
+    make sure it contains just the following:</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
+          <![CDATA[# Configure Jetty for SLf4j Logging
+org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
+]]>
+        </script></p><p>This tells Jetty to use the Slf4jLog implementation for its
+    internal logging.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14318"></a>Configuring Log4j</h3></div></div></div><p>Next you need a
+    <code class="filename">${jetty.home}/resources/log4j.properties</code> file for
+    configuring Log4j.</p><p>Example <code class="filename">resources/log4j.properties</code> file:</p><p><script type="syntaxhighlighter" class="brush: properties;toolbar: false">
+          <![CDATA[# Basic Log4j Configuration with STDOUT and File logging
+log4j.rootLogger=INFO, stdout, filer
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+
+log4j.appender.filer=org.apache.log4j.RollingFileAppender
+log4j.appender.filer.layout=org.apache.log4j.PatternLayout
+log4j.appender.filer.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+log4j.appender.filer.File=${jetty.home}/logs/jetty.log
+log4j.appender.filer.DatePattern='.'yyyy-MM-dd
+log4j.appender.filer.MaxFileSize=10MB
+log4j.appender.filer.MaxBackupIndex=4
+log4j.appender.filer.append=true
+]]>
+        </script></p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>The use of <code class="filename">${jetty.home}/logs</code> is a handy
+        way to always get a reference to the standard Jetty logs
+        directory.</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e14340"></a>Scripted Installation of Log4j</h3></div></div></div><p><script type="syntaxhighlighter" class="brush: bash;toolbar: false">
+          <![CDATA[#!/bin/bash
+# -------------------------------------------
+# FOR DEMONSTRATION PURPOSES ONLY
+# USE AT YOUR OWN RISK
+# -------------------------------------------
+
+if [ ! -f start.ini ] ; then
+    echo "ERROR: Not in \${jetty.home} directory"
+    exit -1
+fi
+
+if [ -d lib/logging ] ; then
+    echo "ERROR: Existing lib/logging directory exists."
+    echo "       Remove any existing logging implementations"
+    echo "       before running this script, as conflicting logging"
+    echo "       implementations can cause problems."
+    echo "       Then remove the lib/logging directory entirely."
+    exit -1
+fi
+
+mkdir lib/logging
+pushd lib/logging
+
+curl -O http://repo1.maven.org/maven2/org/slf4j/slf4j-log4j12/1.6.6/slf4j-log4j12-1.6.6.jar
+curl -O http://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar
+curl -O http://repo1.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar
+
+popd
+
+if (grep -E "OPTIONS=.*logging.*" start.ini) 
+then
+    echo "Logging already present in start.ini"
+else
+    echo "Adding logging to start.ini"
+    echo "" >> start.ini
+    echo "# Adding lib/logging to server classpath" >> start.ini
+    echo "OPTIONS=logging" >> start.ini
+fi
+
+cat << EOFP > resources/jetty-logging.properties
+org.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.Slf4jLog
+EOFP
+
+if [ -f resources/log4j.properties ]
+then
+    echo "Using existing resources/log4j.properties"
+else
+    echo "Creating new resources/log4j.properties"
+    cat << EOFL > resources/log4j.properties
+# Basic Log4j Configuration with STDOUT and File logging
+log4j.rootLogger=INFO, stdout, filer
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+
+log4j.appender.filer=org.apache.log4j.RollingFileAppender
+log4j.appender.filer.layout=org.apache.log4j.PatternLayout
+log4j.appender.filer.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+log4j.appender.filer.File=\${jetty.home}/logs/jetty.log
+log4j.appender.filer.DatePattern='.'yyyy-MM-dd
+log4j.appender.filer.MaxFileSize=10MB
+log4j.appender.filer.MaxBackupIndex=4
+log4j.appender.filer.append=true
+EOFL
+fi
+]]>
+        </script>This uses curl to download the JARs, set up the
+    <code class="filename">start.ini</code>, and lastly the
+    <code class="filename">resources</code> directory suitable for using Log4j.</p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-jetty-request-logs.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-logging.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="example-logging-java-util-logging.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Configuring Jetty Request Logs&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Example: Logging with Java's java.util.logging</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-05-15T16:19:44-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
