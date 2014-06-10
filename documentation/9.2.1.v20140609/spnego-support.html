@@ -1,0 +1,184 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Spnego Support</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-security.html" title="Chapter&nbsp;7.&nbsp;Configuring Security"><link rel="prev" href="jaas-support.html" title="JAAS Support"><link rel="next" href="configuring-jsp.html" title="Chapter&nbsp;8.&nbsp;Configuring JSP Support"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.2.1.v20140609</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Spnego Support</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="jaas-support.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;7.&nbsp;Configuring Security<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="configuring-jsp.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spnego-support"></a>Spnego Support</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="spnego-support.html#d0e6478">Configuring Jetty and Spnego</a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e6539">
+      Configuring Firefox
+    </a></span></dt><dt><span class="section"><a href="spnego-support.html#d0e6557">
+      Configuring Internet Explorer
+    </a></span></dt></dl></div><p>
+    Spnego or Simple and Protected GSSAPI Negotiation Mechanism is a way for users to be seamlessly authenticated when running on a Windows or Active Directory based network.  Jetty supports this type of authentication and authorization through the JDK so you must be using a JDK that supports it, which recent versions of Java 6 and 7 do.  Also important to note is that this is an incredibly fragile setup where everything needs to be configured just right for things to work, otherwise it can fail in fun and exciting, not to mention obscure ways.
+  </p><p>
+    There is a substantial amount of configuration and testing required to enable this feature as well as knowledge and access to central systems on a Windows network such as the Active Domain Controller and the ability to create and maintain service users.
+  </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6478"></a>Configuring Jetty and Spnego</h3></div></div></div><p>
+      To run with spengo enabled the following command line options are required:
+    </p><div class="screenexample"><pre class="screen">
+
+-Djava.security.krb5.conf=/path/to/jetty/etc/krb5.ini \
+-Djava.security.auth.login.config=/path/to/jetty/etc/spnego.conf \
+-Djavax.security.auth.useSubjectCredsOnly=false
+ 
+    </pre></div><p>
+      For debugging the spengo authentication the following options are very helpful:
+    </p><div class="screenexample"><pre class="screen">
+
+-Dorg.eclipse.jetty.LEVEL=debug \
+-Dsun.security.spnego.debug=all
+
+    </pre></div><p>
+      Spengo Authentication must be enabled in the webapp in the following way.  The name of the role will be different for your network.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+ <security-constraint>
+   <web-resource-collection>
+     <web-resource-name>Secure Area</web-resource-name>
+     <url-pattern>/secure/me/*</url-pattern>
+   </web-resource-collection>
+   <auth-constraint>
+     <!-- this is the domain that the user is a member of -->
+     <role-name>MORTBAY.ORG</role-name>  
+   </auth-constraint>
+ </security-constraint>
+ <login-config>
+   <auth-method>SPNEGO</auth-method>
+   <realm-name>Test Realm</realm-name>
+   <!-- optionally to add custom error page -->
+   <spnego-login-config>
+     <spengo-error-page>/loginError.html?param=foo</spnego-error-page>
+   </spnego-login-config>
+ </login-config>
+
+      ]]>
+        </script></div><p>     
+      A corresponding UserRealm needs to be created either programmatically if embedded, via the jetty.xml or in a context file for the webapp.
+    </p><p>
+      This is what the configuration within a jetty xml file would look like.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+  <Call name="addBean">
+     <Arg>
+       <New class="org.eclipse.jetty.security.SpnegoLoginService">
+         <Set name="name">Test Realm</Set>
+         <Set name="config"><Property name="jetty.home" default="."/>/etc/spnego.properties</Set>
+       </New>
+     </Arg>
+   </Call>
+
+      ]]>
+        </script></div><p>
+      This is what the configuration within a context xml file would look like.
+    </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+
+ <Get name="securityHandler">
+   <Set name="loginService">
+     <New class="org.eclipse.jetty.security.SpnegoLoginService">
+       <Set name="name">Test Realm</Set> 
+       <Set name="config">
+        <SystemProperty name="jetty.home" default="."/>/etc/spnego.properties
+      </Set>
+     </New>
+   </Set>
+   <Set name="checkWelcomeFiles">true</Set>
+ </Get>
+
+      ]]>
+        </script></div><p>
+      There are a number of important configuration files with spnego that are required.  The default values for these configuration files from this test example are found in the jetty-distribution.
+    </p><div class="variablelist"><dl><dt><span class="term">spnego.properties</span></dt><dd><p>
+            configures the user realm with runtime properties
+          </p></dd><dt><span class="term">krb5.ini</span></dt><dd><p>
+            configures the underlying kerberos setup
+          </p></dd><dt><span class="term">spnego.conf</span></dt><dd><p>
+            configures the glue between gssapi and kerberos
+          </p></dd></dl></div><p>
+      It is important to note that the keytab file referenced in the krb5.ini and the spengo.conf files needs to contain the keytab for the targetName for the http server. To do this use a process similar to this:
+    </p><p>
+      On the windows active domain controller run:
+    </p><div class="screenexample"><pre class="screen">
+
+$ setspn -A HTTP/linux.mortbay.org ADUser
+
+    </pre></div><p>
+      To create the keytab file use the following process:
+    </p><div class="screenexample"><pre class="screen">
+
+$ ktpass -out c:\dir\krb5.keytab -princ HTTP/linux.mortbay.org@MORTBAY.ORG -mapUser ADUser -mapOp set -pass ADUserPWD -crypto RC4-HMAC-NT -pType KRB5_NT_PRINCIPAL
+
+    </pre></div><p>
+      This step should give you the keytab file which should then be copied over to the machine running this http server and referenced from the configuration files. For our testing we put the keytab into the etc directory of jetty and referenced it from there.
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6539"></a>
+      Configuring Firefox
+    </h3></div></div></div><p>
+      The follows steps have been required to inform Firefox that it should use a negotiation dialog to authenticate.
+    </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+          browse to about:config and agree to the warnings
+        </p></li><li class="listitem"><p>
+          search through to find the 'network' settings
+        </p></li><li class="listitem"><p>
+          set network.negotiate-auth.delegation-uris to http://,https://
+        </p></li><li class="listitem"><p>
+          set network.negotiate-auth.trusted-uris to http://,https://
+        </p></li></ol></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e6557"></a>
+      Configuring Internet Explorer
+    </h3></div></div></div><p>
+      The follows steps have been required to inform Internet Explorer that it should use a negotiation dialog to authenticate.
+    </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Security -&gt; Local Intranet -&gt; Sites (everything should be checked here)
+        </p></li><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Security -&gt; Local Intranet -&gt; Sites -&gt; Advanced (add url to server (http:// and/or https:// use the hostname!)
+        </p></li><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Security -&gt; Local Intranet -&gt; Sites -&gt; Advanced -&gt; Close
+        </p></li><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Security -&gt; Local Intranet -&gt; Sites -&gt; Ok
+        </p></li><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Advanced -&gt; Security (in the checkbox list)
+        </p></li><li class="listitem"><p>
+          locate and check 'Enable Integrated Windows Authentication'
+        </p></li><li class="listitem"><p>
+          Tools -&gt; Options -&gt; Advanced -&gt; Security -&gt; Ok
+        </p></li><li class="listitem"><p>
+          close IE then reopen and browse to your spengo protected resource
+        </p></li></ol></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>
+        Note: You must go to the hostname and not the IP, if you go to the IP it will default to NTLM authentication...the following conditions must be true for Spnego authentication to work.
+      </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
+            You must be within the Intranet Zone of the network
+          </p></li><li class="listitem"><p>
+            Accessing the server using a Hostname rather then IP
+          </p></li><li class="listitem"><p>
+            Integrated Windows Authentication in IE is enabled and the host is trusted in Firefox
+          </p></li><li class="listitem"><p>
+            The server is not local to the browser, it can't be running on localhost.
+          </p></li><li class="listitem"><p>
+            The client's Kerberos system is authenticated to a domain controller
+          </p></li></ul></div></div></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="jaas-support.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-security.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-jsp.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">JAAS Support&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;8.&nbsp;Configuring JSP Support</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-06-10T11:24:58-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
