@@ -1,7 +1,7 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    <title>Example: Centralized Logging with Logback</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-logging.html" title="Chapter&nbsp;21.&nbsp;Jetty Logging"><link rel="prev" href="example-slf4j-multiple-loggers.html" title="Example: Capturing Multiple Logging Frameworks with Slf4j"><link rel="next" href="jetty-dump-tool.html" title="Jetty Dump Tool"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
-            Version: 9.2.0-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            Version: 9.2..0.v20140526</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -33,7 +33,7 @@
         - Apache Commons Logging API</p></li></ul></div><p>Any logging event from those APIs now routes to Logback
     Classic.</p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15499"></a>Configuring Server Classpath</h3></div></div></div><p>For the Server to use these new JARs you need to put
     them in place and tell Jetty to load them on each startup. Create a <code class="filename">${jetty.home}/lib/logging/</code> directory and place the seven files
-    you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.0-SNAPSHOT]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
+    you downloaded there.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2..0.v20140526]$ ls -l <span class="bold"><strong>lib/logging/</strong></span>
 total 632
 -rw-rw-r-- 1 jetty jetty  17289 Mar 12 16:21 <span class="bold"><strong>jcl-over-slf4j-1.6.6.jar</strong></span>
 -rw-rw-r-- 1 jetty jetty   6221 Mar 12 16:21 <span class="bold"><strong>jetty-webapp-logging-9.0.0.jar</strong></span>
@@ -52,7 +52,7 @@ etc/jetty-webapp-logging.xml
 etc/jetty-jul-to-slf4j.xml
 # Adding lib/logging to server classpath
 OPTIONS=logging]]>
-        </script><p>Now verify that the server classpath loads the seven JARs.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.0-SNAPSHOT]$ <span class="bold"><strong>java -jar start.jar --version</strong></span> | grep logging
+        </script><p>Now verify that the server classpath loads the seven JARs.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2..0.v20140526]$ <span class="bold"><strong>java -jar start.jar --version</strong></span> | grep logging
 Active Options: [Server, client, ext, jmx, jsp, <span class="bold"><strong>logging</strong></span>, resources, websocket]
 18:                1.6.6 | ${jetty.home}/lib/logging/<span class="bold"><strong>jcl-over-slf4j-1.6.6.jar</strong></span>
 19:                9.0.0 | ${jetty.home}/lib/logging/<span class="bold"><strong>jetty-webapp-logging-9.0.0.jar</strong></span>
@@ -182,7 +182,7 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
         (as referenced in the <a class="link" href="http://slf4j.org/api/org/slf4j/bridge/SLF4JBridgeHandler.html" target="_top">SLF4JBridgeHandler
         javadoc</a>.</p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15673"></a>Verifying the start.ini configuration</h3></div></div></div><p>Before you start Jetty, verify that your <code class="filename">start.ini</code> is correctly
     set up. Run the following command and check the last section of the output.
-    It should contain the highlighted entries.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.0-SNAPSHOT]$ <span class="bold"><strong>java -jar start.jar --help</strong></span>
+    It should contain the highlighted entries.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2..0.v20140526]$ <span class="bold"><strong>java -jar start.jar --help</strong></span>
 ...
   The current start.ini arguments are:
 
@@ -199,13 +199,13 @@ public class CentralizedWebAppLoggingBinding implements AppLifeCycle.Binding {
     <span class="bold"><strong>etc/jetty-webapp-logging.xml</strong></span>
     <span class="bold"><strong>etc/jetty-jul-to-slf4j.xml</strong></span>
     <span class="bold"><strong>OPTIONS=logging</strong></span></pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15695"></a>Start Jetty</h3></div></div></div><p>You have now configured Jetty for all logging APIs. Just start
-    Jetty to start using it.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.0-SNAPSHOT]$ java -jar start.jar </pre></div><p>
+    Jetty to start using it.</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2..0.v20140526]$ java -jar start.jar </pre></div><p>
         </p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="example-slf4j-multiple-loggers.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-logging.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-dump-tool.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Example: Capturing Multiple Logging Frameworks with Slf4j&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Jetty Dump Tool</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-06-10T11:27:43-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-06-10T11:36:44-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
