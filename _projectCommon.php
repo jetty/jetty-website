@@ -4,7 +4,7 @@
     # See the Committer Tools "How Do I" for list of themes
     # https://dev.eclipse.org/committers/
     # Optional: defaults to system theme 
-    $theme = "Nova"; 
+    $theme = "solstice"; 
     include("sidebar.php");
 
     # Additional styles
