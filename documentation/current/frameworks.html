@@ -15,29 +15,21 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="frameworks"></a>Chapter&nbsp;28.&nbsp;Frameworks</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="frameworks.html#framework-jetty-spring">Spring Setup</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html">OSGI</a></span></dt><dt><span class="section"><a href="framework-weld.html">Weld</a></span></dt><dt><span class="section"><a href="framework-metro.html">Metro</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="framework-jetty-spring"></a>Spring Setup</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="frameworks.html#d0e19599">Downloading the Jetty-Spring Module and Dependencies</a></span></dt><dt><span class="section"><a href="frameworks.html#d0e19611">Using Spring to Configure Jetty</a></span></dt></dl></div><p>
-		You can assemble and configure Jetty in code or with almost any IoC style framework including Spring.  If all you want to do is setup a Jetty server in your stock Spring usage, simply look at the xml snippet below as an example.  If you want to replace the jetty-xml being used to start the normal Jetty distribution with spring, you may do so however currently it will not leverage the rest of the module system.  If you are interested in doing this as anything other then a novelty contact us and let us know and we can work out a suitable jetty.base example. 
-	</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19599"></a>Downloading the Jetty-Spring Module and Dependencies</h3></div></div></div><p>
-			The jetty-spring module is available as a Maven artifact.  You can obtain it through the following maven coordinates:
-		</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
-          <![CDATA[
-				
-<groupId>org.eclipse.jetty</groupId>
-<artifactId>jetty-spring</artifactId>
-<version>${project.version}</version>
-			
-		]]>
-        </script></div><p>
-		Using jetty-spring requires a couple of transitive dependencies so if you are not using a build system that handles such things you will need to grab a couple of other artifacts as well.
-	</p><div class="screenexample"><pre class="screen">
-		
-$ wget --user-agent=other http://repo2.maven.org/maven2/org/eclipse/jetty/jetty-spring/${project.version}/jetty-spring-${project.version}.jar
-$ wget --user-agent=other http://repo2.maven.org/maven2/org/springframework/spring/2.5.6/spring-2.5.6.jar
-$ wget --user-agent=other http://repo2.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar
-
-	</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19611"></a>Using Spring to Configure Jetty</h3></div></div></div><p>
-		Configuring Jetty via Spring is simply a matter of calling the API as Spring beans. The following is an example mimicing the default jetty startup configuration.
-	</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="frameworks"></a>Chapter&nbsp;28.&nbsp;Frameworks</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="frameworks.html#framework-jetty-spring">Spring Setup</a></span></dt><dt><span class="section"><a href="framework-jetty-osgi.html">OSGI</a></span></dt><dt><span class="section"><a href="framework-weld.html">Weld</a></span></dt><dt><span class="section"><a href="framework-metro.html">Metro</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="framework-jetty-spring"></a>Spring Setup</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="frameworks.html#d0e19656">Jetty-Spring Module</a></span></dt><dt><span class="section"><a href="frameworks.html#d0e19677">Using Spring to Configure Jetty</a></span></dt></dl></div><p>You can assemble and configure Jetty in code or with almost any IoC
+  style framework including Spring. If all you want to do is setup a Jetty
+  server in your stock Spring usage, simply look at the xml snippet below as
+  an example. If you want to replace the jetty-xml being used to start the
+  normal Jetty distribution with spring, you may do so however currently it
+  will not leverage the rest of the module system. </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19656"></a>Jetty-Spring Module</h3></div></div></div><p>The skeleton of a jetty spring module can be enabled from the
+    jetty-distribution via the <a class="link" href="startup-modules.html" title="Managing Startup Modules">module
+    mechanism</a>. For example:</p><div class="screenexample"><pre class="screen">$ java -jar start.jar --add-to-startd=spring</pre></div><p>This (or the alternative <a class="link" href="start-jar.html" title="Using start.jar">--add-to-start</a>=spring command) creates a
+    <code class="code">${jetty.home}/lib/spring</code> directory and populates it with the
+    jetty-spring integration jar. It does NOT supply the spring jars and their
+    dependencies. You will need to download these and place them into jetty's
+    classpath - you can use the <code class="code">${jetty.home}/lib/spring</code>
+    directory created by spring.mod for this purpose.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e19677"></a>Using Spring to Configure Jetty</h3></div></div></div><p>Configuring Jetty via Spring is simply a matter of calling the API
+    as Spring beans. The following is an example mimicking the default jetty
+    startup configuration.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 			
 <?xml version="1.0" encoding="UTF-8"?>
@@ -101,7 +93,7 @@ $ wget --user-agent=other http://repo2.maven.org/maven2/commons-logging/commons-
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="debugging-with-intellij.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="development.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="framework-jetty-osgi.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Debugging With IntelliJ&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;OSGI</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-06-13T08:17:42-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-06-20T12:38:19-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
