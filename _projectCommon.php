@@ -41,7 +41,7 @@
     $Nav->addCustomNav("Blogs", "http://webtide.intalio.com", "_self", 2);
 
     $Nav->addNavSeparator("Project Management", null);
-    $Nav->addCustomNav("Community", "/jetty/documentation/current/advanced-community.html", "_self", 2);
+    $Nav->addCustomNav("Community", "/jetty/documentation/current/advanced-contributing.html#community", "_self", 2);
     $Nav->addCustomNav("Contributing", "/jetty/documentation/current/contributing-patches.html", "_self", 2);
     # $Nav->addCustomNav("Open a Bug", "https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Jetty", "_self", 2);
     $Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);
