@@ -24,8 +24,8 @@ Java and .NET applications. Take a look at YourKit&#39;s leading software produc
     <br/>
     <br/>
 
-    <h1>Intelli-J</h1>
-    <p>Some developers on the Jetty project use Intelli-J for developing Jetty.</p>
+    <h1>IntelliJ</h1>
+    <p>Some developers on the Jetty project use IntelliJ for developing Jetty.</p>
     <a href="http://www.jetbrains.com/idea/features/javascript.html" style="display:block; background:#fff url(http://www.jetbrains.com/idea/opensource/img/all/banners/idea468x60_white.gif) no-repeat 0 7px; border:solid 1px #0d3a9e; margin:0;padding:0;text-decoration:none;text-indent:0;letter-spacing:-0.001em; width:466px; height:58px" alt="Java IDE with advanced HTML/CSS/JS editor for hardcore web-developers" title="Java IDE with advanced HTML/CSS/JS editor for hardcore web-developers"><span style="margin: 5px 0 0 61px;padding: 0;float: left;font-size: 12px;cursor:pointer;  background-image:none;border:0;color: #0d3a9e; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">Developed with</span><span style="margin:0 0 0 205px;padding:18px 0 2px 0; line-height:13px;font-size:11px;cursor:pointer;  background-image:none;border:0;display:block; width:255px; color:#0d3a9e; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">Java IDE with advanced HTML/CSS/JS<br/>editor for hardcore web-developers</span></a>
 	</div>
 
