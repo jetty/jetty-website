@@ -22,7 +22,7 @@
     <div style="position: relative; height: 50px;">
       <a href="http://www.webtide.com/" target="_blank"
           title="Webtide"><img alt="Webtide Logo" src="http://www.eclipse.org/jetty/images/webtide.png"
-          style="position: absolute; left: 10px; top: 10px;"/></a>
+          style="position: absolute; left: 10px; top: 10px; width: 150px; height: auto;"/></a>
     </div>
   </div>
 
