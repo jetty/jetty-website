@@ -21,7 +21,8 @@ Java and .NET applications. Take a look at YourKit&#39;s leading software produc
 <a href="http://www.yourkit.com/java/profiler/index.jsp">YourKit Java Profiler</a> and
 <a href="http://www.yourkit.com/.net/profiler/index.jsp">YourKit .NET Profiler</a>.
 		</p>
-
+    <br/>
+    <br/>
 
     <h1>Intelli-J</h1>
     <p>While Jetty is an Eclipse project, the developers are IDE agnostic and Intelli-J is a popular choice!</p>

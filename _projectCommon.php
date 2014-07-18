@@ -37,7 +37,7 @@
     $Nav->addCustomNav("Mailing Lists", "/jetty/mailinglists.php", "_self", 2);
     $Nav->addCustomNav("JavaDoc", "http://download.eclipse.org/jetty/stable-9/apidocs/", "_self", 2);
     $Nav->addCustomNav("Source XRef", "http://download.eclipse.org/jetty/stable-9/xref/", "_self", 2);
-    $Nav->addCustomNav("Profiling", "/jetty/profiling.php", "_self", 2);
+    $Nav->addCustomNav("Tools", "/jetty/tools.php", "_self", 2);
     $Nav->addCustomNav("Blogs", "http://webtide.intalio.com", "_self", 2);
 
     $Nav->addNavSeparator("Project Management", null);
