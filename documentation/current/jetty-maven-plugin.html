@@ -621,7 +621,7 @@
           the stop command.</p></dd><dt><span class="term">stopWait</span></dt><dd><p>The maximum time in seconds that the plugin will wait for
           confirmation that jetty has stopped. If false or not specified, the
           plugin does not wait for confirmation but exits after issuing the
-          stop command. </p></dd></dl></div><p>Here's a configuration example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          stop command.</p></dd></dl></div><p>Here's a configuration example:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 
 <plugin>
@@ -827,11 +827,11 @@ WebAppY:
       <contextPath>/test</contextPath>
     </webApp>
     <contextHandlers>
-      <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+      <contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
         <war>${project.basedir}../../B.war</war>
         <contextPath>/B</contextPath>
       </contextHandler>
-      <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+      <contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
         <war>${project.basedir}../../C.war</war>
         <contextPath>/B</contextPath>
       </contextHandler>
@@ -839,14 +839,20 @@ WebAppY:
   </configuration>
 </plugin>
             ]]>
-        </script></div><p>Alternatively, add a <code class="filename">jetty.xml</code> file to webapp
+        </script></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Important</h3><p>If the ContextHandler you are deploying is a webapp, it is
+        <span class="bold"><strong>essential</strong></span> that you use an
+        <code class="code">org.eclipse.jetty.maven.plugin.JettyWebAppContext</code>
+        instance rather than a standard
+        <code class="code">org.eclipse.jetty.webapp.WebAppContext</code> instance. Only the
+        former will allow the webapp to function correctly in the maven
+        environment.</p></div><p>Alternatively, add a <code class="filename">jetty.xml</code> file to webapp
     A. Copy the <code class="filename"> jetty.xml</code> file from the jetty
     distribution, and then add WebAppContexts for the other 2 webapps:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 <Ref refid="Contexts">
   <Call name="addHandler">
     <Arg>
-      <New class="org.eclipse.jetty.webapp.WebAppContext">
+      <New class="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
         <Set name="contextPath">/B</Set>
         <Set name="war">../../B.war</Set>
       </New>
@@ -854,7 +860,7 @@ WebAppY:
   </Call>
   <Call> 
     <Arg>
-      <New class="org.eclipse.jetty.webapp.WebAppContext">
+      <New class="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
         <Set name="contextPath">/C</Set>
         <Set name="war">../../C.war</Set>
       </New>
@@ -987,7 +993,7 @@ fooprop=222
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="maven-and-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-scanning.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;23.&nbsp;Maven and Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Files Scanned by the Jetty Maven Plugin</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-09-03T01:00:26-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-09-04T01:00:30-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
