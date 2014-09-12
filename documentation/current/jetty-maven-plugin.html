@@ -148,21 +148,50 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
 
 <!-- ============================================================= -->
-<!-- Configure a TLS (SSL) Context Factory                         -->
-<!-- This configuration must be used in conjunction with jetty.xml -->
-<!-- and either jetty-https.xml or jetty-spdy.xml (but not both)   -->
+<!-- Base SSL configuration                                        -->
+<!-- This configuration needs to be used together with 1 or more   -->
+<!-- of jetty-https.xml, jetty-spdy.xml and/or jetty-http2.xml     --> 
 <!-- ============================================================= -->
-<Configure id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
-  <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="etc/keystore"/></Set>
-  <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
-  <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="OBF:1u2u1wml1z7s1z7a1wnl1u2g"/></Set>
-  <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="etc/keystore"/></Set>
-  <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
-  <Set name="EndpointIdentificationAlgorithm"></Set>
-  <Set name="NeedClientAuth"><Property name="jetty.ssl.needClientAuth" default="false"/></Set>
-  <Set name="WantClientAuth"><Property name="jetty.ssl.wantClientAuth" default="false"/></Set>
-  <Set name="ExcludeCipherSuites">
-    <Array type="String">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+  <!-- =========================================================== -->
+  <!-- Add a SSL Connector with no protocol factories              -->
+  <!-- =========================================================== -->
+  <Call  name="addConnector">
+    <Arg>
+      <New id="sslConnector" class="org.eclipse.jetty.server.ServerConnector">
+        <Arg name="server"><Ref refid="Server" /></Arg>
+        <Arg name="acceptors" type="int"><Property name="ssl.acceptors" default="-1"/></Arg>
+        <Arg name="selectors" type="int"><Property name="ssl.selectors" default="-1"/></Arg>
+        <Arg name="factories">
+          <Array type="org.eclipse.jetty.server.ConnectionFactory">
+          </Array>
+        </Arg>
+
+        <Set name="host"><Property name="jetty.host" /></Set>
+        <Set name="port"><Property name="ssl.port" default="443" /></Set>
+        <Set name="idleTimeout"><Property name="ssl.timeout" default="30000"/></Set>
+        <Set name="soLingerTime"><Property name="ssl.soLingerTime" default="-1"/></Set>
+        <Set name="acceptorPriorityDelta"><Property name="ssl.acceptorPriorityDelta" default="0"/></Set>
+        <Set name="selectorPriorityDelta"><Property name="ssl.selectorPriorityDelta" default="0"/></Set>
+      </New>
+    </Arg>
+  </Call>
+  
+  <!-- ============================================================= -->
+  <!-- Create a TLS (SSL) Context Factory  for later reuse           -->
+  <!-- ============================================================= -->
+  <New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+    <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="etc/keystore"/></Set>
+    <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
+    <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="OBF:1u2u1wml1z7s1z7a1wnl1u2g"/></Set>
+    <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="etc/keystore"/></Set>
+    <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4"/></Set>
+    <Set name="EndpointIdentificationAlgorithm"></Set>
+    <Set name="NeedClientAuth"><Property name="jetty.ssl.needClientAuth" default="false"/></Set>
+    <Set name="WantClientAuth"><Property name="jetty.ssl.wantClientAuth" default="false"/></Set>
+    <Set name="ExcludeCipherSuites">
+     <Array type="String">
       <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
       <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
       <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
@@ -170,9 +199,10 @@
       <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
       <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
       <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
-    </Array>
-  </Set>
-
+     </Array>
+    </Set>
+  </New>
+  
   <!-- =========================================================== -->
   <!-- Create a TLS specific HttpConfiguration based on the        -->
   <!-- common HttpConfiguration defined in jetty.xml               -->
@@ -199,49 +229,25 @@
 <!-- This configuration must be used in conjunction with jetty.xml -->
 <!-- and jetty-ssl.xml.                                            -->
 <!-- ============================================================= -->
-<Configure id="Server" class="org.eclipse.jetty.server.Server">
+<Configure id="sslConnector" class="org.eclipse.jetty.server.ServerConnector">
 
-  <!-- =========================================================== -->
-  <!-- Add a HTTPS Connector.                                      -->
-  <!-- Configure an o.e.j.server.ServerConnector with connection   -->
-  <!-- factories for TLS (aka SSL) and HTTP to provide HTTPS.      -->
-  <!-- All accepted TLS connections are wired to a HTTP connection.-->
-  <!--                                                             -->
-  <!-- Consult the javadoc of o.e.j.server.ServerConnector,        -->
-  <!-- o.e.j.server.SslConnectionFactory and                       -->
-  <!-- o.e.j.server.HttpConnectionFactory for all configuration    -->
-  <!-- that may be set here.                                       -->
-  <!-- =========================================================== -->
-  <Call id="httpsConnector" name="addConnector">
+  <Call name="addIfAbsentConnectionFactory">
     <Arg>
-      <New class="org.eclipse.jetty.server.ServerConnector">
-        <Arg name="server"><Ref refid="Server" /></Arg>
-        <Arg name="acceptors" type="int"><Property name="ssl.acceptors" default="-1"/></Arg>
-        <Arg name="selectors" type="int"><Property name="ssl.selectors" default="-1"/></Arg>
-        <Arg name="factories">
-          <Array type="org.eclipse.jetty.server.ConnectionFactory">
-            <Item>
-              <New class="org.eclipse.jetty.server.SslConnectionFactory">
-                <Arg name="next">http/1.1</Arg>
-                <Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
-              </New>
-            </Item>
-            <Item>
-              <New class="org.eclipse.jetty.server.HttpConnectionFactory">
-                <Arg name="config"><Ref refid="sslHttpConfig"/></Arg>
-              </New>
-            </Item>
-          </Array>
-        </Arg>
-        <Set name="host"><Property name="jetty.host" /></Set>
-        <Set name="port"><Property name="https.port" default="443" /></Set>
-        <Set name="idleTimeout"><Property name="https.timeout" default="30000"/></Set>
-        <Set name="soLingerTime"><Property name="https.soLingerTime" default="-1"/></Set>
-        <Set name="acceptorPriorityDelta"><Property name="ssl.acceptorPriorityDelta" default="0"/></Set>
-        <Set name="selectorPriorityDelta"><Property name="ssl.selectorPriorityDelta" default="0"/></Set>
+      <New class="org.eclipse.jetty.server.SslConnectionFactory">
+        <Arg name="next">http/1.1</Arg>
+        <Arg name="sslContextFactory"><Ref refid="sslContextFactory"/></Arg>
       </New>
     </Arg>
   </Call>
+
+  <Call name="addConnectionFactory">
+    <Arg>
+      <New class="org.eclipse.jetty.server.HttpConnectionFactory">
+        <Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
+      </New>
+    </Arg>
+  </Call>
+  
 </Configure>
 ]]>
         </script></dd></dl></div><p>Now you need to let the plugin know to apply the files
@@ -993,7 +999,7 @@ fooprop=222
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="maven-and-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-scanning.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;23.&nbsp;Maven and Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Files Scanned by the Jetty Maven Plugin</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-09-11T01:00:26-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-09-12T01:00:31-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
