@@ -52,12 +52,12 @@ package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Server;
 
-/* ------------------------------------------------------------ */
-/** The simplest possible Jetty server.
+/**
+ * The simplest possible Jetty server.
  */
 public class SimplestServer
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
         Server server = new Server(8080);
         server.start();
@@ -92,6 +92,7 @@ public class SimplestServer
 package org.eclipse.jetty.embedded;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -102,36 +103,43 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class HelloHandler extends AbstractHandler
 {
-    final String _greeting;
-    final String _body;
+    final String greeting;
+    final String body;
 
     public HelloHandler()
     {
-        _greeting="Hello World";
-        _body=null;
+        this("Hello World");
     }
 
-    public HelloHandler(String greeting)
+    public HelloHandler( String greeting )
     {
-        _greeting=greeting;
-        _body=null;
+        this(greeting, null);
     }
 
-    public HelloHandler(String greeting,String body)
+    public HelloHandler( String greeting, String body )
     {
-        _greeting=greeting;
-        _body=body;
+        this.greeting = greeting;
+        this.body = body;
     }
 
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+    public void handle( String target,
+                        Request baseRequest,
+                        HttpServletRequest request,
+                        HttpServletResponse response ) throws IOException,
+                                                      ServletException
     {
-        response.setContentType("text/html;charset=utf-8");
+        response.setContentType("text/html; charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
-        baseRequest.setHandled(true);
 
-        response.getWriter().println("<h1>"+_greeting+"</h1>");
-        if (_body!=null)
-            response.getWriter().println(_body);
+        PrintWriter out = response.getWriter();
+
+        out.println("<h1>" + greeting + "</h1>");
+        if (body != null)
+        {
+            out.println(body);
+        }
+
+        baseRequest.setHandled(true);
     }
 }
 ]]>
@@ -168,7 +176,7 @@ import org.eclipse.jetty.server.Server;
 
 public class OneHandler
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
         Server server = new Server(8080);
         server.setHandler(new HelloHandler());
@@ -248,8 +256,8 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
-/* ------------------------------------------------------------ */
-/** Simple Jetty FileServer.
+/** 
+ * Simple Jetty FileServer.
  * This is a simple example of Jetty configured as a FileServer.
  */
 public class FileServer
@@ -280,7 +288,6 @@ public class FileServer
         server.start();
         server.join();
     }
-
 }
 ]]>
         </script><p>Notice that a HandlerList is used with the ResourceHandler and a
@@ -314,13 +321,12 @@ package org.eclipse.jetty.embedded;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
-/* ------------------------------------------------------------ */
 /**
  * A Jetty server with one connectors.
  */
 public class OneConnector
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
         // The Server
         Server server = new Server();
@@ -330,7 +336,7 @@ public class OneConnector
         http.setHost("localhost");
         http.setPort(8080);
         http.setIdleTimeout(30000);
-        
+
         // Set the connector
         server.addConnector(http);
 
@@ -402,27 +408,35 @@ import org.eclipse.jetty.servlet.ServletHandler;
 
 public class MinimalServlets
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
-        // Create a basic jetty server object that will listen on port 8080.  Note that if you set this to port 0
-        // then a randomly available port will be assigned that you can either look in the logs for the port,
+        // Create a basic jetty server object that will listen on port 8080.
+        // Note that if you set this to port 0 then a randomly available port
+        // will be assigned that you can either look in the logs for the port,
         // or programmatically obtain it for use in test cases.
         Server server = new Server(8080);
 
-        // The ServletHandler is a dead simple way to create a context handler that is backed by an instance of a
-        // Servlet.  This handler then needs to be registered with the Server object.
+        // The ServletHandler is a dead simple way to create a context handler
+        // that is backed by an instance of a Servlet.
+        // This handler then needs to be registered with the Server object.
         ServletHandler handler = new ServletHandler();
         server.setHandler(handler);
 
-        // Passing in the class for the servlet allows jetty to instantite an instance of that servlet and mount it
-        // on a given context path.
+        // Passing in the class for the Servlet allows jetty to instantiate an
+        // instance of that Servlet and mount it on a given context path.
 
-        // !! This is a raw Servlet, not a servlet that has been configured through a web.xml or anything like that !!
+        // IMPORTANT:
+        // This is a raw Servlet, not a Servlet that has been configured
+        // through a web.xml @WebServlet annotation, or anything similar.
         handler.addServletWithMapping(HelloServlet.class, "/*");
 
-        // Start things up! By using the server.join() the server thread will join with the current thread.
-        // See "http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" for more details.
+        // Start things up!
         server.start();
+
+        // The use of server.join() the will make the current thread join and
+        // wait until the server is done executing.
+        // See
+        // http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join()
         server.join();
     }
 
@@ -430,11 +444,13 @@ public class MinimalServlets
     public static class HelloServlet extends HttpServlet
     {
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+        protected void doGet( HttpServletRequest request,
+                              HttpServletResponse response ) throws ServletException,
+                                                            IOException
         {
             response.setContentType("text/html");
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println("<h1>Hello SimpleServlet</h1>");
+            response.getWriter().println("<h1>Hello from HelloServlet</h1>");
         }
     }
 }
@@ -475,18 +491,20 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 
 public class OneContext
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
-        Server server = new Server(8080);
+        Server server = new Server( 8080 );
 
+        // Add a single handler on context "/hello"
         ContextHandler context = new ContextHandler();
-        context.setContextPath("/");
-        context.setResourceBase(".");
-        context.setClassLoader(Thread.currentThread().getContextClassLoader());
-        context.setHandler(new HelloHandler());
+        context.setContextPath( "/hello" );
+        context.setHandler( new HelloHandler() );
 
-        server.setHandler(context);
+        // Can be accessed using http://localhost:8080/hello
 
+        server.setHandler( context );
+
+        // Start the server
         server.start();
         server.join();
     }
@@ -522,7 +540,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 
 public class ManyContexts
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
         Server server = new Server(8080);
 
@@ -532,16 +550,17 @@ public class ManyContexts
 
         ContextHandler contextFR = new ContextHandler("/fr");
         contextFR.setHandler(new HelloHandler("Bonjoir"));
-        
+
         ContextHandler contextIT = new ContextHandler("/it");
         contextIT.setHandler(new HelloHandler("Bongiorno"));
 
         ContextHandler contextV = new ContextHandler("/");
-        contextV.setVirtualHosts(new String[]{ "127.0.0.2" });
+        contextV.setVirtualHosts(new String[] { "127.0.0.2" });
         contextV.setHandler(new HelloHandler("Virtual Hello"));
 
         ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { context, contextFR, contextIT, contextV });
+        contexts.setHandlers(new Handler[] { context, contextFR, contextIT,
+                contextV });
 
         server.setHandler(contexts);
 
@@ -577,22 +596,26 @@ public class ManyContexts
 package org.eclipse.jetty.embedded;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
 
 public class OneServletContext
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
-        Server server = new Server(8080);        
+        Server server = new Server(8080);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        ServletContextHandler context = new ServletContextHandler(
+                ServletContextHandler.SESSIONS);
         context.setContextPath("/");
+        context.setResourceBase(System.getProperty("java.io.tmpdir"));
         server.setHandler(context);
 
-        context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
-        context.addServlet(new ServletHolder(new DumpServlet()),"/dump/*");
-        
+        // Add dump servlet
+        context.addServlet(DumpServlet.class, "/dump/*");
+        // Add default servlet
+        context.addServlet(DefaultServlet.class, "/");
+
         server.start();
         server.join();
     }
@@ -625,6 +648,7 @@ public class OneServletContext
 
 package org.eclipse.jetty.embedded;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
@@ -634,43 +658,55 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class OneWebApp
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
-        // Create a basic jetty server object that will listen on port 8080. Note that if you set this to port 0 then
-        // a randomly available port will be assigned that you can either look in the logs for the port,
+        // Create a basic jetty server object that will listen on port 8080.
+        // Note that if you set this to port 0 then a randomly available port
+        // will be assigned that you can either look in the logs for the port,
         // or programmatically obtain it for use in test cases.
         Server server = new Server(8080);
-        
+
         // Setup JMX
-        MBeanContainer mbContainer=new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+        MBeanContainer mbContainer = new MBeanContainer(
+                ManagementFactory.getPlatformMBeanServer());
         server.addBean(mbContainer);
 
-        // The WebAppContext is the entity that controls the environment in which a web application lives and
-        // breathes. In this example the context path is being set to "/" so it is suitable for serving root context
-        // requests and then we see it setting the location of the war. A whole host of other configurations are
-        // available, ranging from configuring to support annotation scanning in the webapp (through
+        // The WebAppContext is the entity that controls the environment in
+        // which a web application lives and breathes. In this example the
+        // context path is being set to "/" so it is suitable for serving root
+        // context requests and then we see it setting the location of the war.
+        // A whole host of other configurations are available, ranging from
+        // configuring to support annotation scanning in the webapp (through
         // PlusConfiguration) to choosing where the webapp will unpack itself.
         WebAppContext webapp = new WebAppContext();
         webapp.setContextPath("/");
-        webapp.setWar("../../jetty-distribution/target/distribution/demo-base/webapps/test.war");
+        File warFile = new File(
+                "../../jetty-distribution/target/distribution/demo-base/webapps/test.war");
+        webapp.setWar(warFile.getAbsolutePath());
 
-        // A WebAppContext is a ContextHandler as well so it needs to be set to the server so it is aware of where to
-        // send the appropriate requests.
+        // A WebAppContext is a ContextHandler as well so it needs to be set to
+        // the server so it is aware of where to send the appropriate requests.
         server.setHandler(webapp);
 
         // Configure a LoginService
-        // Since this example is for our test webapp, we need to setup a LoginService so this shows how to create a
-        // very simple hashmap based one. The name of the LoginService needs to correspond to what is configured in
-        // the webapp's web.xml and since it has a lifecycle of its own we register it as a bean with the Jetty
-        // server object so it can be started and stopped according to the lifecycle of the server itself.
+        // Since this example is for our test webapp, we need to setup a
+        // LoginService so this shows how to create a very simple hashmap based
+        // one. The name of the LoginService needs to correspond to what is
+        // configured in the webapp's web.xml and since it has a lifecycle of
+        // its own we register it as a bean with the Jetty server object so it
+        // can be started and stopped according to the lifecycle of the server
+        // itself.
         HashLoginService loginService = new HashLoginService();
         loginService.setName("Test Realm");
         loginService.setConfig("src/test/resources/realm.properties");
         server.addBean(loginService);
 
-        // Start things up! By using the server.join() the server thread will join with the current thread.
-        // See "http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" for more details.
+        // Start things up! 
         server.start();
+
+        // The use of server.join() the will make the current thread join and
+        // wait until the server is done executing.
+        // See http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join()
         server.join();
     }
 }
@@ -702,6 +738,8 @@ public class OneWebApp
 
 package org.eclipse.jetty.embedded;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.management.ManagementFactory;
 
 import org.eclipse.jetty.deploy.DeploymentManager;
@@ -719,7 +757,6 @@ import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.server.handler.AsyncDelayHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -730,14 +767,36 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ScheduledExecutorScheduler;
 import org.eclipse.jetty.webapp.Configuration;
 
+/**
+ * Starts the Jetty Distribution's demo-base directory using entirely
+ * embedded jetty techniques.
+ */
 public class LikeJettyXml
 {
-    public static void main(String[] args) throws Exception
+    public static void main( String[] args ) throws Exception
     {
-        String jetty_home = System.getProperty("jetty.home","../../jetty-distribution/target/distribution");
-        String jetty_base = System.getProperty("jetty.home","../../jetty-distribution/target/distribution/demo-base");
-        System.setProperty("jetty.home",jetty_home);
-        System.setProperty("jetty.base",jetty_base);
+        // Path to as-built jetty-distribution directory
+        String jettyHomeBuild = "../../jetty-distribution/target/distribution";
+        
+        // Find jetty home and base directories
+        String homePath = System.getProperty("jetty.home", jettyHomeBuild);
+        File homeDir = new File(homePath);
+        if (!homeDir.exists())
+        {
+            throw new FileNotFoundException(homeDir.getAbsolutePath());
+        }
+        String basePath = System.getProperty("jetty.base", homeDir + "/demo-base");
+        File baseDir = new File(basePath);
+        if(!baseDir.exists())
+        {
+            throw new FileNotFoundException(baseDir.getAbsolutePath());
+        }
+        
+        // Configure jetty.home and jetty.base system properties
+        String jetty_home = homeDir.getAbsolutePath();
+        String jetty_base = baseDir.getAbsolutePath();
+        System.setProperty("jetty.home", jetty_home);
+        System.setProperty("jetty.base", jetty_base);
 
 
         // === jetty.xml ===
@@ -773,14 +832,15 @@ public class LikeJettyXml
         server.setDumpBeforeStop(false);
         server.setStopAtShutdown(true);
 
-
         // === jetty-jmx.xml ===
-        MBeanContainer mbContainer=new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+        MBeanContainer mbContainer = new MBeanContainer(
+                ManagementFactory.getPlatformMBeanServer());
         server.addBean(mbContainer);
 
 
         // === jetty-http.xml ===
-        ServerConnector http = new ServerConnector(server,new HttpConnectionFactory(http_config));
+        ServerConnector http = new ServerConnector(server,
+                new HttpConnectionFactory(http_config));
         http.setPort(8080);
         http.setIdleTimeout(30000);
         server.addConnector(http);
@@ -794,10 +854,8 @@ public class LikeJettyXml
         sslContextFactory.setKeyManagerPassword("OBF:1u2u1wml1z7s1z7a1wnl1u2g");
         sslContextFactory.setTrustStorePath(jetty_home + "/etc/keystore");
         sslContextFactory.setTrustStorePassword("OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4");
-        sslContextFactory.setExcludeCipherSuites(
-                "SSL_RSA_WITH_DES_CBC_SHA",
-                "SSL_DHE_RSA_WITH_DES_CBC_SHA",
-                "SSL_DHE_DSS_WITH_DES_CBC_SHA",
+        sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
+                "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
                 "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
                 "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
                 "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
@@ -818,7 +876,9 @@ public class LikeJettyXml
         // === jetty-deploy.xml ===
         DeploymentManager deployer = new DeploymentManager();
         deployer.setContexts(contexts);
-        deployer.setContextAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",".*/servlet-api-[^/]*\\.jar$");
+        deployer.setContextAttribute(
+                "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+                ".*/servlet-api-[^/]*\\.jar$");
 
         WebAppProvider webapp_provider = new WebAppProvider();
         webapp_provider.setMonitoredDirName(jetty_base + "/webapps");
@@ -831,9 +891,10 @@ public class LikeJettyXml
         server.addBean(deployer);
         
         // === setup jetty plus ==
-        Configuration.ClassList.setServerDefault(server)
-        .addAfter("org.eclipse.jetty.webapp.FragmentConfiguration",
-                  "org.eclipse.jetty.plus.webapp.EnvConfiguration","org.eclipse.jetty.plus.webapp.PlusConfiguration");
+        Configuration.ClassList.setServerDefault(server).addAfter(
+                "org.eclipse.jetty.webapp.FragmentConfiguration",
+                "org.eclipse.jetty.plus.webapp.EnvConfiguration",
+                "org.eclipse.jetty.plus.webapp.PlusConfiguration");
 
         // === jetty-stats.xml ===
         StatisticsHandler stats = new StatisticsHandler();
@@ -873,6 +934,7 @@ public class LikeJettyXml
         login.setRefreshInterval(0);
         server.addBean(login);
 
+        
         // Start the server
         server.start();
         server.join();
@@ -884,7 +946,7 @@ public class LikeJettyXml
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="advanced-embedding.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-embedding.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="embedded-examples.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;25.&nbsp;Embedding&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Embedded Examples</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-11-07T01:00:33-08:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-11-08T01:00:31-08:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
