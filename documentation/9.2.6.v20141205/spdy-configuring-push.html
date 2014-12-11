@@ -1,0 +1,170 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Configuring SPDY push</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="spdy.html" title="Chapter&nbsp;14.&nbsp;SPDY"><link rel="prev" href="spdy-configuring-proxy.html" title="Configuring SPDY Proxy"><link rel="next" href="spdy-implementing-push.html" title="Implement a custom SPDY PushStrategy"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.2.6.v20141205</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring SPDY push</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="spdy-configuring-proxy.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;14.&nbsp;SPDY<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="spdy-implementing-push.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="spdy-configuring-push"></a>Configuring SPDY push</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="spdy-configuring-push.html#d0e11690">ReferrerPushStrategy</a></span></dt><dt><span class="section"><a href="spdy-configuring-push.html#d0e11731">Configuring ReferrerPushStrategy</a></span></dt><dt><span class="section"><a href="spdy-configuring-push.html#d0e11795">Try it!</a></span></dt></dl></div><p>
+        <a class="link" href="http://www.chromium.org/spdy/spdy-protocol/spdy-protocol-draft3#TOC-3.3-Server-Push-Transactions" target="_top">
+            SPDY
+            push
+        </a>
+        allows the server to send multiple resources to the client for a single client request. This
+        will reduce the amount of round-trips and can significantly improve page load times. A full page load from
+        germany to
+        <a class="link" href="https://www.webtide.com" target="_top">https://www.webtide.com
+        </a>
+        via SPDY and without push takes ~3s. The same request with push enabled takes only ~1s.
+    </p><p>To enable push in Jetty the SPDY connector needs to be configured with an implementation of<a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/PushStrategy.html" target="_top">PushStrategy</a>. For each
+        request Jetty will call the
+        <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/PushStrategy       .html" target="_top">PushStrategy's
+        </a>
+        apply
+        method which will return a Set with the resources to push.
+    </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11690"></a>ReferrerPushStrategy</h3></div></div></div><p>The
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">ReferrerPushStrategy
+            </a>
+            is a
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/PushStrategy.html" target="_top">PushStrategy</a>
+            implementation that will use the HTTP "referer" header to identify if a resource belongs to a main
+            resource.
+        </p><p>A step by step example of how this works:
+            </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>client requests index.html</p></li><li class="listitem"><p>client parses index.html and requests style.css, image1.png and image2.png setting the
+                        referer header to index.html for these requests.
+                    </p></li><li class="listitem"><p>
+                        <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">
+                            ReferrerPushStrategy
+                        </a>
+                        will use this information to associate the subresources to index
+                        .html
+                    </p></li><li class="listitem"><p>The next request to index.html from another client will get all subresources pushed without
+                        further requests
+                    </p></li></ul></div><p>
+        </p><p>This will also work for nested subresources. E.g. a pushed style.css might initiate further
+            resource pushes for subresources referred to by the style.css stylesheet.
+        </p></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>
+            <span class="bold"><strong>The referrerPushPeriod setting will define the time that
+                <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">
+                    ReferrerPushStrategy
+                </a>
+                will record subresources after the initial request. If this period has elapsed no further subresources
+                will be recorded.
+            </strong></span>
+        </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11731"></a>Configuring ReferrerPushStrategy</h3></div></div></div><p>In the Jetty
+            <code class="filename">etc</code>
+            directory you will find jetty-spdy.xml file which can
+            be modified to suit your needs. It contains a commented
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">ReferrerPushStrategy
+            </a>
+            configuration.
+        </p><p>An example
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">ReferrerPushStrategy
+            </a>
+            configuration can look as follows:
+        </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+                
+  <!-- =========================================================== -->
+  <!-- Create a push strategy which can be used by reference by    -->
+  <!-- individual connection factories below.                      -->
+  <!--                                                             -->
+  <!-- Consult the javadoc of o.e.j.spdy.server.http.ReferrerPushStrategy -->
+  <!-- for all configuration that may be set here.                 -->
+  <!-- =========================================================== -->
+  <New id="pushStrategy" class="org.eclipse.jetty.spdy.server.http.ReferrerPushStrategy">
+    <!-- Uncomment to blacklist browsers for this push strategy. If one of the blacklisted Strings occurs in the
+         user-agent header sent by the client, push will be disabled for this browser. This is case insensitive" -->
+    <!--
+    <Set name="UserAgentBlacklist">
+        <Array type="String">
+            <Item>.*(?i)firefox/14.*</Item>
+            <Item>.*(?i)firefox/15.*</Item>
+            <Item>.*(?i)firefox/16.*</Item>
+        </Array>
+    </Set>
+    -->
+
+    <!-- Uncomment to override default file extensions to push -->
+    <!--
+    <Set name="PushRegexps">
+        <Array type="String">
+           <Item>.*\.css</Item>
+           <Item>.*\.js</Item>
+           <Item>.*\.png</Item>
+           <Item>.*\.jpg</Item>
+           <Item>.*\.gif</Item>
+       </Array>
+    </Set>
+    -->
+    <Set name="referrerPushPeriod">5000</Set>
+    <Set name="maxAssociatedResources">32</Set>
+  </New>
+
+            ]]>
+        </script></div><p>Note the commented parts that let you restrict the User-Agents and file extensions.</p><p>Important Options:</p><div class="variablelist"><dl><dt><span class="term">referrerPushPeriod</span></dt><dd><p>If referrerPushPeriod has elapsed after the initial request to a mainresource,
+                        no more subresources will be added to the push cache.
+                    </p></dd><dt><span class="term">maxAssociatedResources</span></dt><dd><p>The maximum amount of subresources being pushed for a single main resource.</p></dd></dl></div><p>Then you have to add the configured
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">
+                ReferrerPushStrategy
+            </a>
+            to the connection factory as follows.
+        </p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>
+                <span class="bold"><strong>In the default config provided with Jetty the pushStrategy argument is
+                    commented out!
+                </strong></span>
+            </p></div><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
+          <![CDATA[
+                
+            <!-- SPDY/3 Connection factory -->
+            <Item>
+              <New class="org.eclipse.jetty.spdy.server.http.HTTPSPDYServerConnectionFactory">
+                <Arg name="version" type="int">3</Arg>
+                <Arg name="config"><Ref refid="sslHttpConfig" /></Arg>
+                <Arg name="pushStrategy"><Ref refid="pushStrategy"/></Arg>
+              </New>
+            </Item>
+
+            ]]>
+        </script></div><p>See the javadocs for
+            <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/spdy/server/http/ReferrerPushStrategy.html" target="_top">
+                ReferrerPushStrategy
+            </a>
+            and sources for further details if needed.
+        </p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>
+                <span class="bold"><strong>Visit
+                    <a class="link" href="https://www.webtide.com" target="_top">https://www.webtide.com</a>
+                    with a browser that supports push (e.g. a recent chrome browser) to see it in action.
+                </strong></span>
+            </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e11795"></a>Try it!</h3></div></div></div><p>To verify if your setup works fine you can use chrome and it's very useful
+            chrome://net-internals/#spdy page. Open that page in a tab of your browser. Then make sure you load
+            a main resource of your application to fill the push cache. Then reload the page bypassing the
+            browser's cache (STRG+SHIFT+R or CMD+SHIFT+R on OSX).
+        </p><p>Chrome's net-internals page should tell you how many resources have been pushed and actually
+            pushed and claimed (actually needed and used by the browser)</p><div class="mediaobject" align="center"><img src="images/chrome_net_internals.png" align="middle"></div><p>Another option is to enable debug logging for ReferrerPushStrategy or org.eclipse.jetty.spdy.
+            Have a look at the <a class="xref" href="configuring-logging.html" title="Chapter&nbsp;21.&nbsp;Jetty Logging">Chapter&nbsp;21, <i>Jetty Logging</i></a> for details.</p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="spdy-configuring-proxy.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="spdy.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="spdy-implementing-push.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Configuring SPDY Proxy&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Implement a custom SPDY PushStrategy</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2014-12-11T14:47:26+01:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
