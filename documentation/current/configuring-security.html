@@ -1,7 +1,7 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
    <title>Chapter&nbsp;7.&nbsp;Configuring Security</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring.html" title="Part&nbsp;II.&nbsp;Jetty Configuration"><link rel="prev" href="setting-port80-access.html" title="Setting Port 80 Access for a Non-Root User"><link rel="next" href="configuring-security-authentication.html" title="Authentication"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
-            Version: 9.2.7-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            Version: 9.2.8-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
             gcse.type = 'text/javascript';
@@ -38,10 +38,10 @@
     an example of using the <code class="literal">${jetty.home}</code> and
     <code class="literal">${jetty.base}</code> to maximum effect. It also includes a
     detailed explanation of how modules work.</p><p>This example assumes you have the jetty-distribution unpacked in
-    <code class="filename">/home/user/jetty-distribution-9.2.7-SNAPSHOT.</code></p><div class="orderedlist"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>OBF passwords are not secure, just protected from casual
+    <code class="filename">/home/user/jetty-distribution-9.2.8-SNAPSHOT.</code></p><div class="orderedlist"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>OBF passwords are not secure, just protected from casual
         observation.</p></div><ol class="orderedlist" type="1"><li class="listitem"><p>Create a base directory anywhere. </p><div class="screenexample"><pre class="screen">[/home/user]$ mkdir my-base
 [/home/user]$ cd my-base
-</pre></div></li><li class="listitem"><p>Add the modules for SSL, HTTP, and webapp deployment. </p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.7-SNAPSHOT/start.jar --add-to-start=ssl,http,deploy
+</pre></div></li><li class="listitem"><p>Add the modules for SSL, HTTP, and webapp deployment. </p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.8-SNAPSHOT/start.jar --add-to-start=ssl,http,deploy
 
 ssl             initialised in ${jetty.base}/start.ini (appended)
 ssl             enabled in     ${jetty.base}/start.ini
@@ -85,7 +85,7 @@ jetty.dump.stop=false
 jetty.port=8080
 http.timeout=30000
 </pre></div></li><li class="listitem"><p>Initialize module deploy. </p><div class="screenexample"><pre class="screen">--module=deploy
-</pre></div></li></ol></div><p>Look at the configuration you have at this point.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.7-SNAPSHOT/start.jar --list-config
+</pre></div></li></ol></div><p>Look at the configuration you have at this point.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.8-SNAPSHOT/start.jar --list-config
 
 Java Environment:
 -----------------
@@ -100,9 +100,9 @@ Java Environment:
 
 Jetty Environment:
 -----------------
- jetty.home=/home/user/jetty-distribution-9.2.7-SNAPSHOT
+ jetty.home=/home/user/jetty-distribution-9.2.8-SNAPSHOT
  jetty.base=/home/user/my-base
- jetty.version=9.2.7-SNAPSHOT
+ jetty.version=9.2.8-SNAPSHOT
 
 JVM Arguments:
 --------------
@@ -111,7 +111,7 @@ JVM Arguments:
 System Properties:
 ------------------
  jetty.base = /home/user/my-base
- jetty.home = /home/user/jetty-distribution-9.2.7-SNAPSHOT
+ jetty.home = /home/user/jetty-distribution-9.2.8-SNAPSHOT
 
 Properties:
 -----------
@@ -136,15 +136,15 @@ Note: order presented here is how they would appear on the classpath.
       changes to the --module=name command line options will be reflected here.
  0:                    3.1.0 | ${jetty.home}/lib/servlet-api-3.1.jar
  1:                  3.1.RC0 | ${jetty.home}/lib/jetty-schemas-3.1.jar
- 2:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-http-9.2.7-SNAPSHOT.jar
- 3:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-continuation-9.2.7-SNAPSHOT.jar
- 4:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-server-9.2.7-SNAPSHOT.jar
- 5:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-xml-9.2.7-SNAPSHOT.jar
- 6:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-util-9.2.7-SNAPSHOT.jar
- 7:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-io-9.2.7-SNAPSHOT.jar
- 8:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-servlet-9.2.7-SNAPSHOT.jar
- 9:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-webapp-9.2.7-SNAPSHOT.jar
-10:                9.2.7-SNAPSHOT | ${jetty.home}/lib/jetty-deploy-9.2.7-SNAPSHOT.jar
+ 2:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-http-9.2.8-SNAPSHOT.jar
+ 3:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-continuation-9.2.8-SNAPSHOT.jar
+ 4:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-server-9.2.8-SNAPSHOT.jar
+ 5:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-xml-9.2.8-SNAPSHOT.jar
+ 6:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-util-9.2.8-SNAPSHOT.jar
+ 7:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-io-9.2.8-SNAPSHOT.jar
+ 8:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-servlet-9.2.8-SNAPSHOT.jar
+ 9:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-webapp-9.2.8-SNAPSHOT.jar
+10:                9.2.8-SNAPSHOT | ${jetty.home}/lib/jetty-deploy-9.2.8-SNAPSHOT.jar
 
 Jetty Active XMLs:
 ------------------
@@ -152,8 +152,8 @@ Jetty Active XMLs:
  ${jetty.home}/etc/jetty-http.xml
  ${jetty.home}/etc/jetty-ssl.xml
  ${jetty.home}/etc/jetty-deploy.xml
-</pre></div><p>Now start Jetty.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.7-SNAPSHOT/start.jar
-2013-10-08 07:06:55.837:INFO:oejs.Server:main: jetty-9.2.7-SNAPSHOT
+</pre></div><p>Now start Jetty.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.8-SNAPSHOT/start.jar
+2013-10-08 07:06:55.837:INFO:oejs.Server:main: jetty-9.2.8-SNAPSHOT
 2013-10-08 07:06:55.853:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/user/my-base/webapps/] at interval 1
 2013-10-08 07:06:55.872:INFO:oejs.ServerConnector:main: Started ServerConnector@72974691{HTTP/1.1}{0.0.0.0:8080}
 </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="reviewing-ssl-config"></a>Reviewing the Configuration</h3></div></div></div><p>The following sections review this configuration.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jetty-base-jetty-home"></a>${jetty.base} and ${jetty.home}</h4></div></div></div><p>First notice the separation of <code class="literal">${jetty.base}</code>
@@ -162,7 +162,7 @@ Jetty Active XMLs:
           customizations are.</p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="modules"></a>Modules</h4></div></div></div><p>Notice that you have <code class="literal">--module=&lt;name&gt;</code> here
       and there; you have wrapped up the goal of a module (libs, configuration
       XMLs, and properties) into a single unit, with dependencies on other
-      modules.</p><p>You can see the list of modules:</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.7-SNAPSHOT/start.jar --list-modules
+      modules.</p><p>You can see the list of modules:</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.8-SNAPSHOT/start.jar --list-modules
 
 Jetty All Available Modules:
 ----------------------------
@@ -340,7 +340,7 @@ Jetty Active Module Tree:
       optional ones), and if the module is in use, where it was
       enabled.</p><p>While you can manage the list of active modules yourself, it is
       much easier to edit the
-      <code class="filename">${jetty.base}/start.ini</code>.</p><p>If you want to start using a new module:</p><div class="screenexample"><pre class="screen">[my-base] $ java -jar ../jetty-distribution-9.2.7-SNAPSHOT/start.jar --add-to-start=https
+      <code class="filename">${jetty.base}/start.ini</code>.</p><p>If you want to start using a new module:</p><div class="screenexample"><pre class="screen">[my-base] $ java -jar ../jetty-distribution-9.2.8-SNAPSHOT/start.jar --add-to-start=https
 </pre></div><p>This adds the <code class="literal">--module=</code> lines and associated
       properties (the parameterized values mentioned above), to your
       <code class="filename">start.ini</code>.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-plus-sign-alt"></i> Important</h3><p>Leave the modules and XML files alone in the
@@ -357,8 +357,8 @@ Jetty Active Module Tree:
       <code class="filename">${jetty.base}</code>, even XML configurations and
       libraries.</p></div><p>For more information on the <code class="filename">start.jar</code> in 9.1,
     see <a class="xref" href="start-jar.html" title="Using start.jar">Using start.jar</a>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="summary-configuring-SSL-Jetty-91"></a>Summary of Configuring SSL in Jetty 9.1</h3></div></div></div><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Download and unpack Jetty 9.1 into
-        <code class="filename">/home/user/jetty-distribution-9.2.7-SNAPSHOT</code>.</p></li><li class="listitem"><p>Go to your base directory and just use the distribution, no
-        editing.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.7-SNAPSHOT/start.jar
+        <code class="filename">/home/user/jetty-distribution-9.2.8-SNAPSHOT</code>.</p></li><li class="listitem"><p>Go to your base directory and just use the distribution, no
+        editing.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar /home/user/jetty-distribution-9.2.8-SNAPSHOT/start.jar
 </pre></div><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The Jetty 9.1 distribution provides, out of the box, the XML
             configuration files, in this case
             <code class="filename">jetty-http.xml</code> and
@@ -382,17 +382,17 @@ Jetty Active Module Tree:
         your <code class="filename">start.ini</code>. By default, the module system
         keeps things sane, and transitively includes all dependent modules as
         well.</p></li></ol></div><p>You can see what the configuration looks like, after all of the
-    modules are resolved, without starting Jetty via:</p><div class="screenexample"><pre class="screen">[my-base] $ java -jar ../jetty-distribution-9.2.7-SNAPSHOT/start.jar --list-config
+    modules are resolved, without starting Jetty via:</p><div class="screenexample"><pre class="screen">[my-base] $ java -jar ../jetty-distribution-9.2.8-SNAPSHOT/start.jar --list-config
 </pre></div><p>Just because the JARs exist on disk does not mean that they are in
     use. The configuration controls what is used.</p><p>Use the <code class="code">--list-config</code> to see the configuration. Notice
     that only a subset of the JARs from the distribution are in use. The
-    modules you have anabled determine that subset.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ~/jetty-distribution-9.2.7-SNAPSHOT/start.jar --list-config
+    modules you have anabled determine that subset.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ~/jetty-distribution-9.2.8-SNAPSHOT/start.jar --list-config
 </pre></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="setting-port80-access.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-security-authentication.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Setting Port 80 Access for a Non-Root User&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Authentication</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-01-20T01:00:24-08:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-01-21T01:00:24-08:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
