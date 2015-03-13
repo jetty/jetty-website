@@ -1,0 +1,140 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Example: Capturing Multiple Logging Frameworks with Slf4j</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="configuring-logging.html" title="Chapter&nbsp;21.&nbsp;Jetty Logging"><link rel="prev" href="example-logging-logback.html" title="Example: Logging with Logback"><link rel="next" href="example-logging-logback-centralized.html" title="Example: Centralized Logging with Logback"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.2.10.v20150310</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Example: Capturing Multiple Logging Frameworks with Slf4j</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="example-logging-logback.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;21.&nbsp;Jetty Logging<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-logging-logback-centralized.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="example-slf4j-multiple-loggers"></a>Example: Capturing Multiple Logging Frameworks with Slf4j</h2></div></div></div><p>This page describes how to configure Jetty for capturing multiple
+  logging frameworks logging events into a single logging implementation
+  handled by Slf4j.</p><p>When using Slf4j, you can configure a single logging solution for the
+  variety of logging libraries available in common use. With careful setup,
+  you can support all of the following logging APIs at the same time, with a
+  single configuration file to control the output of events produces by these
+  APIs.</p><p>Logging APIs that Slf4j supports:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Slf4j API</p></li><li class="listitem"><p>Logback API</p></li><li class="listitem"><p>Apache Log4j 1.2</p></li><li class="listitem"><p>JDK 1.4 Logging (aka <code class="literal">java.util.logging</code>)</p></li><li class="listitem"><p>Apache Commons Logging</p></li></ul></div><p>To accomplish this you must make some careful choices, starting with a
+  single underlying logging framework. This decision guides the rest of your
+  choices about JARs to place on the Server classpath.</p><div class="table"><a name="d0e15807"></a><p class="title"><b>Table&nbsp;21.1.&nbsp;Slf4j Logging Grid</b></p><div class="table-contents"><table summary="Slf4j Logging Grid" border="1"><colgroup><col width="25%"><col width="25%"><col width="25%"><col width="25%"></colgroup><thead><tr><th>Logging API</th><th>Slf4j Binding Jar</th><th>Slf4j Adapter Jar</th><th>Underlying Logging Framework</th></tr></thead><tbody><tr><td>Logback API</td><td>n/a</td><td>logback-classic.jar</td><td>logback-core.jar</td></tr><tr><td>Log4j</td><td><a class="link" href="http://slf4j.org/legacy.html#log4j-over-slf4j" target="_top">log4j-over-slf4j.jar</a></td><td>slf4j-log4j12.jar</td><td>log4j.jar</td></tr><tr><td>JDK 1.4 Logging</td><td><a class="link" href="http://slf4j.org/legacy.html#jul-to-slf4j" target="_top">jul-to-slf4j.jar</a></td><td>slf4j-jdk14.jar</td><td>(Core Java Classlib)</td></tr><tr><td>Commons Logging</td><td><a class="link" href="http://slf4j.org/legacy.html#jcl-over-slf4j" target="_top">jcl-over-slf4j.jar</a></td><td>slf4j-jcl.jar</td><td>commons-logging.jar</td></tr></tbody></table></div></div><br class="table-break"><div class="variablelist"><dl><dt><span class="term">Logging API</span></dt><dd><p>The Logging API that you are either capturing events from and/or
+        using to write out those events (for example, to disk).</p></dd><dt><span class="term">Slf4j Binding JAR</span></dt><dd><p>Special JARs, created and maintained by the Slf4j project, that
+        pretend to be the various Logging API implementation classes, but
+        instead just route that Logging API's events to Slf4j to
+        handle.</p><p>There MAY be multiple Slf4j binding JARs present on the
+        classpath at the same time.</p><p>For a single logging API, if you choose to use the Slf4j binding
+        JAR, then you MUST NOT include the SLf4j adapter JAR or underlying
+        logging framework in the classpath as well.</p></dd><dt><span class="term">Slf4j Adapter Jar</span></dt><dd><p>These JARs are created and maintained by the Slf4j project and
+        route Slf4j logging events to a specific underlying logging
+        framework.</p><p>There MUST NOT be multiple Slf4j adapter JARs present on the
+        classpath at the same time.</p><p>Logging events that these adapter JARs capture can come from
+        direct use of the Slf4j API or via one of the Slf4j binding JAR
+        implementations.</p></dd><dt><span class="term">Underlying Logging Framework</span></dt><dd><p>This is the last leg of your configuration, the implementation
+        that processes, filters, and outputs the logging events to the
+        console, logging directory on disk, or whatever else the underlying
+        logging framework supports (like Socket, SMTP, Database, or even
+        SysLog in the case of Logback).</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-exclamation-sign"></i> Caution</h3><p>There MUST NOT be multiple underlying logging frameworks on
+            the classpath. If there are, the Slf4j framework fails to
+            load.</p></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>Some third party libraries provide their own implementations
+            of common logging APIs; be careful not to accidentally include an
+            underlying logging framework.</p><p>For example, if you are using SpringSource you likely have a
+            <code class="filename">com.springsource.org.apache.log4j.jar</code> along
+            with a <code class="filename">log4j.jar</code>, which have the same classes
+            in them. In this example, use the
+            <code class="filename">com.springsource.org.apache.log4j.jar</code> version
+            and exclude the <code class="filename">log4j.jar</code>, as the
+            SpringSource version includes extra metadata suitable for using
+            SpringSource.</p></div></dd></dl></div><p>The following sections use Logback as the underlying Logging
+  framework. This requires using <code class="literal">logback-classic.jar</code> and
+  <code class="literal">logback-core.jar</code>, and excluding any other Slf4j adapter
+  JAR or underlying logging framework.</p><p>It also requires including the other Slf4j binding JARs in the
+  classpath, along with some special initialization for
+  <code class="literal">java.util.logging</code>.</p><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15933"></a>Quick Setup of Multiple Logging capture to Logback using Jetty
+    9.2.1+</h3></div></div></div><p>A convenient replacement <code class="literal">logging</code> module has been
+    created to bootstrap your <code class="filename">${jetty.base}</code> directory for
+    capturing all Jetty server logging from multiple logging frameworks into a
+    single logging output file managed by logback.</p><div class="screenexample"><pre class="screen">[mybase]$ mkdir modules
+[mybase]$ cd modules
+
+[modules]$ <span class="bold"><strong>curl -O https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/logging.mod</strong></span>
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  1293  100  1293    0     0   3693      0 --:--:-- --:--:-- --:--:--  3694
+[modules]$ cd ..
+
+[mybase]$ <span class="bold"><strong>java -jar /opt/jetty-dist/start.jar --add-to-start=logging</strong></span>
+INFO: logging         initialised in ${jetty.base}/start.ini (appended)
+MKDIR: ${jetty.base}/logs
+DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.6.6/slf4j-api-1.6.6.jar to lib/logging/slf4j-api-1.6.6.jar
+DOWNLOAD: http://central.maven.org/maven2/org/slf4j/log4j-over-slf4j/1.6.6/log4j-over-slf4j-1.6.6.jar to lib/logging/log4j-over-slf4j-1.6.6.jar
+DOWNLOAD: http://central.maven.org/maven2/org/slf4j/jul-to-slf4j/1.6.6/jul-to-slf4j-1.6.6.jar to lib/logging/jul-to-slf4j-1.6.6.jar
+DOWNLOAD: http://central.maven.org/maven2/org/slf4j/jcl-over-slf4j/1.6.6/jcl-over-slf4j-1.6.6.jar to lib/logging/jcl-over-slf4j-1.6.6.jar
+DOWNLOAD: http://central.maven.org/maven2/ch/qos/logback/logback-core/1.0.7/logback-core-1.0.7.jar to lib/logging/logback-core-1.0.7.jar
+DOWNLOAD: http://central.maven.org/maven2/ch/qos/logback/logback-classic/1.0.7/logback-classic-1.0.7.jar to lib/logging/logback-classic-1.0.7.jar
+DOWNLOAD: https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/logback.xml to resources/logback.xml
+DOWNLOAD: https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/jetty-logging.properties to resources/jetty-logging.properties
+DOWNLOAD: https://raw.githubusercontent.com/jetty-project/logging-modules/master/capture-all/jetty-logging.xml to etc/jetty-logging.xml
+INFO: resources       initialised transitively
+INFO: resources       enabled in     ${jetty.base}/start.ini
+
+[mybase]$ <span class="bold"><strong>java -jar /opt/jetty-dist/start.jar</strong></span>
+</pre></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="d0e15955"></a>That's cool and all, but tell me what that just did.</h3></div></div></div><p>The replacement <code class="filename">logging.mod</code> performs a number
+    of tasks.</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p><code class="filename">mybase</code> is a
+        <code class="filename">${jetty.base}</code> directory</p></li><li class="listitem"><p>The jetty-distribution is unpacked (and untouched) into
+        <code class="filename">/opt/jetty-dist/ </code>and becomes the
+        <code class="filename">${jetty.home}</code> directory for this
+        demonstration.</p></li><li class="listitem"><p>The <span class="command"><strong>curl</strong></span> command downloads the replacement
+        <code class="filename">logging.mod</code> and puts it into the
+        <code class="filename">${jetty.base}/modules/</code> directory for use by
+        mybase only.</p></li><li class="listitem"><p>The <span class="command"><strong>start.jar --add-to-start=logging</strong></span> command
+        performs a number of steps to make the logging module available to the
+        <code class="filename">${jetty.base}</code> configuration.</p><div class="orderedlist"><ol class="orderedlist" type="a"><li class="listitem"><p>The <span class="command"><strong>--module=logging</strong></span> command is added to
+            the <code class="filename">${jetty.base}/start.ini</code>
+            configuration</p></li><li class="listitem"><p>Required <code class="filename">${jetty.base}</code> directories are
+            created: <code class="filename">${jetty.base}/logs</code> and
+            <code class="filename">${jetty.base}/resources</code></p></li><li class="listitem"><p>Required libraries are downloaded (if not present
+            already):</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>slf4j-api.jar - API jar for Slf4j (used by most of the
+                rest of the jars)</p></li><li class="listitem"><p>log4j-over-slf4j.jar - Slf4j jar that captures all log4j
+                emitted logging events</p></li><li class="listitem"><p>jul-to-slf4j.jar - Slf4j jar that captures all
+                java.util.logging events</p></li><li class="listitem"><p>jcl-over-slf4j.jar - Slf4j jar that captures all
+                commons-logging events</p></li><li class="listitem"><p>logback-classic.jar - the Slf4j adapter jar that routes
+                all of the captured logging events to logback itself.</p></li><li class="listitem"><p>logback-core.jar - the logback implementation jar, that
+                handles all of the filtering and output of the logging
+                events.</p></li></ul></div><p>These libraries are put in the
+            <code class="filename">${jetty.base}/lib/logging/</code> directory.</p></li><li class="listitem"><p>Required configuration files are downloaded (if not present
+            already): <code class="filename">jetty-logging.properties</code>, and
+            <code class="filename">logback.xml</code></p><p>The configuration files are put in the
+            <code class="filename">${jetty.base}/resources/</code> directory.</p></li><li class="listitem"><p>Required <code class="literal">java.util.logging</code> initialization
+            commands are downloaded (if not present already):
+            <code class="filename">jetty-logging.xml</code></p><p>The xml file is put in the
+            <code class="filename">${jetty.base}/etc/</code> directory.</p></li></ol></div></li><li class="listitem"><p>At this point you have your <code class="filename">mybase</code>
+        configured so that the jetty server itself will log using slf4j, and
+        all other logging events from other Jetty Server components (such as
+        database drivers, security layers, jsp, mail, and other 3rd party
+        server components) are routed to logback for filtering and
+        output.</p></li></ol></div><p>You can verify the server classpath by using the <span class="command"><strong>start.jar
+    --list-config</strong></span> command.</p><p>In essence, Jetty is now configured to emit its own logging events
+    to slf4j, and various slf4j bridge jars are acting on behalf of log4j,
+    java.util.logging, and commons-logging, routing all of the logging events
+    to logback (a slf4j adapter) for routing (to console, file, etc...)</p></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="example-logging-logback.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-logging.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="example-logging-logback-centralized.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Example: Logging with Logback&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Example: Centralized Logging with Logback</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-03-13T11:47:53-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>

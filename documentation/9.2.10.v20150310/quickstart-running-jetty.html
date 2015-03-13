@@ -1,0 +1,140 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Running Jetty</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, spdy, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="quick-start-getting-started.html" title="Chapter&nbsp;2.&nbsp;Using Jetty Introduction"><link rel="prev" href="quick-start-getting-started.html" title="Chapter&nbsp;2.&nbsp;Using Jetty Introduction"><link rel="next" href="quickstart-deploying-webapps.html" title="Deploying Web Applications"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+            Version: 9.2.10.v20150310</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
+            var cx = '016459005284625897022:obd4lsai2ds';
+            var gcse = document.createElement('script');
+            gcse.type = 'text/javascript';
+            gcse.async = true;
+            gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+            '//www.google.com/cse/cse.js?cx=' + cx;
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(gcse, s);
+            })();
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Running Jetty</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="quick-start-getting-started.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;2.&nbsp;Using Jetty Introduction<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="quickstart-deploying-webapps.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          <span class="website">www.webtide.com</span></a></h5><p>
+ private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
+ scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="quickstart-running-jetty"></a>Running Jetty</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="quickstart-running-jetty.html#demo-webapps-base">Demo Base</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#creating-jetty-base">Creating a new Jetty Base</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#quickstart-changing-jetty-port">Changing the Jetty Port</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#quickstart-starting-https">Starting HTTPS</a></span></dt><dt><span class="section"><a href="quickstart-running-jetty.html#d0e1063">More start.jar options</a></span></dt></dl></div><p>To start Jetty on the default port of 8080, run the following
+  command:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; cd $HOME/jetty-distribution-9
+&gt; java -jar start.jar</strong></span>
+2013-09-06 13:52:43.326:INFO:oejs.Server:main: jetty-9-demo
+2013-09-06 13:52:43.358:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/user/jetty-distribution-9/webapps/] at interval 1
+2013-09-06 13:52:43.390:INFO:oejs.ServerConnector:main: Started ServerConnector@2edf362d{HTTP/1.1}{0.0.0.0:8080}</pre></div><p>You can point a browser at this server at <a class="link" href="">http://localhost:8080</a>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="demo-webapps-base"></a>Demo Base</h3></div></div></div><p>Since release 9.1, the jetty distribution does not deploy any demo
+    web applications, so to see a more interesting demonstration of the server
+    you need to run from the <code class="filename">demo-base</code> directory as
+    follows:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; cd $HOME/jetty-distribution-9/demo-base/
+&gt; java -jar ../start.jar</strong></span>
+2013-09-06 13:56:35.939:WARN::main: demo test-realm is deployed. DO NOT USE IN PRODUCTION!
+2013-09-06 13:56:35.943:INFO:oejs.Server:main: jetty-9-demo
+2013-09-06 13:56:35.976:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/user/jetty-distribution-9/demo-base/webapps/] at interval 1
+2013-09-06 13:56:36.240:INFO:oejpw.PlusConfiguration:main: No Transaction manager found - if your webapp requires one, please configure one.
+2013-09-06 13:56:36.732:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
+[...]
+2013-09-06 13:56:38.572:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@2757052e{/,file:/home/user/jetty-distribution-9/demo-base/webapps/ROOT/,AVAILABLE}{/ROOT}
+2013-09-06 13:56:38.579:INFO:oejs.ServerConnector:main: Started ServerConnector@19e0cb78{HTTP/1.1}{0.0.0.0:8080}
+</pre></div><p>Pointing a browser at <a class="link" href="">http://localhost:8080</a>, will now show a welcome page
+    and several demo/test web applications.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-warning-sign"></i> Warning</h3><p>The demonstration web applications are not necessarily secure and
+      should not be deployed in production web servers.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="creating-jetty-base"></a>Creating a new Jetty Base</h3></div></div></div><p>The <code class="filename">demo-base</code> directory described above is an
+    example of the <a class="link" href="startup-base-and-home.html" title="Managing Jetty Base and Jetty Home">jetty.base</a>
+    mechanism added in Jetty 9.1. A jetty base allows the configuration and
+    web applications of a server instance to be stored separately from the
+    jetty distribution, so that upgrades can be done with minimal disruption.
+    Jetty's default configuration is based on two properties:</p><div class="variablelist"><dl><dt><span class="term">jetty.home</span></dt><dd><p>The property that defines the location of the jetty
+          distribution, its libs, default modules and default XML files
+          (typically start.jar, lib, etc)</p></dd><dt><span class="term">jetty.base</span></dt><dd><p>The property that defines the location of a specific instance
+          of a jetty server, its configuration, logs and web applications
+          (typically start.ini, start.d, logs and webapps)</p></dd></dl></div><p>The <code class="code">jetty.home</code> and <code class="code">jetty.base</code> properties
+    may be explicitly set on the command line, or they can be inferred from
+    the environment if used with commands like:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; cd $HOME/my-base
+&gt; java -jar $HOME/jetty-distribution-9/start.jar</strong></span></pre></div><p>The following commands create a new base directory and enable a HTTP
+    connector and web application deployer in it:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; mkdir /tmp/mybase
+&gt; cd /tmp/mybase
+&gt; java -jar $HOME/jetty-distribution-9/start.jar</strong></span>
+WARNING: Nothing to start, exiting ...
+
+Usage: java -jar start.jar [options] [properties] [configs]
+       java -jar start.jar --help  # for more information
+
+&gt; <span class="bold"><strong>java -jar $HOME/jetty-distribution-9/start.jar --add-to-startd=http,deploy</strong></span>
+http            initialised in ${jetty.base}/start.d/http.ini (created)
+server          initialised in ${jetty.base}/start.d/server.ini (created)
+deploy          initialised in ${jetty.base}/start.d/deploy.ini (created)
+MKDIR: ${jetty.base}/webapps
+server          initialised in ${jetty.base}/start.d/server.ini
+
+<span class="bold"><strong>&gt; java -jar $HOME/jetty-distribution-9/start.jar</strong></span>
+2013-09-06 14:59:32.542:INFO:oejs.Server:main: jetty-9-demo
+2013-09-06 14:59:32.572:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/tmp/mybase/webapps/] at interval 1
+2013-09-06 14:59:32.602:INFO:oejs.ServerConnector:main: Started ServerConnector@405a2273{HTTP/1.1}{0.0.0.0:8080}
+
+[...]</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-changing-jetty-port"></a>Changing the Jetty Port</h3></div></div></div><p>You can configure Jetty to run on a different port by setting the
+    <code class="code">jetty.port</code> Property on the command line:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; cd $HOME/jetty-distribution-9/demo-base
+&gt; java -jar ../start.jar jetty.port=8081</strong></span></pre></div><p>Alternatively, property values can be added to the effective command
+    line built from the <code class="filename">start.ini</code> file and
+    <code class="filename">start.d/*.ini</code> files. By default, the jetty
+    distribution defines the jetty.port property in the
+    <code class="filename">start.d/http.ini</code> file, which may be edited to set
+    another value.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>The configuration by properties works via the following
+      chain:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The start.d/http.ini file is part of the effective command
+          line and contains the --module=http argument which activates the
+          http module</p></li><li class="listitem"><p>The modules/http.mod file defines the http module which
+          specifies the etc/jetty-http.xml configuration file and the template
+          ini properties it uses.</p></li><li class="listitem"><p>The jetty.port property is used by the Property XML element in
+          etc/jetty.http.xml to inject the ServerConnector instance with the
+          port</p></li></ul></div><p>For more information see the <a class="link" href="">Quickstart Configuration Guide</a> and
+      <a class="link" href="configuring-connectors.html" title="Chapter&nbsp;6.&nbsp;Configuring Jetty Connectors">Configuring
+      Connectors.</a></p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="quickstart-starting-https"></a>Starting HTTPS</h3></div></div></div><p>To add the HTTPS connector to a jetty configuration, the https
+    module can be activated by the following command:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; java -jar start.jar --add-to-startd=https</strong></span>
+https           initialised in ${jetty.home}/start.d/https.ini (created)
+ssl             initialised in ${jetty.home}/start.d/ssl.ini (created)
+server          enabled in     ${jetty.home}/start.ini
+resources       enabled in     ${jetty.home}/start.ini
+ext             enabled in     ${jetty.home}/start.ini
+
+<span class="bold"><strong>&gt; java -jar start.jar</strong></span>
+2013-09-06 13:52:43.326:INFO:oejs.Server:main: jetty-9...
+[...]</pre></div><p>The --add-to-startd command sets up the effective command line in
+    the ini files to run a https connection as follows:</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>creates the start.d/https.ini file that activates and configures the
+        https connector module. The https module adds the
+        <code class="filename">etc/jetty-https.xml</code> file to the effective command
+        line.</p></li><li class="listitem"><p>creates the <code class="filename">start.d/ssl.ini</code> file that
+        activates and configures the SSL keystore using demonstration
+        passwords. The ssl module adds the
+        <code class="filename">etc/jetty-ssl.xml</code> file to the effective command
+        line.</p></li><li class="listitem"><p>checks for the existence of a <code class="filename">etc/keystore</code>
+        file and if not present, downloads a demonstration keystore
+        file.</p></li></ul></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-asterisk"></i> Note</h3><p>If a single start.ini file is preferred over individual
+      <code class="filename">start.d/*.ini</code> files, then the option
+      --add-to-start=module may be used to append the module activation to the
+      start.ini file rather than create a file in start.d</p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="quickstart-changing-https-port"></a>Changing the Jetty HTTPS Port</h4></div></div></div><p>You can configure the SSL connector to run on a different port by
+      setting the <code class="code">https.port</code> property on the command line:</p><div class="screenexample"><pre class="screen"><span class="bold"><strong>&gt; cd $HOME/jetty-distribution-9/demo-base
+&gt; java -jar ../start.jar https.port=8444</strong></span></pre></div><p>Alternatively,
+      property values can be added to the effective command line built from
+      the <code class="filename">start.ini</code> file and
+      <code class="filename">start.d/*.ini</code> files. If you used the
+      --add-to-startd command to enable https, then you can edit this property
+      in the <code class="filename">start.d/https.ini</code> file. If you used
+      --add-to-start command, then you can edit this propery in the start.ini
+      file.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1063"></a>More start.jar options</h3></div></div></div><p>The job of the <code class="code">start.jar</code> is to interpret the command
+    line, <code class="filename">start.ini</code> and <code class="code">start.d</code> to build a
+    Java classpath and list of properties and configuration files to pass to
+    the main class of the Jetty XML configuration mechanism. The
+    <code class="code">start.jar</code> mechanism has many options which are documented in
+    the <a class="link" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty">startup</a> administration section and you
+    can see them in summary by using the command:</p><div class="screenexample"><pre class="screen">&gt; java -jar start.jar --help</pre></div></div></div><script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="quick-start-getting-started.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="quick-start-getting-started.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="quickstart-deploying-webapps.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;2.&nbsp;Using Jetty Introduction&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Deploying Web Applications</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+            See an error or something missing?
+            <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-03-13T11:47:48-05:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1149868-7']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+    </script></body></html>
