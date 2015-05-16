@@ -42,7 +42,16 @@
     persistence mechanism, you will first need to enable the nosql <a class="link" href="startup-modules.html" title="Managing Startup Modules">module</a> for your <a class="link" href="quickstart-running-jetty.html#creating-jetty-base" title="Creating a new Jetty Base">base</a> using the --add-to-start or
     --add-to-startd argument to the <a class="link" href="startup.html#startup-overview" title="Startup Overview">start.jar</a>. This module will
     automatically download the mongodb-java-driver and install it to your
-    base's lib/nosql directory.</p><p>You will also find the following properties, either in your base's
+    base's lib/nosql directory.</p><p>As part of the module installation, the necessary mongo java driver
+    jars will be dynamically downloaded and installed to your
+    <code class="code">${jetty.base}/lib/nosql</code> directory. If you need to up or
+    downgrade the version of these jars, then you can delete the jars that
+    were automatically installed and replace them. Once you've done that, you
+    will need to prevent jetty's startup checks from detecting the missing
+    jars. To do that, you can use <code class="code">--skip-file-validation=nosql</code>
+    argument to start.jar on the command line, or place that line inside
+    <code class="code">${jetty.base}/start.ini</code> to ensure it is used for every
+    start.</p><p>You will also find the following properties, either in your base's
     start.d/nosql.ini file or appended to your start.ini, depending on how you
     enabled the module:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
           <![CDATA[## Unique identifier for this node in the cluster
@@ -60,7 +69,7 @@ jetty.nosqlSession.scavenge=1800
     time in seconds between runs of the scavengeer: the scavenger is a task
     which runs periodically to clean out sessions that have expired but become
     stranded in the database for whatever reason.</p><p>These properties are substituted into the configuration of the
-    MongoDBSessionIdManager and MongoSessionManager.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9670"></a>Configuring the MongoSessionIdManager</h4></div></div></div><p>The
+    MongoDBSessionIdManager and MongoSessionManager.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9681"></a>Configuring the MongoSessionIdManager</h4></div></div></div><p>The
       nosql module will have installed file called
       ${jetty.home}/etc/jetty-nosql.xml. This file configures an instance of
       the MongoSessionIdManager that will be shared across all webapps
@@ -156,12 +165,19 @@ jetty.nosqlSession.scavenge=1800
       1 week. You can disable these behaviors by setting purge to
       false.</p><div class="variablelist"><dl><dt><span class="term">scavengeDelay</span></dt><dd><p>How long to delay before periodically looking for sessions
             to scavenge?</p></dd><dt><span class="term">scavengePeriod</span></dt><dd><p>How much time after a scavenge has completed should you wait
-            before doing it again?</p></dd><dt><span class="term">purge (Boolean)</span></dt><dd><p>Do you want to purge (delete) sessions that are invalid from
+            before doing it again?</p></dd><dt><span class="term">scavengeBlockSize</span></dt><dd><p>Number of session ids to which to limit each scavenge query.
+            If you have a very large number of sessions in memory then setting
+            this to a non 0 value may help speed up scavenging by breaking the
+            scavenge into multiple, queries. The default is 0, which means
+            that all session ids are considered in a single query.</p></dd><dt><span class="term">purge (Boolean)</span></dt><dd><p>Do you want to purge (delete) sessions that are invalid from
             the session store completely?</p></dd><dt><span class="term">purgeDelay</span></dt><dd><p>How often do you want to perform this purge
             operation?</p></dd><dt><span class="term">purgeInvalidAge</span></dt><dd><p>How old should an invalid session be before it is eligible
             to be purged?</p></dd><dt><span class="term">purgeValidAge</span></dt><dd><p>How old should a valid session be before it is eligible to
-            be marked invalid and purged? Should this occur at all?</p></dd><dt><span class="term">preserveOnStop</span></dt><dd><p>Whether or not to retain all sessions when the session
-            manager stops. Default is <code class="code">true</code>.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9736"></a>Configuring a MongoSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one MongoSessionManager
+            be marked invalid and purged? Should this occur at all?</p></dd><dt><span class="term">purgeLimit</span></dt><dd><p>Integer value that represents how many items to return from
+            a purge query. The default is 0, which is unlimited. If you have a
+            lot of old expired orphaned sessions then setting this value may
+            speed up the purge process.</p></dd><dt><span class="term">preserveOnStop</span></dt><dd><p>Whether or not to retain all sessions when the session
+            manager stops. Default is <code class="code">true</code>.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e9759"></a>Configuring a MongoSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one MongoSessionManager
       per context (ie webapp). It will need to reference the single
       MongoSessionIdManager configured previously for the Server.</p><p>The way you configure a <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/nosql/MongoSessionManager.html" target="_top">org.eclipse.jetty.nosql.mongodb.MongoSessionManager</a>
       depends on whether you're configuring from a <a class="link" href="configuring-specific-webapp-deployment.html#deployable-descriptor-file" title="Jetty Deployable Descriptor XML File">context xml</a> file or a <a class="link" href="jetty-web-xml-config.html" title="jetty-web.xml">jetty-web.xml</a> file or code. The
@@ -225,7 +241,7 @@ jetty.nosqlSession.scavenge=1800
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="session-clustering-jdbc.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="session-management.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="session-clustering-infinispan.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Session Clustering with a Database&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Session Clustering with Infinispan</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-05-15T01:01:21+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-05-16T01:01:21+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
