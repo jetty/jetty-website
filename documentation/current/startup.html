@@ -15,7 +15,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="startup"></a>Chapter&nbsp;9.&nbsp;Starting Jetty</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="startup.html#startup-overview">Startup Overview</a></span></dt><dt><span class="section"><a href="startup-classpath.html">Managing Server Classpath</a></span></dt><dt><span class="section"><a href="startup-modules.html">Managing Startup Modules</a></span></dt><dt><span class="section"><a href="startup-base-and-home.html">Managing Jetty Base and Jetty Home</a></span></dt><dt><span class="section"><a href="start-jar.html">Using start.jar</a></span></dt><dt><span class="section"><a href="startup-unix-service.html">Startup a Unix Service using jetty.sh</a></span></dt><dt><span class="section"><a href="startup-windows-service.html">Startup via Windows Service</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="startup-overview"></a>Startup Overview</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="startup.html#d0e7596">Startup Example</a></span></dt></dl></div><p>The <code class="filename">start.jar</code> bootstrap manages the startup of standalone Jetty. It is responsible for:</p><div class="variablelist"><dl><dt><span class="term">Building the classpath</span></dt><dd><p>The <code class="filename">start.jar</code> bootstrap builds a classpath for all the
+      </p></div><div class="chapter"><div class="titlepage"><div><div><h2 class="title"><a name="startup"></a>Chapter&nbsp;9.&nbsp;Starting Jetty</h2></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="startup.html#startup-overview">Startup Overview</a></span></dt><dt><span class="section"><a href="startup-classpath.html">Managing Server Classpath</a></span></dt><dt><span class="section"><a href="startup-modules.html">Managing Startup Modules</a></span></dt><dt><span class="section"><a href="startup-base-and-home.html">Managing Jetty Base and Jetty Home</a></span></dt><dt><span class="section"><a href="start-jar.html">Using start.jar</a></span></dt><dt><span class="section"><a href="startup-unix-service.html">Startup a Unix Service using jetty.sh</a></span></dt><dt><span class="section"><a href="startup-windows-service.html">Startup via Windows Service</a></span></dt></dl></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="startup-overview"></a>Startup Overview</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="startup.html#d0e7555">Startup Example</a></span></dt></dl></div><p>The <code class="filename">start.jar</code> bootstrap manages the startup of standalone Jetty. It is responsible for:</p><div class="variablelist"><dl><dt><span class="term">Building the classpath</span></dt><dd><p>The <code class="filename">start.jar</code> bootstrap builds a classpath for all the
         required Jetty features and their dependencies. It builds the classpath using either the <code class="literal">--lib</code> option to <code class="filename">start.jar</code> to add an individual
         classpath entry, or with the <code class="literal">--module</code> option that
         includes all the libs and their dependencies for a module (a named
@@ -54,10 +54,10 @@
         components such as connectors, keystores, session managers, and data
         sources. Typically there are one or more
         XML files per module, and these are defined and activated in the
-        corresponding module.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7596"></a>Startup Example</h3></div></div></div><p>The simplest way to start Jetty is via the
+        corresponding module.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e7555"></a>Startup Example</h3></div></div></div><p>The simplest way to start Jetty is via the
     <code class="filename">start.jar</code> mechanism using the following Java command
     line:</p><div class="screenexample"><pre class="screen">[user]$ cd jetty-distribution-9.2.11-SNAPSHOT
-[jetty-distribution-9.2.11-SNAPSHOT]$ java -jar start.jar --module=http jetty.port=8080</pre></div><p>This command uses the <code class="filename">start.jar</code> mechanism to
+[jetty-distribution-9.2.11-SNAPSHOT]$ java -jar start.jar --module=http jetty.http.port=8080</pre></div><p>This command uses the <code class="filename">start.jar</code> mechanism to
     bootstrap the classpath, properties, and XML files with the metadata
     obtained from the <code class="literal">http</code> module. Specifically the
     <code class="literal">http</code> module is defined in the
@@ -70,13 +70,13 @@ server
 etc/jetty-http.xml
 
 [ini-template]
-jetty.port=8080
+jetty.http.port=8080
 http.timeout=30000</pre></div><p>The <code class="literal">http</code> module declares that
     <code class="literal">http</code> depends on the server module, uses the
     <code class="filename">jetty-http.xml</code> file, and can be parameterized with
-    <code class="literal">jetty.port</code> and <code class="literal">http.timeout</code>
+    <code class="literal">jetty.http.port</code> and <code class="literal">http.timeout</code>
     parameters. The INI-template section is not actually used by the command
-    above, so the <code class="literal">jetty.port</code> must still be defined on the
+    above, so the <code class="literal">jetty.http.port</code> must still be defined on the
     command line.</p><p>Following the server dependency, the
     <code class="filename">${jetty.home}/modules/server.mod</code> file
     includes:</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.11-SNAPSHOT]$ cat modules/server.mod
@@ -100,7 +100,7 @@ threads.max=200
     <code class="literal">server</code> modules results in
     <code class="filename">start.jar</code> generating the effective Java command line
     required to start Jetty.</p><p>Another way to see this is by asking Jetty what its configuration looks
-    like:</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.11-SNAPSHOT]$ java -jar start.jar --module=http jetty.port=9099 --list-config
+    like:</p><div class="screenexample"><pre class="screen">[jetty-distribution-9.2.11-SNAPSHOT]$ java -jar start.jar --module=http jetty.http.port=9099 --list-config
 
 Java Environment:
 -----------------
@@ -130,7 +130,7 @@ System Properties:
 
 Properties:
 -----------
- jetty.port = 9099
+ jetty.http.port = 9099
 
 Jetty Server Classpath:
 -----------------------
@@ -155,7 +155,7 @@ Jetty Active XMLs:
     line.</p><p>The following is the equivalent <code class="filename">java</code> command
     line for what the <code class="filename">start.jar</code> bootstrap above
     performs.</p><div class="screenexample"><pre class="screen">[user]$ cd jetty-distribution-9.2.11-SNAPSHOT
-[jetty-distribution-9.2.11-SNAPSHOT]$ echo jetty.port=8080 &gt; /tmp/jetty.properties
+[jetty-distribution-9.2.11-SNAPSHOT]$ echo jetty.http.port=8080 &gt; /tmp/jetty.properties
 [jetty-distribution-9.2.11-SNAPSHOT]$ export JETTY_HOME=`pwd`
 [jetty-distribution-9.2.11-SNAPSHOT]$ export JETTY_BASE=`pwd`
 [jetty-distribution-9.2.11-SNAPSHOT]$ export JETTY_VERSION="${project.version}"
@@ -185,7 +185,7 @@ $JETTY_HOME/etc/jetty-http.xml
 total 8
 drwxrwxr-x  2 user webgroup 4096 Oct  4 11:49 ./
 drwxrwxr-x 12 user webgroup 4096 Oct  4 11:49 ../
-[example-base]$ java -jar ../start.jar --add-to-start=http
+[example-base]$ java -jar $JETTY_HOME/start.jar --add-to-start=http
 WARNING: http            initialised in ${jetty.base}/start.ini (appended)
 WARNING: http            enabled in     ${jetty.base}/start.ini
 WARNING: server          initialised in ${jetty.base}/start.ini (appended)
@@ -196,12 +196,12 @@ drwxrwxr-x  2 user webgroup 4096 Oct  4 11:55 ./
 drwxrwxr-x 12 user webgroup 4096 Oct  4 11:49 ../
 -rw-rw-r--  1 user webgroup  250 Oct  4 11:55 start.ini
 </pre></div><p>Once complete, you can edit the <code class="filename">start.ini</code> file to modify any
-    parameters and you can run the server with the simple command:</p><div class="screenexample"><pre class="screen">[example-base]$ java -jar ../start.jar</pre></div></div></div></div><script type="text/javascript">
+    parameters and you can run the server with the simple command:</p><div class="screenexample"><pre class="screen">[example-base]$ java -jar $JETTY_HOME/start.jar</pre></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="administration.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="administration.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="startup-xml-config.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Part&nbsp;III.&nbsp;Jetty Administration Guide&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Managing XML Based Startup Configuration</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-04T01:01:11+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-05T01:01:17+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);

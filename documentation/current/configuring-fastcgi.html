@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Configuring Jetty for FastCGI</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="fastcgi.html" title="Chapter&nbsp;15.&nbsp;FastCGI Support"><link rel="prev" href="fastcgi.html" title="Chapter&nbsp;15.&nbsp;FastCGI Support"><link rel="next" href="advanced-extras.html" title="Chapter&nbsp;16.&nbsp;Provided Servlets, Filters, and Handlers"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+   <title>Configuring Jetty for FastCGI</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="fastcgi.html" title="Chapter&nbsp;16.&nbsp;FastCGI Support"><link rel="prev" href="fastcgi.html" title="Chapter&nbsp;16.&nbsp;FastCGI Support"><link rel="next" href="advanced-extras.html" title="Chapter&nbsp;17.&nbsp;Provided Servlets, Filters, and Handlers"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.2.11-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
@@ -11,11 +11,11 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(gcse, s);
             })();
-          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Jetty for FastCGI</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="fastcgi.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;15.&nbsp;FastCGI Support<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring Jetty for FastCGI</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="fastcgi.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;16.&nbsp;FastCGI Support<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-fastcgi"></a>Configuring Jetty for FastCGI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-fastcgi.html#configuring-fastcgi-http">Configuring Jetty to Proxy HTTP to FastCGI</a></span></dt><dt><span class="section"><a href="configuring-fastcgi.html#configuring-fastcgi-spdy">Configuring Jetty to Proxy SPDY to FastCGI</a></span></dt></dl></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-fastcgi"></a>Configuring Jetty for FastCGI</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-fastcgi.html#configuring-fastcgi-http2">Configuring Jetty to Proxy HTTP/2 to FastCGI</a></span></dt></dl></div><p>
         In this section you will see how to configure Jetty to serve WordPress via FastCGI.
     </p><p>
         The first step is to have WordPress installed in your server machine, for example under
@@ -25,15 +25,19 @@
         The second step is to install <code class="code">php-fpm</code> and make sure it is configured to listen
         on a TCP socket; typically it is configured to listen to <code class="code">localhost:9000</code>.
     </p><p>
-        The third step is to install Jetty, for example under <code class="code">/opt/jetty</code>.
+        The third step is to install Jetty, for example under <code class="code">/opt/jetty</code>, called in the
+        following <code class="code">$JETTY_HOME</code>.
         Refer to <a class="xref" href="quick-start-getting-started.html#jetty-downloading" title="Downloading Jetty">Downloading Jetty</a> for more information about how to install Jetty.
     </p><p>
         The fourth step is to create a Jetty base directory (see <a class="xref" href="startup-base-and-home.html" title="Managing Jetty Base and Jetty Home">Managing Jetty Base and Jetty Home</a>),
         called in the following <code class="code">$JETTY_BASE</code>, where you setup the configuration needed to support
-        FastCGI in Jetty:
+        FastCGI in Jetty, and configure the <code class="code">fcgi</code>, <code class="code">http</code> and <code class="code">deploy</code> modules,
+        so that Jetty will be able to accept HTTP requests from browsers, convert them in FastCGI, and proxy
+        them to <code class="code">php-fpm</code>:
     </p><div class="screenexample"><pre class="screen">
 $ mkdir -p /usr/jetty/wordpress
 $ cd /usr/jetty/wordpress
+$ java -jar $JETTY_HOME/start.jar --add-to-module=fcgi,http,deploy
     </pre></div><p>
         Therefore <code class="code">$JETTY_BASE=/usr/jetty/wordpress</code>.
     </p><p>
@@ -47,7 +51,7 @@ $ cd /usr/jetty/wordpress
     </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd">
 <Configure class="org.eclipse.jetty.servlet.ServletContextHandler">
 
     <New id="root" class="java.lang.String">
@@ -159,87 +163,57 @@ $ cd /usr/jetty/wordpress
                 Refer to the
                 <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/fcgi/server/proxy/FastCGIProxyServlet.html" target="_top">FastCGIProxyServlet</a>
                 documentation for further information.
-            </p></li></ul></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-fastcgi-http"></a>Configuring Jetty to Proxy HTTP to FastCGI</h3></div></div></div><p>
-            In order to configure Jetty to listen for HTTP requests from clients and forward them to
-            the FastCGI server as FastCGI requests, you need to specify a <code class="code">start.ini</code> file
-            that configures the Jetty modules that are needed for Jetty to proxy HTTP to FastCGI.
-            The minimal <code class="code">start.ini</code> file is the following:
-        </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
-          <![CDATA[
-# The 'deploy' module enables Jetty to look up in the 'webapps' directory for files to deploy.
---module=deploy
-
-# The 'fcgi' module enables FastCGI support.
---module=fcgi
-
-# The 'http' module enables a HTTP connector that listens for client requests on port 8080.
---module=http
-jetty.port=8080
-            ]]>
-        </script></div><p>
-            At this point, you can start Jetty (see <a class="xref" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty">Chapter&nbsp;9, <i>Starting Jetty</i></a>), hit <code class="code">http://localhost:8080</code>
-            with your browser and enjoy WordPress:
-        </p><div class="screenexample"><pre class="screen">
+            </p></li></ul></div><p>
+        The last step is to start Jetty (see <a class="xref" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty">Chapter&nbsp;9, <i>Starting Jetty</i></a>) and hit <code class="code">http://localhost:8080</code>
+        with your browser and enjoy WordPress:
+    </p><div class="screenexample"><pre class="screen">
 $ cd $JETTY_BASE
 $ java -jar /opt/jetty/start.jar
-        </pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-fastcgi-spdy"></a>Configuring Jetty to Proxy SPDY to FastCGI</h3></div></div></div><p>
-            In order to configure Jetty to listen for SPDY requests from clients that are SPDY enabled
-            and forward them to the FastCGI server as FastCGI requests, you need to specify a
-            <code class="code">start.ini</code> file that configures the Jetty modules that are needed for Jetty to
-            proxy SPDY to FastCGI.
+    </pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-fastcgi-http2"></a>Configuring Jetty to Proxy HTTP/2 to FastCGI</h3></div></div></div><p>
+            In order to configure Jetty to listen for HTTP/2 requests from clients that are HTTP/2 enabled
+            and forward them to the FastCGI server as FastCGI requests, you need to enable the <code class="code">http2</code>
+            module, which in turn will require a TLS connector and consequently a keystore to read
+            the key material required by TLS.
+        </p><p> Enabling the <code class="code">http2</code> is really simple; in additions to the modules you have enabled
+            above, add the <code class="code">http2</code> module:
+        </p><div class="screenexample"><pre class="screen">
+$ cd $JETTY_BASE
+$ java -jar $JETTY_HOME/start.jar --add-to-start=http2
+        </pre></div><p>The command above adds the <code class="code">http2</code> module (and its dependencies) to the existing modules
+            and uses the default Jetty keystore to provide the key material required by TLS. You will want to use
+            your own keystore with your own private key and certificate for your own domain.
         </p><p>
-            Remember that for SPDY to work you will need to run over SSL, and you will need the NPN boot jar
-            in the boot classpath, as explained in <a class="xref" href="">???</a>.
+            Remember that by adding the <code class="code">http2</code> module, you will start two JVMs: one that reads the
+            configuration, and one that has the ALPN boot boot jar
+            in the boot classpath, as explained in <a class="xref" href="http2-configuring.html" title="Configuring HTTP/2">Configuring HTTP/2</a>.
         </p><p>
-            Since now your site will run over SSL, you need to make sure that the WordPress URL is also
+            Since now your site will run over TLS, you need to make sure that the WordPress URL is also
             configured so.
-            If you have followed the steps of the <a class="xref" href="configuring-fastcgi.html#configuring-fastcgi-http" title="Configuring Jetty to Proxy HTTP to FastCGI">Configuring Jetty to Proxy HTTP to FastCGI</a>,
+            If you have followed the steps of the <a class="link" href="configuring-fastcgi.html" title="Configuring Jetty for FastCGI">previous section</a>,
             your WordPress site is served at <code class="code">http://localhost:8080</code>.
             You will need to change that to be <code class="code">https://localhost:8443</code> from the WordPress
             administration web interface, or follow the
             <a class="link" href="http://codex.wordpress.org/Changing_The_Site_URL" target="_top">WordPress instructions</a>
             to do so without using the administration web interface.
         </p><p>
-            The minimal <code class="code">start.ini</code> file is the following:
-        </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
-          <![CDATA[
-# The 'deploy' module enables Jetty to look up in the 'webapps' directory for files to deploy.
---module=deploy
-
-# The 'fcgi' module enables FastCGI support.
---module=fcgi
-
-# The 'spdy' module enables a SPDY connector that listens for client requests on port 8443.
---module=spdy
-spdy.port=8443
-            ]]>
-        </script></div><p>
-            Note that we specified the <code class="code">spdy.port</code> to be <code class="code">8443</code>.
+            The minimal modules required to run WordPress with Jetty on HTTP/2 are therefore:
+            <code class="code">http2</code>, <code class="code">http</code>, <code class="code">fcgi</code> and <code class="code">deploy</code>.
+            These will setup a clear text connector on port 8080 for HTTP/1.1 and a TLS connector on
+            port 8443 for HTTP/2 and HTTP/1.1.
         </p><p>
-            At this point, you will need the NPN boot jar and the SSL certificate.
-            In this example, you can obtain them very easily using the built-in feature of the Jetty start
-            mechanism that downloads required dependencies, see <a class="xref" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty">Chapter&nbsp;9, <i>Starting Jetty</i></a>.
-            However, remember that the example SSL certificate that is downloaded will not be valid for your
-            website and that it must not be used in production. It is provided only for testing and example
-            purposes.
-            To leverage the automatic download of required dependencies, issue this command:
-        </p><div class="screenexample"><pre class="screen">
-$ cd $JETTY_BASE
-$ java -jar /opt/jetty/start.jar --create-files
-        </pre></div><p>
             At this point, you can start Jetty (see <a class="xref" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty">Chapter&nbsp;9, <i>Starting Jetty</i></a>), hit <code class="code">http://localhost:8080</code>
-            with your browser and enjoy WordPress via SPDY using a SPDY enabled browser:
+            with your browser and enjoy WordPress via HTTP/2 using a HTTP/2 enabled browser:
         </p><div class="screenexample"><pre class="screen">
 $ cd $JETTY_BASE
-$ java -Xbootclasspath/p:lib/npn/npn-boot-&lt;version&gt;.jar -jar /opt/jetty/start.jar
+$ java -jar $JETTY_HOME/start.jar
         </pre></div><p>
-            If you don't have a SPDY enabled browser, WordPress will still be available over plain HTTPS.
+            If you don't have a HTTP/2 enabled browser, WordPress will still be available over plain HTTP/1.1.
         </p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
-    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fastcgi.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="fastcgi.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;15.&nbsp;FastCGI Support&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;16.&nbsp;Provided Servlets, Filters, and Handlers</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="fastcgi.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="fastcgi.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="advanced-extras.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;16.&nbsp;FastCGI Support&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;17.&nbsp;Provided Servlets, Filters, and Handlers</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-04T01:01:17+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-05T01:01:28+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
