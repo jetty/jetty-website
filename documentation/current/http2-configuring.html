@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Configuring HTTP/2</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="http2.html" title="Chapter&nbsp;15.&nbsp;HTTP/2"><link rel="prev" href="http2.html" title="Chapter&nbsp;15.&nbsp;HTTP/2"><link rel="next" href="http2-configuring-push.html" title="Configuring HTTP/2 Push"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
+   <title>Configuring HTTP/2</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty : The Definitive Reference"><link rel="up" href="http2.html" title="Chapter&nbsp;15.&nbsp;HTTP/2"><link rel="prev" href="http2-enabling.html" title="Enabling HTTP/2"><link rel="next" href="http2-configuring-push.html" title="Configuring HTTP/2 Push"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><script type="text/javascript" src="js/shCore.js"></script><script type="text/javascript" src="js/shBrushJava.js"></script><script type="text/javascript" src="js/shBrushXml.js"></script><script type="text/javascript" src="js/shBrushBash.js"></script><script type="text/javascript" src="js/shBrushJScript.js"></script><script type="text/javascript" src="js/shBrushSql.js"></script><script type="text/javascript" src="js/shBrushProperties.js"></script><script type="text/javascript" src="js/shBrushPlain.js"></script><link type="text/css" rel="stylesheet" href="css/shCore.css"><link type="text/css" rel="stylesheet" href="css/shThemeEclipse.css"><link type="text/css" rel="stylesheet" href="css/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.3.1-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
             var cx = '016459005284625897022:obd4lsai2ds';
             var gcse = document.createElement('script');
@@ -11,36 +11,74 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(gcse, s);
             })();
-          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring HTTP/2</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="http2.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;15.&nbsp;HTTP/2<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="http2-configuring-push.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Configuring HTTP/2</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="http2-enabling.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;15.&nbsp;HTTP/2<br><a accesskey="p" href="index.html"><i class="icon-home"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="http2-configuring-push.html">Next <i class="icon-chevron-right"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="http2-configuring"></a>Configuring HTTP/2</h2></div></div></div><p>Jetty HTTP/2 support is enabled by enabling the <code class="code">http2</code> module.</p><p>Typically you also want to enable HTTP/1.1 by enabling the <code class="code">http</code> module,
-        so that user agents that do not support HTTP/2
-    will still be able to browse your web site, and the <code class="code">deploy</code> module, so that
-    you can drop your web applications in the <code class="code">$JETTY_BASE/webapps/</code> directory.</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
-          <![CDATA[
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="http2-configuring"></a>Configuring HTTP/2</h2></div></div></div><p>Enabling the HTTP/2 module in the jetty server does not create a
+  HTTP/2 specific connector, but rather it adds a HTTP/2 Connection factory to
+  an existing connector. Thus configuring HTTP/2 is a combination of
+  configuring common properties on the connector and HTTP/2 specific
+  properties on the connection factory. The modules and XML files involved can
+  be seen with the following commands: </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: plain;toolbar: false">
+          <![CDATA[$ java -jar $JETTY_HOME/start.jar --list-modules
+    ...
+    1) protonego-boot  <transitive> 
+    ...
+    2) http            ${jetty.base}/start.d/http.ini
+    2) ssl             ${jetty.base}/start.d/ssl.ini
+    3) alpn            ${jetty.base}/start.d/alpn.ini
+    3) http2c          ${jetty.base}/start.d/http2c.ini
+    ...
+    4) http2           ${jetty.base}/start.d/http2.ini
+    5) https           ${jetty.base}/start.d/https.ini
 
-$ mkdir http2-demo
-$ cd http2-demo/
-$ java -jar $JETTY_HOME/start.jar --add-to-start=http2,http,deploy
-
+$ java -jar $JETTY_HOME/start.jar --list-config
+ ...
+ ${jetty.home}/etc/jetty-ssl.xml
+ ${jetty.home}/etc/jetty-ssl-context.xml
+ ${jetty.home}/etc/jetty-alpn.xml
+ ${jetty.home}/etc/jetty-http2c.xml
+ ${jetty.home}/etc/jetty-http.xml
+ ...
+ ${jetty.home}/etc/jetty-http2.xml
+ ${jetty.home}/etc/jetty-https.xml
         ]]>
-        </script></div><p>The commands above create a <code class="code">$JETTY_BASE</code> directory called <code class="code">http2-demo</code>,
-        and initialize the <code class="code">http2</code>, <code class="code">http</code> and <code class="code">deploy</code> modules (and
-        their dependencies) to run a HTTP/2 enabled Jetty server.</p><p>The commands will setup a clear text HTTP/1.1 connector on port 8080, and a
-        TLS connector on port 8443 using Jetty's default keystore (under <code class="code">http2-demo/etc/</code>) to
-    provide the private and public keys necessary to TLS. You will want to use your own keystore
-    with your own private key and certificate for your own domain.</p><p>This is sufficient to enable your Jetty server to speak HTTP/2 to browsers that support it. Old
-        browsers or browsers that don't support HTTP/2 will speak HTTP/1.1 on the same connector.</p><p>Because HTTP/2 over TLS requires <a class="link" href="alpn-chapter.html#alpn-starting" title="Starting the JVM">ALPN</a> in your boot classpath,
-    the commands above start two JVMs: the one you started explicitly with the <code class="code">java -jar</code> command
-    and a forked one that has the ALPN boot jar in the boot classpath, along with the required Jetty libraries
-    in the classpath, and that is the one that will run your web applications.</p></div><script type="text/javascript">
+        </script></div><p>The common properties associated with connectors (host,port, timeouts,
+  etc.) can be set in the module ini files (or start.ini if --add-to-start was
+  used): <code class="code">${jetty.base}/start.d/http.ini</code>
+  <code class="code">${jetty.base}/start.d/ssl.ini</code>. These properties are
+  instantiated in the associated XML files:
+  <code class="code">${jetty.home}/etc/jetty-http.xml</code>;
+  <code class="code">${jetty.home}/etc/jetty-ssl.xml</code>, plus the SSL keystore is
+  instantiated in <code class="code">${jetty.home}/etc/jetty-ssl-context.xml</code>.</p><p>HTTP/2 specific properties can be set in the module ini files:
+  <code class="code">${jetty.base}/start.d/http2.ini</code>;
+  <code class="code">${jetty.base}/start.d/http2c.ini</code>, which are instantiated in the
+  associated XML files: <code class="code">${jetty.home}/etc/jetty-http2.xml</code>;
+  <code class="code">${jetty.home}/etc/jetty-http2c.xml</code>. Currently there are very
+  few HTTP/2 configuration properties and the default values are
+  reasonable:</p><table frame="box" rules="all" id="d0e12204"><caption>Table&nbsp;15.1.&nbsp;HTTP/2 Configuration Properties</caption><thead><tr align="center">
+        <th>Property</th>
+
+        <th>Description</th>
+      </tr></thead><tbody><tr>
+        <td>jetty.http2.maxConcurrentStreams</td>
+
+        <td>The maximum number of concurrently open streams allowed on a
+        single HTTP/2 connection (default 1024). Larger values increase
+        parallism but cost a memory commitment.</td>
+      </tr><tr>
+        <td>jetty.http2.initialStreamSendWindow</td>
+
+        <td>The initial flow control window size for a new stream (default
+        65535). Larger values may allow greater throughput but also risk head
+        of line blocking if TCP/IP flow control is triggered.</td>
+      </tr></tbody></table><p></p></div><script type="text/javascript">
       SyntaxHighlighter.all()
-    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="http2.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http2.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http2-configuring-push.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;15.&nbsp;HTTP/2&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring HTTP/2 Push</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
+    </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="http2-enabling.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="http2.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="http2-configuring-push.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Enabling HTTP/2&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Configuring HTTP/2 Push</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-17T01:01:17+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2015-06-17T14:30:49+00:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
