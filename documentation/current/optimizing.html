@@ -20,43 +20,44 @@
   amount of time? Are you trying to optimize the serving of static content? Do
   you have a large bit of hardware that you want to give entirely over to
   Jetty to use to its heart's delight? Here are a few of the many different
-  ways to optimize Jetty.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="garbage-collection"></a>Garbage Collection</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="optimizing.html#tuning-examples">Tuning Examples</a></span></dt></dl></div><p>Tuning the JVM garbage collection (GC) can greatly improve Jetty performance. Specifically, you can avoid
-  pauses while the system performs full garbage collections. Optimal tuning of the GC depends on the behaviour of the
-  application and requires detailed analysis, however there are general recommendations.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="tuning-examples"></a>Tuning Examples</h3></div></div></div><p>These options are general to the Sun JVM, and work in a JDK 6 installation. They provide good information
-    about how your JVM is running; based on that initial information, you can then tune more finely.</p><p>To print the implicit flags with which the JVM is configured:</p><div class="screenexample"><pre class="screen">
-
--XX:+PrintCommandLineFlags
-
-    </pre></div><p>To disable explicit GC performed regularly by RMI:</p><div class="screenexample"><pre class="screen">
-
--XX:+DisableExplicitGC
-
-    </pre></div><p>To print the date and time stamps of GC activity with details:</p><div class="screenexample"><pre class="screen">
-
--XX:+PrintGCDateStamps \
--XX:+PrintGCTimeStamps \
--XX:+PrintGCDetails \
--XX:+PrintTenuringDistribution
-
-    </pre></div><p>To log GC details to a file:</p><div class="screenexample"><pre class="screen">
-
--Xloggc:[path/to/gc.log]
-
-    </pre></div><p>To print GC activity with less detail:</p><div class="screenexample"><pre class="screen">
-
--verbose:gc
-
-    </pre></div><p>To use the concurrent marksweep GC with full GC at 80% old generation full:</p><div class="screenexample"><pre class="screen">
-
--XX:+UseConcMarkSweepGC \
+  ways to optimize Jetty.</p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="garbage-collection"></a>Garbage Collection</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="optimizing.html#tuning-examples">Tuning Examples</a></span></dt></dl></div><p>Tuning the JVM garbage collection (GC) can greatly improve Jetty
+  performance. Specifically, you can avoid pauses while the system performs
+  full garbage collections. Optimal tuning of the GC depends on the behaviour
+  of the application and requires detailed analysis, however there are general
+  recommendations.</p><p>See official <a class="link" href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/" target="_top">Java
+  8 Garbage Collection documentation</a> for further assistance.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="tuning-examples"></a>Tuning Examples</h3></div></div></div><p>These options are general to the Oracle JVM, and work in a Java 8
+    installation. They provide good information about how your JVM is running;
+    based on that initial information, you can then tune more finely.</p><p>The most important thing you can do for yourself when worrying about
+    GC is to capture the GC activity so that you can analyze what is happening
+    and how often it happens.</p><div class="screenexample"><pre class="screen">-verbose:gc 
+-Xloggc:/path/to/myjettybase/logs/gc.log 
+-XX:+PrintGCDateStamps 
+-XX:+PrintGCTimeStamps 
+-XX:+PrintGCDetails 
+-XX:+PrintTenuringDistribution 
+-XX:+PrintCommandLineFlags 
+-XX:+PrintReferenceGC 
+-XX:+PrintAdaptiveSizePolicy </pre></div><p>There are not many recommended options for GC that can apply to
+    nearly all users.</p><p>However, the most obvious one is to disable explicit GC (this is
+    performed regularly by RMI and can introduce an abnormal amount of GC
+    pauses)</p><div class="screenexample"><pre class="screen">-XX:+DisableExplicitGC    </pre></div><p>Before you apply any other GC tuning options, monitor your GC logs
+    to see if <a class="link" href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/cms.html" target="_top">tuning
+    the CMS</a> makes sense for your environment.</p><p>A common setup for those just starting out with GC tuning is
+    included below for reference reasons.</p><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="icon-exclamation-sign"></i> Caution</h3><p>This example configuration below could have a negative effect on
+      your application performance, so continued monitoring of your GC log
+      before and after is highly recommended to know if the configuration was
+      beneficial or not.</p></div><div class="screenexample"><pre class="screen">-XX:MaxGCPauseMillis=250 
+-XX:+UseConcMarkSweepGC
+-XX:ParallelCMSThreads=2
+-XX:+CMSClassUnloadingEnabled
+-XX:+UseCMSCompactAtFullCollection
 -XX:CMSInitiatingOccupancyFraction=80
-
-    </pre></div></div></div></div><script type="text/javascript">
+</pre></div></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="runner.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="administration.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="high-load.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;18.&nbsp;Jetty Runner&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;High Load</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-01-26T09:11:08-07:00)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-01-26)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
