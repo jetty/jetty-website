@@ -15,11 +15,11 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-form-size"></a>Limiting Form Content</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-form-size.html#d0e5968">Configuring Form Limits for a Webapp</a></span></dt><dt><span class="section"><a href="configuring-form-size.html#d0e5981">Configuring Form Limits for the Server</a></span></dt></dl></div><p>Form content sent to the server is processed by Jetty into a map of parameters to be used by the web
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-form-size"></a>Limiting Form Content</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-form-size.html#d0e5967">Configuring Form Limits for a Webapp</a></span></dt><dt><span class="section"><a href="configuring-form-size.html#d0e5980">Configuring Form Limits for the Server</a></span></dt></dl></div><p>Form content sent to the server is processed by Jetty into a map of parameters to be used by the web
   application. This can be vulnerable to denial of service (DOS) attacks since significant memory and CPU can be
   consumed if a malicious clients sends very large form content or large number of form keys. Thus Jetty limits the
   amount of data and keys that can be in a form posted to Jetty.</p><p>The default maximum size Jetty permits is 200000 bytes and 1000 keys. You can change this default for a
-  particular webapp or for all webapps on a particular Server instance.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5968"></a>Configuring Form Limits for a Webapp</h3></div></div></div><p>To configure the form limits for a sinlge webapplication, the context handler (or webappContext) instance
+  particular webapp or for all webapps on a particular Server instance.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5967"></a>Configuring Form Limits for a Webapp</h3></div></div></div><p>To configure the form limits for a sinlge webapplication, the context handler (or webappContext) instance
     must be configured using the following methods:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
           <![CDATA[
 ContextHandler.setMaxFormContentSize(int maxSizeInBytes);
@@ -36,7 +36,7 @@ ContextHandler.setMaxFormKeys(int formKeys);
   <Set name="maxFormKeys">200</Set>
 </Configure>    
       ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5981"></a>Configuring Form Limits for the Server</h3></div></div></div><p>If a context does not have specific form limits configured, then the server attributes are inspected to see
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5980"></a>Configuring Form Limits for the Server</h3></div></div></div><p>If a context does not have specific form limits configured, then the server attributes are inspected to see
     if a server wide limit has been set on the size or keys. The following XML shows how these attributes can be set in
     jetty.xml:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[

@@ -15,7 +15,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-gcloud-datastore"></a>Session Clustering with Google Cloud Datastore</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-gcloud-datastore.html#d0e10117">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-gcloud-datastore.html#d0e10134">The gcloud-sessions Module</a></span></dt></dl></div><p>Jetty can support session clustering by persisting sessions to <a class="link" href="https://cloud.google.com/datastore/docs/concepts/overview" target="_top">Google
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-gcloud-datastore"></a>Session Clustering with Google Cloud Datastore</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-gcloud-datastore.html#d0e10116">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-gcloud-datastore.html#d0e10133">The gcloud-sessions Module</a></span></dt></dl></div><p>Jetty can support session clustering by persisting sessions to <a class="link" href="https://cloud.google.com/datastore/docs/concepts/overview" target="_top">Google
   Cloud Datastore</a>. Each Jetty instance locally caches sessions for
   which it has received requests, writing any changes to the session through
   to the Datastore as the request exits the server. Sessions must obey the
@@ -25,14 +25,14 @@
   items, such as source IP address or characteristics of the session ID or a
   load-balancer specific mechanism. For those load balancers that examine the
   session ID, the Jetty persistent session mechanism appends a node ID to the
-  session ID, which can be used for routing.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10117"></a>Configuration</h3></div></div></div><p>There are two components to session management in Jetty: a session
+  session ID, which can be used for routing.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10116"></a>Configuration</h3></div></div></div><p>There are two components to session management in Jetty: a session
     ID manager and a session manager.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The session ID manager ensures that session IDs are unique
         across all webapps hosted on a Jetty instance, and thus there can only
         be one session ID manager per Jetty instance.</p></li><li class="listitem"><p>The session manager handles the session lifecycle
         (create/update/invalidate/expire) on behalf of a web application, so
         there is one session manager per web application instance.</p></li></ul></div><p>These managers also cooperate and collaborate with the
     <code class="code">org.eclipse.jetty.server.session.SessionHandler</code> to enable
-    cross-context dispatch.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10134"></a>The gcloud-sessions Module</h3></div></div></div><p>When using the jetty distribution, to enable Cloud Datastore session
+    cross-context dispatch.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e10133"></a>The gcloud-sessions Module</h3></div></div></div><p>When using the jetty distribution, to enable Cloud Datastore session
     persistence, you will first need to enable the
     <code class="code">gcloud-sessions</code> <a class="link" href="startup-modules.html" title="Managing Startup Modules">module</a>
     for your <a class="link" href="quickstart-running-jetty.html#creating-jetty-base" title="Creating a new Jetty Base">base</a> using the
@@ -45,7 +45,7 @@
     do that, you can use <code class="code">--skip-file-validation=glcoud-sessions</code>
     argument to start.jar on the command line, or place that line inside
     <code class="code">${jetty.base}/start.ini</code> to ensure it is used for every
-    start.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10162"></a>Configuring the GCloudSessionIdManager</h4></div></div></div><p>The
+    start.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10161"></a>Configuring the GCloudSessionIdManager</h4></div></div></div><p>The
       gcloud-sessions module will have installed file called
       <code class="code">${jetty.home}/etc/jetty-gcloud-sessions.xml</code>. This file
       configures an instance of the GCloudSessionIdManager that will be shared
@@ -95,11 +95,11 @@
             identify the node. Don't forget to change the value of this
             property on <span class="bold"><strong>each</strong></span> node on which
             you enable gcloud datastore session clustering.</p></dd></dl></div><p>Which other properties you need to set depends on the execution
-      environment:</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e10195"></a>Running Within Google Infrastructure</h5></div></div></div><p>When you upload your webapp to run in Compute Engine, you do not
+      environment:</p><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e10194"></a>Running Within Google Infrastructure</h5></div></div></div><p>When you upload your webapp to run in Compute Engine, you do not
         need to set any other properties for jetty. If you follow the
         instructions in the <a class="link" href="https://cloud.google.com/datastore/docs/activate" target="_top">Cloud
         Datastore documentation</a>, all authorizations etc will be
-        provided by the runtime environment.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e10203"></a>Running Externally to Google Infrastructure</h5></div></div></div><p>When your app is executing outside of Google, you can either
+        provided by the runtime environment.</p></div><div class="section"><div class="titlepage"><div><div><h5 class="title"><a name="d0e10202"></a>Running Externally to Google Infrastructure</h5></div></div></div><p>When your app is executing outside of Google, you can either
         contact a remote Cloud Datastore instance, or a <a class="link" href="https://cloud.google.com/datastore/docs/tools/devserver" target="_top">local
         test dev server</a> provided by the sdk. The choice determines
         which properties you need to set:</p><div class="variablelist"><dl><dt><span class="term">Contacting an sdk dev server for testing:</span></dt><dd><p>In this case, you need to set up either some
@@ -112,7 +112,7 @@
               jetty properties in the ini file:</p><div class="variablelist"><dl><dt><span class="term">jetty.gcloudSession.projectId</span></dt><dd><p>This is the name of your project.</p></dd><dt><span class="term">jetty.gcloudSession.p12File</span></dt><dd><p>This is the location of the p12 key file that is
                     associated with your project.</p></dd><dt><span class="term">jetty.gcloudSession.serviceAccount</span></dt><dd><p>This is the email address that defines your service
                     account for the Cloud Datastore.</p></dd><dt><span class="term">jetty.gcloudSession.password</span></dt><dd><p>This is the password associated with the p12 key
-                    file.</p></dd></dl></div></dd></dl></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10272"></a>Configuring the GCloudSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one GCloudSessionManager
+                    file.</p></dd></dl></div></dd></dl></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10271"></a>Configuring the GCloudSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one GCloudSessionManager
       per context (ie webapp). It will need to reference the single
       GCloudSessionIdManager from which it derives the Cloud Datastore
       configuration information.</p><p>The way you configure a GCloudSessionManager depends on whether
