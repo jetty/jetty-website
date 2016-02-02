@@ -15,13 +15,13 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-security-authentication"></a>Authentication</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-security-authentication.html#d0e5435">Configuring an Authentication mechanism</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#security-realms">Security Realms</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#d0e5519">Scoping Security Realms</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#configuring-login-service">Configuring a LoginService</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#d0e5763">Authorization</a></span></dt></dl></div><p>There are two aspects to securing a web application(or context) within
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-security-authentication"></a>Authentication</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="configuring-security-authentication.html#d0e5606">Configuring an Authentication mechanism</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#security-realms">Security Realms</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#d0e5690">Scoping Security Realms</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#configuring-login-service">Configuring a LoginService</a></span></dt><dt><span class="section"><a href="configuring-security-authentication.html#d0e5934">Authorization</a></span></dt></dl></div><p>There are two aspects to securing a web application(or context) within
   the Jetty server:</p><div class="variablelist"><dl><dt><span class="term">Authentication</span></dt><dd><p>The web application can be configured with a mechanism to
         determine the identity of the user. This is configured by a mix of
         standard declarations and jetty specific mechanisms and is covered in
         this section.</p></dd><dt><span class="term">Authorization</span></dt><dd><p>Once the identify of the user is known (or not known), the web
         application can be configured via standard descriptors with security
-        constraints that declare what resources that user may access.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5435"></a>Configuring an Authentication mechanism</h3></div></div></div><p>The jetty server supports several standard authentication
+        constraints that declare what resources that user may access.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5606"></a>Configuring an Authentication mechanism</h3></div></div></div><p>The jetty server supports several standard authentication
     mechanisms: <a class="link" href="http://en.wikipedia.org/wiki/Basic_access_authentication" target="_top">BASIC</a>;
     <a class="link" href="http://en.wikipedia.org/wiki/Digest_authentication" target="_top">DIGEST</a>;
     <a class="link" href="http://en.wikipedia.org/wiki/Form-based_authentication" target="_top">FORM</a>;
@@ -107,12 +107,12 @@
     allow you to partition your security information webapp by webapp.</p><p>When a request to a web application requires authentication or
     authorization, Jetty will use the &lt;realm-name&gt; sub-element inside
     &lt;login-config&gt; element in the web.xml file to perform an
-    <span class="emphasis"><em>exact match</em></span> to a LoginService.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5519"></a>Scoping Security Realms</h3></div></div></div><p>A LoginService has a unique name, and is composed of a set of users.
+    <span class="emphasis"><em>exact match</em></span> to a LoginService.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5690"></a>Scoping Security Realms</h3></div></div></div><p>A LoginService has a unique name, and is composed of a set of users.
     Each user has authentication information (for example, a password) and a
     set of roles associated with him/herself. You can configure one or many
     different realms depending on your needs.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>Configure a single LoginService to share common security
         information across all of your web applications.</p></li><li class="listitem"><p>Configure distinct LoginServices to partition your security
-        information webapp by webapp.</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5531"></a>Globally Scoped</h4></div></div></div><p>A LoginService is available to all web applications on a Server
+        information webapp by webapp.</p></li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5702"></a>Globally Scoped</h4></div></div></div><p>A LoginService is available to all web applications on a Server
       instance if you add it as a bean to the Server. Such a definition would
       go into an xml file in your ${jetty.base}/etc directory, eg
       ${jetty.base}/etc/my-realm.xml and you would add this xml file to the
@@ -158,7 +158,7 @@
  </Get>
  
         ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5553"></a>Per-Webapp Scoped</h4></div></div></div><p>Alternatively, you can define a LoginService for just a single web
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e5724"></a>Per-Webapp Scoped</h4></div></div></div><p>Alternatively, you can define a LoginService for just a single web
       application. Here's how to define the same HashLoginService, but inside
       a <a class="link" href="configuring-specific-webapp-deployment.html#deployable-descriptor-file" title="Jetty Deployable Descriptor XML File">context xml
       file</a>:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
@@ -301,7 +301,7 @@ roles
 </New>
 
         ]]>
-        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5763"></a>Authorization</h3></div></div></div><p>As far as the <a class="link" href="http://jcp.org/aboutJava/communityprocess/final/jsr340/" target="_top">Servlet
+        </script></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e5934"></a>Authorization</h3></div></div></div><p>As far as the <a class="link" href="http://jcp.org/aboutJava/communityprocess/final/jsr340/" target="_top">Servlet
     Specification</a> is concerned, authorization is based on roles. As we
     have seen, a LoginService associates a user with a set of roles. When a
     user requests a resource that is access protected, the LoginService will
