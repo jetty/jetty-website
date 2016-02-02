@@ -25,9 +25,9 @@
         <table> 
           <tr>
             <td><p>Jetty provides a <a href="http://en.wikipedia.org/wiki/Web_server">Web server</a> and <a
-  href="http://java.sun.com/javaee/5/docs/api/javax/servlet/package-summary.html">javax.servlet</a> container, plus support
+  href="http://docs.oracle.com/javaee/7/api/index.html?javax/servlet/package-summary.html">javax.servlet</a> container, plus support
   for 
-  <a href="http://en.wikipedia.org/wiki/SPDY">SPDY</a>, 
+  <a href="https://www.eclipse.org/jetty/documentation/current/http2.html">HTTP/2</a>, 
   <a href="http://en.wikipedia.org/wiki/WebSocket">WebSocket</a>, 
   <a href="http://en.wikipedia.org/wiki/OSGi">OSGi</a>, 
   <a href="http://en.wikipedia.org/wiki/JMX">JMX</a>, 
