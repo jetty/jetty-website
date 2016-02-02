@@ -90,6 +90,13 @@
       <h2>Sponsors</h2>
       <br/> 
       <ul>
+<li>
+          <p>
+          <b>Webtide</b><br/>
+	In 2015 the development of Jetty was once more taken over by Webtide when the developers split away from Intalio, taking over full ownership of the company behind the open source project.  Webtide now fully funds the ongoing development of the Jetty project through services and support on the open source version of the Jetty project. 
+          </p>
+    </li>
+
       <li>
 	  <p>
 	  <b>Intalio</b><br/>
