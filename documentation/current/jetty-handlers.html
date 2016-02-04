@@ -54,8 +54,8 @@
       and servlets, it is not possible to pass the implementation directly.
       The following mantra retrieves the core implementation objects from
       under any wrappers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
-          <![CDATA[Request base_request = request instanceof Request ? (Request)request : HttpConnection.getCurrentConnection().getRequest();
-Response base_response = response instanceof Response ? (Response)response : HttpConnection.getCurrentConnection().getResponse();]]>
+          <![CDATA[Request base_request = request instanceof Request ? (Request)request : HttpConnection.getCurrentConnection().getHttpChannel().getRequest();
+Response base_response = response instanceof Response ? (Response)response : HttpConnection.getCurrentConnection().getHttpChannel().getResponse();]]>
         </script></div><p>Notice that if the handler passes the request on to another
       handler, it should use the request/response objects passed in, and not
       the base objects. This is to preserve any wrapping done by up stream
@@ -76,7 +76,7 @@ Response base_response = response instanceof Response ? (Response)response : Htt
         </script></div><p>It is also very important that a handler indicate that it has
       completed handling the request and that the request should not be passed
       to other handlers:</p><div class="informalexample"><script type="syntaxhighlighter" class="brush: java;toolbar: false">
-          <![CDATA[ Request base_request = (request instanceof Request) ? (Request)request:HttpConnection.getCurrentConnection().getRequest();
+          <![CDATA[ Request base_request = (request instanceof Request) ? (Request)request:HttpConnection.getCurrentConnection().getHttpChannel().getRequest();
  base_request.setHandled(true);              
 ]]>
         </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="filtering-request-or-response"></a>Filtering the Request and/or Response</h4></div></div></div><p>Once the base request or response object is obtained, you can
@@ -115,7 +115,7 @@ Response base_response = response instanceof Response ? (Response)response : Htt
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ant-and-jetty.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="development.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="advanced-embedding.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;22.&nbsp;Using Ant with Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Chapter&nbsp;24.&nbsp;Embedding</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-03)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-04)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
