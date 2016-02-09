@@ -21,11 +21,11 @@
           Xref: <a class="link" href="http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/servlets/QoSFilter.html" target="_top">http://download.eclipse.org/jetty/stable-9/xref/org/eclipse/jetty/servlets/QoSFilter.html</a>
         </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="qos-filter-usage"></a>Usage</h3></div></div></div><p>
       Jetty supports Continuations, which allow non-blocking handling of HTTP requests, so that threads can be allocated in a managed way to provide application specific Quality of Service (QoS). The QoSFilter is a utility servlet filter that implements some QoS features.
-    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="qos-understanding"></a>Understanding the Problem</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13649"></a>Waiting for Resources</h4></div></div></div><p>
+    </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="qos-understanding"></a>Understanding the Problem</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13664"></a>Waiting for Resources</h4></div></div></div><p>
         Web applications frequently use JDBC Connection pools to limit the simultaneous load on the database. This protects the database from peak loads, but makes the web application vulnerable to thread starvation. Consider a thread pool with 20 connections, being used by a web application that that typically receives 200 requests per second and each request holds a JDBC connection for 50ms. Such a pool can service on average 200*20*1000/50 = 400 requests per second.
       </p><p>
         However, if the request rate rises above 400 per second, or if the database slows down (due to a large query) or becomes momentarily unavailable, the thread pool can very quickly accumulate many waiting requests. If, for example, the website is slashdotted or experiences some other temporary burst of traffic and the request rate rises from 400 to 500 requests per second, then 100 requests per second join those waiting for a JDBC connection. Typically, a web server's thread pool contains only a few hundred threads, so a burst or slow DB need only persist for a few seconds to consume the entire web server's thread pool. This is called thread starvation. The key issue with thread starvation is that it effects the entire web application, and potentially the entire web server. Even if the requests using the database are only a small proportion of the total requests on the web server, all requests are blocked because all the available threads are waiting on the JDBC connection pool. This represents non graceful degradation under load and provides a very poor quality of service.
-      </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13656"></a>Prioritizing Resources</h4></div></div></div><p>
+      </p></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13671"></a>Prioritizing Resources</h4></div></div></div><p>
         Consider a web application that is under extreme load. This load might be due to a popularity spike (slashdot), usage burst (Christmas or close of business), or even a denial of service attack. During such periods of load, it is often desirable not to treat all requests as equals, and to give priority to high value customers or administrative users.
       </p><p>
         The typical behaviour of a web server under extreme load is to use all its threads to service requests and to build up a backlog of unserviced requests. If the backlog grows deep enough, then requests start to timeout and users experience failures as well as delays.
@@ -33,13 +33,13 @@
         Ideally, the web application should be able to examine the requests in the backlog, and give priority to high value customers and administrative users. But with the standard blocking servlet API, it is not possible to examine a request without allocating a thread to that request for the duration of its handling. There is no way to delay the handling of low priority requests, so if the resources are to be reallocated, then the low priority requests must all be failed.
       </p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="qos-applying"></a>Applying the QoSFilter</h3></div></div></div><p>
       The Quality of Service Filter (QoSFilter) uses Continuations to avoid thread starvation, prioritize requests and give graceful degradation under load, to provide a high quality of service. When you apply the filter to specific URLs within a web application, it limits the number of active requests being handled for those URLs. Any requests in excess of the limit are suspended. When a request completes handling the limited URL, one of the waiting requests resumes and can be handled. You can assign priorities to each suspended request, so that high priority requests resume before lower prority requests.
-    </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13670"></a>Required JARs</h4></div></div></div><p>
+    </p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13685"></a>Required JARs</h4></div></div></div><p>
         To use the QoS Filter, these JAR files must be available in WEB-INF/lib:
       </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
             $JETTY_HOME/lib/ext/jetty-util.jar
           </p></li><li class="listitem"><p>
             $JETTY_HOME/lib/ext/jetty-servlets.jar&#8211;contains QoSFilter
-          </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13682"></a>Sample Configuration</h4></div></div></div><p>
+          </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13697"></a>Sample Configuration</h4></div></div></div><p>
         Place the configuration in a webapp's web.xml or jetty-web.xml The default configuration processes ten requests at a time, servicing more important requests first, and queuing up the rest. This example processes fifty requests at a time:
       </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -68,7 +68,7 @@
               length of time, in milliseconds, that the request will be suspended if it is not accepted immediately. If not set, the container's default suspend period applies. Default is -1 ms.
             </p></dd><dt><span class="term">managedAttr</span></dt><dd><p>
               If set to true, then this servlet is set as a ServletContext attribute with the filter name as the attribute name. This allows a context external mechanism (for example, JMX via ContextHandler.MANAGED_ATTRIBUTES) to manage the configuration of the filter.
-            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13728"></a>Mapping to URLs</h4></div></div></div><p>
+            </p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13743"></a>Mapping to URLs</h4></div></div></div><p>
         You can use the <code class="code">&lt;filter-mapping&gt;</code> syntax to map the QoSFilter to a servlet, either by using the servlet name, or by using a URL pattern. In this example, a URL pattern applies the QoSFilter to every request within the web application context:
       </p><div class="informalexample"><script type="syntaxhighlighter" class="brush: xml;toolbar: false">
           <![CDATA[
@@ -79,7 +79,7 @@
  </filter-mapping>
  
         ]]>
-        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13739"></a>Setting the Request Priority</h4></div></div></div><p>
+        </script></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e13754"></a>Setting the Request Priority</h4></div></div></div><p>
         Requests with higher values have a higher priority. The default request priorities assigned by the QoSFilter are:
       </p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>
             2 -- For any authenticated request
@@ -109,7 +109,7 @@ public class ParsePriorityQoSFilter extends QoSFilter
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="cgi-servlet.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-extras.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="dos-filter.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">CGI Servlet&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Denial of Service Filter</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-08)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-09)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
