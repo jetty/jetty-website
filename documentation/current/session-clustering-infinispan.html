@@ -15,7 +15,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-infinispan"></a>Session Clustering with Infinispan</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-infinispan.html#d0e9945">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-infinispan.html#d0e9962">The infinispan Module</a></span></dt></dl></div><p>Jetty can support session clustering by persisting sessions to <a class="link" href="http://www.infinispan.org" target="_top">Infinispan</a>. Each Jetty instance
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="session-clustering-infinispan"></a>Session Clustering with Infinispan</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="session-clustering-infinispan.html#d0e9954">Configuration</a></span></dt><dt><span class="section"><a href="session-clustering-infinispan.html#d0e9971">The infinispan Module</a></span></dt></dl></div><p>Jetty can support session clustering by persisting sessions to <a class="link" href="http://www.infinispan.org" target="_top">Infinispan</a>. Each Jetty instance
   locally caches sessions for which it has received requests, writing any
   changes to the session through to Infinispan as the request exits the
   server. Sessions must obey the Serialization contract, and servlets must
@@ -25,14 +25,14 @@
   items, such as source IP address or characteristics of the session ID or a
   load-balancer specific mechanism. For those load balancers that examine the
   session ID, the Jetty persistent session mechanism appends a node ID to the
-  session ID, which can be used for routing.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9945"></a>Configuration</h3></div></div></div><p>There are two components to session management in Jetty: a session
+  session ID, which can be used for routing.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9954"></a>Configuration</h3></div></div></div><p>There are two components to session management in Jetty: a session
     ID manager and a session manager.</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem"><p>The session ID manager ensures that session IDs are unique
         across all webapps hosted on a Jetty instance, and thus there can only
         be one session ID manager per Jetty instance.</p></li><li class="listitem"><p>The session manager handles the session lifecycle
         (create/update/invalidate/expire) on behalf of a web application, so
         there is one session manager per web application instance.</p></li></ul></div><p>These managers also cooperate and collaborate with the
     <code class="code">org.eclipse.jetty.server.session.SessionHandler</code> to enable
-    cross-context dispatch.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9962"></a>The infinispan Module</h3></div></div></div><p>When using the jetty distribution, to enable Infinispan session
+    cross-context dispatch.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="d0e9971"></a>The infinispan Module</h3></div></div></div><p>When using the jetty distribution, to enable Infinispan session
     persistence, you will first need to enable the <code class="code">infinispan</code>
     <a class="link" href="startup-modules.html" title="Managing Startup Modules">module</a> for your <a class="link" href="quickstart-running-jetty.html#creating-jetty-base" title="Creating a new Jetty Base">base</a> using the --add-to-start or
     --add-to-startd argument to the <a class="link" href="startup.html#startup-overview" title="Startup Overview">start.jar</a>.</p><p>As part of the module installation, the necessary infinispan jars
@@ -56,7 +56,7 @@ jetty.infinispanSession.workerName=node1
             identify the node. Don't forget to change the value of this
             property on <span class="bold"><strong>each</strong></span> node on which
             you enable infinispan session clustering.</p></dd></dl></div><p>These properties are applied to the
-    InfinispanSessionIdManager described below.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10013"></a>Configuring the InfinispanSessionIdManager</h4></div></div></div><p>The
+    InfinispanSessionIdManager described below.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10022"></a>Configuring the InfinispanSessionIdManager</h4></div></div></div><p>The
       infinispan module will have installed file called
       ${jetty.home}/etc/jetty-infinispan.xml. This file configures an instance
       of the InfinispanSessionIdManager that will be shared across all webapps
@@ -115,7 +115,7 @@ jetty.infinispanSession.workerName=node1
             in-use by a session is never accidentally removed. However, should
             you wish to, you can configure this to any integral value to
             effectively increase the <a class="link" href="http://infinispan.org/docs/7.1.x/user_guide/user_guide.html#_expiration" target="_top">idle
-            expiry</a> timeout.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10048"></a>Configuring the InfinispanSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one
+            expiry</a> timeout.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10057"></a>Configuring the InfinispanSessionManager</h4></div></div></div><p>As mentioned elsewhere, there should be one
       InfinispanSessionManager per context (ie webapp). It will need to
       reference the single InfinispanSessionIdManager configured previously
       for the Server.</p><p>The way you configure a InfinispanSessionManager depends on
@@ -201,7 +201,7 @@ jetty.infinispanSession.workerName=node1
             minutes.</p></dd><dt><span class="term">staleIntervalSec</span></dt><dd><p>The length of time a session can be in memory without being
             checked against the cluster. A value of 0 indicates that the
             session is never checked against the cluster - the current node is
-            considered to be the master for the session.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10089"></a>Using HotRod</h4></div></div></div><p>If you're using the hotrod client - where serialization will be
+            considered to be the master for the session.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="d0e10098"></a>Using HotRod</h4></div></div></div><p>If you're using the hotrod client - where serialization will be
       required - you will need to ensure that the hotrod marshalling software
       works with jetty classloading. To do this, firstly ensure that you have
       included the lines containing the <code class="code">prependServerClass</code> to
@@ -214,7 +214,7 @@ jetty.infinispanSession.workerName=node1
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="session-clustering-mongodb.html"><i class="icon-chevron-left"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="session-management.html"><i class="icon-chevron-up"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="session-clustering-gcloud-datastore.html">Next <i class="icon-chevron-right"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Session Clustering with MongoDB&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="icon-home"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Session Clustering with Google Cloud Datastore</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/jetty-project/jetty-documentation">Contribute to this documentation at
-                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-15)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="icon-github"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-02-16)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
