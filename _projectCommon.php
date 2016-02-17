@@ -43,11 +43,9 @@
     $Nav->addNavSeparator("Project Management", null);
     $Nav->addCustomNav("Community", "/jetty/documentation/current/advanced-contributing.html#community", "_self", 2);
     $Nav->addCustomNav("Contributing", "/jetty/documentation/current/contributing-patches.html", "_self", 2);
-    # $Nav->addCustomNav("Open a Bug", "https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Jetty", "_self", 2);
     $Nav->addCustomNav("Project Plan", "http://www.eclipse.org/projects/project-plan.php?projectid=rt.jetty", "_self", 2);
-    # $Nav->addCustomNav("Bugs", "https://bugs.eclipse.org/bugs/buglist.cgi?query_format=advanced&amp;short_desc_type=allwordssubstr&amp;short_desc=""&amp;product=Jetty&amp;long_desc_type=allwordssubstr&amp;long_desc=&amp;bug_file_loc_type=allwordssubstr&amp;bug_file_loc=&amp;status_whiteboard_type=allwordssubstr&amp;status_whiteboard=&amp;keywords_type=allwords&amp;keywords=&amp;bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED", "_self", 2);
     $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", 2);
-    $Nav->addCustomNav("Source", "http://git.eclipse.org/c/jetty", "_self", 2);
+    $Nav->addCustomNav("Source", "http://github.com/eclipse/jetty.project", "_self", 2);
 
     $Nav->addNavSeparator("Professional Services", null);
     $Nav->addCustomNav("Training and Consulting", "http://marketplace.eclipse.org/search/site/jetty?f[0]=im_taxonomy_vocabulary_3%3A34", "_self", 2);
