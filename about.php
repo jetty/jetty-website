@@ -22,7 +22,7 @@
     <div id="midcolumn">
 	  <p><img alt="Jetty Logo" src="/jetty/images/jetty-logo-80x22.png"/></p>
 	  
-	  <p>The Jetty projects has was started in 1995 and since then has been associated with many names and brands:</p>
+	  <p>The Jetty projects was started in 1995 and since then has been associated with many names and brands:</p>
 	  
       <h2>Distributions</h2>
       <br/>
