@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Quickstart Webapps</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;4.&nbsp;Deploying to Jetty"><link rel="prev" href="deployment-architecture.html" title="Deployment Architecture"><link rel="next" href="overlay-deployer.html" title="Overlay WebApp Deployer"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/darkula.css"><script src="js/highlight.pack.js"></script><script>
+   <title>Quickstart Webapps</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;4.&nbsp;Deploying to Jetty"><link rel="prev" href="deployment-architecture.html" title="Deployment Architecture"><link rel="next" href="overlay-deployer.html" title="Overlay WebApp Deployer"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
       hljs.initHighlightingOnLoad();
     </script><link type="text/css" rel="stylesheet" href="css/font-awesome/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.3.9-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
@@ -35,18 +35,20 @@ fast way. Tests have shown that webapps that took many seconds to scan
 and deploy can now be deployed in a few hundred milliseconds.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_setting_up_quickstart"></a>Setting up Quickstart</h3></div></div></div><p>To use quickstart the module has to be available to your jetty instance.
 In a maven project this is done just by adding a dependency on the
 artifact ID jetty-quickstart or with a standard jetty distribution you
-can run the command:</p><pre class="literallayout">$ java -jar $JETTY_HOME/start.jar --add-to-startd=quickstart</pre><p>Also the webapps you deploy need to be instances of
+can run the command:</p><div class="screenexample"><pre class="screen">$ java -jar $JETTY_HOME/start.jar --add-to-startd=quickstart$ java -jar $JETTY_HOME/start.jar --add-to-startd=quickstart</pre></div><p>Also the webapps you deploy need to be instances of
 <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/quickstart/QuickStartWebApp.html" target="_top"><code class="literal">org.eclipse.jetty.quickstart.QuickStartWebApp</code></a>
 rather than the normal <code class="literal">org.eclipse.jetty.webapp.WebAppContext</code>. If your
 web application already has a <code class="literal">webapps/myapp.xml</code> file, then you can
 simply change the class in the Configure element, otherwise you can
-create an <code class="literal">webapps/myapp.xml</code> file as follows:</p><pre class="literallayout">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+create an <code class="literal">webapps/myapp.xml</code> file as follows:</p><div class="blockquote"><table border="0" width="100%" cellspacing="0" cellpadding="0" class="blockquote" summary="Block quote"><tr><td width="10%" valign="top">&nbsp;</td><td width="80%" valign="top"><p>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
 &lt;Configure class="org.eclipse.jetty.quickstart.QuickStartWebApp"&gt;
   &lt;Set name="war"&gt;&lt;Property name="jetty.webapps" default="."/&gt;/benchmark.war&lt;/Set&gt;
   &lt;Set name="contextPath"&gt;/benchmark&lt;/Set&gt;
   &lt;Set name="autoPreconfigure"&gt;true&lt;/Set&gt;
-&lt;/Configure&gt;</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_preconfiguring_the_web_application"></a>Preconfiguring the web application</h3></div></div></div><p>If the QuickStateWebApp method setAutoPreconfigure(true) is called (see
+&lt;/Configure&gt;</p></td><td width="10%" valign="top">&nbsp;</td></tr><tr><td width="10%" valign="top">&nbsp;</td><td colspan="2" align="right" valign="top">--<span class="attribution">
+xml
+</span></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_preconfiguring_the_web_application"></a>Preconfiguring the web application</h3></div></div></div><p>If the QuickStateWebApp method setAutoPreconfigure(true) is called (see
 example in myapp.xml above), then the first time the webapp is deployed
 a <code class="literal">WEB-INF/quickstart-web.xml</code> file will be generated that contains the
 effective <code class="literal">web.xml</code> for all the discovered configuration. On subsequent
@@ -54,7 +56,7 @@ deployments, all the discovery steps are skipped and the
 <code class="literal">quickstart-web.xml</code> is used directly to configure the web Application.</p><p>It is also possible to preconfigure a war file manually by running the
 class
 <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/quickstart/PreconfigureQuickStartWar.html" target="_top">org.eclipse.jetty.quickstart.PreconfigureQuickStartWar</a>
-simply with the jetty-all-uber (aggregate) jar:</p><pre class="literallayout">$ java -cp jetty-all-@project.version@-uber.jar org.eclipse.jetty.quickstart.PreconfigureQuickStartWar myapp.war</pre><p>This will create the <code class="literal">quickstart-web.xml</code> file before the first
+simply with the jetty-all-uber (aggregate) jar:</p><div class="screenexample"><pre class="screen">$ java -cp jetty-all-@project.version@-uber.jar org.eclipse.jetty.quickstart.PreconfigureQuickStartWar myapp.war$ java -cp jetty-all-@project.version@-uber.jar org.eclipse.jetty.quickstart.PreconfigureQuickStartWar myapp.war</pre></div><p>This will create the <code class="literal">quickstart-web.xml</code> file before the first
 deployment. Note that this can also be a good debugging tool for
 discovered configuration and if run with debug turned on the origin of
 every element is included in the <code class="literal">quickstart-web.xml</code> file. Run the
@@ -63,16 +65,19 @@ time of a web application. Since jetty 9.2.0, the apache Jasper JSP
 implementation has been used and has been augmented to allow the TLD
 scan to be skipped. This can be done by adding a context-param to the
 <code class="literal">web.xml</code> file (this is done automatically by the Jetty Maven JSPC
-plugin):</p><pre class="literallayout">&lt;context-param&gt;
+plugin):</p><div class="blockquote"><table border="0" width="100%" cellspacing="0" cellpadding="0" class="blockquote" summary="Block quote"><tr><td width="10%" valign="top">&nbsp;</td><td width="80%" valign="top"><p>&lt;context-param&gt;
   &lt;param-name&gt;org.eclipse.jetty.jsp.precompiled&lt;/param-name&gt;
   &lt;param-value&gt;true&lt;/param-value&gt;
-&lt;/context-param&gt;</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_bypassing_start_jar"></a>Bypassing start.jar</h3></div></div></div><p>The jetty start.jar mechanism is a very powerful and flexible mechanism
+&lt;/context-param&gt;</p></td><td width="10%" valign="top">&nbsp;</td></tr><tr><td width="10%" valign="top">&nbsp;</td><td colspan="2" align="right" valign="top">--<span class="attribution">
+xml
+</span></td></tr></table></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_bypassing_start_jar"></a>Bypassing start.jar</h3></div></div></div><p>The jetty start.jar mechanism is a very powerful and flexible mechanism
 for constructing a classpath and executing a configuration encoded in
 jetty XML format. However, this mechanism does take some time to build
 the classpath. The start.jar mechanism can be bypassed by using the
 <code class="literal">&#8211;dry-run</code> option to generate and reuse a complete command line to start
-jetty at a later time:</p><pre class="literallayout">$ RUN=$(java -jar $JETTY_HOME/start.jar --dry-run)
-$ eval $RUN</pre><p>Note that <code class="literal">--dry-run</code> may create a properties file in the temp directory
+jetty at a later time:</p><div class="screenexample"><pre class="screen">$ RUN=$(java -jar $JETTY_HOME/start.jar --dry-run)
+$ eval $RUN$ RUN=$(java -jar $JETTY_HOME/start.jar --dry-run)
+$ eval $RUN</pre></div><p>Note that <code class="literal">--dry-run</code> may create a properties file in the temp directory
 and include it on the generated command line. If so, then a copy of the
 temporary properties file should be taken and the command line updated
 with it&#8217;s new persistent location.</p></div></div><script type="text/javascript">

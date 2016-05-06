@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Overlay WebApp Deployer</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;4.&nbsp;Deploying to Jetty"><link rel="prev" href="quickstart-webapp.html" title="Quickstart Webapps"><link rel="next" href="configuring-contexts.html" title="Chapter&nbsp;5.&nbsp;Configuring Contexts"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/darkula.css"><script src="js/highlight.pack.js"></script><script>
+   <title>Overlay WebApp Deployer</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-deployment.html" title="Chapter&nbsp;4.&nbsp;Deploying to Jetty"><link rel="prev" href="quickstart-webapp.html" title="Quickstart Webapps"><link rel="next" href="configuring-contexts.html" title="Chapter&nbsp;5.&nbsp;Configuring Contexts"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
       hljs.initHighlightingOnLoad();
     </script><link type="text/css" rel="stylesheet" href="css/font-awesome/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.3.9-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
@@ -50,10 +50,13 @@ web application, as it uses the usual suspects of libs: spring,
 hibernate, dom4j, commons-*, wicket, etc. The files for this
 demonstration are available in overlays-demo.tar.gz. You can expand it
 on top of the jetty distribution; this tutorial expands it to /tmp and
-installs the components step-by-step:</p><pre class="literallayout">$ cd /tmp
+installs the components step-by-step:</p><div class="screenexample"><pre class="screen">$ cd /tmp
 $ wget http://webtide.intalio.com/wp-content/uploads/2011/05/overlays-demo.tar.gz
 $ tar xfvz overlays-demo.tar.gz
-$ export OVERLAYS=/tmp/overlays</pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="overlay-configure"></a>Configuring Jetty for Overlays</h3></div></div></div><p>Overlays support is included in jetty distributions from 7.4.1-SNAPSHOT
+$ export OVERLAYS=/tmp/overlays$ cd /tmp
+$ wget http://webtide.intalio.com/wp-content/uploads/2011/05/overlays-demo.tar.gz
+$ tar xfvz overlays-demo.tar.gz
+$ export OVERLAYS=/tmp/overlays</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="overlay-configure"></a>Configuring Jetty for Overlays</h3></div></div></div><p>Overlays support is included in jetty distributions from 7.4.1-SNAPSHOT
 onwards, so you can download a distribution from oss.sonatype.org or
 maven central and unpack into a directory. You need to edit the
 start.ini file so that it includes the overlay option and configuration
@@ -62,12 +65,15 @@ etc/jetty.xml
 etc/jetty-deploy.xml
 etc/jetty-overlay.xml</code></pre><p>The smarts of this are in etc/jetty-deploy.xml, which installs the
 OverlayedAppProvider into the DeploymentManager. You can then start
-Jetty normally:</p><pre class="literallayout">$ java -jar start.jar</pre><p>Jetty is now listening on port 8080, but with no webapp deployed.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-plus" aria-hidden="true"></i> Important</h3><p>You should conduct the rest of the tutorial in another window with the JETTY_HOME environment set to the jetty distribution directory.</p></div></blockquote></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="overlay-install"></a>Installing the WebApp</h3></div></div></div><p>You can download and deploy the WAR file for this demo using the
+Jetty normally:</p><div class="screenexample"><pre class="screen">$ java -jar start.jar$ java -jar start.jar</pre></div><p>Jetty is now listening on port 8080, but with no webapp deployed.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-plus" aria-hidden="true"></i> Important</h3><p>You should conduct the rest of the tutorial in another window with the JETTY_HOME environment set to the jetty distribution directory.</p></div></blockquote></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="overlay-install"></a>Installing the WebApp</h3></div></div></div><p>You can download and deploy the WAR file for this demo using the
 following commands, which essentially downloads and extracts the WAR
-file to the $JETTY_HOME/overlays/webapps directory.</p><pre class="literallayout">$ cd /tmp
+file to the $JETTY_HOME/overlays/webapps directory.</p><div class="screenexample"><pre class="screen">$ cd /tmp
 $ wget -O jtrac.zip http://sourceforge.net/projects/j-trac/files/jtrac/2.1.0/jtrac-2.1.0.zip/download
 $ jar xfv jtrac.zip jtrac/jtrac.war
-$ mv jtrac/jtrac.war $JETTY_HOME/overlays/webapps</pre><p>When you have run these commands (or equivalent), you see in the Jetty
+$ mv jtrac/jtrac.war $JETTY_HOME/overlays/webapps$ cd /tmp
+$ wget -O jtrac.zip http://sourceforge.net/projects/j-trac/files/jtrac/2.1.0/jtrac-2.1.0.zip/download
+$ jar xfv jtrac.zip jtrac/jtrac.war
+$ mv jtrac/jtrac.war $JETTY_HOME/overlays/webapps</pre></div><p>When you have run these commands (or equivalent), you see in the Jetty
 server window a message saying that the OverlayedAppProvider has
 extracted and loaded the WAR file:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>2011-05-06 10:31:54.678:INFO:OverlayedAppProvider:Extract jar:file:/tmp/jetty-distribution-7.4.1-SNAPSHOT/overlays/webapps/jtrac-2.1.0.war!/ to /tmp/jtrac-2.1.0_236811420856825222.extract
 2011-05-06 10:31:55.235:INFO:OverlayedAppProvider:loaded jtrac-2.1.0@1304641914666</code></pre><p>Unlike the normal webapps dir, loading a WAR file from the
@@ -75,7 +81,7 @@ overlays/webapp dir does not deploy the web application. It simply makes
 it available to use as the basis for templates and overlays.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_installing_a_template_overlay"></a>Installing a Template Overlay</h3></div></div></div><p>A template overlay is a WAR structured directory/archive that contains
 just the files that you have added or modified to customize/configure
 the web application for all instances you plan to deploy.</p><p>You can install the demo template from the downloaded files with the
-command:</p><pre class="literallayout">$ mv $OVERLAYS/jtracTemplate\=jtrac-2.1.0 $JETTY_HOME/overlays/templates/</pre><p>In the Jetty server window, you should see the template loaded with a
+command:</p><div class="screenexample"><pre class="screen">$ mv $OVERLAYS/jtracTemplate\=jtrac-2.1.0 $JETTY_HOME/overlays/templates/$ mv $OVERLAYS/jtracTemplate\=jtrac-2.1.0 $JETTY_HOME/overlays/templates/</pre></div><p>In the Jetty server window, you should see the template loaded with a
 message like:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>2011-05-06 11:00:08.716:INFO:OverlayedAppProvider:loaded jtracTemplate=jtrac-2.1.0@1304643608715</code></pre><p>The contents of the loaded template are as follows:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>templates/jtracTemplate=jtrac-2.1.0
 |__ WEB-INF
     |__ classes
@@ -130,9 +136,11 @@ the WAR file of each application instance using copied/modified files
 from the original. The Overlay Deployer allows you to make all these
 changes in one structure; moreover it allows you to parameterise some of
 the configuration, which facilitates easy multi-tenant deployment.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_installing_an_instance_overlay"></a>Installing an Instance Overlay</h3></div></div></div><p>Now that you have installed a template, you can install one or more
-instance overlays to deploy the actual web applications:</p><pre class="literallayout">$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/
+instance overlays to deploy the actual web applications:</p><div class="screenexample"><pre class="screen">$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/
 $ mv /tmp/overlays/instances/jtracTemplate\=red $JETTY_HOME/overlays/instances/
-$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/</pre><p>As each instance moves into place, you see the Jetty server window react
+$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/
+$ mv /tmp/overlays/instances/jtracTemplate\=red $JETTY_HOME/overlays/instances/
+$ mv /tmp/overlays/instances/jtracTemplate\=blue $JETTY_HOME/overlays/instances/</pre></div><p>As each instance moves into place, you see the Jetty server window react
 and deploy that instance. Within each instance, there is the structure:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>instances/jtracTemplate=red/
 |__ WEB-INF
 |   |__ overlay.xml

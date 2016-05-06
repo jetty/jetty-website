@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Using start.jar</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty"><link rel="prev" href="startup-base-and-home.html" title="Managing Jetty Base and Jetty Home"><link rel="next" href="startup-unix-service.html" title="Startup a Unix Service using jetty.sh"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/darkula.css"><script src="js/highlight.pack.js"></script><script>
+   <title>Using start.jar</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL-NS Stylesheets V1.76.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="startup.html" title="Chapter&nbsp;9.&nbsp;Starting Jetty"><link rel="prev" href="startup-base-and-home.html" title="Managing Jetty Base and Jetty Home"><link rel="next" href="startup-unix-service.html" title="Startup a Unix Service using jetty.sh"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
       hljs.initHighlightingOnLoad();
     </script><link type="text/css" rel="stylesheet" href="css/font-awesome/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.3.9-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
@@ -19,9 +19,11 @@
  scalability guidance for your apps and Ajax/Comet projects ... development services for sponsored feature development
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="start-jar"></a>Using start.jar</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="start-jar.html#_start_jar_command_line_options">start.jar Command Line Options</a></span></dt></dl></div><p>The most basic way of starting the Jetty standalone server is to execute
 the <code class="literal">start.jar</code>, which is a bootstrap for starting Jetty with the
-configuration you want.</p><pre class="literallayout">[jetty-distribution-@project.version@]$ java -jar start.jar
+configuration you want.</p><div class="screenexample"><pre class="screen">[jetty-distribution-@project.version@]$ java -jar start.jar
 2013-09-23 11:27:06.654:INFO:oejs.Server:main: jetty-@project.version@
-...</pre><p>Jetty is a highly modularized web server container. Very little is
+...[jetty-distribution-@project.version@]$ java -jar start.jar
+2013-09-23 11:27:06.654:INFO:oejs.Server:main: jetty-@project.version@
+...</pre></div><p>Jetty is a highly modularized web server container. Very little is
 mandatory and required, and most components are optional; you enable or
 disable them according to the needs of your environment.</p><p>At its most basic, you configure Jetty from two elements:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem">A set of libraries and directories that make up the server
 classpath.</li><li class="listitem">A set of Jetty XML configuration files (IoC style) that establish
@@ -92,11 +94,15 @@ Note: Transitive modules are also created in the same directory as
 their own INI files.</dd><dt><span class="term">--write-module-graph=&lt;filename&gt;</span></dt><dd>Advanced feature: Creates a graphviz
 <a class="link" href="http://graphviz.org/content/dot-language" target="_top">dot file</a> of the module graph
 as it exists for the active <code class="literal">${jetty.base}</code>.
-+</dd></dl></div><pre class="literallayout"># generate module.dot
++</dd></dl></div><div class="screenexample"><pre class="screen"># generate module.dot
 $ java -jar start.jar --module=websocket --write-module-graph=modules.dot
 
 # post process to a PNG file
-$ dot -Tpng -o modules.png modules.dot</pre><pre class="literallayout">+
+$ dot -Tpng -o modules.png modules.dot# generate module.dot
+$ java -jar start.jar --module=websocket --write-module-graph=modules.dot
+
+# post process to a PNG file
+$ dot -Tpng -o modules.png modules.dot</pre></div><pre class="literallayout">+
 See http://graphviz.org/[graphviz.org] for details on
 http://graphviz.org/content/command-line-invocation[how to
 post-process this dotty file] into the output best suited for your
