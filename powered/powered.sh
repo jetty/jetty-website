@@ -32,29 +32,6 @@ echo "      </tr>"
 echo "    </table>"
 echo "  </div>"
 
-echo "  <div class=\"leader\" style=\"background-color: #DFF2FD; text-align: left; font-size:80%; font-family: arial, sans; border:thin dotted blue; padding: 4px; \">"
-echo "    <span style=\"font-variant: small-caps; font-weight: bold\">"
-echo "      <a href=\"http://www.webtide.com/support.jsp\" style=\"text-decoration:none\">"
-echo "        Contact the core Jetty developers at"
-echo "        <span style=\"color:#fd360b\">www.webtide.com</span>"
-echo "      </a>"
-echo "    </span>"
-echo "    <br/>"
-echo "    <span style=\"font-style:oblique;font-size: 80%\">"
-echo "      private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ... scalability guidance for your apps and Ajax/Comet projects ... development services from 1 day to full product delivery"
-echo "    </span>"
-echo "  </div>"
-
-echo "<div class=\"leader\">"
-echo "<h2>Declaring Your Project or Product as Jetty Powered</h2>"
-echo "<p>As a small, fast, embeddable web server and servlet container Jetty is used by a multitude of both commercial and open source products."
-echo "These Jetty Powered products illustrate Jetty's versatility and the diversity of its community. </p>"
-echo "<p>Send your submission with a product logo (if you have one) and brief text describing your product to <code>powered@mortbay.com</code> if you would like your product or project listed here.</p>"
-echo "<p>Feel free to download and use our <i>Powered By Jetty</i> logos:</p>"
-echo "<center><img border=\"0\" alt=\"large powered logo\" src=\"images/large_powered_by.gif\"/><img border=\"0\" alt=\"small powered logo\" src=\"images/small_powered_by.gif\"/></center>"
-echo "<p>Back to <a href=\"http://www.eclipse.org/jetty/\">Jetty</a>!</p>"
-echo "</div>"
-
 echo "  <div class=\"powered\">"
 echo "<table cellspacing=\"10\" cellpadding=\"5\" width=\"100%\" summary=\"Power by Jetty Logos\">"
 
@@ -114,5 +91,5 @@ echo "</script>"
 echo "</body>"
 echo "</html>"
 
-} > index.html
+} > powered.html
 
