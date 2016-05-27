@@ -1,0 +1,31 @@
+RewriteEngine On
+# Redirects and Aliases for Jetty
+
+# jarvana seems to have an inordinate amount of bad apidoc urls
+RewriteRule ^/jetty/apidocs/(.*)
+http://download.eclipse.org/jetty/stable-9/apidocs/$1          [R=301,L]
+RewriteRule ^/jetty/jetty-.*/apidocs/(.*)
+http://download.eclipse.org/jetty/stable-9/apidocs/$1 [R=301,L]
+
+
+# RedirectMatch 301 ^/jetty/apidocs/(.*)
+http://download.eclipse.org/jetty/stable-9/apidocs/$1
+# RedirectMatch 301 ^/jetty/jetty-.*/apidocs/(.*)
+http://download.eclipse.org/jetty/stable-9/apidocs/$1
+
+
+# Fix php conversions
+RedirectMatch 301 ^/jetty/(.*).php /jetty/$1.html
+
+
+# Direct Documentation References
+RedirectMatch 301 ^/jetty/documentation/9.0.*/(.*) /jetty/documentation/9.0.6.v20130930/$1
+RedirectMatch 301 ^/jetty/documentation/9.1.*/(.*) /jetty/documentation/9.1.5.v20140505/$1
+RedirectMatch 301 ^/jetty/documentation/9.2.*/(.*) /jetty/documentation/9.2.10.v20150310/$1
+
+
+
+# Handle unfortunate appended module <url>'s
+RewriteRule ^/jetty/jetty /jetty/ [R=301,L]
+RewriteRule ^/jetty/jetty/configure.dtd$ /jetty/configure.dtd [L]
+
