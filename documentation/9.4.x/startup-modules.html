@@ -17,7 +17,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services for sponsored feature development
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="startup-modules"></a>Managing Startup Modules</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="startup-modules.html#enabling-modules">Enabling Modules</a></span></dt><dt><span class="section"><a href="startup-modules.html#startup-listing-modules">Listing Available and Active Modules</a></span></dt></dl></div><p>Starting with Jetty 9.1, a new Module system was introduced, replacing the previous <code class="literal">start.config</code> + <code class="literal">OPTIONS</code> techniques from past Jetty Distributions.</p><p>The standard Jetty Distribution ships with several modules defined in <code class="literal">${jetty.home}/modules/</code>.</p><p>What a Jetty Startup Module Defines:</p><div class="variablelist"><dl><dt><span class="term">A Module Name</span></dt><dd>The name of the module is the keyword used by the <code class="literal">--module=&lt;name&gt;</code> command line argument to activate/enable modules, and also find dependent modules.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="startup-modules"></a>Managing Startup Modules</h2></div></div></div><div class="toc"><dl><dt><span class="section"><a href="startup-modules.html#enabling-modules">Enabling Modules</a></span></dt><dt><span class="section"><a href="startup-modules.html#startup-configuring-modules">Configuring Modules</a></span></dt><dt><span class="section"><a href="startup-modules.html#startup-disable-module">Disabling Modules</a></span></dt><dt><span class="section"><a href="startup-modules.html#startup-listing-modules">Listing Available and Active Modules</a></span></dt></dl></div><p>Starting with Jetty 9.1, a new Module system was introduced, replacing the previous <code class="literal">start.config</code> + <code class="literal">OPTIONS</code> techniques from past Jetty Distributions.</p><p>The standard Jetty Distribution ships with several modules defined in <code class="literal">${jetty.home}/modules/</code>.</p><p>What a Jetty Startup Module Defines:</p><div class="variablelist"><dl><dt><span class="term">A Module Name</span></dt><dd>The name of the module is the keyword used by the <code class="literal">--module=&lt;name&gt;</code> command line argument to activate/enable modules, and also find dependent modules.
 The filename of the module defines its name (eg: server.mod becomes the module named "server").</dd><dt><span class="term">List of Dependant Modules</span></dt><dd>All modules can declare that they depend on other modules with the <code class="literal">[depend]</code> section.
 The list of dependencies is used to transitively resolve other modules that are deemed to be required based on the modules that you activate.
 The order of modules defined in the graph of active modules is used to determine various execution order for configuration, such as Jetty IoC XML configurations, and to resolve conflicting property declarations.
@@ -169,7 +169,45 @@ Jetty Active XMLs:
  ${jetty.home}/etc/jetty.xml
  ${jetty.home}/etc/jetty-http.xml
  ${jetty.home}/etc/jetty-deploy.xml</pre></div><p>You now have a configured and functional server, albeit with no webapps deployed.
-At this point you can place a webapp (war file) in the <code class="literal">mybase/webapps/</code> directory and and start Jetty.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="startup-listing-modules"></a>Listing Available and Active Modules</h3></div></div></div><p>To see which modules are <span class="emphasis"><em>available</em></span>, use the <code class="literal">--list-modules</code> command line argument.
+At this point you can place a webapp (war file) in the <code class="literal">mybase/webapps/</code> directory and and start Jetty.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="startup-configuring-modules"></a>Configuring Modules</h3></div></div></div><p>Once a module has been enabled for the server, it can be further configured to meet your needs.
+This is done by editing the associated ini file for the module.
+If your server setup is using a centralized ini configuration, you will edit the <code class="literal">{$jetty.base}/server.ini</code> file.
+If you have elected to manage each module within it&#8217;s own ini file, you can find these files in the <code class="literal">{$jetty.base}/start.d</code> directory.</p><p>When a module is activated, a number of properties are set by default.
+To view these defaults, open up the associated ini file.
+Listed in the ini file is the associated module file and any properties that can be set.</p><p>Below is an example of the <code class="literal">requestlog.ini</code> file:</p><div class="screenexample"><pre class="screen"># ---------------------------------------
+# Module: requestlog
+--module=requestlog
+
+## Logging directory (relative to $jetty.base)
+# jetty.requestlog.dir=logs
+
+## File path
+# jetty.requestlog.filePath=${jetty.requestlog.dir}/yyyy_mm_dd.request.log
+
+## Date format for rollovered files (uses SimpleDateFormat syntax)
+# jetty.requestlog.filenameDateFormat=yyyy_MM_dd
+
+## How many days to retain old log files
+# jetty.requestlog.retainDays=90
+
+## Whether to append to existing file
+# jetty.requestlog.append=true
+
+## Whether to use the extended log output
+# jetty.requestlog.extended=true
+
+## Whether to log http cookie information
+# jetty.requestlog.cookies=true
+
+## Timezone of the log entries
+# jetty.requestlog.timezone=GMT
+
+## Whether to log LogLatency
+# jetty.requestlog.loglatency=false</pre></div><p>The first lines name the module file being called (located in <code class="literal">{$jetty.home/modules}</code>).
+Subsequent lines list properties that can be changed as well as a description for each property.
+To edit a property, first un-comment the line by deleting the <code class="literal">#</code> at the start of the line, then make the change after <code class="literal">=</code> sign (such as changing a <code class="literal">true</code> value to <code class="literal">false</code>).</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="startup-disable-module"></a>Disabling Modules</h3></div></div></div><p>Disabling a module is an easy process.
+To disable a module, comment out the <code class="literal">--module=</code> line in the associated ini file.
+Deleting the ini file associated with module is another option, but may not be practical in all situations.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="startup-listing-modules"></a>Listing Available and Active Modules</h3></div></div></div><p>To see which modules are <span class="emphasis"><em>available</em></span>, use the <code class="literal">--list-modules</code> command line argument.
 This command will also show you which modules are <span class="emphasis"><em>enabled</em></span>.
 Here&#8217;s an example:</p><div class="screenexample"><pre class="screen">[mybase]$ java -jar /opt/jetty-distribution/start.jar --list-modules
 
@@ -507,7 +545,7 @@ Below is a graphical representation of the standard modules and their dependenci
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="startup-classpath.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="startup.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="startup-unix-service.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Managing Server Classpath&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Startup a Unix Service using jetty.sh</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-07-15)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-07-16)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
