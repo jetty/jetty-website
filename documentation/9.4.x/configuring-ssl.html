@@ -17,7 +17,7 @@
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services for sponsored feature development
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-ssl"></a>Configuring SSL/TLS</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="configuring-ssl.html#tls-and-ssl-versions">TLS and SSL versions</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#understanding-certificates-and-keys">Understanding Certificates and Keys</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#configuring-sslcontextfactory">Configuring the Jetty SslContextFactory</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#_configuring_ssl_in_jetty_distribution">Configuring SSL in Jetty Distribution</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#_configuring_sni">Configuring SNI</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#configuring-sslcontextfactory-cipherSuites">Disabling/Enabling Specific Cipher Suites</a></span></dt></dl></div><p>This document provides an overview of how to configure SSL and TLS for Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="tls-and-ssl-versions"></a>TLS and SSL versions</h3></div></div></div><p>Which browser/OS supports which protocols can be <a class="link" href="https://en.wikipedia.org/wiki/Transport_Layer_Security#Web_browsers" target="_top">found on Wikipedia</a>.</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">TLS v1.2: The protocol which should be used wherever possible.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-ssl"></a>Configuring SSL/TLS</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="configuring-ssl.html#tls-and-ssl-versions">TLS and SSL versions</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#understanding-certificates-and-keys">Understanding Certificates and Keys</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#two-way-authentication">Two way authentication</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#configuring-sslcontextfactory">Configuring the Jetty SslContextFactory</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#_configuring_ssl_in_jetty_distribution">Configuring SSL in Jetty Distribution</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#_configuring_sni">Configuring SNI</a></span></dt><dt><span class="section"><a href="configuring-ssl.html#configuring-sslcontextfactory-cipherSuites">Disabling/Enabling Specific Cipher Suites</a></span></dt></dl></div><p>This document provides an overview of how to configure SSL and TLS for Jetty.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="tls-and-ssl-versions"></a>TLS and SSL versions</h3></div></div></div><p>Which browser/OS supports which protocols can be <a class="link" href="https://en.wikipedia.org/wiki/Transport_Layer_Security#Web_browsers" target="_top">found on Wikipedia</a>.</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">TLS v1.2: The protocol which should be used wherever possible.
 All CBC based ciphers are supported since Java 7, the new GCM modes are supported since Java 8.</li></ul></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_older_protocols"></a>Older Protocols</h4></div></div></div><p>TLS v1.0, v1.1 and SSL v3 are no longer supported by default. If your Jetty implementation requires these protocols for legacy support, they can be enabled manually.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>Once TLS v1.3 is released, there will be no workaround available for TLS v1.0 or v1.1.
 Plans for TLS v1.3 include banning ciphers with known vulnerabilities from being present at any level.
 It is recommended to upgrade any clients using these ciphers as soon as possible or face being locked into a outdated version of Jetty, Java or even OS.</p></div></blockquote></div><p>By default, Jetty excludes these ciphers in the <a class="link" href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-util/src/main/java/org/eclipse/jetty/util/ssl/SslContextFactory.java#L249-L256" target="_top"><code class="literal">SslContextFactory</code>.</a>
@@ -112,7 +112,186 @@ The certificate can be one you generated yourself or one returned from a CA in r
 $ openssl pkcs12 -export -inkey example.key -in cert-chain.txt -out example.pkcs12</pre></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>The order of certificates must be from server to rootCA, as per <a class="link" href="https://www.ietf.org/rfc/rfc2246.txt" target="_top">RFC2246 section 7.4.2.</a></p></div></blockquote></div><p>OpenSSL asks for an <span class="emphasis"><em>export password</em></span>.
 A non-empty password is required to make the next step work.
 Load the resulting PKCS12 file into a JSSE keystore with <code class="literal">keytool</code>:</p><div class="screenexample"><pre class="screen">$ keytool -importkeystore -srckeystore jetty.pkcs12 -srcstoretype PKCS12 -destkeystore keystore</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="renewing-certificates"></a>Renewing Certificates</h4></div></div></div><p>If you are updating your configuration to use a newer certificate, as when the old one is expiring, just load the newer certificate as described in the section, <a class="xref" href="configuring-ssl.html#loading-keys-and-certificates" title="Loading Keys and Certificates">Loading Keys and Certificates</a>.
-If you imported the key and certificate originally using the PKCS12 method, use an alias of "1" rather than "jetty", because that is the alias the PKCS12 process enters into the keystore.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-sslcontextfactory"></a>Configuring the Jetty SslContextFactory</h3></div></div></div><p>The generated SSL certificates from above are held in the key store are configured in an instance of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">SslContextFactory</a> object.</p><p>The <code class="literal">SslContextFactory</code> is responsible for:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Creating the Java <code class="literal">SslEngine</code> used by Jetty&#8217;s Connectors and Jetty&#8217;s Clients (HTTP/1, HTTP/2, and WebSocket).</li><li class="listitem">Managing Keystore Access</li><li class="listitem">Managing Truststore Access</li><li class="listitem">Managing Protocol selection via Excludes / Includes list</li><li class="listitem">Managing Cipher Suite selection via Excludes / Includes list</li><li class="listitem">Managing order of Ciphers offered (important for TLS/1.2 and HTTP/2 support)</li><li class="listitem">SSL Session Caching options</li><li class="listitem">Certificate <a class="link" href="https://en.wikipedia.org/wiki/Revocation_list" target="_top">Revocation Lists</a> and Distribution Points (CRLDP)</li><li class="listitem"><a class="link" href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol" target="_top">OCSP</a> Support</li><li class="listitem">Client Authentication Support</li></ul></div><p>For Jetty Connectors, the configured <code class="literal">SslContextFactory</code> is injected into a specific ServerConnector <code class="literal">SslConnectionFactory</code>.</p><p>For Jetty Clients, the various constructors support using a configured <code class="literal">SslContextFactory</code>.</p><p>While the <code class="literal">SslContextFactory</code> can operate without a keystore (this mode is most suitable for the various Jetty Clients) it is best practice to at least configure the keystore being used.</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">setKeyStorePath</span></dt><dd>The configured keystore to use for all SSL/TLS in configured Jetty Connector (or Client).</dd></dl></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>As a keystore is vital security information, it can be desirable to locate the file in a directory with <span class="strong"><strong>very</strong></span> restricted access.</p></div></blockquote></div><div class="variablelist"><dl class="variablelist"><dt><span class="term">setKeyStorePassword</span></dt><dd>The keystore password may be set here in plain text, or as some measure of protection from casual observation, it may be obfuscated using the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/security/Password.html" target="_top">Password</a> class.</dd><dt><span class="term">setTrustStorePath</span></dt><dd>This is used if validating client certificates and is typically set to the same path as the keystore.</dd><dt><span class="term">setKeyManagerPassword</span></dt><dd>The password that is passed to the <code class="literal">KeyManagerFactory.init(...)</code>.
+If you imported the key and certificate originally using the PKCS12 method, use an alias of "1" rather than "jetty", because that is the alias the PKCS12 process enters into the keystore.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="two-way-authentication"></a>Two way authentication</h3></div></div></div><p>First you need load the ssl module.</p><p><b>start.d/ssl.ini.&nbsp;</b>
+</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>--module=ssl
+jetty.secure.port=8443
+jetty.keystore=etc/keystore
+jetty.keystore.password=OBF:
+jetty.keymanager.password=OBF:
+jetty.truststore=etc/truststore
+jetty.truststore.password=OBF:
+# enable two way authentication
+jetty.ssl.needClientAuth=true</code></pre><p>
+</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="layout-of-keystore-and-truststore"></a>Layout of <code class="literal">keystore</code> and <code class="literal">truststore</code></h4></div></div></div><p><code class="literal">keystore</code> only contains the server&#8217;s private key and certificate.</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>$ keytool -list -keystore keystore -storetype jks -storepass '' -v
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+Alias name: *.example.com
+Creation date: Sep 12, 2016
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=*.example.com, OU=Web Servers, O="Example.com Co.,Ltd.", C=CN
+Issuer: CN="Example.com Co.,Ltd. ETP CA", OU=CA Center, O="Example.com Co.,Ltd.", C=CN
+Serial number: b63af619ff0b4c368735113ba5db8997
+Valid from: Mon Sep 12 15:09:49 CST 2016 until: Wed Sep 12 15:09:49 CST 2018
+Certificate fingerprints:
+	 MD5:  D9:26:CC:27:77:9D:26:FE:67:4C:BE:FF:E3:95:1E:97
+	 SHA1: AF:DC:D2:65:6A:33:42:E3:81:9E:4D:19:0D:22:20:C7:6F:2F:11:D0
+	 SHA256: 43:E8:21:5D:C6:FB:A0:7D:5D:7B:9C:8B:8D:E9:4B:52:BF:50:0D:90:4F:61:C2:18:9E:89:AA:4C:C2:93:BD:32
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions:
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: 44 9B AD 31 E7 FE CA D5   5A 8E 17 55 F9 F0 1D 6B  D..1....Z..U...k
+0010: F5 A5 8F C1                                        ....
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:false
+  PathLen: undefined
+]
+
+#3: ObjectId: 2.5.29.37 Criticality=true
+ExtendedKeyUsages [
+  serverAuth
+  clientAuth
+]
+
+#4: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  DigitalSignature
+  Key_Encipherment
+  Data_Encipherment
+]
+
+#5: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 7D 26 36 73 61 5E 08 94   AD 25 13 46 DB DB 95 25  .&amp;6sa^...%.F...%
+0010: BF 82 5A CA                                        ..Z.
+]
+]
+
+
+
+*******************************************
+*******************************************</code></pre><p><code class="literal">truststore</code> contains intermediary CA and root CA.</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>$ keytool -list -keystore truststore -storetype jks -storepass '' -v
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 2 entries
+
+Alias name: example.com co.,ltd. etp ca
+Creation date: Sep 12, 2016
+Entry type: trustedCertEntry
+
+Owner: CN="Example.com Co.,Ltd. ETP CA", OU=CA Center, O="Example.com Co.,Ltd.", C=CN
+Issuer: CN="Example.com Co.,Ltd. Root CA", OU=CA Center, O="Example.com Co.,Ltd.", C=CN
+Serial number: f6e7b86f6fdb467f9498fb599310198f
+Valid from: Wed Nov 18 00:00:00 CST 2015 until: Sun Nov 18 00:00:00 CST 2035
+Certificate fingerprints:
+	 MD5:  ED:A3:91:57:D8:B8:6E:B1:01:58:55:5C:33:14:F5:99
+	 SHA1: D9:A4:93:9D:A6:F8:A3:F9:FD:85:51:E2:C5:2E:0B:EE:80:E7:D0:22
+	 SHA256: BF:54:7A:F6:CA:0C:FA:EF:93:B6:6B:6E:2E:D7:44:A8:40:00:EC:69:3A:2C:CC:9A:F7:FE:8E:6F:C0:FA:22:38
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions:
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: A6 BD 5F B3 E8 7D 74 3D   20 44 66 1A 16 3B 1B DF  .._...t= Df..;..
+0010: E6 E6 04 46                                        ...F
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen:2147483647
+]
+
+#3: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  Key_CertSign
+  Crl_Sign
+]
+
+#4: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: 44 9B AD 31 E7 FE CA D5   5A 8E 17 55 F9 F0 1D 6B  D..1....Z..U...k
+0010: F5 A5 8F C1                                        ....
+]
+]
+
+
+
+*******************************************
+*******************************************
+
+
+Alias name: example.com co.,ltd. root ca
+Creation date: Sep 12, 2016
+Entry type: trustedCertEntry
+
+Owner: CN="Example.com Co.,Ltd. Root CA", OU=CA Center, O="Example.com Co.,Ltd.", C=CN
+Issuer: CN="Example.com Co.,Ltd. Root CA", OU=CA Center, O="Example.com Co.,Ltd.", C=CN
+Serial number: f0a45bc9972c458cbeae3f723055f1ac
+Valid from: Wed Nov 18 00:00:00 CST 2015 until: Sun Nov 18 00:00:00 CST 2114
+Certificate fingerprints:
+	 MD5:  50:61:62:22:71:60:F7:69:2E:27:42:6B:62:31:82:79
+	 SHA1: 7A:6D:A6:48:B1:43:03:3B:EA:A0:29:2F:19:65:9C:9B:0E:B1:03:1A
+	 SHA256: 05:3B:9C:5B:8E:18:61:61:D1:9C:AA:0E:8C:B1:EA:44:C2:6E:67:5D:96:30:EC:8C:F6:6F:E1:EC:AD:00:60:F1
+	 Signature algorithm name: SHA256withRSA
+	 Version: 3
+
+Extensions:
+
+#1: ObjectId: 2.5.29.35 Criticality=false
+AuthorityKeyIdentifier [
+KeyIdentifier [
+0000: A6 BD 5F B3 E8 7D 74 3D   20 44 66 1A 16 3B 1B DF  .._...t= Df..;..
+0010: E6 E6 04 46                                        ...F
+]
+]
+
+#2: ObjectId: 2.5.29.19 Criticality=true
+BasicConstraints:[
+  CA:true
+  PathLen:2147483647
+]
+
+#3: ObjectId: 2.5.29.15 Criticality=true
+KeyUsage [
+  Key_CertSign
+  Crl_Sign
+]
+
+#4: ObjectId: 2.5.29.14 Criticality=false
+SubjectKeyIdentifier [
+KeyIdentifier [
+0000: A6 BD 5F B3 E8 7D 74 3D   20 44 66 1A 16 3B 1B DF  .._...t= Df..;..
+0010: E6 E6 04 46                                        ...F
+]
+]
+
+
+
+*******************************************
+*******************************************</code></pre><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>If you use a keystore which contains only one <code class="literal">PrivateKeyEntry</code> item as the <code class="literal">keystore</code> and the <code class="literal">truststore</code>, you may get a <code class="literal">javax.net.ssl.SSLHandshakeException</code> with <code class="literal">null cert chain</code> message.</p></div></blockquote></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="configuring-sslcontextfactory"></a>Configuring the Jetty SslContextFactory</h3></div></div></div><p>The generated SSL certificates from above are held in the key store are configured in an instance of <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/ssl/SslContextFactory.html" target="_top">SslContextFactory</a> object.</p><p>The <code class="literal">SslContextFactory</code> is responsible for:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Creating the Java <code class="literal">SslEngine</code> used by Jetty&#8217;s Connectors and Jetty&#8217;s Clients (HTTP/1, HTTP/2, and WebSocket).</li><li class="listitem">Managing Keystore Access</li><li class="listitem">Managing Truststore Access</li><li class="listitem">Managing Protocol selection via Excludes / Includes list</li><li class="listitem">Managing Cipher Suite selection via Excludes / Includes list</li><li class="listitem">Managing order of Ciphers offered (important for TLS/1.2 and HTTP/2 support)</li><li class="listitem">SSL Session Caching options</li><li class="listitem">Certificate <a class="link" href="https://en.wikipedia.org/wiki/Revocation_list" target="_top">Revocation Lists</a> and Distribution Points (CRLDP)</li><li class="listitem"><a class="link" href="https://en.wikipedia.org/wiki/Online_Certificate_Status_Protocol" target="_top">OCSP</a> Support</li><li class="listitem">Client Authentication Support</li></ul></div><p>For Jetty Connectors, the configured <code class="literal">SslContextFactory</code> is injected into a specific ServerConnector <code class="literal">SslConnectionFactory</code>.</p><p>For Jetty Clients, the various constructors support using a configured <code class="literal">SslContextFactory</code>.</p><p>While the <code class="literal">SslContextFactory</code> can operate without a keystore (this mode is most suitable for the various Jetty Clients) it is best practice to at least configure the keystore being used.</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">setKeyStorePath</span></dt><dd>The configured keystore to use for all SSL/TLS in configured Jetty Connector (or Client).</dd></dl></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>As a keystore is vital security information, it can be desirable to locate the file in a directory with <span class="strong"><strong>very</strong></span> restricted access.</p></div></blockquote></div><div class="variablelist"><dl class="variablelist"><dt><span class="term">setKeyStorePassword</span></dt><dd>The keystore password may be set here in plain text, or as some measure of protection from casual observation, it may be obfuscated using the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/util/security/Password.html" target="_top">Password</a> class.</dd><dt><span class="term">setTrustStorePath</span></dt><dd>This is used if validating client certificates and is typically set to the same path as the keystore.</dd><dt><span class="term">setKeyManagerPassword</span></dt><dd>The password that is passed to the <code class="literal">KeyManagerFactory.init(...)</code>.
 If there is no <code class="literal">keymanagerpassword</code>, then the <code class="literal">keystorepassword</code> is used instead.
 If there is no <code class="literal">trustmanager</code> set, then the keystore is used as the trust store and the <code class="literal">keystorepassword</code> is used as the truststore password.</dd><dt><span class="term">setExcludeCipherSuites / setIncludeCipherSuites</span></dt><dd>This allows for the customization of the selected Cipher Suites that will be used by SSL/TLS.</dd><dt><span class="term">setExcludeProtocols / setIncludeProtocols</span></dt><dd>This allows for the customization of the selected Protocols that will be used by SSL/TLS.</dd></dl></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>When working with Includes / Excludes, it is important to know that Excludes will always win.
 The selection process is to process the JVM list of available Cipher Suites or Protocols against the include list, then remove the excluded ones.
@@ -190,7 +369,7 @@ The Java JVM is also applying exclusions at the JVM level and as such if you hav
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-connectors.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-connectors.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="setting-port80-access.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;6.&nbsp;Configuring Jetty Connectors&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Setting Port 80 Access for a Non-Root User</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-09-22)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-09-23)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
