@@ -1,6 +1,6 @@
 <html><head>
       <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-   <title>Jetty Logging Integrations (Slf4j, Log4j, Logback, JCL, JUL)</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-logging.html" title="Chapter&nbsp;11.&nbsp;Jetty Logging"><link rel="prev" href="configuring-jetty-request-logs.html" title="Configuring Jetty Request Logs"><link rel="next" href="example-logging-logback-centralized.html" title="Example: Centralized Logging with Logback"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
+   <title>Jetty Logging Integrations (SLF4J, Log4j, Logback, JCL, JUL)</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="configuring-logging.html" title="Chapter&nbsp;11.&nbsp;Jetty Logging"><link rel="prev" href="configuring-jetty-request-logs.html" title="Configuring Jetty Request Logs"><link rel="next" href="example-logging-logback-centralized.html" title="Example: Centralized Logging with Logback"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
       hljs.initHighlightingOnLoad();
     </script><link type="text/css" rel="stylesheet" href="css/font-awesome/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
             Version: 9.4.0-SNAPSHOT</span></td><td style="width: 50%"><script type="text/javascript">  (function() {
@@ -13,21 +13,26 @@
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(gcse, s);
             })();
-          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Jetty Logging Integrations (Slf4j, Log4j, Logback, JCL, JUL)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuring-jetty-request-logs.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;11.&nbsp;Jetty Logging<br><a accesskey="p" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-logging-logback-centralized.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
+          </script><gcse:search></gcse:search></td></tr></table><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Jetty Logging Integrations (SLF4J, Log4j, Logback, JCL, JUL)</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="configuring-jetty-request-logs.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><th width="60%" align="center">Chapter&nbsp;11.&nbsp;Jetty Logging<br><a accesskey="p" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></th><td width="20%" align="right">&nbsp;<a accesskey="n" href="example-logging-logback-centralized.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr></table><hr></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="jetty-callout"><h5 class="callout"><a href="http://www.webtide.com/">Contact the core Jetty developers at
           <span class="website">www.webtide.com</span></a></h5><p>
  private support for your internal/customer projects ... custom extensions and distributions ... versioned snapshots for indefinite support ...
  scalability guidance for your apps and Ajax/Comet projects ... development services for sponsored feature development
-      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-logging-modules"></a>Jetty Logging Integrations (Slf4j, Log4j, Logback, JCL, JUL)</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-slf4j">Logging with SLF4J</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-log4j">Logging with Log4j and log4j2</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-logback">Logging with Logback</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#_logging_with_java_util_logging">Logging with Java Util Logging</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#_logging_with_java_commons_logging">Logging with Java Commons Logging</a></span></dt></dl></div><p>Jetty provides support for several logging frameworks including SLF4J, Java Commons Logging (jcl), Java Util Logging (jul), Log4j (including version 2), and Logback.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="configuring-logging-modules"></a>Jetty Logging Integrations (SLF4J, Log4j, Logback, JCL, JUL)</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-slf4j">Logging with SLF4J</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-log4j">Logging with Log4j and Log4j2</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-logback">Logging with Logback</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#_logging_with_java_util_logging">Logging with Java Util Logging</a></span></dt><dt><span class="section"><a href="configuring-logging-modules.html#example-logging-java-commons-logging">Logging with Java Commons Logging</a></span></dt></dl></div><p>Jetty provides support for several logging frameworks including SLF4J, Java Commons Logging (JCL), Java Util Logging (JUL), Log4j (including version 2), and Logback.
 This page includes examples of how to enable the associated modules for these different frameworks.
-Enabling these frameworks in the Jetty distribution is as easy as activating any other module, by adding <code class="literal">--add-to-start=&lt;module name&gt;</code> to the start command for your server, such as:</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-jetty
+These modules are designed to capture container/server logs; <a class="link" href="configuring-jetty-request-logs.html" title="Configuring Jetty Request Logs">request logs</a> and application logs need to be configured separately.
+Please note that enabling these modules provides typical and basic functionality for each framework; advanced implementations may require their <a class="link" href="startup-modules.html" title="Managing Startup Modules">own modules</a> or additional configuration.</p><p>Enabling these frameworks in the Jetty distribution is as easy as activating any other module, by adding <code class="literal">--add-to-start=&lt;module name&gt;</code> to the start command for your server, such as:</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-jetty
 INFO : logging-jetty   initialized in ${jetty.base}/start.d/logging-jetty.ini
 INFO : resources       transitive
 INFO : Base directory was modified</pre></div><p>As noted above, Jetty supports a wide array of logging technologies.
-The release of Jetty 9.4 made the implementation of these frameworks easier by providing logging modules that contain all the dependencies needed to implement a specific technology.
-If a particular logging framework requires additional jar files, Jetty will automatically download these as part of enabling the associated module.
-You can view a list of all the Jetty modules by running <code class="literal">java -jar &lt;path-to-jetty.home&gt;/start.jar --list-modules</code>.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-slf4j"></a>Logging with SLF4J</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_jetty_slf4j"></a>jetty-slf4j</h4></div></div></div><p>Jetty uses the Slf4j api as a bridge to provide logging information to additional frameworks such as Log4j or Logback.
-It can also be used itself to provide logging in conjunction with standard Jetty logging.
-To enable the Slf4j framework, you need to activate the <code class="literal">logging-slf4j</code> module.</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-slf4j
+If a particular logging framework requires additional jar files, Jetty will automatically download these as part of enabling the associated module and any dependent modules will be transitively enabled.</p><p>A list of the base Jetty logging modules by running <code class="literal">java -jar &lt;path-to-jetty.home&gt;/start.jar --list-modules=logging,-internal</code>.</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">logging-jcl</span></dt><dd>Configures Jetty logging to use Java Commons Logging (JCL), using SLF4J as a binding.</dd><dt><span class="term">logging-jetty</span></dt><dd>Standard Jetty logging that captures <code class="literal">System.err</code> and <code class="literal">System.out</code> output.</dd><dt><span class="term">logging-jul</span></dt><dd>Configures Jetty logging to use Java Util Logging (JUL), using SLF4J as a binding.</dd><dt><span class="term">logging-log4j</span></dt><dd>Configures Jetty logging to use Log4j as the logging implementation, using SLF4J as a binding.</dd><dt><span class="term">logging-log4j2</span></dt><dd>Configures Jetty logging to use Log4j2 as the logging implementation, using SLF4J as a binding.</dd><dt><span class="term">logging-logback</span></dt><dd>Configures Jetty logging to use Logback as the logging implementation, using SLF4J as a binding.</dd><dt><span class="term">logging-slf4j</span></dt><dd>Configures Jetty logging to use SLF4J and provides a <code class="literal">slf4j-impl</code> which can be used by other logging frameworks.
+If no other logging is configured, <code class="literal">slf4j-simple</code> is used.</dd></dl></div><p>You can view a list of <span class="strong"><strong>all</strong></span> the Jetty logging modules by running <code class="literal">java -jar &lt;path-to-jetty.home&gt;/start.jar --list-modules=logging</code>.
+This will display all logging modules, including implementation and binding modules.</p><p>All these modules (with the exception of <code class="literal">logging-jetty</code>) arrange for the Jetty private logging API to be routed to the named technology to actually be logged.
+For example, enabling the <code class="literal">logging-log4j</code> module will do several things:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">it enables an internal Log4j API module so that any container code that uses Log4j will find the API.</li><li class="listitem">it enables an internal Log4j Implementation so that any container code that uses the Log4j API will also use a Log4j implementation to handle the logs (and all the normal Log4j configuration mechanisms etc.)</li><li class="listitem">it enables the internal <code class="literal">slf4j-log4j</code> logging binding so that any container code that uses the SLF4j API to also use the Log4j implementation via the Log4j API.</li><li class="listitem">it configures the Jetty logging API to use the SLF4J API, which is then bound to Log4j.</li></ul></div><p>So, after enabling <code class="literal">logging-log4j</code>, within the server container there are 3 logging APIs available: Jetty, SLF4J and Log4J.
+But there is only a single logging <span class="strong"><strong>implementation</strong></span> - Log4j; the 3 APIs act only as facades over the Log4j implementation.</p><p>Note that you can add additional APIs to this configuration.
+For example, enabling the internal module <code class="literal">jcl-slf4j</code> would add in a Java Commons Logging facade that also would use the Log4j implementation via the SLF4J binding.</p><p>Most other top level logging modules work in the same way: <code class="literal">logging-jcl</code>, <code class="literal">logging-jul</code>, <code class="literal">logging-slf4j</code>, <code class="literal">logging-log4j2</code> and <code class="literal">logging-logback</code> all bind their implementation via SLF4J.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-slf4j"></a>Logging with SLF4J</h3></div></div></div><p>Jetty uses the SLF4J api as a binding to provide logging information to additional frameworks such as Log4j or Logback.
+It can also be used on it&#8217;s own to provide simple server logging.
+To enable the SLF4J framework, you need to activate the <code class="literal">logging-slf4j</code> module.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-slf4j
 
 ALERT: There are enabled module(s) with licenses.
 The following 1 module(s):
@@ -57,23 +62,42 @@ The following 1 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : logging-slf4j   initialized in ${jetty.base}/start.d/logging-slf4j.ini
-INFO : slf4j-impl      transitive
+INFO  : slf4j-api       transitively enabled
+INFO  : logging-slf4j   initialized in ${jetty.base}/start.d/logging-slf4j.ini
+MKDIR : ${jetty.base}/lib/slf4j
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
-DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-simple-1.7.21.jar
-INFO : Base directory was modified
+INFO  : Base directory was modified
+ERROR : Module logging-slf4j requires a `slf4j-impl` module from one of [slf4j-simple-impl, slf4j-logback, slf4j-jul, slf4j-jcl, slf4j-log4j2, slf4j-log4j]
 
-$ tree
+ERROR : Unsatisfied module dependencies: logging-slf4j
+
+Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
+       java -jar $JETTY_HOME/start.jar --help  # for more information</pre></div><p>As you probably noticed, the system gives an <code class="literal">ERROR</code> when trying to enable the <code class="literal">logging-slf4j</code> on it&#8217;s own.
+The <code class="literal">logging-slf4j</code> module itself provides the SLF4J api, but as SLF4J is often used as a binding for other logging frameworks does not by default provide an implementation.
+To enable the simple SLF4J implementation, we will also need to activate the <code class="literal">slf4j-simple-impl</code> module.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=slf4j-simple-impl
+INFO  : slf4j-simple-impl initialized in ${jetty.base}/start.d/slf4j-simple-impl.ini
+INFO  : resources       transitively enabled
+DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-simple/1.7.21/slf4j-simple-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-simple-1.7.21.jar
+MKDIR : ${jetty.base}/resources
+COPY  : ${jetty.home}/modules/slf4j/simplelogger.properties to ${jetty.base}/resources/simplelogger.properties
+MKDIR : ${jetty.base}/logs
+INFO  : Base directory was modified
+
+[my-base]$ tree
 .
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9500;&#9472;&#9472; slf4j-api-1.7.21.jar
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-simple-1.7.21.jar
+&#9500;&#9472;&#9472; logs
+&#9500;&#9472;&#9472; resources
+&#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; simplelogger.properties
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-slf4j.ini</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-log4j"></a>Logging with Log4j and log4j2</h3></div></div></div><p>It is possible to have the Jetty Server logging configured so that Log4j or Log4j2 controls the output of logging events produced by Jetty.
+    &#9500;&#9472;&#9472; logging-slf4j.ini
+    &#9492;&#9472;&#9472; slf4j-simple-impl.ini</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-log4j"></a>Logging with Log4j and Log4j2</h3></div></div></div><p>It is possible to have the Jetty Server logging configured so that Log4j or Log4j2 controls the output of logging events produced by Jetty.
 This is accomplished by configuring Jetty for logging to <a class="link" href="http://logging.apache.org/log4j/" target="_top">Apache Log4j</a> via <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for Log4j</a>.
-Implementation of Log4j can be done by enabling the <code class="literal">logging-log4j</code> module.</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-log4j
+Implementation of Log4j can be done by enabling the <code class="literal">logging-log4j</code> module.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-log4j
 
 ALERT: There are enabled module(s) with licenses.
 The following 2 module(s):
@@ -107,17 +131,22 @@ The following 2 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : log4j-impl      transitive, ini template available with --add-to-start=log4j-impl
-INFO : resources       transitive
-INFO : slf4j-log4j     transitive
-INFO : logging-log4j   initialized in ${jetty.base}/start.d/logging-log4j.ini
+INFO  : slf4j-api       transitively enabled
+INFO  : log4j-impl      transitively enabled
+INFO  : resources       transitively enabled
+INFO  : slf4j-log4j     transitively enabled
+INFO  : logging-log4j   initialized in ${jetty.base}/start.d/logging-log4j.ini
+MKDIR : ${jetty.base}/lib/slf4j
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
+MKDIR : ${jetty.base}/resources
+COPY  : ${jetty.home}/modules/log4j/log4j.properties to ${jetty.base}/resources/log4j.properties
+MKDIR : ${jetty.base}/lib/log4j
 DOWNLOAD: http://central.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar to ${jetty.base}/lib/log4j/log4j-1.2.17.jar
+MKDIR : ${jetty.base}/logs
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-log4j12/1.7.21/slf4j-log4j12-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-log4j12-1.7.21.jar
-INFO : Base directory was modified
+INFO  : Base directory was modified
 
-$ tree
+[my-base]$ tree
 .
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; log4j
@@ -125,10 +154,12 @@ $ tree
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9500;&#9472;&#9472; slf4j-api-1.7.21.jar
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-log4j12-1.7.21.jar
+&#9500;&#9472;&#9472; logs
 &#9500;&#9472;&#9472; resources
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; log4j.properties
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-log4j.ini</pre></div><p>Or, to enable Log4j2, simply enable the <code class="literal">logging-log4j2</code> module.</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-log4j2
+    &#9492;&#9472;&#9472; logging-log4j.ini</pre></div><p>Or, to enable Log4j2, simply enable the <code class="literal">logging-log4j2</code> module.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$  java -jar ../start.jar --add-to-start=logging-log4j2
 
 ALERT: There are enabled module(s) with licenses.
 The following 2 module(s):
@@ -162,33 +193,41 @@ The following 2 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : logging-log4j2  initialized in ${jetty.base}/start.d/logging-log4j2.ini
-INFO : log4j2-api      transitive, ini template available with --add-to-start=log4j2-api
-INFO : resources       transitive
-INFO : slf4j-log4j2    transitive
-INFO : log4j2-impl     transitive
+INFO  : slf4j-api       transitively enabled
+INFO  : logging-log4j2  initialized in ${jetty.base}/start.d/logging-log4j2.ini
+INFO  : log4j2-api      transitively enabled
+INFO  : resources       transitively enabled
+INFO  : slf4j-log4j2    transitively enabled
+INFO  : log4j2-impl     transitively enabled
+MKDIR : ${jetty.base}/lib/slf4j
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
+MKDIR : ${jetty.base}/lib/log4j
 DOWNLOAD: http://central.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.6.1/log4j-api-2.6.1.jar to ${jetty.base}/lib/log4j/log4j-api-2.6.1.jar
-MKDIR: ${jetty.base}/resources
+MKDIR : ${jetty.base}/resources
 DOWNLOAD: http://central.maven.org/maven2/org/apache/logging/log4j/log4j-slf4j-impl/2.6.1/log4j-slf4j-impl-2.6.1.jar to ${jetty.base}/lib/log4j/log4j-slf4j-impl-2.6.1.jar
-DOWNLOAD: http://central.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.6.1/log4j-core-2.6.1.jar to ${jetty.base}/lib/log4j/log4j-core-2.6.1.jar
-INFO : Base directory was modified
+MKDIR : ${jetty.base}/lib/log4j2
+DOWNLOAD: http://central.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.6.1/log4j-core-2.6.1.jar to ${jetty.base}/lib/log4j2/log4j-core-2.6.1.jar
+COPY  : ${jetty.home}/modules/log4j2/log4j2.xml to ${jetty.base}/resources/log4j2.xml
+MKDIR : ${jetty.base}/logs
+INFO  : Base directory was modified
 
-$ tree
+[my-base]$ tree
 .
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; log4j
 &#9474;&nbsp;&nbsp; &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; log4j-api-2.6.1.jar
-&#9474;&nbsp;&nbsp; &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; log4j-core-2.6.1.jar
 &#9474;&nbsp;&nbsp; &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; log4j-slf4j-impl-2.6.1.jar
+&#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; log4j2
+&#9474;&nbsp;&nbsp; &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; log4j-core-2.6.1.jar
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-api-1.7.21.jar
+&#9500;&#9472;&#9472; logs
 &#9500;&#9472;&#9472; resources
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; log4j2.xml
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-log4j2.ini</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-logback"></a>Logging with Logback</h3></div></div></div><p>It is possible to have the Jetty Server logging configured so that Logback controls the output of logging events produced by Jetty.
-This is accomplished by configuring Jetty for logging to <code class="literal">Logback</code>, which uses <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://logback.qos.ch/" target="_top">Logback Implementation for Slf4j</a>.</p><p>To set up Jetty logging via Logback, enable the <code class="literal">logging-logback</code> module.</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-logback
+    &#9492;&#9472;&#9472; logging-log4j2.ini</pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-logback"></a>Logging with Logback</h3></div></div></div><p>It is possible to have the Jetty Server logging configured so that Logback controls the output of logging events produced by Jetty.
+This is accomplished by configuring Jetty for logging to <code class="literal">Logback</code>, which uses <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://logback.qos.ch/" target="_top">Logback Implementation for Slf4j</a>.</p><p>To set up Jetty logging via Logback, enable the <code class="literal">logging-logback</code> module.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-logback
 
 ALERT: There are enabled module(s) with licenses.
 The following 2 module(s):
@@ -231,17 +270,22 @@ The following 2 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : logback-impl    transitive, ini template available with --add-to-start=logback-impl
-INFO : slf4j-logback   transitive
-INFO : logging-logback initialized in ${jetty.base}/start.d/logging-logback.ini
-INFO : resources       transitive
+INFO  : slf4j-api       transitively enabled
+INFO  : logback-impl    transitively enabled
+INFO  : slf4j-logback   transitively enabled
+INFO  : logging-logback initialized in ${jetty.base}/start.d/logging-logback.ini
+INFO  : resources       transitively enabled
+MKDIR : ${jetty.base}/lib/slf4j
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
+MKDIR : ${jetty.base}/lib/logback
 DOWNLOAD: http://central.maven.org/maven2/ch/qos/logback/logback-core/1.1.7/logback-core-1.1.7.jar to ${jetty.base}/lib/logback/logback-core-1.1.7.jar
+MKDIR : ${jetty.base}/resources
+COPY  : ${jetty.home}/modules/logback/logback.xml to ${jetty.base}/resources/logback.xml
+MKDIR : ${jetty.base}/logs
 DOWNLOAD: http://central.maven.org/maven2/ch/qos/logback/logback-classic/1.1.7/logback-classic-1.1.7.jar to ${jetty.base}/lib/logback/logback-classic-1.1.7.jar
-INFO : Base directory was modified
+INFO  : Base directory was modified
 
-$ tree
+[my-base]$ tree
 .
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; logback
@@ -249,11 +293,13 @@ $ tree
 &#9474;&nbsp;&nbsp; &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; logback-core-1.1.7.jar
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-api-1.7.21.jar
+&#9500;&#9472;&#9472; logs
 &#9500;&#9472;&#9472; resources
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; logback.xml
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-logback.ini</pre></div><p>At this point Jetty is configured so that the Jetty server itself will log using Logback, using the Logback configuration found in <code class="literal">{$jetty.base}/resources/logback.xml</code>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_logging_with_java_util_logging"></a>Logging with Java Util Logging</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="example-logging-java-util-logging"></a>Java Util Logging with SLF4J</h4></div></div></div><p>It is possible to have the Jetty Server logging configured so that <code class="literal">java.util.logging</code> controls the output of logging events produced by Jetty.</p><p>This example demonstrates how to configuring Jetty for logging to <code class="literal">java.util.logging</code> via <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for java.util.logging</a>.
-If you want to use the built-in native <code class="literal">java.util.logging</code> implementation, see Native Java Util Logging.</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-jul
+    &#9492;&#9472;&#9472; logging-logback.ini</pre></div><p>At this point Jetty is configured so that the Jetty server itself will log using Logback, using the Logback configuration found in <code class="literal">{$jetty.base}/resources/logback.xml</code>.
+Log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_logging_with_java_util_logging"></a>Logging with Java Util Logging</h3></div></div></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="example-logging-java-util-logging"></a>Java Util Logging with SLF4J</h4></div></div></div><p>It is possible to have the Jetty Server logging configured so that <code class="literal">java.util.logging</code> controls the output of logging events produced by Jetty.</p><p>This example demonstrates how to configuring Jetty for logging to <code class="literal">java.util.logging</code> via <a class="link" href="http://slf4j.org/manual.html" target="_top">Slf4j</a> and the <a class="link" href="http://slf4j.org/manual.html#swapping" target="_top">Slf4j binding layer for java.util.logging</a>.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-jul
 
 ALERT: There are enabled module(s) with licenses.
 The following 1 module(s):
@@ -283,22 +329,34 @@ The following 1 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : slf4j-jul       transitive
-INFO : logging-jul     initialized in ${jetty.base}/start.d/logging-jul.ini
+INFO  : jul-impl        transitively enabled
+INFO  : slf4j-api       transitively enabled
+INFO  : slf4j-jul       transitively enabled
+INFO  : logging-jul     initialized in ${jetty.base}/start.d/logging-jul.ini
+INFO  : resources       transitively enabled
+MKDIR : ${jetty.base}/etc
+COPY  : ${jetty.home}/modules/jul-impl/java-util-logging.properties to ${jetty.base}/etc/java-util-logging.properties
+MKDIR : ${jetty.base}/logs
+MKDIR : ${jetty.base}/lib/slf4j
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-jdk14/1.7.21/slf4j-jdk14-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-jdk14-1.7.21.jar
-INFO : Base directory was modified
+MKDIR : ${jetty.base}/resources
+INFO  : Base directory was modified
 
-$ tree
+[my-base]$ tree
 .
+&#9500;&#9472;&#9472; etc
+&#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; java-util-logging.properties
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9500;&#9472;&#9472; slf4j-api-1.7.21.jar
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-jdk14-1.7.21.jar
+&#9500;&#9472;&#9472; logs
+&#9500;&#9472;&#9472; resources
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-jul.ini</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_logging_with_java_commons_logging"></a>Logging with Java Commons Logging</h3></div></div></div><p>Jetty provides support of the Java Commons Logging (jcl) through the <code class="literal">logging-jcl</code> module, using Slf4j as a bridge.
-This can be enabled as shown below:</p><div class="screenexample"><pre class="screen">$ java -jar ../start.jar --add-to-start=logging-jcl
+    &#9492;&#9472;&#9472; logging-jul.ini</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="example-logging-java-commons-logging"></a>Logging with Java Commons Logging</h3></div></div></div><p>Jetty provides support of the Java Commons Logging (jcl) through the <code class="literal">logging-jcl</code> module, using Slf4j as a binding.
+This is enabled by activating the <code class="literal">logging-jcl</code> module.
+By default, log files will be stored in <code class="literal">${jetty.base}/logs</code>.</p><div class="screenexample"><pre class="screen">[my-base]$ java -jar ../start.jar --add-to-start=logging-jcl
 
 ALERT: There are enabled module(s) with licenses.
 The following 2 module(s):
@@ -332,16 +390,18 @@ The following 2 module(s):
   + WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Proceed (y/N)? y
-INFO : slf4j-api       transitive, ini template available with --add-to-start=slf4j-api
-INFO : jcl-impl        transitive, ini template available with --add-to-start=jcl-impl
-INFO : slf4j-jcl       transitive
+INFO : slf4j-api       transitively enabled
+INFO : jcl-impl        transitively enabled
+INFO : resources       transitively enabled
+INFO : slf4j-jcl       transitively enabled
 INFO : logging-jcl     initialized in ${jetty.base}/start.d/logging-jcl.ini
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-api-1.7.21.jar
 DOWNLOAD: http://central.maven.org/maven2/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar to ${jetty.base}/lib/jcl/commons-logging-1.1.3.jar
+MKDIR: ${jetty.base}/logs
 DOWNLOAD: http://central.maven.org/maven2/org/slf4j/slf4j-jcl/1.7.21/slf4j-jcl-1.7.21.jar to ${jetty.base}/lib/slf4j/slf4j-jcl-1.7.21.jar
 INFO : Base directory was modified
 
-$ tree
+[my-base]$ tree
 .
 &#9500;&#9472;&#9472; lib
 &#9474;&nbsp;&nbsp; &#9500;&#9472;&#9472; jcl
@@ -349,13 +409,16 @@ $ tree
 &#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; slf4j
 &#9474;&nbsp;&nbsp;     &#9500;&#9472;&#9472; slf4j-api-1.7.21.jar
 &#9474;&nbsp;&nbsp;     &#9492;&#9472;&#9472; slf4j-jcl-1.7.21.jar
+&#9500;&#9472;&#9472; logs
+&#9500;&#9472;&#9472; resources
+&#9474;&nbsp;&nbsp; &#9492;&#9472;&#9472; commons-logging.properties
 &#9492;&#9472;&#9472; start.d
-    &#9500;&#9472;&#9472; logging-jcl.ini</pre></div></div></div><script type="text/javascript">
+    &#9492;&#9472;&#9472; logging-jcl.ini</pre></div></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-jetty-request-logs.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-logging.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="example-logging-logback-centralized.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Configuring Jetty Request Logs&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Example: Centralized Logging with Logback</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-10-18)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2016-10-20)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
