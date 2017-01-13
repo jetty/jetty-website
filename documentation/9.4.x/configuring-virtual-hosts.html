@@ -24,11 +24,11 @@ For example if the non-ASCII domain name <code class="literal">www.&#8730;integr
 Lets look at an example where we configure a web application - represented by the <a class="link" href="http://download.eclipse.org/jetty/stable-9/apidocs/org/eclipse/jetty/webapp/WebAppContext.html" target="_top">WebAppContext</a> class - with virtual hosts.
 You supply a list of IP addresses and names at which the web application is reachable, such as the following:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">333.444.555.666</code></li><li class="listitem"><code class="literal">127.0.0.1</code></li><li class="listitem"><code class="literal">www.blah.com</code></li><li class="listitem"><code class="literal">www.blah.net</code></li><li class="listitem"><code class="literal">www.blah.org</code></li></ul></div><p>Suppose you have a webapp called <code class="literal">blah.war</code>, that you want all of the above names and addresses to be served at path "<code class="literal">/blah</code>".
 Here&#8217;s how you would configure the virtual hosts with a <a class="link" href="configuring-specific-webapp-deployment.html#deployable-descriptor-file" title="Jetty Deployable Descriptor XML File">context XML</a> file:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
 
 &lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/blah&lt;/Set&gt;
-  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/webapps/blah.war&lt;/Set&gt;
+  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;blah.war&lt;/Set&gt;
   &lt;Set name="virtualHosts"&gt;
     &lt;Array type="java.lang.String"&gt;
       &lt;Item&gt;333.444.555.666&lt;/Item&gt;
@@ -39,11 +39,11 @@ Here&#8217;s how you would configure the virtual hosts with a <a class="link" hr
     &lt;/Array&gt;
   &lt;/Set&gt;
 &lt;/Configure&gt;</code></pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="different-virtual-hosts-different-contexts"></a>Using Different Sets of Virtual Hosts to Select Different Contexts</h3></div></div></div><p>You can configure different contexts to respond on different virtual hosts by supplying a specific list of virtual hosts for each one.</p><p>For example, suppose your imaginary machine has these DNS names:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">www.blah.com</code></li><li class="listitem"><code class="literal">www.blah.net</code></li><li class="listitem"><code class="literal">www.blah.org</code></li><li class="listitem"><code class="literal">www.other.com</code></li><li class="listitem"><code class="literal">www.other.net</code></li><li class="listitem"><code class="literal">www.other.org</code></li></ul></div><p>Suppose also you have 2 webapps, one called <code class="literal">blah.war</code> that you would like served from the <code class="literal">*.blah.*</code> names, and one called <code class="literal">other.war</code> that you want served only from the <code class="literal">*.other.*</code> names.</p><p>Using the method of preparing <a class="link" href="configuring-specific-webapp-deployment.html#deployable-descriptor-file" title="Jetty Deployable Descriptor XML File">contextXML</a> files, one for each webapp yields the following:</p><p>For <code class="literal">blah</code> webapp:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
 
 &lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/blah&lt;/Set&gt;
-  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/webapps/blah.war&lt;/Set&gt;
+  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/blah.war&lt;/Set&gt;
   &lt;Set name="virtualHosts"&gt;
     &lt;Array type="java.lang.String"&gt;
       &lt;Item&gt;www.blah.com&lt;/Item&gt;
@@ -52,11 +52,11 @@ Here&#8217;s how you would configure the virtual hosts with a <a class="link" hr
     &lt;/Array&gt;
   &lt;/Set&gt;
 &lt;/Configure&gt;</code></pre><p>These URLs now resolve to the blah context (ie <code class="literal">blah.war</code>):</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">http://www.blah.com/blah</code></li><li class="listitem"><code class="literal">http://www.blah.net/blah</code></li><li class="listitem"><code class="literal">http://www.blah.org/blah</code></li></ul></div><p>For <code class="literal">other</code> webapp:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
 
 &lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/other&lt;/Set&gt;
-  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/webapps/other.war&lt;/Set&gt;
+  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/other.war&lt;/Set&gt;
   &lt;Set name="virtualHosts"&gt;
     &lt;Array type="java.lang.String"&gt;
       &lt;Item&gt;www.other.com&lt;/Item&gt;
@@ -67,11 +67,11 @@ Here&#8217;s how you would configure the virtual hosts with a <a class="link" hr
 &lt;/Configure&gt;</code></pre><p>These URLs now resolve to the other context (i.e. <code class="literal">other.war</code>):</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">http://www.other.com/other</code></li><li class="listitem"><code class="literal">http://www.other.net/other</code></li><li class="listitem"><code class="literal">http://www.other.org/other</code></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="different-virtual-hosts-different-context-same-path"></a>Using Different Sets of Virtual Hosts to Select Different Contexts at the Same Context Path</h3></div></div></div><p>In the previous section we setup 2 different contexts to be served from different virtual hosts at <span class="emphasis"><em>different</em></span> context paths.
 However, there is no requirement that the context paths must be distinct: you may use the same context path for multiple contexts, and use virtual hosts to determine which one is served for a given request.</p><p>Consider an example where we have the same set of DNS names as before, and the same webapps <code class="literal">blah.war</code> and <code class="literal">other.war</code>. We still want <code class="literal">blah.war</code> to be served in response to hostnames of <code class="literal">*.blah.*</code>, and we still want <code class="literal">other.war</code> to be served in response to <code class="literal">*.other.*</code> names.
 However, we would like<span class="emphasis"><em>all</em></span> of our clients to use the <code class="literal">"/"</code> context path, no matter which context is being targeted.</p><p>In other words, we want all of the following URLs to map to <code class="literal">blah.war</code>:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">http://www.blah.com/</code></li><li class="listitem"><code class="literal">http://www.blah.net/</code></li><li class="listitem"><code class="literal">http://www.blah.org/</code></li></ul></div><p>Similarly, we want the following URLs to map to <code class="literal">other.war</code>:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><code class="literal">http://www.other.com/</code></li><li class="listitem"><code class="literal">http://www.other.net/</code></li><li class="listitem"><code class="literal">http://www.other.org/</code></li></ul></div><p>To achieve this, we simply use the same context path of <code class="literal">/</code> for each of our webapps, while still applying our different set of virtual host names.</p><p>For foo webapp:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
 
 &lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/&lt;/Set&gt;
-  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/webapps/foo.war&lt;/Set&gt;
+  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/foo.war&lt;/Set&gt;
   &lt;Set name="virtualHosts"&gt;
     &lt;Array type="java.lang.String"&gt;
       &lt;Item&gt;www.blah.com&lt;/Item&gt;
@@ -80,11 +80,11 @@ However, we would like<span class="emphasis"><em>all</em></span> of our clients 
     &lt;/Array&gt;
   &lt;/Set&gt;
 &lt;/Configure&gt;</code></pre><p>For bar webapp:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd"&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
 
 &lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/&lt;/Set&gt;
-  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/webapps/bar.war&lt;/Set&gt;
+  &lt;Set name="war"&gt;&lt;Property name="jetty.webapps"/&gt;/bar.war&lt;/Set&gt;
   &lt;Set name="virtualHosts"&gt;
     &lt;Array type="java.lang.String"&gt;
       &lt;Item&gt;www.other.com&lt;/Item&gt;
@@ -97,7 +97,7 @@ However, we would like<span class="emphasis"><em>all</em></span> of our clients 
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-contexts.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-contexts.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="ref-temporary-directories.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;5.&nbsp;Configuring Contexts&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Temporary Directories</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2017-01-10)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2017-01-12)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
