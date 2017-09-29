@@ -68,7 +68,7 @@ Here&#8217;s an example of an xml file that defines an in-memory type of LoginSe
       &lt;New class="org.eclipse.jetty.security.HashLoginService"&gt;
         &lt;Set name="name"&gt;Test Realm&lt;/Set&gt;
         &lt;Set name="config"&gt;&lt;SystemProperty name="jetty.home" default="."/&gt;/etc/realm.properties&lt;/Set&gt;
-        &lt;Set name="refreshInterval"&gt;0&lt;/Set&gt;
+        &lt;Set name="hotReload"&gt;true&lt;/Set&gt;
       &lt;/New&gt;
     &lt;/Arg&gt;
   &lt;/Call&gt;
@@ -106,11 +106,10 @@ guest: guest,read-only</code></pre><p>You configure the <code class="literal">Ha
   &lt;Set name="name"&gt;Test Realm&lt;/Set&gt;
   &lt;Set name="config"&gt;&lt;SystemProperty name="jetty.home" default="."/&gt;/etc/realm.properties&lt;/Set&gt;
 &lt;/New&gt;
-&lt;/Item&gt;</code></pre><p>You can also configure it to check the properties file regularly for changes and reload when changes are detected.
-The <code class="literal">reloadInterval</code> is in seconds:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;New class="org.eclipse.jetty.security.HashLoginService"&gt;
+&lt;/Item&gt;</code></pre><p>You can also configure it to reload the configuration file when changes to it are detected.</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;New class="org.eclipse.jetty.security.HashLoginService"&gt;
     &lt;Set name="name"&gt;Test Realm&lt;/Set&gt;
     &lt;Set name="config"&gt;&lt;SystemProperty name="jetty.home" default="."/&gt;/etc/realm.properties&lt;/Set&gt;
-    &lt;Set name="reloadInterval"&gt;5&lt;/Set&gt;
+    &lt;Set name="hotReload"&gt;true&lt;/Set&gt;
     &lt;Call name="start"&gt;&lt;/Call&gt;
   &lt;/New&gt;</code></pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="jdbc-login-service"></a>JDBCLoginService</h4></div></div></div><p>In this implementation, authentication and role information is stored in a database accessed via JDBC.
 A properties file defines the JDBC connection and database table information.
@@ -149,16 +148,60 @@ roles
 user:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">user_id</span></dt><dd>the unique identity of the user</dd><dt><span class="term">role_id</span></dt><dd>the role for a user</dd></dl></div></li><li class="listitem"><p class="simpara"><span class="strong"><strong>roles</strong></span> is a a table containing one role for every role in the system:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">id</span></dt><dd>the unique identifier of a role</dd><dt><span class="term">role</span></dt><dd>a human-readable name for a role</dd></dl></div></li></ul></div><p>If you want to use obfuscated, MD5 hashed or encrypted passwords the <code class="literal">pwd</code> column of the <code class="literal">users</code> table must be large enough to hold the obfuscated, hashed or encrypted password text plus the appropriate prefix.</p><p>You define a <code class="literal">JDBCLoginService</code> with the name of the realm and the location of the properties file describing the database:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;New class="org.eclipse.jetty.security.JDBCLoginService"&gt;
   &lt;Set name="name"&gt;Test JDBC Realm&lt;/Set&gt;
   &lt;Set name="config"&gt;etc/jdbcRealm.properties&lt;/Set&gt;
-&lt;/New&gt;</code></pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_authorization"></a>Authorization</h3></div></div></div><p>As far as the <a class="link" href="http://jcp.org/aboutJava/communityprocess/final/jsr340/" target="_top">Servlet Specification</a> is concerned, authorization is based on roles.
-As we have seen, a LoginService associates a user with a set of roles.
-When a user requests a resource that is access protected, the LoginService will be asked to authenticate the user if they are not already, and then asked to confirm if that user possesses one of the roles permitted access to the resource.</p><p>Until Servlet 3.1, role-based authorization could define:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access granted to a set of named roles</li><li class="listitem">Access totally forbidden, regardless of role</li><li class="listitem">Access granted to a user in any of the roles defined in the effective web.xml.
-This is indicated by the special value of <code class="literal">*</code> for the <code class="literal">&lt;role-name&gt;</code> of a <code class="literal">&lt;auth-constraint&gt;</code> in the <code class="literal">&lt;security-constraint&gt;</code></li></ul></div><p>With the advent of Servlet 3.1, there is now another authorization:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access granted to any user who is authenticated, regardless of roles.
-This is indicated by the special value of <code class="literal">**</code> for the <code class="literal">&lt;role-name&gt;</code> of a <code class="literal">&lt;auth-constraint&gt;</code> in the <code class="literal">&lt;security-constraint&gt;</code></li></ul></div></div></div><script type="text/javascript">
+&lt;/New&gt;</code></pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_authorization"></a>Authorization</h3></div></div></div><p>As far as the <a class="link" href="https://jcp.org/en/jsr/detail?id=340" target="_top">Servlet Specification</a> is concerned, authorization is based on roles.
+As we have seen, a <code class="literal">LoginService</code> associates a user with a set of roles.
+When a user requests a resource that is access protected, the <code class="literal">LoginService</code> will be asked to authenticate the user if they are not already, and then asked to confirm if that user possesses one of the roles permitted access to the resource.</p><p>Until Servlet 3.1, role-based authorization could define:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access granted to a set of named roles:</li></ul></div><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;security-constraint&gt;
+  &lt;web-resource-collection&gt;
+    &lt;web-resource-name&gt;Foo Admin Data&lt;/web-resource-name&gt;
+    &lt;url-pattern&gt;/foo/admin/*&lt;/url-pattern&gt;
+  &lt;/web-resource-collection&gt;
+  &lt;auth-constraint&gt;
+    &lt;role-name&gt;admin&lt;/role-name&gt;
+    &lt;role-name&gt;manager&lt;/role-name&gt;
+  &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;</code></pre><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access totally forbidden, regardless of role:</li></ul></div><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;security-constraint&gt;
+  &lt;web-resource-collection&gt;
+    &lt;web-resource-name&gt;Foo Protected Data&lt;/web-resource-name&gt;
+    &lt;url-pattern&gt;/foo/protected/*&lt;/url-pattern&gt;
+  &lt;/web-resource-collection&gt;
+  &lt;auth-constraint&gt;
+  &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;</code></pre><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access granted to a user in any of the roles defined in the effective <code class="literal">web.xml</code>.
+This is indicated by the special value of <code class="literal">*</code> for the <code class="literal">&lt;role-name&gt;</code> of a <code class="literal">&lt;auth-constraint&gt;</code> in the <code class="literal">&lt;security-constraint&gt;</code>:</li></ul></div><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;security-constraint&gt;
+  &lt;web-resource-collection&gt;
+    &lt;web-resource-name&gt;Foo Role Data&lt;/web-resource-name&gt;
+    &lt;url-pattern&gt;/foo/role/*&lt;/url-pattern&gt;
+  &lt;/web-resource-collection&gt;
+  &lt;auth-constraint&gt;
+    &lt;role-name&gt;*&lt;/role-name&gt;
+  &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;</code></pre><p>Servlet 3.1 introduced an additional authorization:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Access granted to any user who is authenticated, regardless of roles.
+This is indicated by the special value of <code class="literal">**</code> for the <code class="literal">&lt;role-name&gt;</code> of a <code class="literal">&lt;auth-constraint&gt;</code> in the <code class="literal">&lt;security-constraint&gt;</code>:</li></ul></div><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;security-constraint&gt;
+  &lt;web-resource-collection&gt;
+    &lt;web-resource-name&gt;Foo Authenticated Data&lt;/web-resource-name&gt;
+    &lt;url-pattern&gt;/foo/authenticated/*&lt;/url-pattern&gt;
+  &lt;/web-resource-collection&gt;
+  &lt;auth-constraint&gt;
+    &lt;role-name&gt;**&lt;/role-name&gt;
+  &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;</code></pre><p>Additionally, when configuring your security constraints you can protect various HTTP methods as well, such as <code class="literal">PUT</code>, <code class="literal">GET</code>, <code class="literal">POST</code>, <code class="literal">HEAD</code> or <code class="literal">DELETE</code>.
+This is done by adding the method you want to protect as a <code class="literal">&lt;http-method&gt;</code> in the <code class="literal">&lt;web-resource-collection&gt;</code>.
+You can then define roles that should be able to perform these protected methods in an <code class="literal">&lt;auth-constraint&gt;</code>:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;security-constraint&gt;
+  &lt;web-resource-collection&gt;
+    &lt;web-resource-name&gt;Foo Authenticated Data&lt;/web-resource-name&gt;
+    &lt;url-pattern&gt;/foo/authenticated/*&lt;/url-pattern&gt;
+    &lt;http-method&gt;DELETE&lt;/http-method&gt;
+    &lt;http-method&gt;POST&lt;/http-method&gt;
+  &lt;/web-resource-collection&gt;
+  &lt;auth-constraint&gt;
+    &lt;role-name&gt;admin&lt;/role-name&gt;
+  &lt;/auth-constraint&gt;
+&lt;/security-constraint&gt;</code></pre><p>In the above example, only users with an <code class="literal">admin</code> role will be able to perform <code class="literal">DELETE</code> or <code class="literal">POST</code> methods.</p></div></div><script type="text/javascript">
       SyntaxHighlighter.all()
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="configuring-security.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="configuring-security.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="configuring-form-size.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;7.&nbsp;Configuring Security&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Limiting Form Content</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2017-09-23)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2017-09-28)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
