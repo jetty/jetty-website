@@ -3,7 +3,7 @@
    <title>Configuring the Jetty Maven Plugin</title><link rel="stylesheet" type="text/css" href="css/docbook.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><meta name="keywords" content="jetty, servlet, servlet-api, cometd, http, websocket, eclipse, maven, java, server, software"><link rel="home" href="index.html" title="Jetty"><link rel="up" href="maven-and-jetty.html" title="Chapter&nbsp;23.&nbsp;Maven and Jetty"><link rel="prev" href="maven-and-jetty.html" title="Chapter&nbsp;23.&nbsp;Maven and Jetty"><link rel="next" href="jetty-maven-scanning.html" title="Files Scanned by the Jetty Maven Plugin"><link xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" rel="shortcut icon" href="images/favicon.ico"><link rel="stylesheet" href="css/highlighter/foundation.css"><script src="js/highlight.pack.js"></script><script>
       hljs.initHighlightingOnLoad();
     </script><link type="text/css" rel="stylesheet" href="css/font-awesome/font-awesome.min.css"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><tr><td style="width: 25%"><a href="http://www.eclipse.org/jetty"><img src="images/jetty-header-logo.png" alt="Jetty Logo"></a><br><span style="font-size: small">
-            Version: 9.4.8-SNAPSHOT</span></td><td style="width: 50%"><script>
+            Version: 9.4.9-SNAPSHOT</span></td><td style="width: 50%"><script>
             (function() {
             var cx = '005120552842603642412:peimxy9z8nu';
             var gcse = document.createElement('script');
@@ -25,7 +25,7 @@ In order for the plugin to work it needs to leverage many internal Maven apis an
 We recommend either the traditional distribution deployment approach or using <a class="link" href="advanced-embedding.html" title="Chapter&nbsp;21.&nbsp;Embedding">embedded Jetty.</a></p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="get-up-and-running"></a>Quick Start: Get Up and Running</h3></div></div></div><p>First, add <code class="literal">jetty-maven-plugin</code> to your <code class="literal">pom.xml</code> definition:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
 &lt;/plugin&gt;</code></pre><p>Then, from the same directory as your root <code class="literal">pom.xml</code>, type:</p><div class="screenexample"><pre class="screen">mvn jetty:run</pre></div><p>This starts Jetty and serves up your project on <a class="link" href="http://localhost:8080/" target="_top">http://localhost:8080/</a>.</p><p>Jetty will continue to run until you stop it.
 While it runs it periodically scans for changes to your project files
 If you save changes and recompile your class files, Jetty redeploys your webapp, and you can instantly test the changes that were just made.</p><p>You can terminate the plugin with a <code class="literal">ctrl-c</code> in the terminal window where it is running.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>The classpath of the running Jetty instance and its deployed webapp are managed by Maven, and may not be exactly what you expect.
@@ -41,7 +41,7 @@ Alternatively, you can use this configuration element to set up the information 
 The following are the valid configuration sub-elements:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">port</span></dt><dd>The port number for the connector to listen on.
 By default it is 8080.</dd><dt><span class="term">host</span></dt><dd>The particular interface for the connector to listen on.
 By default, all interfaces.</dd><dt><span class="term">name</span></dt><dd>The name of the connector, which is useful for <a class="link" href="serving-webapp-from-particular-port.html" title="Serving a WebApp from a Particular Port/Connector">configuring contexts to respond only on particular connectors</a>.</dd><dt><span class="term">idleTimeout</span></dt><dd>Maximum idle time for a connection.</dd><dt><span class="term">soLinger</span></dt><dd><p class="simpara">The socket linger time.</p><p class="simpara">You could instead configure the connectors in a standard <a class="link" href="jetty-xml-config.html" title="jetty.xml">jetty xml config file</a> and put its location into the <code class="literal">jettyXml</code> parameter.
-Note that since jetty-9.0 it is no longer possible to configure a <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">https connector</a> directly in the pom.xml: you need to <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">use jetty xml config files to do it</a>.</p></dd></dl></div></dd><dt><span class="term">jettyXml</span></dt><dd>Optional.
+Note that since Jetty 9.0 it is no longer possible to configure a <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">https connector</a> directly in the pom.xml: you need to <a class="link" href="jetty-maven-plugin.html#maven-config-https" title="Configuring a Https Connector">use jetty xml config files to do it</a>.</p></dd></dl></div></dd><dt><span class="term">jettyXml</span></dt><dd>Optional.
 A comma separated list of locations of Jetty xml files to apply in addition to any plugin configuration parameters.
 You might use it if you have other webapps, handlers, specific types of connectors etc., to deploy, or if you have other Jetty objects that you cannot configure from the plugin.</dd><dt><span class="term">scanIntervalSeconds</span></dt><dd>The pause in seconds between sweeps of the webapp to check for changes and automatically hot redeploy if any are detected.
 <span class="strong"><strong>By default this is 0, which disables hot deployment scanning.</strong></span>
@@ -199,7 +199,7 @@ Here&#8217;s the <code class="literal">jetty-ssl.xml</code> file from the jetty-
 &lt;/Configure&gt;</code></pre></dd></dl></div><p>Now you need to let the plugin know to apply the files above:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;jettyXml&gt;jetty.xml,jetty-ssl.xml,jetty-https.xml&lt;/jettyXml&gt;
   &lt;/configuration&gt;
@@ -235,7 +235,7 @@ Here we use the same <code class="literal">jetty-http.xml</code> file from the J
             &lt;Item&gt;
               &lt;New class="org.eclipse.jetty.server.HttpConnectionFactory"&gt;
                 &lt;Arg name="config"&gt;&lt;Ref refid="httpConfig" /&gt;&lt;/Arg&gt;
-                &lt;Arg name="compliance"&gt;&lt;Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf"&gt;&lt;Arg&gt;&lt;Property name="jetty.http.compliance" default="RFC7230"/&gt;&lt;/Arg&gt;&lt;/Call&gt;&lt;/Arg&gt;
+                &lt;Arg name="compliance"&gt;&lt;Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf"&gt;&lt;Arg&gt;&lt;Property name="jetty.http.compliance" default="RFC7230_LEGACY"/&gt;&lt;/Arg&gt;&lt;/Call&gt;&lt;/Arg&gt;
               &lt;/New&gt;
             &lt;/Item&gt;
           &lt;/Array&gt;
@@ -257,7 +257,7 @@ Here we use the same <code class="literal">jetty-http.xml</code> file from the J
 &lt;/Configure&gt;</code></pre><p>Now we add it to the list of configs for the plugin to apply:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;jettyXml&gt;jetty.xml,jetty-http.xml,jetty-ssl.xml,jetty-https.xml&lt;/jettyXml&gt;
   &lt;/configuration&gt;
@@ -283,11 +283,11 @@ It looks for the constituent parts of a webapp in the Maven default project loca
 For example, by default it looks for:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">resources in <code class="literal">${project.basedir}/src/main/webapp</code></li><li class="listitem">classes in <code class="literal">${project.build.outputDirectory}</code></li><li class="listitem"><code class="literal">web.xml</code> in <code class="literal">${project.basedir}/src/main/webapp/WEB-INF/</code></li></ul></div><p>The plugin automatically ensures the classes are rebuilt and up-to-date before deployment.
 If you change the source of a class and your IDE automatically compiles it in the background, the plugin picks up the changed class.</p><p>You do not need to assemble the webapp into a WAR, saving time during the development cycle.
 Once invoked, you can configure the plugin to run continuously, scanning for changes in the project and automatically performing a hot redeploy when necessary.
-Any changes you make are immediately reflected in the running instance of Jetty, letting you quickly jump from coding to testing, rather than going through the cycle of: code, compile, reassemble, redeploy, test.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>As of jetty-9.4.7, when using jetty:run in a multi-module build, it is no longer necessary to build each of the modules that form dependencies of the webapp first.
+Any changes you make are immediately reflected in the running instance of Jetty, letting you quickly jump from coding to testing, rather than going through the cycle of: code, compile, reassemble, redeploy, test.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>As of Jetty 9.4.7, when using jetty:run in a multi-module build, it is no longer necessary to build each of the modules that form dependencies of the webapp first.
 Thus, if your webapp depends on other modules in your project and they are present in the reactor at the same time, jetty will use their compiled classes rather than their jar files from your local maven repository.</p></div></blockquote></div><p>Here is an example, which turns on scanning for changes every ten seconds, and sets the webapp context path to <code class="literal">/test</code>:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;
     &lt;webApp&gt;
@@ -316,7 +316,7 @@ Patterns are specified as a relative path using a glob-like syntax as described 
     &lt;plugin&gt;
       &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
       &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-      &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+      &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
       &lt;configuration&gt;
         &lt;webAppSourceDirectory&gt;${project.basedir}/src/staticfiles&lt;/webAppSourceDirectory&gt;
         &lt;webApp&gt;
@@ -360,7 +360,7 @@ If this is not sufficient, set it to your custom location.</dd></dl></div><p>Her
     &lt;plugin&gt;
       &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
       &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-      &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+      &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
       &lt;configuration&gt;
         &lt;war&gt;${project.basedir}/target/mycustom.war&lt;/war&gt;
       &lt;/configuration&gt;
@@ -375,7 +375,7 @@ This defaults to <code class="literal">${project.build.directory}/${project.buil
     &lt;plugin&gt;
       &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
       &lt;artifactId&gt;maven-jetty-plugin&lt;/artifactId&gt;
-      &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+      &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
       &lt;configuration&gt;
         &lt;war&gt;${project.basedir}/target/myfunkywebapp&lt;/war&gt;
       &lt;/configuration&gt;
@@ -391,7 +391,7 @@ Alternatively, you can set this parameter to false, in which case Jetty will blo
   &lt;plugin&gt;
     &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
     &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-    &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
     &lt;configuration&gt;
       &lt;war&gt;/opt/special/some-app.war&lt;/war&gt;
       &lt;stopKey&gt;alpha&lt;/stopKey&gt;
@@ -436,9 +436,9 @@ To define custom connectors use a jetty xml file instead.</dd><dt><span class="t
 To define LoginServices use a jetty xml or context xml file instead.</dd><dt><span class="term">requestLog</span></dt><dd>Not supported.
 To define a RequestLog setup, use a jetty xml or context xml file instead.</dd><dt><span class="term">systemProperties</span></dt><dd>Not supported.
 Use the <code class="literal">jvmArgs</code> parameter to pass system properties to the forked process.</dd></dl></div><p>To deploy your unassembled web app to Jetty running in a new JVM:</p><div class="screenexample"><pre class="screen">mvn jetty:run-forked</pre></div><p>Jetty continues to execute until you either:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">Press <code class="literal">ctrl-c</code> in the terminal window to stop the plugin, which also stops the forked JVM (only if you started with <code class="literal">waitForChild=true</code>)</li><li class="listitem">Use <code class="literal">jetty:stop</code> to stop the forked JVM, which also stops the plugin.</li></ul></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>If you want to set a custom port for the Jetty connector you need to specify it in a <code class="literal">jetty xml</code> file rather than setting the connector and port tags.
-You can specify the location of the <code class="literal">jetty.xml</code> using the <code class="literal">jettyXml</code> parameter.</p></div></blockquote></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-run-distro-goal"></a>jetty:run-distro</h3></div></div></div><p>Introduced in jetty-9.4.8, this goal allows you to execute your unassembled webapp in a local distribution of jetty.
+You can specify the location of the <code class="literal">jetty.xml</code> using the <code class="literal">jettyXml</code> parameter.</p></div></blockquote></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-run-distro-goal"></a>jetty:run-distro</h3></div></div></div><p>Introduced in Jetty 9.4.8, this goal allows you to execute your unassembled webapp in a local distribution of Jetty.
 This can be useful if your webapp requires a highly customized environment in which to run.
-If your webapp is designed to run in the jetty distribution in production, then this goal is the closest approximation to that environment.</p><p>Similar to the jetty:run-forked goal, this goal will fork a child process in which to execute your webapp in the distro.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_configuration_4"></a>Configuration</h4></div></div></div><p>The configuration parameters are mostly the same as the <code class="literal">jetty:run</code> goal (although see below for some exceptions), with the addition of:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">jettyBase</span></dt><dd>Optional.
+If your webapp is designed to run in the jetty distribution in production, then this goal is the closest approximation to that environment.</p><p>Similar to the <code class="literal">jetty:run-forked</code> goal, this goal will fork a child process in which to execute your webapp in the distro.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_configuration_4"></a>Configuration</h4></div></div></div><p>The configuration parameters are mostly the same as the <code class="literal">jetty:run</code> goal (although see below for some exceptions), with the addition of:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">jettyBase</span></dt><dd>Optional.
 The location of an existing jetty base directory to use to deploy the webapp.
 The existing base will be copied to the <code class="literal">target/</code> directory before the webapp is deployed.
 If there is no existing jetty base, a fresh one will be made in <code class="literal">target/jetty-base</code>.</dd><dt><span class="term">jettyHome</span></dt><dd>Optional.
@@ -453,7 +453,7 @@ If <code class="literal">false</code>, the parent does not wait for the child to
 To stop the asynchronously executing child process you can use <code class="literal">jetty:stop</code>.</dd><dt><span class="term">maxChildChecks</span></dt><dd>Default value 10.
 This is the maximum number of times the parent will check to see if the child started correctly when <code class="literal">waitForChild</code> is <code class="literal">false</code>.</dd><dt><span class="term">maxChildCheckInterval</span></dt><dd>Default value 100.
 This is the interval in milliseconds between checks to see if the child started correctly.
-Only applicable if <code class="literal">waitForChild</code> is <code class="literal">false</code>.</dd></dl></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>Use the <code class="literal">modules</code> parameter to configure the jetty distribution appropriately rather than using jetty artifacts as <code class="literal">plugin dependencies</code>.</p></div></blockquote></div><p>The following <code class="literal">jetty:run</code> parameters are <span class="strong"><strong>NOT</strong></span> applicable to this goal:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><span class="strong"><strong>scanTargets</strong></span></li><li class="listitem"><span class="strong"><strong>scanTargetPatterns</strong></span></li><li class="listitem"><span class="strong"><strong>scanClassesPattern</strong></span></li><li class="listitem"><span class="strong"><strong>scanTestClassesPattern</strong></span></li></ul></div><p>The following container configuration options are <span class="strong"><strong>NOT</strong></span> applicable for this goal:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">scanIntervalSeconds</span></dt><dd>Not supported.
+Only applicable if <code class="literal">waitForChild</code> is <code class="literal">false</code>.</dd></dl></div><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>Use the <code class="literal">modules</code> parameter to configure the Jetty distribution appropriately rather than using jetty artifacts as <code class="literal">plugin dependencies</code>.</p></div></blockquote></div><p>The following <code class="literal">jetty:run</code> parameters are <span class="strong"><strong>NOT</strong></span> applicable to this goal:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><span class="strong"><strong>scanTargets</strong></span></li><li class="listitem"><span class="strong"><strong>scanTargetPatterns</strong></span></li><li class="listitem"><span class="strong"><strong>scanClassesPattern</strong></span></li><li class="listitem"><span class="strong"><strong>scanTestClassesPattern</strong></span></li></ul></div><p>The following container configuration options are <span class="strong"><strong>NOT</strong></span> applicable for this goal:</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">scanIntervalSeconds</span></dt><dd>Not supported.
 This goal will not monitor and redeploy the webapp.</dd><dt><span class="term">reload</span></dt><dd>Not supported.
 This goal will not redeploy the webapp.</dd><dt><span class="term">httpConnector</span></dt><dd>Not supported.
 Use the <code class="literal">modules</code> parameter to enable appropriate modules, or the <code class="literal">jettyBase</code> parameter to point to an appropriately configured jetty base.</dd><dt><span class="term">loginServices</span></dt><dd>Not supported.
@@ -466,7 +466,7 @@ Use the <code class="literal">jvmArgs</code> parameter to pass system properties
   &lt;plugin&gt;
     &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
     &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-    &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+    &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
     &lt;configuration&gt;
       &lt;stopKey&gt;alpha&lt;/stopKey&gt;
       &lt;stopPort&gt;9099&lt;/stopPort&gt;
@@ -476,6 +476,7 @@ Use the <code class="literal">jvmArgs</code> parameter to pass system properties
       &lt;modules&gt;
        &lt;module&gt;apache-jsp&lt;/module&gt;
        &lt;module&gt;apache-jstl&lt;/module&gt;
+       &lt;module&gt;jmx&lt;/module&gt;
       &lt;/modules&gt;
       &lt;jettyProperties&gt;
         &lt;jettyProperty&gt;jetty.server.dumpAfterStart=true&lt;/jettyProperty&gt;
@@ -488,14 +489,15 @@ Use the <code class="literal">jvmArgs</code> parameter to pass system properties
     &lt;/plugin&gt;
 ...
   &lt;/plugins&gt;
-&lt;/project&gt;</code></pre><p>To deploy your unassembled web app to jetty running as a local distribution:</p><div class="screenexample"><pre class="screen">mvn jetty:run-distro</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-start-goal"></a>jetty:start</h3></div></div></div><p>This goal is for use with an execution binding in your <code class="literal">pom.xml</code>.
+&lt;/project&gt;</code></pre><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>When defining modules for this goal, use the standard <a class="link" href="startup-modules.html" title="Managing Startup Modules">Jetty module</a> names and not the name of the related Jetty sub-project.
+For example, in the configuration above support for JMX is configured by adding the <code class="literal">jmx</code> Jetty module and not the <code class="literal">jetty-jmx</code> sub-project.</p></div></blockquote></div><p>To deploy your unassembled web app to jetty running as a local distribution:</p><div class="screenexample"><pre class="screen">mvn jetty:run-distro</pre></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="jetty-start-goal"></a>jetty:start</h3></div></div></div><p>This goal is for use with an execution binding in your <code class="literal">pom.xml</code>.
 It is similar to the <code class="literal">jetty:run</code> goal, however it does NOT first execute the build up until the <code class="literal">test-compile</code> phase to ensure that all necessary classes and files of the webapp have been generated.
 This is most useful when you want to control the start and stop of Jetty via execution bindings in your <code class="literal">pom.xml</code>.</p><p>For example, you can configure the plugin to start your webapp at the beginning of your unit tests and stop at the end.
 To do this, you need to set up a couple of <code class="literal">execution</code> scenarios for the Jetty plugin.
 You use the <code class="literal">pre-integration-test</code> and <code class="literal">post-integration-test</code> Maven build phases to trigger the execution and termination of Jetty:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;
     &lt;stopKey&gt;foo&lt;/stopKey&gt;
@@ -526,7 +528,7 @@ That same port number and key will also be used by the other goals that start je
 If false or not specified, the plugin does not wait for confirmation but exits after issuing the stop command.</dd></dl></div><p>Here&#8217;s a configuration example:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;stopPort&gt;9966&lt;/stopPort&gt;
     &lt;stopKey&gt;foo&lt;/stopKey&gt;
@@ -570,7 +572,7 @@ WebAppY:
  /WEB-INF/special.xml</code></pre><p>They are configured for the <a class="link" href="http://maven.apache.org/plugins/maven-war-plugin/overlays.html" target="_top">maven-war-plugin</a>:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
   &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;overlays&gt;
       &lt;overlay&gt;
@@ -623,7 +625,7 @@ WebAppY:
 Here&#8217;s an example of setting up the HashLoginService for a webapp:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;
     &lt;webApp&gt;
@@ -649,7 +651,7 @@ It&#8217;s a lot like the overlaid war situation, but without the war.</p><p>Her
 If you want to deploy webapp A, and webapps B and C in the same Jetty instance:</p><p>Putting the configuration in webapp A&#8217;s <code class="literal">pom.xml</code>:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;
     &lt;webApp&gt;
@@ -688,7 +690,7 @@ Copy the <code class="literal">jetty.xml</code> file from the Jetty distribution
 &lt;/Ref&gt;</code></pre><p>Then configure the location of this <code class="literal">jetty.xml</code> file into webapp A&#8217;s jetty plugin:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;plugin&gt;
   &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
   &lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;
-  &lt;version&gt;9.4.8-SNAPSHOT&lt;/version&gt;
+  &lt;version&gt;9.4.9-SNAPSHOT&lt;/version&gt;
   &lt;configuration&gt;
     &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;
     &lt;webApp&gt;
@@ -762,7 +764,7 @@ System properties you specify in this way <span class="strong"><strong>do not</s
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="maven-and-jetty.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="maven-and-jetty.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="jetty-maven-scanning.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;23.&nbsp;Maven and Jetty&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Files Scanned by the Jetty Maven Plugin</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2017-11-29)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-01-24)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
