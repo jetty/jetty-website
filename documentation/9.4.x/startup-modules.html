@@ -63,10 +63,6 @@ System Properties:
 Properties:
 -----------
  java.version = 1.8.0_92
- java.version.major = 1
- java.version.minor = 8
- java.version.revision = 0
- java.version.update = 92
 
 Jetty Server Classpath:
 -----------------------
@@ -124,10 +120,6 @@ System Properties:
 Properties:
 -----------
  java.version = 1.8.0_92
- java.version.major = 1
- java.version.minor = 8
- java.version.revision = 0
- java.version.update = 92
 
 Jetty Server Classpath:
 -----------------------
@@ -209,7 +201,10 @@ INFO : Base directory was modified
     &#9492;&#9472;&#9472; start.ini</pre></div><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-asterisk" aria-hidden="true"></i> Note</h3><p>It is <span class="strong"><strong>not</strong></span> recommended to use both a <code class="literal">${jetty.base}/start.ini</code> file and a <code class="literal">${jetty.base}/start.d</code> directory at the same time and doing so can cause issues.</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="startup-configuring-modules"></a>Configuring Modules</h3></div></div></div><p>Once a module has been enabled for the server, it can be further configured to meet your needs.
 This is done by editing the associated ini file for the module.
 If your server setup is using a centralized ini configuration, you will edit the <code class="literal">${jetty.base}/server.ini</code> file.
-If you have elected to manage each module within it&#8217;s own ini file, you can find these files in the <code class="literal">${jetty.base}/start.d</code> directory.</p><p>When a module is activated, a number of properties are set by default.
+If you have elected to manage each module within it&#8217;s own ini file, you can find these files in the <code class="literal">${jetty.base}/start.d</code> directory.</p><div class="blockquote"><blockquote class="blockquote"><div xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title"><i class="fa fa-plus" aria-hidden="true"></i> Important</h3><p>It is important that you <span class="strong"><strong>do not</strong></span> modify the module files in the <code class="literal">$JETTY_HOME/modules</code> directory.
+$JETTY_HOME should always remain a standard of truth.
+If you want to make a change to an actual module file (not the values in its <code class="literal">ini-template</code>), either edit its associated <code class="literal">ini</code> file in the <code class="literal">$JETTY_BASE/start.d</code> directory or make a copy of the desired module file and copy it to the <code class="literal">$JETTY_BASE</code> directory and edit it there.
+The start.jar reads local <code class="literal">$JETTY_BASE/modules</code> files (if they exist) before scanning <code class="literal">$JETTY_HOME</code>.</p></div></blockquote></div><p>When a module is activated, a number of properties are set by default.
 To view these defaults, open up the associated ini file.
 Listed in the ini file is the associated module file and any properties that can be set.</p><p>Below is an example of the <code class="literal">requestlog.ini</code> file:</p><div class="screenexample"><pre class="screen"># ---------------------------------------
 # Module: requestlog
@@ -978,7 +973,7 @@ Modules for tag 'requestlog':
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="startup-classpath.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="startup.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="custom-modules.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Managing Server Classpath&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Custom Modules</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-03-13)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-03-15)</i></span></div></p><script xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times" type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-1149868-7']);
   _gaq.push(['_trackPageview']);
