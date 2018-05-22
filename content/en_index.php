@@ -12,7 +12,7 @@
 <div id="maincontent">
   <div id="midcolumn">
     <div style="text-align: center">
-      <img src="/images/jetty-logo-80x20.png" alt="Jetty Logo" />
+      <img src="images/jetty-logo-80x20.png" alt="Jetty Logo" />
     </div>
     <h2>What is the Eclipse Jetty Project?</h2>
     <p>Eclipse Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations. These components are open source and available for commercial use and distribution.</p>
