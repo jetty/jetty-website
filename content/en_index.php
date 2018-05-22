@@ -27,10 +27,9 @@
 </div>
 <div id="rightcolumn">
   <div class="sideitem">
-    <h6>Eclipse Jetty</h6>
+    <h6>Quick Links</h6>
     <div style="text-align: center">
-      <a href="/about.php"><img
-        src="/images/egg-incubation.png" alt="Incubation" /></a>
+      <a href="/projects/project_summary.php?projectid=rt.jetty">Project Summary</a>
     </div>
   </div>
 </div>
