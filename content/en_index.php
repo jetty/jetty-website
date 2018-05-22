@@ -25,7 +25,7 @@
     <p>You can benefit from committer knowledge and get training, consulting services, professional support and even production SLAs, just ask us about it!</p>
   </div>
 </div>
-<div id="rightcolumn">
+<div id="leftcolumn">
   <div class="sideitem">
     <h6>Quick Links</h6>
     <div style="text-align: center">
