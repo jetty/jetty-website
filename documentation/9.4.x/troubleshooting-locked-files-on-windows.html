@@ -10,46 +10,24 @@
       </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="troubleshooting-locked-files-on-windows"></a>Troubleshooting Locked Files on Windows</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#_remedy">Remedy</a></span></dt><dt><span class="section"><a href="troubleshooting-locked-files-on-windows.html#_alternate_remedy">Alternate Remedy</a></span></dt></dl></div><p>Jetty buffers static content for webapps such as HTML files, CSS files, images, etc.
 If you are using NIO connectors, Jetty uses memory-mapped files to do this.
 The problem is that on Windows, memory mapping a file causes the file to lock, so that you cannot update or replace the file.
-Effectively this means that you have to stop Jetty to update a file.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_remedy"></a>Remedy</h3></div></div></div><p>Jetty provides a configuration switch in the <code class="literal">webdefault.xml</code> file for the DefaultServlet that enables or disables the use of memory-mapped files.
-If you are running on Windows and are having file-locking problems, you should set this switch to disable memory-mapped file buffers.</p><p>The default <code class="literal">webdefault.xml</code> file is found in the jetty distribution under the <code class="literal">etc/</code> directory or in the <code class="literal">jetty-webapp-${VERSION}.jar</code> artifact at <code class="literal">org/eclipse/jetty/webapp/webdefault.xml</code>.
-Edit the file in the distribution or extract it to a convenient disk location and edit it to change <code class="literal">useFileMappedBuffer</code> to false.
-The easiest option is to simply edit the default file contained in the jetty distribution itself.</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;init-param&gt;
-   &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;
-   &lt;param-value&gt;true&lt;/param-value&gt; &lt;!-- change to false --&gt;
- &lt;/init-param&gt;</code></pre><p>Make sure to apply your custom <code class="literal">webdefault.xml</code> file to all of your webapps.
-You can do that by changing the configuration of the Deployment Manager in <code class="literal">etc/jetty-deploy.xml</code>.</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;Call id="webappprovider" name="addAppProvider"&gt;
-  &lt;Arg&gt;
-    &lt;New class="org.eclipse.jetty.deploy.providers.WebAppProvider"&gt;
-      .
-      .
-      &lt;!-- this should be the new custom webdefault.xml or change should be made in this file --&gt;
-      &lt;Set name="defaultsDescriptor"&gt;&lt;Property name="jetty.home" default="." /&gt;/etc/webdefault.xml&lt;/Set&gt;
-      &lt;Set name="scanInterval"&gt;1&lt;/Set&gt;
-      &lt;Set name="extractWars"&gt;true&lt;/Set&gt;
-      .
-      .
-    &lt;/New&gt;
-  &lt;/Arg&gt;
-&lt;/Call&gt;</code></pre><p>Alternatively, if you have individually configured your webapps with context xml files, you need to call the <code class="literal">WebAppContext.setDefaultsDescriptor(String path)</code> method:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;New id="myWebAppContext"  class="org.eclipse.jetty.webapp.WebAppContext"&gt;
-  &lt;Set name="contextPath"&gt;/&lt;/Set&gt;
-  &lt;Set name="war"&gt;./webapps/fredapp&lt;/Set&gt;
-  &lt;Set name="defaultsDescriptor"&gt;/home/fred/jetty/mywebdefaults.xml&lt;/Set&gt;
-  .
-  .
-&lt;/New&gt;</code></pre><p>Instead, you could redefine the DefaultServlet in your web.xml file, making sure to set useFileMappedBuffer to false:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;web-app ...&gt;
- ...
- &lt;servlet&gt;
-     &lt;servlet-name&gt;default&lt;/servlet-name&gt;
-     &lt;servlet-class&gt;org.eclipse.jetty.servlet.DefaultServlet&lt;/servlet-class&gt;
-     &lt;init-param&gt;
-       &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;
-       &lt;param-value&gt;false&lt;/param-value&gt;
-     &lt;/init-param&gt;
-     &lt;load-on-startup&gt;0&lt;/load-on-startup&gt;
-   &lt;/servlet&gt;
- ...
- &lt;/web-app&gt;</code></pre></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_alternate_remedy"></a>Alternate Remedy</h3></div></div></div><p>You can force a <code class="literal">WebAppContext</code> to always copy a web app directory on deployment.
-The base directory of your web app (ie the root directory where your static content exists) will be copied to the <a class="link" href="ref-temporary-directories.html" title="Temporary Directories">temp directory</a>.
+Effectively this means that you have to stop Jetty to update a file.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_remedy"></a>Remedy</h3></div></div></div><p>Jetty provides a configuration switch for the <code class="literal">DefaultServlet</code> that enables or disables the use of memory-mapped files.
+If you are running on Windows and are having file-locking problems, you should set this switch to disable memory-mapped file buffers.
+Use one of the following options to configure the switch.</p><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_using_override_web_xml"></a>Using override-web.xml</h4></div></div></div><p>An <a class="link" href="override-web-xml.html" title="Jetty override-web.xml">override-web.xml</a> file can be placed in your webapp&#8217;s <code class="literal">WEB-INF</code> directory to change the default setting of the <code class="literal">DefaultServlet</code> for memory-mapped file buffers.
+Create an <code class="literal">override-web.xml</code> file with appropriate headers for your version of the servlet specification, and place the following inside the <code class="literal">&lt;web-app&gt;</code> element:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code> &lt;servlet&gt;
+   &lt;servlet-name&gt;default&lt;/servlet-name&gt;
+   &lt;init-param&gt;
+     &lt;param-name&gt;useFileMappedBuffer&lt;/param-name&gt;
+     &lt;param-value&gt;false&lt;/param-value&gt;
+   &lt;/init-param&gt;
+ &lt;/servlet&gt;</code></pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_using_a_context_xml_file"></a>Using a Context XML File</h4></div></div></div><p>You can create or update a context xml file that configures your webapp to apply the setting to disable memory-mapped file buffers.
+Add the following to your context xml file:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>  &lt;Call name="setInitParameter"&gt;
+      &lt;Arg&gt;org.eclipse.jetty.servlet.Default.useFileMappedBuffer&lt;/Arg&gt;
+      &lt;Arg&gt;false&lt;/Arg&gt;
+  &lt;/Call&gt;</code></pre></div><div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="_using_the_jetty_maven_plugin"></a>Using the Jetty Maven Plugin</h4></div></div></div><p>If you don&#8217;t want to use either of the other two solutions, you can configure the plugin directly to disable memory-mapped file buffers.
+Add the following to the plugin&#8217;s configuration under the <code class="literal">&lt;webApp&gt;</code> element:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>  &lt;_initParams&gt;
+          &lt;org.eclipse.jetty.servlet.Default.useFileMappedBuffer&gt;false&lt;/org.eclipse.jetty.servlet.Default.useFileMappedBuffer&gt;
+  &lt;/_initParams&gt;</code></pre></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="_alternate_remedy"></a>Alternate Remedy</h3></div></div></div><p>You can force a <code class="literal">WebAppContext</code> to always copy a web app directory on deployment.
+The base directory of your web app (i.e. the root directory where your static content exists) will be copied to the <a class="link" href="ref-temporary-directories.html" title="Temporary Directories">temp directory</a>.
 Configure this in an xml file like so:</p><pre xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><code>&lt;New id="myWebAppContext"  class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/&lt;/Set&gt;
   &lt;Set name="war"&gt;./webapps/fredapp&lt;/Set&gt;
@@ -61,4 +39,4 @@ Configure this in an xml file like so:</p><pre xmlns:jfetch="java:org.eclipse.je
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="troubleshooting.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="troubleshooting.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="preventing-memory-leaks.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;33.&nbsp;Troubleshooting&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Preventing Memory Leaks</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-11-04)</i></span></div></p></body></html>
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-11-06)</i></span></div></p></body></html>
