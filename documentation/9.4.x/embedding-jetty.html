@@ -681,12 +681,13 @@ import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.rewrite.handler.RewriteHandler;
 import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.server.AsyncRequestLogWriter;
+import org.eclipse.jetty.server.CustomRequestLog;
 import org.eclipse.jetty.server.DebugListener;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.LowResourceMonitor;
-import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnectionStatistics;
@@ -856,14 +857,11 @@ public class LikeJettyXml
         server.setHandler(rewrite);
 
         // === jetty-requestlog.xml ===
-        NCSARequestLog requestLog = new NCSARequestLog();
-        requestLog.setFilename(jetty_home + "/logs/yyyy_mm_dd.request.log");
-        requestLog.setFilenameDateFormat("yyyy_MM_dd");
-        requestLog.setRetainDays(90);
-        requestLog.setAppend(true);
-        requestLog.setExtended(true);
-        requestLog.setLogCookies(false);
-        requestLog.setLogTimeZone("GMT");
+        AsyncRequestLogWriter logWriter = new AsyncRequestLogWriter(jetty_home + "/logs/yyyy_mm_dd.request.log");
+        CustomRequestLog requestLog = new CustomRequestLog(logWriter, CustomRequestLog.EXTENDED_NCSA_FORMAT + " \"%C\"");
+        logWriter.setFilenameDateFormat("yyyy_MM_dd");
+        logWriter.setRetainDays(90);
+        logWriter.setTimeZone("GMT");
         server.setRequestLog(requestLog);
 
 
@@ -894,4 +892,4 @@ public class LikeJettyXml
     </script><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="advanced-embedding.html"><i class="fa fa-chevron-left" aria-hidden="true"></i> Previous</a>&nbsp;</td><td width="20%" align="center"><a accesskey="u" href="advanced-embedding.html"><i class="fa fa-chevron-up" aria-hidden="true"></i> Top</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="embedded-examples.html">Next <i class="fa fa-chevron-right" aria-hidden="true"></i></a></td></tr><tr><td width="40%" align="left" valign="top">Chapter&nbsp;21.&nbsp;Embedding&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html"><i class="fa fa-home" aria-hidden="true"></i> Home</a></td><td width="40%" align="right" valign="top">&nbsp;Embedded Examples</td></tr></table></div><p xmlns:jfetch="java:org.eclipse.jetty.xslt.tools.JavaSourceFetchExtension" xmlns:fetch="java:org.eclipse.jetty.xslt.tools.SourceFetchExtension" xmlns:d="http://docbook.org/ns/docbook" xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" xmlns:xslthl="http://xslthl.sf.net" xmlns:gcse="http://www.google.com" xmlns:date="http://exslt.org/dates-and-times"><div class="jetty-callout">
             See an error or something missing?
             <span class="callout"><a href="http://github.com/eclipse/jetty.project">Contribute to this documentation at
-                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-11-27)</i></span></div></p></body></html>
+                <span class="website"><i class="fa fa-github" aria-hidden="true"></i> Github!</span></a></span><span style="float: right"><i>(Generated: 2018-11-29)</i></span></div></p></body></html>
