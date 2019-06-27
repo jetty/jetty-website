@@ -1,0 +1,759 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]--><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Asciidoctor 1.5.7.1"><title>Eclipse Jetty: Quickstart Guide</title><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><!--Google Tag Manager--><script>(function(w,d,s,l,i){
+  w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+  var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+  j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+  f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5WLCZXC');</script><!--End Google Tag Manager--><link rel="shortcut icon" href="../common/images/favicon.ico"><link rel="stylesheet" href="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/quicksilver.min.css?v1.3"><meta name="description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 350 open source projects, including runtimes, tools and frameworks."><meta property="og:description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 350 open source projects, including runtimes, tools and frameworks."><meta property="og:image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-200x200.png"><meta property="og:title" content="Eclipse Jetty"><meta property="og:image:width" content="200"><meta property="og:image:height" content="200"><meta itemprop="name" content="Eclipse Jetty"><meta itemprop="description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 350 open source projects, including runtimes, tools and frameworks."><meta itemprop="image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-400x400.png"><meta name="twitter:site" content="@EclipseFdn"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Eclipse Jetty"><meta name="twitter:url" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/html_template/index.php?theme=default&layout=thin"><meta name="twitter:description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 350 open source projects, including runtimes, tools and frameworks."><meta name="twitter:image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-400x400.png"><link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700,300,600,100" rel="stylesheet" type="text/css"><script>var eclipse_org_common = {"settings":{"cookies_class":{"name":"eclipse_settings","enabled":1}}}</script><link rel="stylesheet" href="../common/css/jetty.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"></head><body id="body_solstice"><!--Google Tag Manager (noscript)--><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5WLCZXC" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><!--End Google Tag Manager (noscript)--><a class="sr-only" href="#content">Skip to main content</a><header class="header-wrapper" id="header-wrapper"><div class="clearfix toolbar-container-wrapper"><div class="container"><div class="text-right toolbar-row row hidden-print"><div class="col-md-24 row-toolbar-col"><ul class="list-inline"><li><a class="toolbar-link" href="https://accounts.eclipse.org/user/login/?takemeback=https%3A%2F%2Fwww.eclipse.org%2Feclipse.org-common%2Fthemes%2Fsolstice%2Fhtml_template%2Findex.php"><i class="fa fa-sign-in"> Log in</i></a></li><li><a class="toolbar-link toolbar-manage-cookies dropdown-toggle"><i class="fa fa-wrench"> Manage Cookies</i></a></li></ul></div></div></div></div><div class="container"><div class="row" id="header-row"><div class="col-sm-5 col-md-4" id="header-left"><div class="wrapper-logo-default"><a href="https://www.eclipse.org/"><img class="logo-eclipse-default hidden-xs" alt="logo" width="160" src="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-white-orange.svg"></a></div></div><div class="col-sm-19 col-md-20 margin-top-10" id="main-menu-wrapper"><div class="float-right hidden-xs" id="btn-call-for-action"><a href="https://www.eclipse.org/donate/" class="btn btn-huge btn-info"><i class="fa fa-star">Donate</i></a></div><div class="navbar yamm float-sm-right" id="main-menu"><div class="navbar-collapse collapse" id="navbar-main-menu"><ul class="nav navbar-nav"><li><a href="https://www.eclipse.org/membership/" target="_self">Members</a></li><li><a href="https://www.eclipse.org/org/workinggroups/" target="_self">Working Groups</a></li><li><a href="https://www.eclipse.org/projects/" target="_self">Projects</a></li><li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Community <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="http://marketplace.eclipse.org">Marketplace</a></li><li><a href="http://events.eclipse.org">Events</a></li><li><a href="http://www.planeteclipse.org/">Planet Eclipse</a></li><li><a href="https://www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li><li><a href="https://www.youtube.com/user/EclipseFdn">Videos</a></li><li><a href="https://blogs.eclipse.org">Blogs</a></li></ul></li><li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Participate <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="https://bugs.eclipse.org/bugs/">Report a Bug</a></li><li><a href="https://www.eclipse.org/forums/">Forums</a></li><li><a href="https://www.eclipse.org/mail/">Mailing Lists</a></li><li><a href="https://wiki.eclipse.org/">Wiki</a></li><li><a href="https://wiki.eclipse.org/IRC">IRC</a></li><li><a href="https://www.eclipse.org/org/research/">Research</a></li></ul></li><li class="dropdown visible-xs"><a href="#" data-toggle="dropdown" class="dropdown-toggle">Eclipse IDE <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="https://www.eclipse.org/downloads">Download</a></li><li><a href="https://help.eclipse.org">Documentation</a></li><li><a href="https://www.eclipse.org/getting_started">Getting Started / Support</a></li><li><a href="https://www.eclipse.org/contribute/">How to Contribute</a></li><li><a href="https://www.eclipse.org/ide/">IDE and Tools</a></li><li><a href="https://www.eclipse.org/forums/index.php/f/89/">Newcomer Forum</a></li></ul></li><!--More--><li class="dropdown eclipse-more hidden-xs"><a data-toggle="dropdown" class="dropdown-toggle" role="button">More <b class="caret"></b></a><ul class="dropdown-menu"><li><!--Content container to add padding--><div class="yamm-content"><div class="row"><ul class="col-sm-8 list-unstyled"><li><p><strong>Community</strong></p></li><li><a href="http://marketplace.eclipse.org">Marketplace</a></li><li><a href="http://events.eclipse.org">Events</a></li><li><a href="http://www.planeteclipse.org/">Planet Eclipse</a></li><li><a href="https://www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li><li><a href="https://www.youtube.com/user/EclipseFdn">Videos</a></li><li><a href="https://blogs.eclipse.org">Blogs</a></li></ul><ul class="col-sm-8 list-unstyled"><li><p><strong>Participate</strong></p></li><li><a href="https://bugs.eclipse.org/bugs/">Report a Bug</a></li><li><a href="https://www.eclipse.org/forums/">Forums</a></li><li><a href="https://www.eclipse.org/mail/">Mailing Lists</a></li><li><a href="https://wiki.eclipse.org/">Wiki</a></li><li><a href="https://wiki.eclipse.org/IRC">IRC</a></li><li><a href="https://www.eclipse.org/org/research/">Research</a></li></ul><ul class="col-sm-8 list-unstyled"><li><p><strong>Eclipse IDE</strong></p></li><li><a href="https://www.eclipse.org/downloads">Download</a></li><li><a href="https://help.eclipse.org">Documentation</a></li><li><a href="https://www.eclipse.org/getting_started">Getting Started / Support</a></li><li><a href="https://www.eclipse.org/contribute/">How to Contribute</a></li><li><a href="https://www.eclipse.org/ide/">IDE and Tools</a></li><li><a href="https://www.eclipse.org/forums/index.php/f/89/">Newcomer Forum</a></li></ul></div></div></li></ul></li></ul></div><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-main-menu"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><div class="wrapper-logo-mobile"><a class="navbar-brand visible-xs" href="https://www.eclipse.org/"><img class="logo-eclipse-default-mobile img-responsive" alt="logo" width="160" src="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-white-orange.svg"></a></div></div></div></div></div></div></header><main id="main-wrapper"><div id="toc" class="toc2"><div id="toc-image"><a href="/jetty/index.html"><img src="../common/images/jetty-logo.svg" width="80%"></a></div><div id="toctitle">Quickstart Guide</div><ul class="sectlevel1"><li><!--introduction--><a href="#introduction">Introducing Jetty</a><ul class="sectlevel2"><li><!--what-is-jetty--><a href="#what-is-jetty">What is Jetty?</a></li><li><!--what-jetty-version--><a href="#what-jetty-version">What Version Do I Use?</a></li><li><!--jetty-javaee--><a href="#jetty-javaee">Jetty and Java EE Web Profile</a></li><li><!--quickstart-jetty-coordinates--><a href="#quickstart-jetty-coordinates">Finding Jetty in Maven</a></li></ul></li><li><!--quick-start-getting-started--><a href="#quick-start-getting-started">Using Jetty</a><ul class="sectlevel2"><li><!--jetty-downloading--><a href="#jetty-downloading">Downloading Jetty</a></li><li><!--quickstart-running-jetty--><a href="#quickstart-running-jetty">Running Jetty</a></li><li><!--quickstart-common-config--><a href="#quickstart-common-config">Common Jetty Configuration</a></li><li><!--quickstart-deploying-webapps--><a href="#quickstart-deploying-webapps">Deploying Web Applications</a></li></ul></li><li><!--quick-start-configure--><a href="#quick-start-configure">An Introduction to Jetty Configuration</a><ul class="sectlevel2"><li><!--quickstart-config-how--><a href="#quickstart-config-how">How to Configure Jetty</a></li><li><!--quickstart-config-what--><a href="#quickstart-config-what">What to Configure in Jetty</a></li></ul></li></ul></div><div id="content-container"><div id="header"><h1>Eclipse Jetty: Quickstart Guide</h1><div class="details"><span class="author" id="author">Jetty Developers</span><br><span class="email" id="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br><span id="revnumber">version 1.0,</span> <span id="revdate">2019-06-27 18:14</span></div></div><div id="content"><div class="sect2"><h3 id="introduction">Introducing Jetty</h3><div class="sect2"><h3 id="what-is-jetty">What is Jetty?</h3><div class="paragraph"><p>Jetty is an open-source project providing an HTTP server, HTTP client, and javax.servlet container.</p></div>
+<div class="paragraph"><p>This guide is broken up in to five parts:</p></div>
+<div class="ulist"><ul><li><p>The <a href="#quick-start">first section</a> emphasizes beginning to use Jetty.
+It provides information about what Jetty is and where you can download it, and where to find Jetty in repositories like Central Maven.
+It also provides a Quick Start guide on how to get Jetty up and running as well as an overview of how and what to configure in Jetty.</p></li><li><p>The <a href="#jetty-config-guide">second section</a> of the guide deals with configuring Jetty at a more granular level.
+It explains how to use Jetty to deploy web applications, configure contexts and connects, and how to implement SSL and other security measures.</p></li><li><p>Administration of Jetty is the focus of the <a href="#jetty-admin-guide">third section</a> of the guide.
+From server startup to session management, logging, HTTP/2 support and Jetty optimization, these chapters will help administrators get the most out of their Jetty server instances.
+This section also covers configuring many of the most common servlet container features such as JNDI and JMX.</p></li><li><p>Aimed at advanced users of Jetty, the <a href="#jetty-dev-guide">fourth section</a> of the guide focuses on Jetty development.
+A large portion of this section is focused on using Jetty as an embedded server in existing applications.
+It contains several examples and how-to guides for making the most out of the Jetty framework.
+This section also includes a guide on using the Jetty Maven plugin as well as information on debugging Jetty.</p></li><li><p>The <a href="#jetty-ref-guide">final section</a> of the guide is a reference section.
+Included there are guides on Jetty architecture and Jetty XML syntax, alternate distributions of Jetty and even troubleshooting of common issues.
+There is also a chapter on getting involved in the Jetty community including information on how to contribute code and how to find help.</p></li></ul></div>
+<div class="paragraph"><p>Feedback is always welcome!
+Additionally, if you are interested in how to contribute to the open source project there is a <a href="#community">section on that as well!</a></p></div></div>
+<div class="sect2"><h3 id="what-jetty-version">What Version Do I Use?</h3><div class="paragraph"><p>Jetty 9 is the most recent version of Jetty and has a great many improvements over previous versions.
+This documentation which focuses on Jetty 9.
+While many people continue to use older versions of Jetty, we generally recommend using Jetty 9 as it represents the version of Jetty that we will actively maintain and improve over the next few years.</p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">It is important that only stable releases are used in production environments.
+Versions that have been deprecated or are released as Milestones (M) or Release Candidates (RC) are not suitable for production as they may contain security flaws or incomplete/non-functioning feature sets.</td></tr></table></div></blockquote></div>
+<table class="tableblock frame-all grid-all spread"><caption class="title">Table 1. Jetty Versions</caption><colgroup><col style="width: 12%;"><col style="width: 9%;"><col style="width: 15%;"><col style="width: 6%;"><col style="width: 21%;"><col style="width: 10%;"><col style="width: 6%;"><col style="width: 21%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Version</th><th class="tableblock halign-left valign-top">Year</th><th class="tableblock halign-left valign-top">Home</th><th class="tableblock halign-left valign-top">JVM</th><th class="tableblock halign-left valign-top">Protocols</th><th class="tableblock halign-left valign-top">Servlet</th><th class="tableblock halign-left valign-top">JSP</th><th class="tableblock halign-left valign-top">Status</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">9.4</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2016-</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">9.3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2015-</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">9.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2014-2018</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.7</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, javax.websocket, SPDY v3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life January 2018</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2009-2014</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.6</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2014</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2008-2014</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2014</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2006-2010</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Codehaus</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.4-1.5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2010</strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2003-2009</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.2-1.5</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Antique</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2001-2006</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.2, J2ME</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Ancient</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1999-2002</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2068</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Fossilized</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1998-2000</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Mortbay</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">2.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Legendary</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1995-1998</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Mortbay</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Mythical</p></td></tr></tbody></table></div>
+<div class="sect2"><h3 id="jetty-javaee">Jetty and Java EE Web Profile</h3><div class="paragraph"><p>Jetty implements aspects of the Java EE specification, primarily the Servlet Specification.
+Recent releases of the Java EE platform have introduced a Web Profile, recognizing that many developers need only a subset of the many technologies under the Java EE umbrella.</p></div>
+<div class="paragraph"><p>While Jetty itself does not ship all of the Web Profile technologies, Jetty architecture is such that you can plug in third party implementations to produce a container customized to your exact needs.</p></div>
+<div class="sect3"><h4 id="jetty-javaee-7">Java EE 7 Web Profile</h4><div class="paragraph"><p>In the forthcoming Java EE-7 specification, the Web Profile reflects updates in its component specifications and adds some new ones:</p></div>
+<table class="tableblock frame-all grid-all spread"><caption class="title">Table 2. JavaEE7 Web Profile</caption><colgroup><col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">JSR</th><th class="tableblock halign-left valign-top">Name</th><th class="tableblock halign-left valign-top">Included with jetty-9.1.x</th><th class="tableblock halign-left valign-top">Pluggable</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=340">JSR 340</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Servlet Specification API 3.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=344">JSR 344</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Server Faces 2.2 (JSF)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, <a href="https://javaserverfaces.java.net/">Mojarra</a> or <a href="http://myfaces.apache.org/">MyFaces</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=245">JSR 245</a> / <a href="http://jcp.org/en/jsr/detail?id=341">JSR 341</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Server Pages 2.3/Java Expression Language 3.0 (JSP/EL)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=52">JSR 52</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Standard Tag Library 1.2 (JSTL)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=45">JSR 45</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Debugging Support for Other Languages 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via JSP)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via JSP)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=346">JSR 346</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Contexts and Dependency Injection for the JavaEE Platform 1.1 (Web Beans)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, <a href="http://seamframework.org/Weld">Weld</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=330">JSR 330</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dependency Injection for Java 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes as part of a CDI implementation, <a href="http://seamframework.org/Weld">Weld</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=316">JSR 316</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Managed Beans 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, as part of another technology</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=345">JSR 345</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise JavaBeans 3.2 Lite</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=338">JSR 338</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Persistence 2.1 (JPA)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, eg <a href="http://www.hibernate.org/">Hibernate</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=250">JSR 250</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Common Annotations for the Java Platform 1.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Partially (for non-core Servlet Spec annotations)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=907">JSR 907</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Transaction API 1.2 (JTA)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=349">JSR 349</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Bean Validation 1.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes as part of another technology eg JSF, or a stand-alone implementation such as <a href="http://www.hibernate.org/subprojects/validator/docs.html">Hiberate
+Validator</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=339">JSR 339</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java API for RESTful Web Services 2.0 (JAX-RS)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=356">JSR 356</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java API for Websocket 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=353">JSR 353</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java API for JSON Processing 1.0 (JSON-P)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, eg JSON-P <a href="https://java.net/projects/jsonp/">reference implementation</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="jcp.org/en/jsr/detail?id=318">JSR 318</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Interceptors 1.2</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes as part of a CDI implementation</p></td></tr></tbody></table></div>
+<div class="sect3"><h4 id="jetty-javaee-6">Jetty EE 6 Web Profile</h4><div class="paragraph"><p>Here is the matrix of JSRs for Java EE 6 Web Profile, and how they relate to Jetty:</p></div>
+<table class="tableblock frame-all grid-all spread"><caption class="title">Table 3. Java EE 6 Web Profile</caption><colgroup><col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;"><col style="width: 25%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">JSR</th><th class="tableblock halign-left valign-top">Name</th><th class="tableblock halign-left valign-top">Included with jetty-9.0.x</th><th class="tableblock halign-left valign-top">Pluggable</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=315">JSR 315</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Servlet Specification API 3.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=314">JSR 314</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">JavaServer Faces 2.0 (JSF)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, for example, <a href="https://javaserverfaces.java.net/">Mojarra</a> or <a href="http://myfaces.apache.org/">MyFaces</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=245">JSR 245</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">JavaServer Pages 2.2/Java Expression Language 2.2 (JSP/EL)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=52">JSR 52</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Standard Tag Library 1.2 (JSTL)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=45">JSR 45</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Debugging Support for Other Languages 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via JSP)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via JSP)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=299">JSR 299</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Contexts and Dependency Injection for the Java EE Platform 1.0 (Web Beans)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, <a href="http://seamframework.org/Weld">Weld</a> or <a href="http://openwebbeans.apache.org/">OpenWebBeans</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=330">JSR 330</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Dependency Injection for Java 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes as part of a CDI implementation, <a href="http://seamframework.org/Weld">Weld</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=316">JSR 316</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Managed Beans 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, as part of another technology.</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=318">JSR 318</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Enterprise JavaBeans 3.1</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, OpenEJB</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=317">JSR 317</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Persistence 2.0 (JPA)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes, <a href="http://www.hibernate.org/">Hibernate</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=250">JSR 250</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Common Annotations for the Java Platform</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Partially (for non-core Servlet Spec annotations)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=907">JSR 907</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Java Transaction API (JTA)</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Implementations are pluggable, such as <a href="http://www.atomikos.com/">Atomikos</a>, <a href="http://jotm.ow2.org/xwiki/bin/view/Main/WebHome">JOTM</a>, <a href="http://jencks.codehaus.org/Transaction+Manager">Jencks (Geronimo Transaction Manager)</a></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jcp.org/en/jsr/detail?id=303">JSR 303</a></p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Bean Validation 1.0</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Yes as part of another technology (JSF), or a stand-alone implementation such as <a href="http://www.hibernate.org/subprojects/validator/docs.html">Hiberate
+Validator</a></p></td></tr></tbody></table></div></div>
+<div class="sect2"><h3 id="quickstart-jetty-coordinates">Finding Jetty in Maven</h3><div class="quoteblock"><blockquote><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">It is important that only stable releases are used in production environments.
+Versions that have been deprecated or are released as Milestones (M) or Release Candidates (RC) are not suitable for production as they may contain security flaws or incomplete/non-functioning feature sets.</td></tr></table></div></blockquote></div>
+<div class="sect3"><h4>Maven Coordinates</h4><div class="paragraph"><p>Jetty has existed in Maven Central almost since its inception, though the coordinates have changed over the years.
+When Jetty was based at SourceForge and then The Codehaus it was located under the <code>groupId</code> of <code>org.mortbay.jetty</code>.
+With Jetty 7 the project moved to the Eclipse foundation and to a new <code>groupId</code> at that time to reflect its new home.</p></div>
+<div class="paragraph"><p>The top level Project Object Model (POM) for the Jetty project is located under the following coordinates.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+  &lt;artifactId&gt;jetty-project&lt;/artifactId&gt;
+  &lt;version&gt;${project.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre></div></div></div>
+<div class="sect3"><h4>Changelogs in Maven Central</h4><div class="paragraph"><p>The changes between versions of Jetty are tracked in a file called VERSIONS.txt, which is under source control and is generated on release.
+Those generated files are also uploaded into Maven Central during the release of the top level POM. You can find them as a classifier marked artifact.</p></div>
+<div class="paragraph"><p><a class="bare" href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-project/">https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-project/</a></p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.eclipse.jetty&lt;/groupId&gt;
+  &lt;artifactId&gt;jetty-project&lt;/artifactId&gt;
+  &lt;version&gt;${project.version}&lt;/version&gt;
+  &lt;classifier&gt;version&lt;/classifier&gt;
+  &lt;type&gt;txt&lt;/type&gt;
+&lt;/dependency&gt;</code></pre></div></div></div></div></div>
+<div class="sect2"><h3 id="quick-start-getting-started">Using Jetty</h3><div class="paragraph"><p>You can use Jetty in many different ways ranging from embedding Jetty in applications, launching it from different build systems, from different JVM-based languages, or as a standalone distribution.
+This guide covers the latter, a standalone distribution suitable for deploying web applications.</p></div>
+<div class="sect2"><h3 id="jetty-downloading">Downloading Jetty</h3><div class="sect3"><h4>Downloading the Jetty Distribution</h4><div class="paragraph"><p>The standalone Jetty distribution is available for download from the Eclipse Foundation:</p></div>
+<div class="quoteblock"><blockquote><div class="paragraph"><p><strong>Jetty</strong>
+<a class="bare" href="https://www.eclipse.org/jetty/download.html">https://www.eclipse.org/jetty/download.html</a></p></div></blockquote></div>
+<div class="paragraph"><p>It is available in both zip and gzip formats; download the one most appropriate for your system.
+When you download and unpack the binary, it is extracted into a directory called <code>jetty-distribution-VERSION.</code>
+Put this directory in a convenient location.
+The rest of the instructions in this documentation refer to this location as either <code>$JETTY_HOME</code> or as <code>$(jetty.home).</code></p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">It is important that <strong>only</strong> stable releases are used in production environments.
+Versions that have been deprecated or are released as Milestones (M) or Release Candidates (RC) are <strong>not</strong> suitable for production as they may contain security flaws or incomplete/non-functioning feature sets.</td></tr></table></div></blockquote></div>
+<div class="sect4"><h5 id="distribution-content">Distribution Content</h5><div class="paragraph"><p>A summary of the distribution&#8217;s contents follows.
+The top-level directory contains:</p></div>
+<table class="tableblock frame-all grid-all" style="width: 80%;"><caption class="title">Table 4. Contents</caption><colgroup><col style="width: 40%;"><col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Location</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">license-eplv10-aslv20.html</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">License file for Jetty</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">README.txt</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Useful getting started information</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">VERSION.txt</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Release information</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">bin/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Utility shell scripts to help run Jetty on Unix systems</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">demo-base/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">A Jetty base directory to run a Jetty server with demonstration webapps</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">etc/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory for Jetty XML configuration files</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">lib/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">All the JAR files necessary to run Jetty</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">logs/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory for request logs</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">modules/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory of module definitions</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">notice.html</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">License information and exceptions</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">resources/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory containing additional resources for classpath, activated via configuration</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">start.ini</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">File containing the arguments that are added to the effective command line (modules, properties and XML configuration files)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">start.jar</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Jar that invokes Jetty (see also <a href="#quickstart-running-jetty">Running Jetty</a>)</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">webapps/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory containing webapps that run under the default configuration of Jetty</p></td></tr></tbody></table></div></div>
+<div class="sect3"><h4 id="jetty-home-downloading">Downloading the Jetty-Home Distribution</h4><div class="paragraph"><p>Jetty-Home is an alternate version of the distribution that contains only the necessary items to host a Jetty distribution.
+It is intended for advanced users who are already familiar with Jetty and want to download a smaller distribution package.
+Jetty-Home can be downloaded from the Maven Central repository:</p></div>
+<div class="quoteblock"><blockquote><div class="paragraph"><p><strong>Jetty-Home</strong>
+<a class="bare" href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/">https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/</a></p></div></blockquote></div>
+<div class="paragraph"><p>Like the main Jetty distribution, Jetty-Home is available in both zip and gzip formats; download the one most appropriate for your system.
+Notice that there are a number of other files with extensions of .sha or .md5 which are checksum files.
+When you download and unpack the binary, it is extracted into a directory called <code>jetty-home-VERSION.</code>
+Put this directory in a convenient location.</p></div>
+<div class="sect4"><h5 id="jetty-home-distribution-content">Distribution Content</h5><div class="paragraph"><p>A summary of the Jetty-Home&#8217;s distribution contents follows.
+The top-level directory contains:</p></div>
+<table class="tableblock frame-all grid-all" style="width: 80%;"><caption class="title">Table 5. Contents</caption><colgroup><col style="width: 40%;"><col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Location</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">license-eplv10-aslv20.html</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">License file for Jetty</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">VERSION.txt</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Release information</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">etc/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory for Jetty XML configuration files</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">lib/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">All the JAR files necessary to run Jetty</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">modules/</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Directory of module definitions</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">notice.html</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">License information and exceptions</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">start.jar</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Jar that invokes Jetty (see also <a href="#quickstart-running-jetty">Running Jetty</a>)</p></td></tr></tbody></table></div></div></div>
+<div class="sect2"><h3 id="quickstart-running-jetty">Running Jetty</h3><div class="paragraph"><p>Once you have a copy of the Jetty distribution downloaded, extract the <code>zip</code> or <code>tar.gz</code> file to a location where you have read and write access.
+Jetty has no GUI (Graphical User Interface), so running the server and performing many configuration options is done from the command line.</p></div>
+<div class="paragraph"><p>Once you have access to your system&#8217;s command line, navigate to the directory where you unpacked your copy of the Jetty distribution.
+To start Jetty on the default port of 8080, run the following command:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">$ java -jar start.jar
+2017-09-20 15:45:11.986:INFO::main: Logging initialized @683ms to org.eclipse.jetty.util.log.StdErrLog
+2017-09-20 15:45:12.197:WARN:oejs.HomeBaseWarning:main: This instance of Jetty is not running from a separate {jetty.base} directory, this is not recommended.  See documentation at http://www.eclipse.org/jetty/documentation/current/startup.html
+2017-09-20 15:45:12.243:INFO:oejs.Server:main: 9.4.15-SNAPSHOT
+2017-09-20 15:45:12.266:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///installs/repository/jetty/webapps/] at interval 1
+2017-09-20 15:45:12.298:INFO:oejs.AbstractConnector:main: Started ServerConnector@39c0f4a{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2017-09-20 15:45:12.298:INFO:oejs.Server:main: Started @995ms</code></pre></div></div>
+<div class="paragraph"><p>You can point a browser at this server at <a class="bare" href="http://localhost:8080">http://localhost:8080</a>.
+However, as there are no webapps deployed in the <code>$JETTY_HOME</code> directory, you will see a 404 error page served by Jetty.
+To stop the server, press <code>CTRL</code> + <code>c</code> or <code>CTRL</code> + <code>z</code> in your terminal.</p></div>
+<div class="paragraph"><p><strong>Note</strong> the <code>HomeBaseWarning</code> - it is <strong>not</strong> recommended to run Jetty from the <code>$JETTY_HOME</code> directory.
+Instead, see how to <a href="#creating-jetty-base">create a Jetty Base</a> below.</p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">You will see examples throughout the documentation referencing <code>$JETTY_HOME</code> and <code>$JETTY_BASE</code> as well as <code>{jetty.home}</code> and <code>{jetty.base}</code>.
+These terms are used to refer to the location of your Jetty installation directories.
+Many users find it helpful to define <code>$JETTY_HOME</code> as an environment variable that maps to their Jetty distribution directory.
+More information can be found in our Administration section on <a href="#startup-base-and-home">managing Jetty Home and Jetty Base.</a></td></tr></table></div></blockquote></div>
+<div class="sect3"><h4 id="demo-webapps-base">Demo Base</h4><div class="paragraph"><p>Within the standard Jetty distribution there is the <code>demo-base</code> directory.
+This is a fully-functioning Jetty Base (more on that later) complete with numerous web applications demonstrating different Jetty functionality.
+Additionally, the <code>demo-base</code> demonstrates the recommended way to run a Jetty base in a directory separate from <code>$JETTY_HOME</code>:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">$ cd demo-base/
+$ java -jar ../start.jar
+2017-09-20 16:23:03.563:INFO::main: Logging initialized @429ms to org.eclipse.jetty.util.log.StdErrLog
+2017-09-20 16:23:03.802:WARN::main: demo test-realm is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:03.804:INFO:oejs.Server:main: 9.4.15-SNAPSHOT
+2017-09-20 16:23:03.819:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///installs/repository/jetty/demo-base/webapps/] at interval 1
+2017-09-20 16:23:04.098:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=102ms
+2017-09-20 16:23:04.103:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:04.267:INFO:oejs.session:main: DefaultSessionIdManager workerName=node0
+2017-09-20 16:23:04.267:INFO:oejs.session:main: No SessionScavenger set, using defaults
+2017-09-20 16:23:04.268:INFO:oejs.session:main: Scavenging every 660000ms
+2017-09-20 16:23:04.306:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@371a67ec{/async-rest,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/WEB-INF/lib/example-async-rest-jar-9.4.15-SNAPSHOT.jar!/META-INF/resources],AVAILABLE}{/async-rest.war}
+2017-09-20 16:23:04.429:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=53ms
+2017-09-20 16:23:04.432:WARN::main: test webapp is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:04.511:INFO:oejsh.ManagedAttributeListener:main: update PushFilter null-&gt;org.eclipse.jetty.servlets.PushCacheFilter@2362f559 on o.e.j.w.WebAppContext@35e2d654{/test,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test.war-_test-any-6279588879522983394.dir/webapp/,STARTING}{/test.war}
+2017-09-20 16:23:04.516:INFO:oejsh.ManagedAttributeListener:main: update QoSFilter null-&gt;org.eclipse.jetty.servlets.QoSFilter@7770f470 on o.e.j.w.WebAppContext@35e2d654{/test,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test.war-_test-any-6279588879522983394.dir/webapp/,STARTING}{/test.war}
+2017-09-20 16:23:04.519:WARN:oeju.DeprecationWarning:main: Using @Deprecated Class org.eclipse.jetty.servlets.MultiPartFilter
+2017-09-20 16:23:04.549:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@35e2d654{/test,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test.war-_test-any-6279588879522983394.dir/webapp/,AVAILABLE}{/test.war}
+2017-09-20 16:23:04.646:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=12ms
+2017-09-20 16:23:04.649:WARN::main: test-jndi webapp is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:04.697:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@561b6512{/test-jndi,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-jndi.war-_test-jndi-any-6023636263414992288.dir/webapp/,AVAILABLE}{/test-jndi.war}
+2017-09-20 16:23:04.770:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=40ms
+2017-09-20 16:23:05.036:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@2beee7ff{/proxy,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-javadoc-proxy.war-_javadoc-proxy-any-2758874759195597975.dir/webapp/,AVAILABLE}{/javadoc-proxy.war}
+2017-09-20 16:23:05.072:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=16ms
+2017-09-20 16:23:05.074:WARN::main: test-jaas webapp is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:05.098:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@506ae4d4{/test-jaas,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-jaas.war-_test-jaas-any-8067423971450448377.dir/webapp/,AVAILABLE}{/test-jaas.war}
+2017-09-20 16:23:05.182:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=37ms
+2017-09-20 16:23:05.184:WARN::main: test-spec webapp is deployed. DO NOT USE IN PRODUCTION!
+2017-09-20 16:23:05.243:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@45099dd3{/test-spec,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/WEB-INF/lib/test-web-fragment-9.4.15-SNAPSHOT.jar!/META-INF/resources],AVAILABLE}{/test-spec.war}
+2017-09-20 16:23:05.247:INFO:oejsh.ContextHandler:main: Started o.e.j.s.h.MovedContextHandler@3e08ff24{/oldContextPath,null,AVAILABLE}
+2017-09-20 16:23:05.274:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=18ms
+2017-09-20 16:23:05.296:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@5ddeb7cb{/,file:///installs/repository/jetty/demo-base/webapps/ROOT/,AVAILABLE}{/ROOT}
+2017-09-20 16:23:05.326:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=21ms
+2017-09-20 16:23:05.352:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@6b695b06{/doc,file:///installs/repository/jetty/demo-base/webapps/doc/,AVAILABLE}{/doc}
+2017-09-20 16:23:05.370:INFO:oejs.AbstractConnector:main: Started ServerConnector@28cda624{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2017-09-20 16:23:05.380:INFO:oejus.SslContextFactory:main: x509=X509@126253fd(jetty,h=[jetty.eclipse.org],w=[]) for SslContextFactory@57db2b13(file:///installs/repository/jetty/demo-base/etc/keystore,file:///installs/repository/jetty/demo-base/etc/keystore)
+2017-09-20 16:23:05.381:INFO:oejus.SslContextFactory:main: x509=X509@475c9c31(mykey,h=[],w=[]) for SslContextFactory@57db2b13(file:///installs/repository/jetty/demo-base/etc/keystore,ffile:///installs/repository/jetty/demo-base/etc/keystore)
+2017-09-20 16:23:05.523:INFO:oejs.AbstractConnector:main: Started ServerConnector@53f3bdbd{SSL,[ssl, http/1.1]}{0.0.0.0:8443}
+2017-09-20 16:23:05.524:INFO:oejs.Server:main: Started @2390ms</code></pre></div></div>
+<div class="paragraph"><p>You can visit this demo server by pointing a browser at <a class="bare" href="http://localhost:8080">http://localhost:8080</a>, which will now show a welcome page and several demo/test web applications.</p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock warning"><table><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">The demonstration web applications are not necessarily secure and should <strong>not</strong> be deployed in production web servers.</td></tr></table></div></blockquote></div>
+<div class="paragraph"><p>You can see the configuration of the <code>demo-base</code> by using the following commands:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; cd $JETTY_HOME/demo-base/
+&gt; java -jar $JETTY_HOME/start.jar --list-modules
+...
+
+&gt; java -jar $JETTY_HOME/start.jar --list-config
+...</code></pre></div></div>
+<div class="paragraph"><p>The  <code>--list-modules</code> command will return a complete list of available and enabled modules for the server.
+It will also display the location of the modules, how and in what order they are implemented, dependent modules, and associated jar files.</p></div>
+<div class="paragraph"><p>The <code>--list-config</code> command displays a trove of  information about the server including the Java and Jetty environments, the configuration order, any JVM arguments or System Properties set, general server properties, a full listing of the Jetty server class path, and active Jetty XML files.</p></div></div></div>
+<div class="sect2"><h3 id="quickstart-common-config">Common Jetty Configuration</h3><div class="sect3"><h4 id="creating-jetty-base">Creating a new Jetty Base</h4><div class="paragraph"><p>The <code>demo-base</code> directory described earlier is an example of the <a href="#startup-base-and-home"><code>jetty.base</code></a> mechanism.
+A Jetty base directory allows the configuration and web applications of a server instance to be stored separately from the Jetty distribution, so that upgrades can be done with minimal disruption.
+Jetty&#8217;s default configuration is based on two properties:</p></div>
+<div class="dlist"><dl><dt class="hdlist1">jetty.home</dt><dd><p>The property that defines the location of the Jetty distribution, its libs, default modules and default XML files (typically start.jar, lib, etc).</p></dd><dt class="hdlist1">jetty.base</dt><dd><p>The property that defines the location of a specific implementation of a Jetty server, its configuration, logs and web applications (typically start.d/*.ini files, logs and webapps).</p></dd></dl></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">Your Jetty Home directory should be treated as a standard of truth and remain unmodified or changed.
+Changes or additions to your configuration should take place in the Jetty Base directory.</td></tr></table></div></blockquote></div>
+<div class="paragraph"><p>The <code>jetty.home</code> and <code>jetty.base</code> properties may be explicitly set on the command line, or they can be inferred from the environment if used with commands like:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; cd $JETTY_BASE
+&gt; java -jar $JETTY_HOME/start.jar</code></pre></div></div>
+<div class="paragraph"><p>The following commands create a new base directory, enables both the HTTP connector and the web application deployer modules, and copies a demo webapp to be deployed:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; JETTY_BASE=/tmp/mybase
+&gt; mkdir $JETTY_BASE
+&gt; cd $JETTY_BASE
+&gt; java -jar $JETTY_HOME/start.jar
+
+WARNING: Nothing to start, exiting ...
+
+Usage: java -jar start.jar [options] [properties] [configs]
+       java -jar start.jar --help  # for more information
+
+&gt; java -jar $JETTY_HOME/start.jar --create-startd
+INFO : Base directory was modified
+&gt; java -jar $JETTY_HOME/start.jar --add-to-start=http,deploy
+
+INFO: server          initialised (transitively) in ${jetty.base}/start.d/server.ini
+INFO: http            initialised in ${jetty.base}/start.d/http.ini
+INFO: security        initialised (transitively) in ${jetty.base}/start.d/security.ini
+INFO: servlet         initialised (transitively) in ${jetty.base}/start.d/servlet.ini
+INFO: webapp          initialised (transitively) in ${jetty.base}/start.d/webapp.ini
+INFO: deploy          initialised in ${jetty.base}/start.d/deploy.ini
+MKDIR: ${jetty.base}/webapps
+INFO: Base directory was modified
+
+&gt; cp $JETTY_HOME/demo-base/webapps/async-rest.war webapps/ROOT.war
+&gt; java -jar $JETTY_HOME/start.jar
+
+2015-06-04 11:10:16.286:INFO::main: Logging initialized @274ms
+2015-06-04 11:10:16.440:INFO:oejs.Server:main: jetty-9.3.0.v20150601
+2015-06-04 11:10:16.460:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///tmp/mybase/webapps/] at interval 1
+2015-06-04 11:10:16.581:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
+2015-06-04 11:10:16.589:INFO:oejw.StandardDescriptorProcessor:main: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+2015-06-04 11:10:16.628:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1a407d53{/,[file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/, jar:file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/WEB-INF/lib/example-async-rest-jar-9.4.15-SNAPSHOT.jar!/META-INF/resources],AVAILABLE}{/ROOT.war}
+2015-06-04 11:10:16.645:INFO:oejs.ServerConnector:main: Started ServerConnector@3abbfa04{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
+2015-06-04 11:10:16.646:INFO:oejs.Server:main: Started @634ms</code></pre></div></div></div>
+<div class="sect3"><h4 id="quickstart-changing-jetty-port">Changing the Jetty Port</h4><div class="paragraph"><p>You can configure Jetty to run on a different port by setting the <code>jetty.http.port</code> property on the command line:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; cd $JETTY_BASE
+&gt; java -jar $JETTY_HOME/start.jar jetty.http.port=8081
+...</code></pre></div></div>
+<div class="paragraph"><p>When the server starts, it will now run on port <code>8081</code>.
+It is important to note that setting properties on the command line will only take affect for that instance of the server.
+To change the configuration so that the server will always start on the desired port, you will need to edit the <code>start.d/http.ini</code></p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>The configuration by properties works via the following chain:</p></div>
+<div class="ulist"><ul><li><p>The <code>start.d/http.ini</code> file is part of the effective command line and contains the <code>--module=http</code> argument which activates the http module.</p></li><li><p>The <code>modules/http.mod</code> file defines the http module which specifies the <code>etc/jetty-http.xml</code> configuration file and the template ini properties it uses.</p></li><li><p>The <code>jetty.http.port</code> property is used by the Property XML element in <code>etc/jetty.http.xml</code> to inject the <code>ServerConnector</code> instance with the port.</p></li></ul></div>
+<div class="paragraph"><p>For more information see the <a href="#quick-start-configure">Quickstart Configuration Guide</a> and <a href="#configuring-connectors">Configuring Connectors</a>.</p></div></td></tr></table></div></blockquote></div></div>
+<div class="sect3"><h4 id="quickstart-starting-https">Adding SSL for HTTPS &amp; HTTP2</h4><div class="paragraph"><p>Building on the example above, we can activate additional modules to add support HTTPS and HTTP2 for the server.
+To add HTTPS and HTTP2 connectors to a Jetty configuration, the modules can be activated by the following command:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; java -jar $JETTY_HOME/start.jar --add-to-start=https,http2
+
+ALERT: There are enabled module(s) with licenses.
+The following 1 module(s):
+ + contains software not provided by the Eclipse Foundation!
+ + contains software not covered by the Eclipse Public License!
+ + has not been audited for compliance with its license
+
+ Module: alpn-impl/alpn-8
+  + ALPN is a hosted at github under the GPL v2 with ClassPath Exception.
+  + ALPN replaces/modifies OpenJDK classes in the sun.security.ssl package.
+  + http://github.com/jetty-project/jetty-alpn
+  + http://openjdk.java.net/legal/gplv2+ce.html
+
+Proceed (y/N)? y
+INFO  : alpn-impl/alpn-1.8.0_92 dynamic dependency of alpn-impl/alpn-8
+INFO  : alpn            transitively enabled, ini template available with --add-to-start=alpn
+INFO  : alpn-impl/alpn-8 dynamic dependency of alpn
+INFO  : http2           initialized in ${jetty.base}/start.d/http2.ini
+INFO  : https           initialized in ${jetty.base}/start.d/https.ini
+INFO  : ssl             transitively enabled, ini template available with --add-to-start=ssl
+MKDIR : ${jetty.base}/lib/alpn
+DOWNLD: https://repo1.maven.org/maven2/org/mortbay/jetty/alpn/alpn-boot/8.1.8.v20160420/alpn-boot-8.1.8.v20160420.jar to ${jetty.base}/lib/alpn/alpn-boot-8.1.8.v20160420.jar
+MKDIR : ${jetty.base}/etc
+COPY  : ${jetty.home}/modules/ssl/keystore to ${jetty.base}/etc/keystore
+INFO  : Base directory was modified
+
+&gt; java -jar $JETTY_HOME/start.jar
+[...]
+2017-05-22 12:48:23.271:INFO:oejs.AbstractConnector:main: Started ServerConnector@134d0064{SSL,[ssl, alpn, h2, http/1.1]}{0.0.0.0:8443}
+[...]</code></pre></div></div>
+<div class="paragraph"><p>The <code>--add-to-start</code> command sets up the effective command line in the ini files to run an ssl connection that supports the HTTPS and HTTP2 protocols as follows:</p></div>
+<div class="ulist"><ul><li><p>transitively enabled the <code>ssl</code> module that configures an SSL connector (eg port, keystore etc.) by adding <code>etc/jetty-ssl.xml</code> and <code>etc/jetty-ssl-context.xml</code> to the effective command line.</p></li><li><p>transitively enabled the <code>alpn</code> module that configures protocol negotiation on the SSL connector by adding <code>etc/jetty-alpn.xml</code> to the effective command line.</p></li><li><p>creates <code>start.d/https.ini</code> that configures the HTTPS protocol on the SSL connector by adding <code>etc/jetty-https.xml</code> to the effective command line.</p></li><li><p>creates <code>start.d/http2.ini</code> that configures the HTTP/2 protocol on the SSL connector by adding <code>etc/jetty-http2.xml</code> to the effective command line.</p></li><li><p>checks for the existence of a <code>etc/keystore</code> file and if not present, downloads a demonstration keystore file.</p></li></ul></div>
+<div class="sect4"><h5 id="quickstart-changing-https-port">Changing the Jetty HTTPS Port</h5><div class="paragraph"><p>You can configure the SSL connector to run on a different port by setting the <code>jetty.ssl.port</code> property on the command line:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; cd $JETTY_BASE
+&gt; java -jar $JETTY_HOME/start.jar jetty.ssl.port=8444</code></pre></div></div>
+<div class="paragraph"><p>Alternatively, property values can be added to the effective command line built from the <code>start.ini</code> file or <code>start.d/*.ini</code> files, depending on your set up.
+Please see the section on <a href="#start-vs-startd">Start.ini vs. Start.d</a> for more information.</p></div></div></div>
+<div class="sect3"><h4>More start.jar Options</h4><div class="paragraph"><p>The job of the <code>start.jar</code> is to interpret the command line, <code>start.ini</code> and <code>start.d</code> directory (and associated .ini files) to build a Java classpath and list of properties and configuration files to pass to the main class of the Jetty XML configuration mechanism.
+The <code>start.jar</code> mechanism has many options which are documented in the <a href="#startup">[startup]</a> administration section and you can see them in summary by using the command:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">&gt; java -jar $JETTY_HOME/start.jar --help</code></pre></div></div></div></div>
+<div class="sect2"><h3 id="quickstart-deploying-webapps">Deploying Web Applications</h3><div class="paragraph"><p>Jetty server instances that configure the deploy module will have a web application deployer that <a href="#hot-deployment">hot deploys</a> files found in the <code>webapps</code> directory.
+Standard WAR files and Jetty configuration files that are placed in the <code>webapps</code> directory are hot deployed to the server with the following conventions:</p></div>
+<div class="ulist"><ul><li><p>A directory called <code>example/</code> is deployed as a standard web application if it contains a <code>WEB-INF/</code> subdirectory, otherwise it is deployed as context of static content.
+The context path is <code>/example</code> (that is, <code><a class="bare" href="http://localhost:8080/example/">http://localhost:8080/example/</a></code>) unless the base name is ROOT (case insensitive), in which case the context path is /.
+If the directory name ends with ".d" it is ignored (but may be used by explicit configuration).</p></li><li><p>A file called <code>example.war</code> is deployed as a standard web application with the context path <code>/example</code> (that is,
+<code><a class="bare" href="http://localhost:8080/example/">http://localhost:8080/example/</a></code>).
+If the base name is <code>ROOT</code> (case insensitive), the context path is <code>/</code>.
+If <code>example.war</code> and <code>example/</code> exist, only the WAR is deployed (which may use the directory as an unpack location).</p></li><li><p>An XML file like <code>example.xml</code> is deployed as a context whose configuration is defined by the XML.
+The configuration itself must set the context path.
+If <code>example.xml</code> and <code>example.war</code> exists, only the XML is deployed (which may use the WAR in its configuration).</p></li></ul></div>
+<div class="paragraph"><p>If you have a standard web application, you can hot deploy it into Jetty by copying it into the <code>webapps</code> directory.</p></div>
+<div class="sect3"><h4>Jetty Demonstration Web Applications</h4><div class="paragraph"><p>The demo-base/webapps directory contains the following deployable and auxiliary files:</p></div>
+<div class="dlist"><dl><dt class="hdlist1"><code>ROOT/</code></dt><dd><p>A directory of static content that is deployed to the root context / due to it&#8217;s name.
+Contains the Jetty demo welcome page.</p></dd><dt class="hdlist1"><code>test.d</code></dt><dd><p>A directory containing additional configuration files used by <code>test.xml</code> to inject extra configuration into <code>test.war</code>.</p></dd><dt class="hdlist1"><code>test.xml</code></dt><dd><p>A context configuration file that configures and deploys <code>test.war.</code>
+The additional configuration includes the context path as well as setting additional descriptors found in the <code>test.d</code> directory.</p></dd><dt class="hdlist1"><code>test.war</code></dt><dd><p>The demonstration web application that is configured and deployed by <code>test.xml</code>.</p></dd><dt class="hdlist1"><code>async-rest.war</code></dt><dd><p>A web application demonstration of asynchronous REST to eBay, automatically deployed to /async-rest based on the file name.</p></dd><dt class="hdlist1"><code>test-jaas.war</code></dt><dd><p>A demonstration web application utilizing <a href="#jaas-support">JAAS</a> for authentication.</p></dd><dt class="hdlist1"><code>test-jaas.xml</code></dt><dd><p>A context configuration file that configures <code>test-jaas.war</code>.
+Additional configuration includes setting up the <a href="#configuring-login-service">LoginService</a> for authentication and authorization.</p></dd><dt class="hdlist1"><code>test-jndi.war</code></dt><dd><p>A demonstration web application showing the use of <a href="#jndi">JNDI</a>.</p></dd><dt class="hdlist1"><code>test-jndi.xml</code></dt><dd><p>A context configuration file that configures <code>test-jndi.war</code>.
+Additional configuration includes defining objects in the naming space that can be referenced from the webapp.</p></dd><dt class="hdlist1"><code>test-spec.war</code></dt><dd><p>A demonstration web application that shows the use of annotations, fragments, <code>ServletContainerInitializers</code> and other Servlet Specification 3.0/3.1 features.</p></dd><dt class="hdlist1"><code>test-spec.xml</code></dt><dd><p>A context configuration file that configures <code>test-spec.war</code>.
+Additional configuration includes setting up some objects in the naming space that can be referenced by annotations.</p></dd><dt class="hdlist1"><code>javadoc-proxy.war</code></dt><dd><p>A demonstration web application that uses a transparent proxy to serve the Jetty source <a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/">Javadoc</a> from the <a href="http://www.eclipse.org/jetty">Eclipse Jetty website</a>.</p></dd><dt class="hdlist1"><code>example-moved.xml</code></dt><dd><p>A demonstration context configuration file that shows how to use the <a href="#moved-context-handler"><code>MovedContextHandler</code></a> to redirect from one path to another.</p></dd></dl></div></div></div></div>
+<div class="sect2"><h3 id="quick-start-configure">An Introduction to Jetty Configuration</h3><div class="sect2"><h3 id="quickstart-config-how">How to Configure Jetty</h3><div class="paragraph"><p>To understand Jetty configuration, you need to understand the "How" and the "What".
+This section covers how to configure Jetty in terms of what mechanisms exist to perform configuration.
+The <a href="#quickstart-config-what">next section</a> gives an overview of the action components and fields that you can configure with these mechanisms.</p></div>
+<div class="sect3"><h4>Jetty POJO Configuration</h4><div class="paragraph"><p>The core components of Jetty are Plain Old Java Objects (<a href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object">POJOs</a>)
+The process of configuring Jetty is mostly the process of instantiating, assembling and setting fields on the Jetty POJOs.
+This can be achieved by:</p></div>
+<div class="ulist"><ul><li><p>Writing Java code to directly instantiate and assemble Jetty objects.
+This is referred to as <a href="#embedding-jetty">[embedding-jetty]</a>.</p></li><li><p>Using Jetty XML configuration, which is an <a href="http://en.wikipedia.org/wiki/Inversion_of_Control">Inversion of Control (IoC)</a> framework, to instantiate and assemble Jetty objects as XML objects.
+The <code>etc/jetty.xml</code> file is the main Jetty XML configuration file, but there are many other <code>etc/jetty-<em>feature</em>.xml</code> files included in the Jetty distribution.</p></li><li><p>Using a third party <a href="http://en.wikipedia.org/wiki/Inversion_of_Control">IoC</a> framework like <a href="http://en.wikipedia.org/wiki/Spring_Framework">Spring</a>, to instantiate and assemble Jetty objects as Spring beans.</p></li></ul></div>
+<div class="paragraph"><p>Because the main Jetty configuration is done by IoC, the <a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/">Jetty API documentation</a> is the ultimate configuration reference.</p></div></div>
+<div class="sect3"><h4>Jetty Start Configuration Files</h4><div class="paragraph"><p>The Jetty distribution uses the following configuration files to instantiate, inject and start server via the <code>start.jar</code> mechanism.</p></div>
+<div class="dlist"><dl><dt class="hdlist1"><code>ini</code> files</dt><dd><p>The Jetty Start mechanism uses the command line, the <code>$JETTY_BASE/start.ini</code> and/or <code>$JETTY_BASE/start.d/*.ini</code> files to create an effective command line of arguments.
+Arguments may be:</p><div class="ulist"><ul><li><p>Module activations in the form <code>--module=name</code></p></li><li><p>Properties in the form of <code>name=value</code>, used to parameterize Jetty IoC XML</p></li><li><p>XML files in Jetty IoC (or Spring) XML format</p></li><li><p>A standard <a href="http://en.wikipedia.org/wiki/Java_properties">Java property file</a> containing additional start properties</p></li><li><p>Other start.jar options (see <code>java -jar start.jar --help</code>)</p></li><li><p>Some JVM options in combination with <code>--exec</code>, such as <code>-Xbootclasspath</code>.</p></li></ul></div></dd></dl></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>It is the <code>ini</code> files located in the Jetty base directory (if different from Jetty home) that are typically edited to change the configuration (e.g. change ports).</p></div></td></tr></table></div></blockquote></div>
+<div class="dlist"><dl><dt class="hdlist1"><code>mod</code> files</dt><dd><p>The <code>$JETTY_HOME/modules/*.mod</code> files contain the definition of modules that can be activated by <code>--module=name</code>.
+Each <code>mod</code> file defines:</p><div class="ulist"><ul><li><p>Module dependencies for ordering and activation</p></li><li><p>The libraries needed by the module to be added to the classpath</p></li><li><p>The XML files needed by the module to be added to the effective command line</p></li><li><p>Files needed by the activated module</p></li><li><p>A template <code>ini</code> file to be used when activating the <code>--add-to-start=name</code> option</p><div class="paragraph"><p>Typically module files are rarely edited and only then for significant structural changes.
+The <code><strong>.mod</code> files are normally located in <code>$JETTY_HOME/modules/</code>, but extra or edited modules may be added to <code>$JETTY_BASE/module</code>.
+If module changes are required, it is best practice to copy the particular <code></strong>.mod</code> file from <code>$JETTY_HOME/modules/</code> to <code>$JETTY_BASE/modules/</code> before being modified.</p></div></li></ul></div></dd><dt class="hdlist1">XML files</dt><dd><p>XML files in <a href="#jetty-xml-syntax">Jetty IoC XML format</a> or Spring IoC format are listed either on the command line, in <code>ini</code> files, or are added to the effective command line by a module definition.
+The XML files instantiate and inject the actual Java objects that comprise the server, connectors and contexts.
+Because Jetty IoC XML files use properties, most common configuration tasks can be accomplished without editing these XML files and can instead be achieved by editing the property in the corresponding <code>ini</code> files.
+XML files are normally located in <code>$JETTY_HOME/etc/</code>, but extra or edited XML files may be added to <code>$JETTY_BASE/etc/</code>.
+<strong>Note</strong> If XML configuration changes are required, it is best practice to copy the XML file from <code>$JETTY_HOME/etc/</code> to <code>$JETTY_BASE/etc/</code> before being modified.</p></dd></dl></div>
+<div class="paragraph"><p>Below is an illustration of how the various Jetty configuration files (<code>ini</code>, <code>mod</code> and XML) are related:</p></div>
+<div class="paragraph"><p><span class="image"><img src="../common/images/images/Jetty_Configuration_File_Relationships.png" alt="image" width="693"></span></p></div></div>
+<div class="sect3"><h4>A Closer Look</h4><div class="paragraph"><p>To put it simply: XML files are responsible for instantiating the Jetty POJOs that make up the server.
+They define properties which users can modify to meet the needs of their server.
+These XML files are broken up by type in the distribution so they can be consumed as a user/server needs them.
+For example, a server may need HTTP and HTTPS functionality, but opt out of using HTTP/2 and Websocket.</p></div>
+<div class="paragraph"><p>Module files allow users to enable and remove functionality quickly and easily from their server implementation.
+They include a template of the different properties included in the associated XML file, as well as a pointer to the XML or JAR file(s) they are referencing.
+When a module is activated these properties are added to a related <code>ini</code> file where users can configure them to meet their needs.
+We will discuss modules in further detail in an upcoming chapter.</p></div>
+<div class="paragraph"><p>Ini files are where most users will spend the bulk of their time editing the configuration for their server.
+As mentioned, they contain properties which were defined in their associated XML files which in turn reference Jetty Java objcts.</p></div>
+<div class="paragraph"><p>This can be a bit overwhelming at first, so let&#8217;s look at an example - in this case the <code>http</code> module.
+We will work backwards from an ini file to the associated module and then the XML file in question.</p></div>
+<div class="paragraph"><p>First up, the <code>http.ini</code> file.
+If we take a look at it&#8217;s contents, we will see the following:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">$ cat start.d/http.ini
+# ---------------------------------------
+# Module: http
+# Enables a HTTP connector on the server.
+# By default HTTP/1 is support, but HTTP2C can
+# be added to the connector with the http2c module.
+# ---------------------------------------
+--module=http
+
+### HTTP Connector Configuration
+
+## Connector host/address to bind to
+# jetty.http.host=0.0.0.0
+
+## Connector port to listen on
+# jetty.http.port=8080
+
+## Connector idle timeout in milliseconds
+# jetty.http.idleTimeout=30000
+
+## Number of acceptors (-1 picks default based on number of cores)
+# jetty.http.acceptors=-1
+
+## Number of selectors (-1 picks default based on number of cores)
+# jetty.http.selectors=-1
+
+## ServerSocketChannel backlog (0 picks platform default)
+# jetty.http.acceptorQueueSize=0
+
+## Thread priority delta to give to acceptor threads
+# jetty.http.acceptorPriorityDelta=0
+
+## Reserve threads for high priority tasks (-1 use a heuristic, 0 no reserved threads)
+# jetty.http.reservedThreads=-1
+
+## Connect Timeout in milliseconds
+# jetty.http.connectTimeout=15000
+
+## HTTP Compliance: RFC7230, RFC2616, LEGACY
+# jetty.http.compliance=RFC7230</code></pre></div></div>
+<div class="paragraph"><p>So what do we see?
+We have a module name, the module activation (<code>--module=http</code>), as well as a description and what look like properties to configure.
+Those will some scripting/coding experience might notice that most of the lines are commented out with <code>#</code> and you&#8217;d be correct.
+When a module is enabled and an <code>ini</code> file is created, all of the properties you see here were set to these defaults - the server is already using the values shown
+If you wanted to change one of the properties though, say <code>jetty.http.port</code>, you&#8217;d simply uncomment the line and change the value.
+For example:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">$ cat start.d/http.ini
+# ---------------------------------------
+# Module: http
+# Enables a HTTP connector on the server.
+# By default HTTP/1 is support, but HTTP2C can
+# be added to the connector with the http2c module.
+# ---------------------------------------
+--module=http
+
+### HTTP Connector Configuration
+
+## Connector host/address to bind to
+# jetty.http.host=0.0.0.0
+
+## Connector port to listen on
+jetty.http.port=1234
+...</code></pre></div></div>
+<div class="paragraph"><p>As seen before, these properties were populated in this ini file based on a related module.
+Standard Jetty modules live in the Home of the Jetty Distribution in the aptly named <code>modules</code> directory.
+So let&#8217;s take a quick look at the associated <code>$JETTY_HOME/modules/http.mod</code> file:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-screen" data-lang="screen">$ cat $JETTY_HOME/modules/http.mod
+[description]
+Enables a HTTP connector on the server.
+By default HTTP/1 is support, but HTTP2C can
+be added to the connector with the http2c module.
+
+[tags]
+connector
+http
+
+[depend]
+server
+
+[xml]
+etc/jetty-http.xml
+
+[ini-template]
+### HTTP Connector Configuration
+
+## Connector host/address to bind to
+# jetty.http.host=0.0.0.0
+
+## Connector port to listen on
+# jetty.http.port=8080
+
+## Connector idle timeout in milliseconds
+# jetty.http.idleTimeout=30000
+...</code></pre></div></div>
+<div class="paragraph"><p>At first blush, it looks remarkable similar to the <code>ini</code> file we just looked at.
+We still have a description and the properties we could edit, but now we also have several other sections.
+These other sections will be looked at further in our chapter on modules, but for now it is worth noting the <code>[xml]</code> and <code>[ini-template]</code> sections.
+As you could probably have puzzled out, the <code>[ini-template]</code> contains a template (go figure) for properties to be placed in the associated <code>ini</code> file when a module is activated.
+The <code>[xml]</code> section refers to the file and location of the XML file these properties are based on.
+It is important to note that not every module file will have the same sections, but most should look structurally the same.</p></div>
+<div class="paragraph"><p>Now that we know what XML file these properties relate to, we can navigate to it and have a look.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">$ cat $JETTY_HOME/etc/jetty-http.xml
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+
+&lt;!-- ============================================================= --&gt;
+&lt;!-- Configure the Jetty Server instance with an ID "Server"       --&gt;
+&lt;!-- by adding a HTTP connector.                                   --&gt;
+&lt;!-- This configuration must be used in conjunction with jetty.xml --&gt;
+&lt;!-- ============================================================= --&gt;
+&lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+
+  &lt;!-- =========================================================== --&gt;
+  &lt;!-- Add a HTTP Connector.                                       --&gt;
+  &lt;!-- Configure an o.e.j.server.ServerConnector with a single     --&gt;
+  &lt;!-- HttpConnectionFactory instance using the common httpConfig  --&gt;
+  &lt;!-- instance defined in jetty.xml                               --&gt;
+  &lt;!--                                                             --&gt;
+  &lt;!-- Consult the javadoc of o.e.j.server.ServerConnector and     --&gt;
+  &lt;!-- o.e.j.server.HttpConnectionFactory for all configuration    --&gt;
+  &lt;!-- that may be set here.                                       --&gt;
+  &lt;!-- =========================================================== --&gt;
+  &lt;Call name="addConnector"&gt;
+    &lt;Arg&gt;
+      &lt;New id="httpConnector" class="org.eclipse.jetty.server.ServerConnector"&gt;
+        &lt;Arg name="server"&gt;&lt;Ref refid="Server" /&gt;&lt;/Arg&gt;
+        &lt;Arg name="acceptors" type="int"&gt;&lt;Property name="jetty.http.acceptors" deprecated="http.acceptors" default="-1"/&gt;&lt;/Arg&gt;
+        &lt;Arg name="selectors" type="int"&gt;&lt;Property name="jetty.http.selectors" deprecated="http.selectors" default="-1"/&gt;&lt;/Arg&gt;
+        &lt;Arg name="factories"&gt;
+          &lt;Array type="org.eclipse.jetty.server.ConnectionFactory"&gt;
+            &lt;Item&gt;
+              &lt;New class="org.eclipse.jetty.server.HttpConnectionFactory"&gt;
+                &lt;Arg name="config"&gt;&lt;Ref refid="httpConfig" /&gt;&lt;/Arg&gt;
+                &lt;Arg name="compliance"&gt;&lt;Call class="org.eclipse.jetty.http.HttpCompliance" name="valueOf"&gt;&lt;Arg&gt;&lt;Property name="jetty.http.compliance" default="RFC7230"/&gt;&lt;/Arg&gt;&lt;/Call&gt;&lt;/Arg&gt;
+              &lt;/New&gt;
+            &lt;/Item&gt;
+          &lt;/Array&gt;
+        &lt;/Arg&gt;
+        &lt;Set name="host"&gt;&lt;Property name="jetty.http.host" deprecated="jetty.host" /&gt;&lt;/Set&gt;
+        &lt;Set name="port"&gt;&lt;Property name="jetty.http.port" deprecated="jetty.port" default="8080" /&gt;&lt;/Set&gt;
+        &lt;Set name="idleTimeout"&gt;&lt;Property name="jetty.http.idleTimeout" deprecated="http.timeout" default="30000"/&gt;&lt;/Set&gt;
+        &lt;Set name="acceptorPriorityDelta"&gt;&lt;Property name="jetty.http.acceptorPriorityDelta" deprecated="http.acceptorPriorityDelta" default="0"/&gt;&lt;/Set&gt;
+        &lt;Set name="acceptQueueSize"&gt;&lt;Property name="jetty.http.acceptQueueSize" deprecated="http.acceptQueueSize" default="0"/&gt;&lt;/Set&gt;
+        &lt;Get name="SelectorManager"&gt;
+          &lt;Set name="connectTimeout"&gt;&lt;Property name="jetty.http.connectTimeout" default="15000"/&gt;&lt;/Set&gt;
+          &lt;Set name="reservedThreads"&gt;&lt;Property name="jetty.http.reservedThreads" default="-2"/&gt;&lt;/Set&gt;
+        &lt;/Get&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+
+&lt;/Configure&gt;</code></pre></div></div>
+<div class="paragraph"><p>Now we can see where those properties in our <code>ini</code> and module files came from.
+In Jetty XML files, Jetty objects come to life; defined properties are set which link back to the jar libraries and run the server to a user&#8217;s specification.</p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock important"><table><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">It is important to remember that you should <strong>not</strong> modify the XML files in your <code>$JETTY_HOME</code>.
+If you do for some reason feel you want to change the way an XML file operates, it is best to make a copy of it in your <code>$JETTY_BASE</code> in an <code>/etc</code> directory.
+Jetty will always look first to the <code>$JETTY_BASE</code> for configuration.</td></tr></table></div></blockquote></div></div>
+<div class="sect3"><h4>Other Configuration Files</h4><div class="paragraph"><p>In addition to the configuration files described above, the configuration of the server can use the following file types:</p></div>
+<div class="dlist"><dl><dt class="hdlist1">Context XML files</dt><dd><p>Any XML files in <a href="#jetty-xml-syntax">Jetty IoC XML format</a> or Spring IoC format that is discovered in the <code>/webapps</code> directory are used by the deploy module to instantiate and inject <code>HttpContext</code> instances to create a specific context.
+These may be standard web applications or bespoke contexts created from special purpose handlers.</p></dd><dt class="hdlist1">web.xml</dt><dd><p>The <a href="http://en.wikipedia.org/wiki/Servlet">Servlet</a> Specification defines the <a href="http://en.wikipedia.org/wiki/Web.xml"><code>web.xml</code></a> deployment descriptor that defines and configures the filters, servlets and resources a <a href="http://en.wikipedia.org/wiki/Web_application">web application</a> uses.
+The Jetty <code>WebAppContext</code> component uses this XML format to:</p><div class="ulist"><ul><li><p>Set up the default configuration of a web application context.</p></li><li><p>Interpret the application-specific configuration supplied with a web application in the <code>WEB-INF/web.xml</code> file.</p></li><li><p>Interpret descriptor fragments included in the <code>META-INF</code> directory of Jar files within <code>WEB-INF/lib.</code></p><div class="paragraph"><p>Normally the <code>web.xml</code> file for a web application is found in the <code>WEB-INF/web.xml</code> location within the war file/directory or as <code>web.xml</code> fragments with <code>.jar</code> files found in <code>WEB-INF/lib</code>.
+Jetty also supports multiple <code>web.xml</code> files so that a default descriptor may be applied before <code>WEB-INF/web.xml</code> (typically set to <code>etc/webdefault.xml</code> by the deploy module) and an override descriptor may be applied after <code>WEB-INF/web.xml</code> (typically set by a context XML file see <code>test.xml</code>)</p></div></li></ul></div></dd><dt class="hdlist1">Property Files</dt><dd><p>Standard <a href="http://en.wikipedia.org/wiki/Java_properties">Java property files</a> are also used for Jetty configuration in several ways:</p><div class="ulist"><ul><li><p>To parameterize Jetty IoC XML via the use of the <code>Property</code> element.</p></li><li><p>To configure the default logging mechanism (<code>StdErrLog</code>). Other logging frameworks can be utilized and also use property files (for example, <code>log4j</code>).</p></li><li><p>As a simple database for login usernames and credentials.</p></li></ul></div></dd></dl></div></div>
+<div class="sect3"><h4>Jetty IoC XML format</h4><div class="paragraph"><p>To understand the <a href="#jetty-xml-syntax">Jetty IoC XML format</a>, consider the following example of an embedded Jetty server instantiated and configured in Java:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-java" data-lang="java">//
+//  ========================================================================
+//  Copyright (c) 1995-2018 Mort Bay Consulting Pty. Ltd.
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
+//
+
+package org.eclipse.jetty.embedded;
+
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+
+public class ExampleServer
+{
+    public static void main( String[] args ) throws Exception
+    {
+        Server server = new Server();
+
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(8080);
+        server.setConnectors(new Connector[] { connector });
+
+        ServletContextHandler context = new ServletContextHandler();
+        context.setContextPath("/");
+        context.addServlet(HelloServlet.class, "/hello");
+        context.addServlet(AsyncEchoServlet.class, "/echo/*");
+
+        HandlerCollection handlers = new HandlerCollection();
+        handlers.setHandlers(new Handler[] { context, new DefaultHandler() });
+        server.setHandler(handlers);
+
+        server.start();
+        server.join();
+    }
+}</code></pre></div></div>
+<div class="paragraph"><p><a href="#jetty-xml-syntax">Jetty IoC XML format</a> allows you to instantiate and configure the exact same server in XML without writing any java code:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+
+&lt;Configure id="ExampleServer" class="org.eclipse.jetty.server.Server"&gt;
+
+  &lt;Set name="connectors"&gt;
+    &lt;Array type="org.eclipse.jetty.server.Connector"&gt;
+      &lt;Item&gt;
+        &lt;New class="org.eclipse.jetty.server.ServerConnector"&gt;
+          &lt;Arg&gt;&lt;Ref refid="ExampleServer"/&gt;&lt;/Arg&gt;
+          &lt;Set name="port"&gt;8080&lt;/Set&gt;
+        &lt;/New&gt;
+      &lt;/Item&gt;
+    &lt;/Array&gt;
+  &lt;/Set&gt;
+
+  &lt;New id="context" class="org.eclipse.jetty.servlet.ServletContextHandler"&gt;
+    &lt;Set name="contextPath"&gt;/hello&lt;/Set&gt;
+    &lt;Call name="addServlet"&gt;
+      &lt;Arg&gt;org.eclipse.jetty.embedded.HelloServlet&lt;/Arg&gt;
+      &lt;Arg&gt;/&lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/New&gt;
+
+  &lt;Set name="handler"&gt;
+    &lt;New class="org.eclipse.jetty.server.handler.HandlerCollection"&gt;
+      &lt;Set name="handlers"&gt;
+        &lt;Array type="org.eclipse.jetty.server.Handler"&gt;
+          &lt;Item&gt;
+            &lt;Ref refid="context" /&gt;
+          &lt;/Item&gt;
+          &lt;Item&gt;
+            &lt;New class="org.eclipse.jetty.server.handler.DefaultHandler" /&gt;
+          &lt;/Item&gt;
+        &lt;/Array&gt;
+      &lt;/Set&gt;
+    &lt;/New&gt;
+  &lt;/Set&gt;
+&lt;/Configure&gt;</code></pre></div></div></div></div>
+<div class="sect2"><h3 id="quickstart-config-what">What to Configure in Jetty</h3><div class="paragraph"><p>This section gives an overview of the components of Jetty you typically configure using the mechanisms outlined in the previous section.
+<a href="#basic-architecture">[basic-architecture]</a> describes the structure of a Jetty server, which is good background reading to understand configuration, and is vital if you want to change the structure of the server as set up by the default configurations in the Jetty distribution.
+However, for most purposes, configuration is a matter of identifying the correct configuration file and modifying existing configuration values.</p></div>
+<div class="sect3"><h4 id="intro-jetty-configuration-server">Configuring the Server</h4><div class="paragraph"><p>The Server instance is the central coordination object of a Jetty server; it provides services and life cycle management for all other Jetty server components.
+In the standard Jetty distribution, the core server configuration is in <code>etc/jetty.xml</code> file, but you can mix in other server configurations which can include:</p></div>
+<div class="dlist"><dl><dt class="hdlist1">ThreadPool</dt><dd><p>The Server instance provides a ThreadPool instance that is the default Executor service other Jetty server components use.
+The prime configuration of the thread pool is the maximum and minimum size and is set in <code>start.ini</code> or <code>start.d/server.ini</code>.</p></dd><dt class="hdlist1">Handlers</dt><dd><p>A Jetty server can have only a single Handler instance to handle incoming HTTP requests.
+However a handler may be a container or wrapper of other handlers forming a tree of handlers that typically
+handle a request as a collaboration between the handlers from a branch of the tree from root to leaf.
+The default handler tree set up in the <code>etc/jetty.xml</code> file is a Handler Collection containing a Context Handler Collection and the Default Handler.
+The Context Handler Collection selects the next handler by context path and is where deployed Context Handler and Web Application Contexts are added to the handler tree.
+The Default Handler handles any requests not already handled and generates the standard 404 page.
+Other configuration files may add handlers to this tree (for example, <code>jetty-rewrite.xml</code>, <code>jetty-requestlog.xml</code>) or configure components to hot deploy handlers (for example, <code>jetty-deploy.xml</code>).</p></dd><dt class="hdlist1">Server Attributes</dt><dd><p>The server holds a generic attribute map of strings to objects so that other Jetty components can associate named objects with the server, and if the value objects implement the LifeCycle interface, they are started and stopped with the server.
+Typically server attributes hold server-wide default values.</p></dd><dt class="hdlist1">Server fields</dt><dd><p>The server also has some specific configuration fields that you set in <code>start.ini</code>  or <code>start.d/server.ini</code> for controlling, among other things, the sending of dates and versions in HTTP responses.</p></dd><dt class="hdlist1">Connectors</dt><dd><p>The server holds a collection of connectors that receive connections for HTTP and the other protocols that Jetty supports.
+The next section, <a href="#intro-jetty-configuration-connectors">Configuring Connectors</a> describes configuration of the connectors themselves.
+For the server you can either set the collection of all connectors or add/remove individual connectors.</p></dd><dt class="hdlist1">Services</dt><dd><p>The server can hold additional service objects, sometimes as attributes, but often as aggregated LifeCycle beans.
+Examples of services are Login Services and DataSources, which you configure at the server level and then inject into the web applications that use them.</p></dd></dl></div></div>
+<div class="sect3"><h4 id="intro-jetty-configuration-connectors">Configuring Connectors</h4><div class="paragraph"><p>A Jetty Server Connector is a network end point that accepts connections for one or more protocols which produce requests and/or messages for the Jetty server.
+In the standard Jetty server distribution, several provided configuration files add connectors to the server for various protocols and combinations of protocols: <code>http.ini</code>, <code>https.ini</code> and <code>jetty-http2.xml</code>.
+The configuration needed for connectors is typically:</p></div>
+<div class="dlist"><dl><dt class="hdlist1">Port</dt><dd><p>The TCP/IP port on which the connector listens for connections is set using the the XML Property element which looks up the <code>jetty.http.port</code> (or <code>jetty.ssl.port</code>) property, and if not found defaults to 8080 (or 8443 for TLS).</p></dd><dt class="hdlist1">Host</dt><dd><p>You can configure a host either as a host name or IP address to identify a specific network interface on which to listen.
+If not set, or set to the value of 0.0.0.0, the connector listens on all local interfaces.
+The XML Property element is used to look up the host value from the <code>jetty.host</code> property.</p></dd><dt class="hdlist1">Idle Timeout</dt><dd><p>The time in milliseconds that a connection can be idle before the connector takes action to close the connection.</p></dd><dt class="hdlist1">HTTP Configuration</dt><dd><p>Connector types that accept HTTP semantics (including HTTP, HTTPS and HTTP2) are configured with a <code>HttpConfiguration</code> instance that contains common HTTP configuration that is independent of the specific wire protocol used.
+Because these values are often common to multiple connector types, the standard Jetty Server distribution creates a single <code>HttpConfiguration</code> in the <code>jetty.xml</code> file which is used via the XML Ref element in the specific connector files.</p></dd><dt class="hdlist1">SSL Context Factory</dt><dd><p>The TLS connector types (HTTPS and HTTP2) configure an SSL Context Factory with the location of the server keystore and truststore for obtaining server certificates.</p></dd></dl></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Virtual hosts are not configured on connectors. You must configure individual contexts with the virtual hosts to which they respond.</td></tr></table></div></blockquote></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Prior to Jetty 9, the type of the connector reflected both the protocol supported (HTTP, HTTPS, AJP, SPDY), and the nature of the implementation (NIO or BIO).
+From Jetty 9 onwards there is only one prime Connector type (<code>ServerConnector</code>), which is NIO based and uses Connection Factories to handle one or more protocols.</td></tr></table></div></blockquote></div></div>
+<div class="sect3"><h4 id="intro-jetty-configuration-contexts">Configuring Contexts</h4><div class="paragraph"><p>A Jetty context is a handler that groups other handlers under a context path together with associated resources and is roughly equivalent to the standard ServletContext API.
+A context may contain either standard Jetty handlers or a custom application handler.</p></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The servlet specification defines a web application.
+In Jetty a standard web application is a specialized context that uses a standard layout and <code>WEB-INF/web.xml</code> to instantiate and configure classpath, resource base and handlers for sessions, security, and servlets, plus servlets for JSPs and static content.
+Standard web applications often need little or no additional configuration, but you can also use the techniques for arbitrary contexts to refine or modify the configuration of standard web applications.</td></tr></table></div></blockquote></div>
+<div class="paragraph"><p>Configuration values that are common to all contexts are:</p></div>
+<div class="dlist"><dl><dt class="hdlist1">contextPath</dt><dd><p>The contextPath is a URL prefix that identifies which context a HTTP request is destined for.
+For example, if a context has a context path <code>/foo</code>, it handles requests to <code>/foo</code>, <code>/foo/index.html</code>,
+<code>/foo/bar/</code>, and <code>/foo/bar/image.png</code> but it does not handle requests like <code>/</code>, <code>/other/</code>, or <code>/favicon.ico</code>.
+A context with a context path of / is called the root context.</p><div class="paragraph"><p>The context path can be set by default from the deployer (which uses the filename as the basis for the context path); or in code; or it can be set by a Jetty IoC XML that is either applied by the deployer or found in the <code>WEB-INF/jetty-web.xml</code> file of a standard web app context.</p></div></dd><dt class="hdlist1">virtualHost</dt><dd><p>A context may optionally have one or more virtual hosts set.
+Unlike the host set on a connector (which selects the network interface on which to listen), a virtual host does not set any network parameters.
+Instead a virtual host represents an alias assigned by a name service to an IP address, which may have many aliases.
+To determine which virtual host a request is intended for, the HTTP client (browser) includes in the request the name used to look up the network address.
+A context with a virtual host set only handles requests that have a matching virtual host in their request headers.</p></dd><dt class="hdlist1">classPath</dt><dd><p>A context may optionally have a classpath, so that any thread that executes a handler within the context has a thread context classloader set with the classpath.
+A standard web application has the classpath initialized by the <code>WEB-INF/lib</code> and <code>WEB-INF/classes</code> directory and
+has additional rules about delegating classloading to the parent classloader.
+All contexts may have additional classpath entries added.</p></dd><dt class="hdlist1">attributes</dt><dd><p>Attributes are arbitrary named objects that are associated with a context and are frequently used to pass entities between a web application and its container.
+For example the attribute <code>javax.servlet.context.tempdir</code> is used to pass the File instance that represents the assigned temporary directory for a web application.</p></dd><dt class="hdlist1">resourceBase</dt><dd><p>The resource base is a directory (or collection of directories or URL) that contains the static resources for the context.
+These can be images and HTML files ready to serve or JSP source files ready to be compiled.
+In traditional web servers this value is often called the docroot.</p></dd></dl></div>
+<div class="sect4"><h5>Context Configuration by API</h5><div class="paragraph"><p>In an embedded server, you configure contexts by directly calling the <a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a> API as in the following example:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-java" data-lang="java">//
+//  ========================================================================
+//  Copyright (c) 1995-2018 Mort Bay Consulting Pty. Ltd.
+//  ------------------------------------------------------------------------
+//  All rights reserved. This program and the accompanying materials
+//  are made available under the terms of the Eclipse Public License v1.0
+//  and Apache License v2.0 which accompanies this distribution.
+//
+//      The Eclipse Public License is available at
+//      http://www.eclipse.org/legal/epl-v10.html
+//
+//      The Apache License v2.0 is available at
+//      http://www.opensource.org/licenses/apache2.0.php
+//
+//  You may elect to redistribute this code under either of these licenses.
+//  ========================================================================
+//
+
+package org.eclipse.jetty.embedded;
+
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+
+public class OneContext
+{
+    public static void main( String[] args ) throws Exception
+    {
+        Server server = new Server( 8080 );
+
+        // Add a single handler on context "/hello"
+        ContextHandler context = new ContextHandler();
+        context.setContextPath( "/hello" );
+        context.setHandler( new HelloHandler() );
+
+        // Can be accessed using http://localhost:8080/hello
+
+        server.setHandler( context );
+
+        // Start the server
+        server.start();
+        server.join();
+    }
+}</code></pre></div></div></div>
+<div class="sect4"><h5>Context Configuration by IoC XML</h5><div class="paragraph"><p>You can create and configure a context entirely by IoC XML (either Jetty&#8217;s or Spring).
+The deployer discovers and hot deploys context IoC descriptors like the following which creates a context to serve the Javadoc from the Jetty distribution:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"  encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC
+    "-//Mort Bay Consulting//DTD Configure//EN"
+    "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+
+&lt;!--
+  Configure a custom context for serving javadoc as static resources
+--&gt;
+
+&lt;Configure class="org.eclipse.jetty.server.handler.ContextHandler"&gt;
+  &lt;Set name="contextPath"&gt;/javadoc&lt;/Set&gt;
+  &lt;Set name="resourceBase"&gt;&lt;SystemProperty name="jetty.home" default="."/&gt;/javadoc/&lt;/Set&gt;
+  &lt;Set name="handler"&gt;
+    &lt;New class="org.eclipse.jetty.server.handler.ResourceHandler"&gt;
+      &lt;Set name="welcomeFiles"&gt;
+        &lt;Array type="String"&gt;
+          &lt;Item&gt;index.html&lt;/Item&gt;
+        &lt;/Array&gt;
+      &lt;/Set&gt;
+      &lt;Set name="cacheControl"&gt;max-age=3600,public&lt;/Set&gt;
+    &lt;/New&gt;
+  &lt;/Set&gt;
+&lt;/Configure&gt;</code></pre></div></div></div>
+<div class="sect4"><h5 id="intro-jetty-configuration-webapps">Configuring Web Applications</h5><div class="paragraph"><p>The servlet specification defines a web application, which when packaged as a zip is called WAR file (Web application ARchive).
+Jetty implements both WAR files and unpacked web applications as a specialized context that is configured by means of:</p></div>
+<div class="ulist"><ul><li><p>A standard layout which sets the location of the resourceBase (the root of the WAR) and initializes the classpath from jars found in <code>WEB-INF/lib</code> and classes found in <code>WEB-INF/classes</code>.</p></li><li><p>The standard <code>WEB-INF/web.xml</code> deployment descriptor which is parsed to define and configure init parameters, filters, servlets, listeners, security constraints, welcome files and resources to be injected.</p></li><li><p>A default <code>web.xml</code> format deployment descriptor provided either by Jetty or in configuration configures the JSP servlet and the default servlet for handling static content.
+The standard <code>web.xml</code> may override the default <code>web.xml</code>.</p></li><li><p>Annotations discovered on classes in Jars contained in <code>WEB-INF/lib</code> can declare additional filters, servlets and listeners.</p></li><li><p>Standard deployment descriptor fragments discovered in Jars contained in <code>WEB-INF/lib</code> can declare additional init parameters, filters, servlets, listeners, security constraints, welcome files and resources to be injected.</p></li><li><p>An optional <code>WEB-INF/jetty-web.xml</code> file may contain Jetty IoC configuration to configure the Jetty specific APIs of the context and handlers.</p></li></ul></div>
+<div class="paragraph"><p>Because these configuration mechanisms are contained within the WAR file (or unpacked web application), typically a web application contains much of its own configuration and deploying a WAR is often just a matter of dropping the WAR file in to the webapps directory that is scanned by the <a href="#quickstart-config-deployer">Jetty deployer</a>.</p></div>
+<div class="paragraph"><p>If you need to configure something within a web application, often you do so by unpacking the WAR file and editing the <code>web.xml</code> and other configuration files.
+However, both the servlet standard and some Jetty features allow for other configuration to be applied to a web application externally from the WAR:</p></div>
+<div class="ulist"><ul><li><p>Configured data sources and security realms in the server can be injected into a web application either explicitly or by name matching.</p></li><li><p>Jetty allows one or more override deployment descriptors, in <code>web.xml</code> format, to be set on a context (via code or IoC XML) to amend the configuration set by the default and standard <code>web.xml</code>.</p></li><li><p>The normal Jetty Java API may be called by code or IoC XML to amend the configuration of a web application.</p></li></ul></div></div>
+<div class="sect4"><h5>Setting the Context Path</h5><div class="paragraph"><p>The web application standard provides no configuration mechanism for a web application or WAR file to set its own <code>contextPath</code>.
+By default the deployer uses conventions to set the context path:
+If you deploy a WAR file called <code>foobar.WAR</code>, the context path is <code>/foobar</code>; if you deploy a WAR file called <code>ROOT.WAR</code> the context path is <code>/</code>.</p></div>
+<div class="paragraph"><p>However, it is often desirable to explicitly set the context path so that information (for example, version numbers) may be included in the filename of the WAR.
+Jetty allows the context Path of a WAR file to be set internally (by the WAR itself) or externally (by the deployer of the WAR).</p></div>
+<div class="paragraph"><p>To set the contextPath from within the WAR file, you can include a <code>WEB-INF/jetty-web.xml</code> file which contains IoC XML to set the context path:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"  encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC
+    "-//Mort Bay Consulting//DTD Configure//EN"
+    "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+    &lt;Set name="contextPath"&gt;/contextpath&lt;/Set&gt;
+&lt;/Configure&gt;</code></pre></div></div>
+<div class="paragraph"><p>Alternately, you can configure the classpath externally without the need to modify the WAR file itself.
+Instead of allowing the WAR file to be discovered by the deployer, an IoC XML file may be deployed that both sets the context path and declares the WAR file that it applies to:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"  encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC
+    "-//Mort Bay Consulting//DTD Configure//EN"
+    "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;Set name="war"&gt;&lt;SystemProperty name="jetty.home" default="."/&gt;/webapps/test.war&lt;/Set&gt;
+  &lt;Set name="contextPath"&gt;/test&lt;/Set&gt;
+&lt;/Configure&gt;</code></pre></div></div>
+<div class="paragraph"><p>An example of setting the context path is included with the Jetty distribution in <code>$JETTY_HOME/webapps/test.xml</code>.</p></div></div>
+<div class="sect4"><h5 id="quickstart-config-deployer">Web Application Deployment</h5><div class="paragraph"><p>Jetty is capable of deploying a variety of Web Application formats.
+This is accomplished via scans of the <code>${jetty.base}/webapps</code> directory for contexts to deploy.</p></div>
+<div class="paragraph"><p>A Context can be any of the following:</p></div>
+<div class="ulist"><ul><li><p>A standard WAR file. (must in &#8220;.war&#8221;).</p></li><li><p>A directory containing an expanded WAR file. (must contain <code>{dir}/WEB-INF/web.xml</code> file).</p></li><li><p>A directory containing static content.</p></li><li><p>A XML descriptor in <a href="#jetty-xml-syntax">[jetty-xml-syntax]</a> that configures a <a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a> instance (Such as a
+<a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html">WebAppContext</a>).</p></li></ul></div>
+<div class="paragraph"><p>The new WebAppProvider will attempt to avoid double deployments during the directory scan with the following heuristics:</p></div>
+<div class="ulist"><ul><li><p>Hidden files (starting with <code>"."</code>) are ignored</p></li><li><p>Directories with names ending in <code>".d"</code> are ignored</p></li><li><p>If a directory and matching WAR file exist with the same base name (eg: <code>foo/</code> and <code>foo.war</code>), then the directory is assumed to be the unpacked WAR and only the WAR is deployed (which may reuse the unpacked directory)</p></li><li><p>If a directory and matching XML file exists (eg: <code>foo/</code> and <code>foo.xml</code>), then the directory is assumed to be an unpacked WAR and only the XML is deployed (which may use the directory in its own configuration)</p></li><li><p>If a WAR file and matching XML file exist (eg: <code>foo.war</code> and <code>foo.xml</code>), then the WAR is assumed to be configured by the XML and only the XML is deployed.</p></li></ul></div>
+<div class="quoteblock"><blockquote><div class="admonitionblock note"><table><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">In prior versions of Jetty there was a separate ContextDeployer that provided XML-based deployment. As of Jetty 9 the ContextDeployer no longer exists and its functionality has been merged with the new <a href="http://www.eclipse.org/jetty/javadoc/9.4.15-SNAPSHOT/org/eclipse/jetty/deploy/providers/WebAppProvider.html">WebAppProvider</a> to avoid double deployment scenarios.</td></tr></table></div></blockquote></div></div>
+<div class="sect4"><h5>Setting an Authentication Realm</h5><div class="paragraph"><p>The authentication method and realm name for a standard web application may be set in the <code>web.xml</code> deployment descriptor with elements like:</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">...
+&lt;login-config&gt;
+  &lt;auth-method&gt;BASIC&lt;/auth-method&gt;
+  &lt;realm-name&gt;Test Realm&lt;/realm-name&gt;
+&lt;/login-config&gt;
+...</code></pre></div></div>
+<div class="paragraph"><p>This example declares that the BASIC authentication mechanism will be used with credentials validated against a realm called "Test Realm."
+However the standard does not describe how the realm itself is implemented or configured.
+In Jetty, there are several realm implementations (called LoginServices) and the simplest of these is the HashLoginService, which can read usernames and credentials from a Java properties file.</p></div>
+<div class="paragraph"><p>To configure an instance of HashLoginService that matches the "Test Realm" configured above, the following <code>$JETTY_BASE/etc/test-realm.xml</code> IoC XML file should be passed on the command line or set in <code>start.ini</code> or <code>start.d/server.ini</code>.</p></div>
+<div class="listingblock"><div class="content"><pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+&lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+    &lt;!-- =========================================================== --&gt;
+    &lt;!-- Configure Authentication Login Service                      --&gt;
+    &lt;!-- Realms may be configured for the entire server here, or     --&gt;
+    &lt;!-- they can be configured for a specific web app in a context  --&gt;
+    &lt;!-- configuration (see $(jetty.home)/webapps/test.xml for an    --&gt;
+    &lt;!-- example).                                                   --&gt;
+    &lt;!-- =========================================================== --&gt;
+    &lt;Call name="addBean"&gt;
+      &lt;Arg&gt;
+        &lt;New class="org.eclipse.jetty.security.HashLoginService"&gt;
+          &lt;Set name="name"&gt;Test Realm&lt;/Set&gt;
+          &lt;Set name="config"&gt;&lt;Property name="jetty.demo.realm" default="etc/realm.properties"/&gt;&lt;/Set&gt;
+          &lt;Set name="hotReload"&gt;false&lt;/Set&gt;
+        &lt;/New&gt;
+      &lt;/Arg&gt;
+    &lt;/Call&gt;
+
+    &lt;Get class="org.eclipse.jetty.util.log.Log" name="rootLogger"&gt;
+      &lt;Call name="warn"&gt;&lt;Arg&gt;demo test-realm is deployed. DO NOT USE IN PRODUCTION!&lt;/Arg&gt;&lt;/Call&gt;
+    &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre></div></div>
+<div class="paragraph"><p>This creates and configures the LoginService as an aggregate bean on the server.
+When a web application is deployed that declares a realm called "Test Realm," the server beans are searched for a matching Login Service.</p></div></div></div></div></div></div><div id="footer"><div id="footer-text">Version 1.0<br>Last updated 2019-06-27 12:38:30 CDT</div></div></div></main><a href="#" class="scrollup">Back to the top</a></body></html>
