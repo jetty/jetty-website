@@ -22,9 +22,9 @@ $Theme = $App->getThemeClass();
 require_once ('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Starterkit Template";
-$Theme->setPageAuthor('Christopher Guindon');
-$Theme->setPageKeywords('Add maximal 20 keywords and seperate them from each other by a comma en a space.');
+$pageTitle = "Eclipse Jetty - Home";
+$Theme->setPageAuthor('Jesse McConnell');
+$Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
 
 if (isset($Nav)) {
@@ -91,9 +91,9 @@ $links[] = array(
 $variables['header_nav'] = array(
   'links' => $links, // Required
   'logo' => array( // Required
-    'src' => '/eclipse.org-common/themes/solstice/public/images/logo/eclipse-800x188.png', // Required
-    'alt' => 'The Eclipse Foundation', // Optional
-    'url' => 'http://www.eclipse.org' // Optional
+    'src' => '/jetty/common/images/jetty-logo.svg', // Required
+    'alt' => 'Eclipse Jetty Project', // Optional
+    'url' => 'http://www.eclipse.org/jetty' // Optional
     // 'target' => '_blank' // Optional
   )
 );
@@ -103,7 +103,7 @@ $variables['btn_cfa'] = array(
   'hide' => FALSE, // Optional - Hide the CFA button.
   'html' => '', // Optional - Replace CFA html and insert custom HTML.
   'class' => 'btn btn-huge btn-warning', // Optional - Replace class on CFA link.
-  'href' => '//www.eclipse.org/downloads/', // Optional - Replace href on CFA link.
+  'href' => '//www.eclipse.org/jetty/downloads/', // Optional - Replace href on CFA link.
   'text' => '<i class="fa fa-download"></i> Download' // Optional - Replace text of CFA link.
 );
 
