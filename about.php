@@ -58,34 +58,34 @@ $variables['main_container_html'] = '';
 $links = array();
 $links[] = array(
   'icon' => 'fa-download', // Required
-  'url' => '/jetty/downloads/', // Required
+  'url' => '/downloads/', // Required
   'title' => 'Download', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Jetty Distribution' // Optional
+  'text' => 'Eclipse Distribution, Update Site, Dropins' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-users', // Required
-  'url' => '/jetty/contribution-guide/', // Required
-  'title' => 'Contribution Guide', // Required
+  'url' => '/users/', // Required
+  'title' => 'Geting Involved', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Contributions, Community' // Optional
+  'text' => 'CVS, Workspace Setup, Wiki, Committers' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-book', // Required
-  'url' => '/jetty/distribution-guide/', // Required
-  'title' => 'Distribution Guide', // Required
+  'url' => 'http://help.eclipse.org/luna/index.jsp', // Required
+  'title' => 'Documentation', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Tutorials,' // Optional
+  'text' => 'Tutorials, Examples, Videos, Online Reference' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/', // Required
-  'title' => 'Quickstart Guide', // Required
+  'url' => '/forums/', // Required
+  'title' => 'Support', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, Beginners' // Optional
+  'text' => 'Bug Tracker, Newsgroup Professional Support' // Optional
 );
 
 $variables['header_nav'] = array(
