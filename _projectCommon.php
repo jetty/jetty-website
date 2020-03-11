@@ -25,7 +25,7 @@ $theme = NULL;
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
-$Nav->addNavSeparator("Solstice", "/eclipse.org-common/themes/solstice/docs/");
-$Nav->addCustomNav("Documentation", "/eclipse.org-common/themes/solstice/docs/", "_self", NULL);
-$Nav->addCustomNav("Source code", "http://git.eclipse.org/c/www.eclipse.org/eclipse.org-common.git/tree/themes/solstice/", "_self", NULL);
-$Nav->addCustomNav("Using Phoenix", "http://wiki.eclipse.org/Using_Phoenix", "_self", NULL);
+$Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
+$Nav->addCustomNav("Documentation", "/jetty/distribution-guide", "_self", NULL);
+$Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
+$Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide", "_self", NULL);
