@@ -39,6 +39,7 @@
 <!-- ./end  #midcolumn -->
 
 <!-- Start of the right column -->
+<!--
 <div id="rightcolumn">
   <div class="sideitem">
     <h2>Related Links</h2>
@@ -47,4 +48,5 @@
     </ul>
   </div>
 </div>
+-->
 <!-- ./end  #rightcolumn -->
