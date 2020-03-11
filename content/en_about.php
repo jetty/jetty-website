@@ -87,12 +87,7 @@
   <p>
     The Java HTTP server that became jetty was originally developed in 1995 by Greg Wilkins of Mort Bay Consulting as part of an issue tracking application. Versions 1.x through to 6.1.x of Jetty were developed under org.mortbay packaging and Mort Bay still holds the major part of the copyright on the Jetty code base. Mort Bay directly hosted the jetty project until version 3.x and was the prime sponsor of development until 6.x.
   </p>
-</div>
-<!-- ./end  #midcolumn -->
 
-<!-- Start of the right column -->
-<div id="rightcolumn">
-  <div class="sideitem">
     <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Jetty Versions</caption>
     <colgroup>
@@ -220,6 +215,5 @@
     </tr>
     </tbody>
     </table>
-  </div>
 </div>
 <!-- ./end  #rightcolumn -->
