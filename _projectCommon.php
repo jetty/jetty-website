@@ -22,6 +22,8 @@ $Nav  = new Nav();
 // https://dev.eclipse.org/committers/
 $theme = "solstice";
 
+$Theme->setLayout('thin');
+
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
@@ -47,7 +49,7 @@ $variables['hide_breadcrumbs'] = FALSE;
 $variables['leftnav_html'] = '';
 
 // Update the main container class (String)
-$variables['main_container_classes'] = 'container-full';
+$variables['main_container_classes'] = 'container';
 
 // Insert HTML after opening the main content container, before the left
 // sidebar. (String)
