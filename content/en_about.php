@@ -31,7 +31,7 @@
     <li>OSGI, JNDI, JMX, JASPI, AJP support</li>
   </ul>
 
-  <h2>Hightide<h2>
+  <h2>Hightide</h2>
   <p>
     A quick note about Jetty Hightide. Previous releases of Jetty (6, 7 and 8) each released an additional distribution that contained some 3rd party integrations to give a more JEE experience however with Jetty 9 we have stopped providing this integration. What we have found is the vast majority of our users simply start with the jetty-distribution and then layer in whatever extra technologies they want to use, either into the distribution itself or within their web applications. Technologies like JNDI, JMX, and Annotations have always existed in the stock jetty-distribution to weave such things together and that will remain the case.
   </p>

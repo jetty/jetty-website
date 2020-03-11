@@ -53,59 +53,6 @@ $variables['main_container_classes'] = 'container';
 // sidebar. (String)
 $variables['main_container_html'] = '';
 
-// Insert header navigation for project websites.
-// Bug 436108 - https://bugs.eclipse.org/bugs/show_bug.cgi?id=436108
-$links = array();
-$links[] = array(
-  'icon' => 'fa-download', // Required
-  'url' => '/jetty/downloads/', // Required
-  'title' => 'Download', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Jetty Distribution' // Optional
-);
-
-$links[] = array(
-  'icon' => 'fa-users', // Required
-  'url' => '/jetty/contribution-guide/', // Required
-  'title' => 'Contribution Guide', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Contributions, Community' // Optional
-);
-
-$links[] = array(
-  'icon' => 'fa-book', // Required
-  'url' => '/jetty/distribution-guide/', // Required
-  'title' => 'Distribution Guide', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Tutorials,' // Optional
-);
-
-$links[] = array(
-  'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/', // Required
-  'title' => 'Quickstart Guide', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, Beginners' // Optional
-);
-
-$variables['header_nav'] = array(
-  'links' => $links, // Required
-  'logo' => array( // Required
-    'src' => '/jetty/common/images/jetty-logo.svg', // Required
-    'alt' => 'Eclipse Jetty Project', // Optional
-    'url' => 'http://www.eclipse.org/jetty' // Optional
-    // 'target' => '_blank' // Optional
-  )
-);
-
-// CFA Link - Big orange button in header
-$variables['btn_cfa'] = array(
-  'hide' => FALSE, // Optional - Hide the CFA button.
-  'html' => '', // Optional - Replace CFA html and insert custom HTML.
-  'class' => 'btn btn-huge btn-warning', // Optional - Replace class on CFA link.
-  'href' => '//www.eclipse.org/jetty/downloads/', // Optional - Replace href on CFA link.
-  'text' => '<i class="fa fa-download"></i> Download' // Optional - Replace text of CFA link.
-);
 
 // Set Solstice theme variables. (Array)
 $App->setThemeVariables($variables);
