@@ -20,16 +20,16 @@ $Nav  = new Nav();
 // Set the theme for your project's web pages.
 // See the Committer Tools "Phoenix" secion in the How Do I? for list of themes
 // https://dev.eclipse.org/committers/
-$theme = NULL;
+$theme = "solstice";
 
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
 $Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
 $Nav->addCustomNav("About", "/jetty/about.php", "_self", NULL);
-$Nav->addCustomNav("Documentation", "/jetty/distribution-guide", "_self", NULL);
+$Nav->addCustomNav("Documentation", "/jetty/distribution-guide/", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
-$Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide", "_self", NULL);
+$Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide/", "_self", NULL);
 
 // Initialize custom solstice $variables.
 $variables = array();
