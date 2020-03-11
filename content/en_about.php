@@ -16,8 +16,10 @@
 
 <!-- Main content area -->
 <div id="midcolumn">
-  <h1>Distributions</h1>
-  <h2>Eclipse Jetty</h2>
+  <h1><?php print $pageTitle;?></h1>
+
+  <h2>Distributions</h2>
+  <h3>Eclipse Jetty</h3>
   <p>
     Eclipse Jetty Web Server provides an HTTP server and Servlet container capable of serving static and dynamic content either from a standalone or embedded instantiations. From jetty-7 on, the jetty web-server and other core components are hosted by the Eclipse Foundation. The project provides:
   </p>
@@ -31,17 +33,17 @@
     <li>OSGI, JNDI, JMX, JASPI, AJP support</li>
   </ul>
 
-  <h2>Hightide</h2>
+  <h3>Hightide</h3>
   <p>
     A quick note about Jetty Hightide. Previous releases of Jetty (6, 7 and 8) each released an additional distribution that contained some 3rd party integrations to give a more JEE experience however with Jetty 9 we have stopped providing this integration. What we have found is the vast majority of our users simply start with the jetty-distribution and then layer in whatever extra technologies they want to use, either into the distribution itself or within their web applications. Technologies like JNDI, JMX, and Annotations have always existed in the stock jetty-distribution to weave such things together and that will remain the case.
   </p>
 
-  <h2>Other</h2>
+  <h3>Other</h3>
   <p>
     Previous releases of Jetty have been available in many forms and distributions, including the jetty-maven-plugin (which is now hosted at eclipse), Debian and RPMs from jetty@codehaus and as part of the Geronimo JEE application server from apache.
   </p>
 
-  <h1>Homes</h1>
+  <h2>Homes</h2>
   <p>
     The Jetty project has found its home in many places over the last 20+ years.
   </p>

@@ -31,31 +31,6 @@ if (isset($Nav)) {
   $Theme->setNav($Nav);
 }
 
-// Initialize custom solstice $variables.
-$variables = array();
-
-// Add classes to <body>. (String)
-$variables['body_classes'] = '';
-
-// Insert custom HTML in the breadcrumb region. (String)
-$variables['breadcrumbs_html'] = "";
-
-// Hide the breadcrumbs. (Bool)
-$variables['hide_breadcrumbs'] = FALSE;
-
-// Insert HTML before the left nav. (String)
-$variables['leftnav_html'] = '';
-
-// Update the main container class (String)
-$variables['main_container_classes'] = 'container';
-
-// Insert HTML after opening the main content container, before the left
-// sidebar. (String)
-$variables['main_container_html'] = '';
-
-// Set Solstice theme variables. (Array)
-$App->setThemeVariables($variables);
-
 // Place your html content in a file called content/en_pagename.php
 ob_start();
 include ("content/en_" . $App->getScriptName());

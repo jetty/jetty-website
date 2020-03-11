@@ -22,7 +22,7 @@ $Theme = $App->getThemeClass();
 require_once ('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Eclipse Jetty - Home";
+$pageTitle = "Eclipse Jetty";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
@@ -30,32 +30,6 @@ $Theme->setPageTitle($pageTitle);
 if (isset($Nav)) {
   $Theme->setNav($Nav);
 }
-
-// Initialize custom solstice $variables.
-$variables = array();
-
-// Add classes to <body>. (String)
-$variables['body_classes'] = '';
-
-// Insert custom HTML in the breadcrumb region. (String)
-$variables['breadcrumbs_html'] = "";
-
-// Hide the breadcrumbs. (Bool)
-$variables['hide_breadcrumbs'] = FALSE;
-
-// Insert HTML before the left nav. (String)
-$variables['leftnav_html'] = '';
-
-// Update the main container class (String)
-$variables['main_container_classes'] = 'container';
-
-// Insert HTML after opening the main content container, before the left
-// sidebar. (String)
-$variables['main_container_html'] = '';
-
-
-// Set Solstice theme variables. (Array)
-$App->setThemeVariables($variables);
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
