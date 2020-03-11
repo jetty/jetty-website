@@ -26,6 +26,7 @@ $theme = NULL;
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
 $Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
+$Nav->addCustomNav("About", "/jetty/about.php", "_self", NULL);
 $Nav->addCustomNav("Documentation", "/jetty/distribution-guide", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
 $Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide", "_self", NULL);
