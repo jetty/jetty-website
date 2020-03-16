@@ -22,7 +22,7 @@ $Nav  = new Nav();
 // https://dev.eclipse.org/committers/
 $theme = "solstice";
 
-$Theme->setLayout('thin');
+$Theme->setLayout('thin-with-min-footer');
 
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
