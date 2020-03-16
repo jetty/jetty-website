@@ -23,6 +23,7 @@ $Nav  = new Nav();
 $theme = "solstice";
 
 $Theme->setLayout('thin-with-min-footer');
+$Theme->setDisplayFooterPrefix(FALSE);
 
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
