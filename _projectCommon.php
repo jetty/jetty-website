@@ -29,7 +29,7 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
 $Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
-$Nav->addCustomNav("About", "/jetty/about.php", "_self", NULL);
+$Nav->addCustomNav("About", "/jetty/about.html", "_self", NULL);
 $Nav->addCustomNav("Documentation", "/jetty/distribution-guide/", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
 $Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide/", "_self", NULL);
@@ -61,7 +61,7 @@ $variables['main_container_html'] = '';
 $links = array();
 $links[] = array(
   'icon' => 'fa-download', // Required
-  'url' => '/jetty/downloads/', // Required
+  'url' => '/jetty/download.html', // Required
   'title' => 'Download', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Distributions, Javadoc, Checksums ' // Optional
