@@ -101,14 +101,6 @@ $links[] = array(
   'text' => 'Quickstart, Beginner Friendly' // Optional
 );
 
-$links[] = array(
-  'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/', // Required
-  'title' => 'Quickstart Guide 2', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, Beginner Friendly' // Optional
-);
-
 $variables['header_nav'] = array(
   'links' => $links, // Required
   'logo' => array( // Required
