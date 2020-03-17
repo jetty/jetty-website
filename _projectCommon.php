@@ -28,11 +28,13 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
-$Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
+$Nav->addNavSeparator("Quick Links", "/jetty/");
 $Nav->addCustomNav("About", "/jetty/about.html", "_self", NULL);
 $Nav->addCustomNav("Documentation", "/jetty/distribution-guide/", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
-$Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide/", "_self", NULL);
+$Nav->addCustomNav("License", "/jetty/quickstart-guide/", "_self", NULL);
+$Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
+
 
 // Initialize custom solstice $variables.
 $variables = array();
@@ -64,7 +66,7 @@ $links[] = array(
   'url' => '/jetty/download.html', // Required
   'title' => 'Download', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Distributions, Javadoc, Checksums ' // Optional
+  'text' => 'Distributions and Javadoc' // Optional
 );
 
 $links[] = array(
@@ -80,7 +82,7 @@ $links[] = array(
   'url' => '/jetty/distribution-guide/', // Required
   'title' => 'Distribution Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Tutorials, Howto, Features, etc.' // Optional
+  'text' => 'Tutorials, Howtos, Features' // Optional
 );
 
 $links[] = array(
@@ -88,7 +90,23 @@ $links[] = array(
   'url' => '/jetty/quickstart-guide/', // Required
   'title' => 'Quickstart Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, For beginners, etc.' // Optional
+  'text' => 'Quickstart, Beginner Friendly' // Optional
+);
+
+$links[] = array(
+  'icon' => 'fa-support', // Required
+  'url' => '/jetty/quickstart-guide/', // Required
+  'title' => 'Quickstart Guide 1', // Required
+  // 'target' => '_blank', // Optional
+  'text' => 'Quickstart, Beginner Friendly' // Optional
+);
+
+$links[] = array(
+  'icon' => 'fa-support', // Required
+  'url' => '/jetty/quickstart-guide/', // Required
+  'title' => 'Quickstart Guide 2', // Required
+  // 'target' => '_blank', // Optional
+  'text' => 'Quickstart, Beginner Friendly' // Optional
 );
 
 $variables['header_nav'] = array(
@@ -96,7 +114,7 @@ $variables['header_nav'] = array(
   'logo' => array( // Required
     'src' => '/jetty/common/images/jetty-logo.svg', // Required
     'alt' => 'Eclipse Jetty Project', // Optional
-    'url' => 'http://www.eclipse.org/jetty' // Optional
+    'url' => '/jetty/index.html' // Optional
     // 'target' => '_blank' // Optional
   )
 );
