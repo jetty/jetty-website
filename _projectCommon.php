@@ -95,10 +95,10 @@ $links[] = array(
 
 $links[] = array(
   'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/', // Required
-  'title' => 'Quickstart Guide 1', // Required
+  'url' => '/jetty/embedded-guide/', // Required
+  'title' => 'Embedded Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, Beginner Friendly' // Optional
+  'text' => 'Inception, Jetty Inside' // Optional
 );
 
 $variables['header_nav'] = array(
