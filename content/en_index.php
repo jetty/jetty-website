@@ -18,7 +18,7 @@
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
   <div class="paragraph">
-  <p>Eclipse Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
+  <p>$$Eclipse Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
   These components are open source and available for commercial use and distribution.</p>
   </div>
   <div class="paragraph">
