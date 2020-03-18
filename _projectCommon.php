@@ -30,9 +30,10 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // (_self, _blank).
 $Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
 $Nav->addCustomNav("About", "/jetty/about.php", "_self", NULL);
-$Nav->addCustomNav("Documentation", "/jetty/distribution-guide/", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
-$Nav->addCustomNav("Using Jetty", "/jetty/quickstart-guide/", "_self", NULL);
+$Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
+$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
+$Nav->addCustomNav("Enter Bug", "https://github.com/eclipse/jetty.project/issues/new", "_self", NULL);
 
 // Initialize custom solstice $variables.
 $variables = array();
@@ -89,6 +90,14 @@ $links[] = array(
   'title' => 'Quickstart Guide', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Quickstart, For beginners, etc.' // Optional
+);
+
+$links[] = array(
+  'icon' => 'fa-anchor', // Required
+  'url' => '/jetty/embedded-guide/', // Required
+  'title' => 'Embedded Guide', // Required
+  // 'target' => '_blank', // Optional
+  'text' => 'Embed Jetty Inside' // Optional
 );
 
 $variables['header_nav'] = array(
