@@ -34,7 +34,7 @@ $Nav->addCustomNav("Documentation", "/jetty/distribution-guide/", "_self", NULL)
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
 $Nav->addCustomNav("License", "/jetty/quickstart-guide/", "_self", NULL);
 $Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
-
+$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
 
 // Initialize custom solstice $variables.
 $variables = array();
