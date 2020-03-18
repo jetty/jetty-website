@@ -94,7 +94,7 @@ $links[] = array(
 );
 
 $links[] = array(
-  'icon' => 'fa-book-alt', // Required
+  'icon' => 'fa-book', // Required
   'url' => '/jetty/embedded-guide/', // Required
   'title' => 'Embedded Guide', // Required
   // 'target' => '_blank', // Optional
