@@ -110,6 +110,8 @@
   <div class="paragraph">
   <p>You can benefit from committer knowledge and get training, consulting services, professional support and even production SLAs, just ask us about it!</p>
   </div>
+  <p></p>
+  <p></p>
 </div>
 <!-- ./end  #midcolumn -->
 

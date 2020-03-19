@@ -22,7 +22,7 @@ $Nav  = new Nav();
 // https://dev.eclipse.org/committers/
 $theme = "solstice";
 
-$Theme->setLayout('thin-with-min-footer');
+$Theme->setLayout('thin');
 $Theme->setDisplayFooterPrefix(FALSE);
 
 // Define your project-wide Nav bars here.
