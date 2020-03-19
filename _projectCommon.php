@@ -29,7 +29,7 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
 $Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
-$Nav->addCustomNav("About", "/jetty/about.php", "_self", NULL);
+$Nav->addCustomNav("About", "/jetty/about.html", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
 $Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
 $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
@@ -62,15 +62,15 @@ $variables['main_container_html'] = '';
 $links = array();
 $links[] = array(
   'icon' => 'fa-download', // Required
-  'url' => '/jetty/downloads/', // Required
+  'url' => '/jetty/download.html', // Required
   'title' => 'Download', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Distributions, Javadoc, Checksums ' // Optional
+  'text' => 'Distributions, Javadoc, Checksums' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-users', // Required
-  'url' => '/jetty/contribution-guide/', // Required
+  'url' => '/jetty/contribution-guide/index.html', // Required
   'title' => 'Contribution Guide', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Contributions, Community' // Optional
@@ -78,26 +78,26 @@ $links[] = array(
 
 $links[] = array(
   'icon' => 'fa-book', // Required
-  'url' => '/jetty/distribution-guide/', // Required
+  'url' => '/jetty/distribution-guide/index.html', // Required
   'title' => 'Distribution Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Tutorials, Howto, Features, etc.' // Optional
+  'text' => 'Tutorials, How-tos, Features, etc.' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/', // Required
+  'url' => '/jetty/quickstart-guide/index.html', // Required
   'title' => 'Quickstart Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Quickstart, For beginners, etc.' // Optional
+  'text' => 'For beginners, Get up and running fast, etc.' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-anchor', // Required
-  'url' => '/jetty/embedded-guide/', // Required
+  'url' => '/jetty/embedded-guide/index.html', // Required
   'title' => 'Embedded Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Embed Jetty Inside' // Optional
+  'text' => 'Put Jetty inside your app!' // Optional
 );
 
 $variables['header_nav'] = array(
@@ -105,7 +105,7 @@ $variables['header_nav'] = array(
   'logo' => array( // Required
     'src' => '/jetty/common/images/jetty-logo.svg', // Required
     'alt' => 'Eclipse Jetty Project', // Optional
-    'url' => 'http://www.eclipse.org/jetty' // Optional
+    'url' => '/jetty' // Optional
     // 'target' => '_blank' // Optional
   )
 );
