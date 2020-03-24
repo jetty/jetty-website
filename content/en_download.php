@@ -18,8 +18,8 @@
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
   <p>The latest release of Eclipse Jetty is below, earlier minor release versions are available in <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">Maven Central.</a></p>
-  <table class="tableblock frame-all grid-all stretch">
-  <caption class="title">Table 1. empty</caption>
+  <table class="frame-all grid-all stretch">
+  <caption class="title">Downloads</caption>
   <colgroup>
   <col style="width: 42.8571%;">
   <col style="width: 14.2857%;">
@@ -29,27 +29,26 @@
   </colgroup>
   <thead>
   <tr>
-  <th class="tableblock halign-left valign-top">Release</th>
-  <th class="tableblock halign-left valign-top"></th>
-  <th class="tableblock halign-left valign-top"></th>
-  <th class="tableblock halign-left valign-top"></th>
-  <th class="tableblock halign-left valign-top"></th>
+  <th class="halign-left valign-top">Release</th>
+  <th class="halign-left valign-top"></th>
+  <th class="halign-left valign-top"></th>
+  <th class="halign-left valign-top"></th>
+  <th class="halign-left valign-top"></th>
   </tr>
   </thead>
   <tbody>
   <tr>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.14.v20181114</p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.zip">.zip</a></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz">.tgz</a></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.eclipse.org/jetty/javadoc/9.4.14.v20181114/index.html?overview-summary.html">apidocs</a></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.14.v20181114">source</a></p></td>
+  <td class="halign-left valign-top"><p class="tableblock">9.4.14.v20181114</p></td>
+  <td class="halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.zip">.zip</a></p></td>
+  <td class="halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz">.tgz</a></p></td>
+  <td class="halign-left valign-top"><p class="tableblock"><a href="http://www.eclipse.org/jetty/javadoc/9.4.14.v20181114/index.html?overview-summary.html">apidocs </a></p></td>
+  <td class="halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.14.v20181114"> source</a></p></td>
   </tr>
   </tbody>
   </table>
-  <div class="paragraph">
+
   <p><strong>Note:</strong> Release notes can be found in the <code>VERSION.txt</code> file included with the distribution and on the <a href="https://github.com/eclipse/jetty.project/releases">GitHub Releases</a> page for the Jetty project.
   Release notes are also made available on the <a href="https://www.eclipse.org/jetty/mailinglists.html">jetty-announce@eclipse.org mailing list.</a></p>
-  </div>
   <div class="sect2">
   <h3 id="_prior_versions">Prior Versions</h3>
   <div class="paragraph">

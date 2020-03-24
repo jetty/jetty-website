@@ -17,10 +17,10 @@
 <!-- Main content area -->
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
-  <p>Eclipse Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
+  <p>Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
   These components are open source and available for commercial use and distribution.</p>
 
-  <p>Eclipse Jetty is used in a wide variety of projects and products, both in development and production.
+  <p>Jetty is used in a wide variety of projects and products, both in development and production.
   Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters.
   See the Jetty Powered page for more uses of Jetty.</p>
 
