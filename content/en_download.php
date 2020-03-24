@@ -38,11 +38,11 @@
   </thead>
   <tbody>
   <tr>
-  <td class="halign-left valign-top"><p class="tableblock">9.4.14.v20181114</p></td>
-  <td class="halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.zip">.zip</a></p></td>
-  <td class="halign-left valign-top"><p class="tableblock"><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p class="tableblock"><a href="http://www.eclipse.org/jetty/javadoc/9.4.14.v20181114/index.html?overview-summary.html">apidocs </a></p></td>
-  <td class="halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.14.v20181114"> source</a></p></td>
+  <td class="halign-left valign-top"><p>9.4.14.v20181114</p></td>
+  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.zip">.zip</a></p></td>
+  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz">.tgz</a></p></td>
+  <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.14.v20181114/index.html?overview-summary.html">apidocs </a></p></td>
+  <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.14.v20181114"> source</a></p></td>
   </tr>
   </tbody>
   </table>
@@ -51,18 +51,12 @@
   Release notes are also made available on the <a href="https://www.eclipse.org/jetty/mailinglists.html">jetty-announce@eclipse.org mailing list.</a></p>
   <div class="sect2">
   <h3 id="_prior_versions">Prior Versions</h3>
-  <div class="paragraph">
   <p>The most recent versions of prior Jetty releases can be found <a href="previousversions.html">here, with their associated documentation.</a></p>
-  </div>
-  <div class="paragraph">
   <p>Note: The canonical repository for Jetty is Maven Central.  All releases are always available there first and this download page may lag a bit update wise as post release resources are put into place.  You can always browse for Jetty releases <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">here</a>.</p>
-  </div>
   </div>
   <div class="sect2">
   <h3 id="_jetty_p2_provisioning">Jetty P2 Provisioning</h3>
-  <div class="paragraph">
   <p>This provisioning address is not for general use and are provided strictly for OSGI users.</p>
-  </div>
   <div class="ulist">
   <ul>
   <li>

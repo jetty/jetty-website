@@ -17,12 +17,10 @@
 <!-- Main content area -->
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
-  <div class="paragraph">
   <p>Eclipse Jetty is largely managed as an Eclipse project under the <a href="https://www.eclipse.org/rt">Runtime</a> project.  This is a loosely managed grouping of runtime related projects.</p>
-  </div>
-  <div class="paragraph">
+
   <p>The Eclipse project management tooling provides a summary page which contains general information about the project.  The IPLog is a collection of dependencies that have been approved through the Eclipse CQ process.</p>
-  </div>
+
   <div class="ulist">
   <ul>
   <li>
