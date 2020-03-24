@@ -21,11 +21,11 @@
   <table class="frame-all grid-all stretch">
   <caption class="title">Downloads</caption>
   <colgroup>
-  <col style="width: 42.8571%;">
-  <col style="width: 14.2857%;">
-  <col style="width: 14.2857%;">
-  <col style="width: 14.2857%;">
-  <col style="width: 14.2858%;">
+  <col style="width: 40%;">
+  <col style="width: 15%;">
+  <col style="width: 15%;">
+  <col style="width: 15%;">
+  <col style="width: 15%;">
   </colgroup>
   <thead>
   <tr>
