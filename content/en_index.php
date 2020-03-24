@@ -17,38 +17,34 @@
 <!-- Main content area -->
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
-  <div class="paragraph">
   <p>Eclipse Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
   These components are open source and available for commercial use and distribution.</p>
-  </div>
-  <div class="paragraph">
+
   <p>Eclipse Jetty is used in a wide variety of projects and products, both in development and production.
   Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters.
   See the Jetty Powered page for more uses of Jetty.</p>
-  </div>
-  <div class="paragraph">
+
   <p>The current recommended version for use is Jetty 9 which can be obtained on the <a href="/jetty/download.html">Jetty Downloads page.</a>
   Also available are the latest maintenance releases of Jetty 8 and Jetty 7,</p>
-  </div>
-  <div class="paragraph">
+
   <p>The Jetty project has been hosted at the Eclipse Foundation since 2009.
   Prior releases of Jetty have existed in part or completely under the Jetty project at the The Codehaus and Sourceforge before that.
   See the <a href="/jetty/about.html">About</a> page for more information about the history of Jetty.</p>
-  </div>
-  <table class="tableblock frame-none grid-all stretch">
+
+  <table class="frame-none grid-all stretch">
   <colgroup>
   <col style="width: 50%;">
   <col style="width: 50%;">
   </colgroup>
   <thead>
   <tr>
-  <th class="tableblock halign-left valign-top">Features</th>
-  <th class="tableblock halign-left valign-top">Jetty Powered</th>
+  <th class="halign-left valign-top">Features</th>
+  <th class="halign-left valign-top">Jetty Powered</th>
   </tr>
   </thead>
   <tbody>
   <tr>
-  <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+  <td class="halign-left valign-top"><div class="content"><div class="ulist">
   <ul>
   <li>
   <p>Full-featured and standards-based</p>
@@ -76,7 +72,7 @@
   </li>
   </ul>
   </div></div></td>
-  <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+  <td class="halign-left valign-top"><div class="content"><div class="ulist">
   <ul>
   <li>
   <p>Large clusters, such as the Facebook Presto</p>
@@ -107,23 +103,8 @@
   </tr>
   </tbody>
   </table>
-  <div class="paragraph">
   <p>You can benefit from committer knowledge and get training, consulting services, professional support and even production SLAs, just ask us about it!</p>
-  </div>
   <p></p>
   <p></p>
 </div>
 <!-- ./end  #midcolumn -->
-
-<!-- Start of the right column -->
-
-<div id="rightcolumn">
-  <div class="sideitem">
-    <h2>Related Links</h2>
-    <ul>
-      <li><a target="_self" href="/eclipse.org-common/themes/solstice/docs/">Documentation</a></li>
-    </ul>
-  </div>
-</div>
-
-<!-- ./end  #rightcolumn -->
