@@ -17,11 +17,9 @@
 <!-- Main content area -->
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
-  <div class="paragraph">
   <p>Mailing lists are a primary communication channel with the Eclipse Jetty development team.
   If you are interested in getting announcements for new versions, or want to participate in discussions of development or integration topics, you can subscribe to one of the following mailing lists.
   You may also track svn commits for the Jetty project.</p>
-  </div>
   <div class="sect2">
   <h3 id="_mailing_lists_on_eclipse">Mailing Lists on Eclipse</h3>
   <div class="ulist">
@@ -76,24 +74,18 @@
   <h3 id="_frequently_asked_questions">Frequently Asked Questions</h3>
   <div class="sect3">
   <h4 id="_what_i_need_to_do_to_use_mailing_lists">What I need to do to use mailing lists?</h4>
-  <div class="paragraph">
   <p>First, you need to subscribe the mailing list. To subscribe, follow these instructions. When you complete the subscription process, you will receive email from the mailing list.</p>
-  </div>
   <div class="paragraph">
   <p>You can post to mailing list by sending e-mails to the list&#8217;s email address.</p>
   </div>
   </div>
   <div class="sect3">
   <h4 id="_can_i_review_mailing_lists">Can I review mailing lists?</h4>
-  <div class="paragraph">
   <p>Yes, the mailing list archives allow you to review all posts through a simple web interface. You don&#8217;t need to subscribe or register in order to have access to the archives.</p>
-  </div>
   </div>
   <div class="sect3">
   <h4 id="_i_subscribed_to_the_mailing_list_but_receive_only_new_posts_where_can_i_find_old_posts">I subscribed to the mailing list, but receive only new posts. Where can I find old posts?</h4>
-  <div class="paragraph">
   <p>You can find the old posts in the mailing list archive.</p>
-  </div>
   </div>
   </div>
 </div>
