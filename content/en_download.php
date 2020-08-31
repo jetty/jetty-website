@@ -38,11 +38,11 @@
   </thead>
   <tbody>
   <tr>
-  <td class="halign-left valign-top"><p>9.4.14.v20181114</p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.zip">.zip</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.14.v20181114/jetty-distribution-9.4.14.v20181114.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.14.v20181114/index.html?overview-summary.html">apidocs </a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.14.v20181114"> source</a></p></td>
+  <td class="halign-left valign-top"><p>9.4.31.v20200723</p></td>
+  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.zip">.zip</a></p></td>
+  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.31.v20200723/jetty-distribution-9.4.31.v20200723.tar.gz">.tgz</a></p></td>
+  <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html">apidocs </a></p></td>
+  <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.31.v20200723"> source</a></p></td>
   </tr>
   </tbody>
   </table>
