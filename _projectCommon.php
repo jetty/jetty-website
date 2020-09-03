@@ -78,24 +78,24 @@ $links[] = array(
 
 $links[] = array(
   'icon' => 'fa-book', // Required
-  'url' => '/jetty/distribution-guide/index.html', // Required
-  'title' => 'Distribution Guide', // Required
+  'url' => '/jetty/operations-guide/index.html', // Required
+  'title' => 'Operations Guide', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Tutorials, How-tos, Features, etc.' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-support', // Required
-  'url' => '/jetty/quickstart-guide/index.html', // Required
-  'title' => 'Quickstart Guide', // Required
+  'url' => '/jetty/getting-started-guide/index.html', // Required
+  'title' => 'Getting Started Guide', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'For beginners, Get up and running fast, etc.' // Optional
+  'text' => 'For beginners, the best way to get up and running fast, etc.' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-anchor', // Required
-  'url' => '/jetty/embedded-guide/index.html', // Required
-  'title' => 'Embedded Guide', // Required
+  'url' => '/jetty/programming-guide/index.html', // Required
+  'title' => 'Programming Guide', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Put Jetty inside your app!' // Optional
 );
