@@ -34,7 +34,7 @@
             <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.31.v20200723"> source</a></p></td>
         </tr>
         <tr>
-            <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.4.x/index.html">Jetty 10</a></p></td>             <table>
+            <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.4.x/index.html">Jetty 10</a></p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/contribution-guide/index.html">Contribution Guide</a></p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/operations-guide/index.html">Operations Guide</a></p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/programing-guide/index.html">Programming Guide</a></p></td>
