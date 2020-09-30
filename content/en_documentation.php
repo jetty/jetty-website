@@ -1,7 +1,7 @@
 <div id="midcolumn">
     <h1><?php print $pageTitle;?></h1>
     <p>The latest documentation releases are Eclipse Jetty is below, earlier minor release versions are available in <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-documentation">Maven Central.</a></p>
-    <table class="frame-all grid-all stretch" cellspacing="15">
+    <table class="frame-all " cellspacing="15">
         <caption class="title">Downloads</caption>
         <colgroup>
             <col style="width: 40%;">
