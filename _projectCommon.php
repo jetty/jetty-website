@@ -100,6 +100,14 @@ $links[] = array(
   'text' => 'Put Jetty inside your app!' // Optional
 );
 
+$links[] = array(
+    'icon' => 'fa-rocket', // Required
+    'url' => '/jetty/documentation.html', // Required
+    'title' => 'Current Documentation', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Put Jetty inside your app!' // Optional
+);
+
 $variables['header_nav'] = array(
   'links' => $links, // Required
   'logo' => array( // Required
