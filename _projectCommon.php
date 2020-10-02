@@ -84,13 +84,13 @@ $links[] = array(
   'text' => 'Tutorials, How-tos, Features, etc.' // Optional
 );
 
-$links[] = array(
+/*$links[] = array(
   'icon' => 'fa-support', // Required
   'url' => '/jetty/getting-started-guide/index.html', // Required
   'title' => 'Getting Started Guide', // Required
   // 'target' => '_blank', // Optional
   'text' => 'For beginners, the best way to get up and running fast, etc.' // Optional
-);
+);*/
 
 $links[] = array(
   'icon' => 'fa-anchor', // Required
@@ -103,9 +103,9 @@ $links[] = array(
 $links[] = array(
     'icon' => 'fa-rocket', // Required
     'url' => '/jetty/documentation.html', // Required
-    'title' => 'Current Documentation', // Required
+    'title' => 'Documentation Hub', // Required
     // 'target' => '_blank', // Optional
-    'text' => 'Put Jetty inside your app!' // Optional
+    'text' => 'Current and previous versions of the Jetty documentation!' // Optional
 );
 
 $variables['header_nav'] = array(
