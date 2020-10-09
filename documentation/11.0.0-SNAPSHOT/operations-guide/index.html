@@ -17,7 +17,7 @@
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
 <span id="revnumber">version 11.0.0-SNAPSHOT,</span>
-<span id="revdate">2020-10-06</span>
+<span id="revdate">2020-10-09</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -91,7 +91,23 @@
 <li><a href="#og-secure-vs-clear-text-http2">Secure vs Clear-Text HTTP/2</a></li>
 <li><a href="#og-protocols-http2s">Configuring Secure HTTP/2</a></li>
 <li><a href="#og-protocols-http2c">Configuring Clear-Text HTTP/2</a></li>
-<li><a href="#og-protocols-ssl">Configuring Secure Protocols</a></li>
+<li><a href="#og-protocols-ssl">Configuring Secure Protocols</a>
+<ul class="sectlevel4">
+<li><a href="#og-protocols-ssl-customize">Customizing KeyStore and TLS Configuration</a></li>
+<li><a href="#og-protocols-ssl-renew">Renewing the Certificates</a></li>
+<li><a href="#og-protocols-ssl-reload">Watching and Reloading the KeyStore</a></li>
+<li><a href="#og-protocols-ssl-conscrypt">Using Conscrypt as TLS Provider</a></li>
+<li><a href="#og-protocols-ssl-sni">Configuring SNI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#og-keystore">Configuring KeyStores</a>
+<ul class="sectlevel3">
+<li><a href="#og-keystore-create">Creating a KeyStore</a></li>
+<li><a href="#og-keystore-csr">Creating a Certificate Signing Request</a></li>
+<li><a href="#og-keystore-csr-import">Importing the Signed Certificate</a></li>
+<li><a href="#og-keystore-client-authn">Creating a KeyStore for Client Certificate Authentication</a></li>
 <li><a href="#og-modules">Jetty Modules</a></li>
 <li><a href="#og-module-bytebufferpool">Module <code>bytebufferpool</code></a></li>
 <li><a href="#og-module-deploy">Module <code>deploy</code></a></li>
@@ -2146,7 +2162,7 @@ INFO  : Base directory was modified</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The command above enables the <code>ssl</code> module, that provides the secure network connector, the keystore configuration and TLS configuration&#8201;&#8212;&#8201;for more details see <a href="#og-protocols-ssl">this section</a>.
+<p>The command above enables the <code>ssl</code> module, that provides the secure network connector, the KeyStore configuration and TLS configuration&#8201;&#8212;&#8201;for more details see <a href="#og-protocols-ssl">this section</a>.
 Then, the <a href="#og-module-https"><code>https</code> module</a> adds HTTP/1.1 as the protocol secured by TLS.</p>
 </div>
 <div class="paragraph">
@@ -2163,7 +2179,7 @@ Then, the <a href="#og-module-https"><code>https</code> module</a> adds HTTP/1.1
 </div>
 </div>
 <div class="paragraph">
-<p>Note that the keystore file is missing, because you have to provide one with the cryptographic material you want (read <a href="#og-keystore">this section</a> to create your own keystore).
+<p>Note that the KeyStore file is missing, because you have to provide one with the cryptographic material you want (read <a href="#og-keystore">this section</a> to create your own KeyStore).
 You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="ulist">
@@ -2177,7 +2193,7 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that provides a keystore containing a self-signed certificate:</p>
+<p>As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that provides a KeyStore containing a self-signed certificate:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2332,7 +2348,7 @@ The reason to configure both protocols is that you typically do not control the 
 <div class="ulist">
 <ul>
 <li>
-<p>the <code>ssl</code> Jetty module, which provides the secure connector and the keystore and TLS configuration</p>
+<p>the <code>ssl</code> Jetty module, which provides the secure connector and the KeyStore and TLS configuration</p>
 </li>
 <li>
 <p>the <code>http2</code> Jetty module, which adds ALPN handling and adds the HTTP/2 protocol to the secured connector</p>
@@ -2351,10 +2367,10 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 </div>
 <div class="paragraph">
-<p>As when enabling the <code>https</code> Jetty module, you need a valid keystore (read <a href="#og-keystore">this section</a> to create your own keystore).</p>
+<p>As when enabling the <code>https</code> Jetty module, you need a valid KeyStore (read <a href="#og-keystore">this section</a> to create your own KeyStore).</p>
 </div>
 <div class="paragraph">
-<p>As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that provides a keystore containing a self-signed certificate:</p>
+<p>As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that provides a KeyStore containing a self-signed certificate:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2490,38 +2506,841 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 <div class="sect3">
 <h4 id="og-protocols-ssl"><a class="anchor" href="#og-protocols-ssl"></a><a class="link" href="#og-protocols-ssl">Configuring Secure Protocols</a></h4>
 <div class="paragraph">
-<p>Secure protocols are normal protocols such as HTTP/1.1 or WebSocket that are wrapped by the <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS protocol</a>.
+<p>Secure protocols are normal protocols such as HTTP/1.1, HTTP/2 or WebSocket that are wrapped by the <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS protocol</a>.
 Any network protocol can be wrapped with TLS.</p>
 </div>
 <div class="paragraph">
-<p>The <code>https</code> scheme used in URIs really means <code>tls+http/1.1</code> and similarly the <code>wss</code> scheme used in URIs really means <code>tls+websocket</code>, etc.
-Senders wrap the underlying protocol bytes (e.g. HTTP/1.1 bytes or WebSocket bytes) with the TLS protocol, while receivers first interpret the TLS protocol to obtain the underlying protocol bytes, and then interpret the wrapped bytes.</p>
+<p>The <code>https</code> scheme used in URIs really means <code>tls+http/1.1</code> (or <code>tls+http/2</code>) and similarly the <code>wss</code> scheme used in URIs really means <code>tls+websocket</code>, etc.
+Senders wrap the underlying protocol bytes (e.g. HTTP bytes or WebSocket bytes) with the TLS protocol, while receivers first interpret the TLS protocol to obtain the underlying protocol bytes, and then interpret the wrapped bytes.</p>
 </div>
 <div class="paragraph">
-<p>Secure protocols have a slightly more complicated configuration since they require to configure a <em>keystore</em>.</p>
+<p>The <a href="#og-module-ssl"><code>ssl</code> Jetty module</a> allows you to configure a secure network connector; if other modules require encryption, they declare a dependency on the <code>ssl</code> module.</p>
 </div>
 <div class="paragraph">
-<p>A keystore is a file on the file system that contains a private key and a public certificate, along with the certificate chain of the certificate authorities that issued the certificate.
-The private key, the public certificate and the certificate chain, but more generally the items present in a keystore, are typically referred to as "cryptographic material".</p>
+<p>It is the job of other Jetty modules to configure the wrapped protocol.
+For example, it is the <a href="#og-protocols-https"><code>https</code> module</a> that configures the wrapped protocol to be HTTP/1.1.
+Similarly, it is the <a href="#og-protocols-http2"><code>http2</code> module</a> that configures the wrapped protocol to be HTTP/2.
+If you enable <em>both</em> the <code>https</code> and the <code>http2</code> module, you will have a single secure connector that will be able to interpret both HTTP/1.1 and HTTP/2.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Recall from the <a href="#og-modules">section about modules</a>, that only modules that are explicitly enabled get their module configuration file (<code>*.ini</code>) saved in <code>$JETTY_BASE/start.d/</code>, and you want <code>$JETTY_BASE/start.d/ssl.ini</code> to be present so that you can configure the connector properties, the KeyStore properties and the TLS properties.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-ssl-customize"><a class="anchor" href="#og-protocols-ssl-customize"></a><a class="link" href="#og-protocols-ssl-customize">Customizing KeyStore and TLS Configuration</a></h5>
+<div class="paragraph">
+<p>Secure protocols have a slightly more complicated configuration since they require to configure a <em>KeyStore</em>.
+Refer to the <a href="#og-keystore">KeyStore section</a> for more information about how to create and manage a KeyStore.</p>
+</div>
+<div class="paragraph">
+<p>For simple cases, you only need to configure the KeyStore path and KeyStore password as explained in <a href="#og-module-ssl-keystore-tls">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>For more advanced configuration you may want to configure the TLS protocol versions, or the ciphers to include/exclude, etc.
+The correct way of doing this is to create a custom <a href="#og-xml">Jetty XML file</a> and reference it in <code>$JETTY_BASE/start.d/ssl.ini</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">ssl.ini</div>
+<div class="content">
+<pre class="highlight"><code>jetty.sslContext.keyStorePassword=my_passwd! <i class="conum" data-value="1"></i><b>(1)</b>
+etc/tls-config.xml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures the <code>jetty.sslContext.keyStorePassword</code> property with the KeyStore password.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>References your newly created <code>$JETTY_BASE/etc/tls-config.xml</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>ssl.ini</code> file above only shows the lines that are not commented out (you can leave the lines that are commented unmodified for future reference).</p>
+</div>
+<div class="paragraph">
+<p>You want to create the <code>$JETTY_BASE/etc/tls-config.xml</code> with the following template content:</p>
+</div>
+<div class="listingblock">
+<div class="title">tls-config.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Ref refid="sslContextFactory"&gt;
+    ... <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;/Ref&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Here goes your advanced configuration.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>tls-config.xml</code> file references the <code>sslContextFactory</code> component (created by the <code>ssl</code> Jetty module) that configures the KeyStore and TLS parameters, so that you can now call its APIs via XML, and you will have full flexibility for any advanced configuration you want (see below for few examples).</p>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/util/ssl/SslContextFactory.html">SslContextFactory javadocs</a> for the list of methods that you can call through the Jetty XML file.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+Use module properties whenever possible, and only resort to use a Jetty XML file for advanced configuration that you cannot do using module properties.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="og-protocols-ssl-customize-versions"><a class="anchor" href="#og-protocols-ssl-customize-versions"></a><a class="link" href="#og-protocols-ssl-customize-versions">Customizing TLS Protocol Versions</a></h6>
+<div class="paragraph">
+<p>By default, the SSL protocols (SSL, SSLv2, SSLv3, etc.) are already excluded because they are vulnerable.
+To explicitly add the exclusion of TLSv1.0 and TLSv1.1 (that are also vulnerable&#8201;&#8212;&#8201;which leaves only TLSv1.2 and TLSv1.3 available), you want to use this XML:</p>
+</div>
+<div class="listingblock">
+<div class="title">tls-config.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Ref refid="sslContextFactory"&gt;
+    &lt;Call name="addExcludeProtocols"&gt;
+      &lt;Arg&gt;
+        &lt;Array type="String"&gt;
+          &lt;Item&gt;TLSv1.0&lt;/Item&gt;
+          &lt;Item&gt;TLSv1.1&lt;/Item&gt;
+        &lt;/Array&gt;
+      &lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/Ref&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="og-protocols-ssl-customize-ciphers"><a class="anchor" href="#og-protocols-ssl-customize-ciphers"></a><a class="link" href="#og-protocols-ssl-customize-ciphers">Customizing TLS Ciphers</a></h6>
+<div class="paragraph">
+<p>You can precisely set the list of excluded ciphers, completely overriding Jetty&#8217;s default, with this XML:</p>
+</div>
+<div class="listingblock">
+<div class="title">tls-config.xml</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Ref refid="sslContextFactory"&gt;
+    &lt;Set name="ExcludeCipherSuites"&gt;
+      &lt;Array type="String"&gt;
+        &lt;Item&gt;^TLS_RSA_.*$&lt;/Item&gt;
+        &lt;Item&gt;^.*_RSA_.*_(MD5|SHA|SHA1)$&lt;/Item&gt;
+        &lt;Item&gt;^.*_DHE_RSA_.*$&lt;/Item&gt;
+        &lt;Item&gt;SSL_RSA_WITH_DES_CBC_SHA&lt;/Item&gt;
+        &lt;Item&gt;SSL_DHE_RSA_WITH_DES_CBC_SHA&lt;/Item&gt;
+        &lt;Item&gt;SSL_DHE_DSS_WITH_DES_CBC_SHA&lt;/Item&gt;
+        &lt;Item&gt;SSL_RSA_EXPORT_WITH_RC4_40_MD5&lt;/Item&gt;
+        &lt;Item&gt;SSL_RSA_EXPORT_WITH_DES40_CBC_SHA&lt;/Item&gt;
+        &lt;Item&gt;SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA&lt;/Item&gt;
+        &lt;Item&gt;SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA&lt;/Item&gt;
+      &lt;/Array&gt;
+    &lt;/Set&gt;
+  &lt;/Ref&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how each array item specifies a <em>regular expression</em> that matches multiple ciphers, or specifies a precise cipher to exclude.</p>
+</div>
+<div class="paragraph">
+<p>You can choose to create multiple XML files, and reference them all from <code>$JETTY_BASE/start.d/ssl.ini</code>, or put all your custom configurations in a single XML file.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-ssl-renew"><a class="anchor" href="#og-protocols-ssl-renew"></a><a class="link" href="#og-protocols-ssl-renew">Renewing the Certificates</a></h5>
+<div class="paragraph">
+<p>When you create a certificate, you must specify for how many days it is valid.</p>
+</div>
+<div class="paragraph">
+<p>The typical validity is 90 days, and while this period may seem short, it has two advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Reduces the risk in case of compromised/stolen keys.</p>
+</li>
+<li>
+<p>Encourages automation, i.e. certificate renewal performed by automated tools (rather than manually) at scheduled times.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To renew a certificate, you must go through the <a href="#og-keystore-create">same steps</a> you followed to create the certificate the first time, and then you can <a href="#og-protocols-ssl-reload">reload the KeyStore</a> without the need to stop Jetty.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-ssl-reload"><a class="anchor" href="#og-protocols-ssl-reload"></a><a class="link" href="#og-protocols-ssl-reload">Watching and Reloading the KeyStore</a></h5>
+<div class="paragraph">
+<p>Jetty can be configured to monitor the directory of the KeyStore file, and reload the <code>SslContextFactory</code> component if the KeyStore file changed.</p>
+</div>
+<div class="paragraph">
+<p>This feature can be enabled by activating the <code>ssl-reload</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=ssl-reload</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more information about the configuration of the <code>ssl-reload</code> Jetty module, see <a href="#og-module-ssl-reload">this section</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-ssl-conscrypt"><a class="anchor" href="#og-protocols-ssl-conscrypt"></a><a class="link" href="#og-protocols-ssl-conscrypt">Using Conscrypt as TLS Provider</a></h5>
+<div class="paragraph">
+<p>By default, the standard TLS provider that comes with the JDK is used.</p>
+</div>
+<div class="paragraph">
+<p>The standard TLS provider from OpenJDK is implemented in Java (no native code), and its performance is not optimal, both in CPU usage and memory usage.</p>
+</div>
+<div class="paragraph">
+<p>A faster alternative, implemented natively, is Google&#8217;s <a href="https://github.com/google/conscrypt/">Conscrypt</a>, which is built on <a href="https://boringssl.googlesource.com/boringssl/">BoringSSL</a>, which is Google&#8217;s fork of <a href="https://www.openssl.org/">OpenSSL</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+As Conscrypt eventually binds to a native library, there is a higher risk that a bug in Conscrypt or in the native library causes a JVM crash, while the Java implementation will not cause a JVM crash.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use Conscrypt as the TLS provider just enable the <code>conscrypt</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=conscrypt</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-ssl-sni"><a class="anchor" href="#og-protocols-ssl-sni"></a><a class="link" href="#og-protocols-ssl-sni">Configuring SNI</a></h5>
+<div class="paragraph">
+<p>Server Name Indication (SNI) is a TLS extension that clients send to indicate what domain they want to connect to during the initial TLS handshake.</p>
+</div>
+<div class="paragraph">
+<p>Modern TLS clients (e.g. browsers) always send the SNI extension; however, older TLS clients may not send the SNI extension.</p>
+</div>
+<div class="paragraph">
+<p>Being able to handle the SNI is important when you have <a href="#og-deploy-virtual-hosts">virtual hosts</a> and a KeyStore with multiple certificates, one for each domain.</p>
+</div>
+<div class="paragraph">
+<p>For example, you have deployed over a secure connector two web applications, both at context path <code>/</code>, one at virtual host <code>one.com</code> and one at virtual host <code>two.net</code>.
+The KeyStore contains two certificates, one for <code>one.com</code> and one for <code>two.net</code>.</p>
+</div>
+<div class="paragraph">
+<p>There are three <code>ssl</code> module properties that control the SNI behavior on the server: one that works at the TLS level, and two that works at the HTTP level.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>jetty.sslContext.sniRequired</code></dt>
+<dd>
+<p>This is the TLS level property, defaults to <code>false</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Its behavior is explained by the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Behavior of the <code>jetty.sslContext.sniRequired</code> property</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=false</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=true</code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>null</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives default certificate</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives TLS failure</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>wrong.org</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives default certificate</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives TLS failure</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>one.com</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives <code>one.com</code> certificate</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>client receives <code>one.com</code> certificate</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The <em>default certificate</em> is the certificate returned by the TLS implementation in case there is no SNI match, and you should not rely on this certificate to be the same across Java vendors and versions, or Jetty versions, or TLS provider vendors and versions.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>jetty.ssl.sniRequired</code></dt>
+<dd>
+<p>Whether SNI is required at the HTTP level, defaults to <code>false</code>.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.ssl.sniHostCheck</code></dt>
+<dd>
+<p>Whether the SNI domain must be verified at the HTTP level against the <code>Host</code> header, defaults to <code>true</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Their combined behavior is explained by the following table.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Behavior of the <code>jetty.ssl.[sniRequired|sniHostCheck]</code> properties</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=false</code><br>
+  <code>sniHostCheck=false</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=false</code><br>
+  <code>sniHostCheck=true</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=true</code><br>
+  <code>sniHostCheck=false</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniRequired=true</code><br>
+  <code>sniHostCheck=true</code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>null</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>200 OK</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>200 OK</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>400 Bad Request</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>400 Bad Request</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>wrong.org</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>200 OK</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>400 Bad Request</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>400 Bad Request</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>400 Bad Request</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI = <code>one.com</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>200 OK</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI matches <code>Host</code> header ?<br>
+200 OK : 400 Bad Request</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>200 OK</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>SNI matches <code>Host</code> header ?<br>
+200 OK : 400 Bad Request</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In the normal case, with modern TLS clients and HTTP requests with a correct <code>Host</code> header, Jetty will pick the correct certificate from the KeyStore based on the SNI and respond with an HTTP 200 OK.</p>
+</div>
+<div class="paragraph">
+<p>You may modify the default values of the SNI properties if you want stricter control over old/broken TLS clients or bad HTTP requests.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-keystore"><a class="anchor" href="#og-keystore"></a><a class="link" href="#og-keystore">Configuring KeyStores</a></h3>
+<div class="paragraph">
+<p>A KeyStore is a file on the file system that contains a private key and a public certificate, along with the certificate chain of the certificate authorities that issued the certificate.
+The private key, the public certificate and the certificate chain, but more generally the items present in a KeyStore, are typically referred to as "cryptographic material".</p>
 </div>
 <div class="paragraph">
 <p>Keystores may encode the cryptographic material with different encodings, the most common being <a href="https://en.wikipedia.org/wiki/PKCS_12">PKCS12</a>, and are typically protected by a password.</p>
 </div>
 <div class="paragraph">
-<p>After configuring the keystore path and keystore password, you may want to further customize the parameters of the TLS protocol, such as the minimum TLS protocol version, or the TLS algorithms, etc.</p>
+<p>Refer to the <a href="#og-protocols-ssl">secure protocols section</a> for more information about how to configure a secure connector using a KeyStore.</p>
+</div>
+<div class="sect3">
+<h4 id="og-keystore-create"><a class="anchor" href="#og-keystore-create"></a><a class="link" href="#og-keystore-create">Creating a KeyStore</a></h4>
+<div class="paragraph">
+<p>KeyStores are created with the JDK tool <code>$JAVA_HOME/bin/keytool</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ssl</code> Jetty module allows you to configure a secure network connector&#8201;&#8212;&#8201;i.e. a connector configured with the TLS protocol, the keystore and the TLS parameters; if other modules require encryption, they declare a dependency on the <code>ssl</code> module.</p>
+<p>The following command creates a KeyStore file containing a private key and a self-signed certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool
+    -genkeypair <i class="conum" data-value="1"></i><b>(1)</b>
+    -validity 90 <i class="conum" data-value="2"></i><b>(2)</b>
+    -keyalg RSA <i class="conum" data-value="3"></i><b>(3)</b>
+    -keysize 2048 <i class="conum" data-value="4"></i><b>(4)</b>
+    -keystore /path/to/keystore.p12 <i class="conum" data-value="5"></i><b>(5)</b>
+    -storetype pkcs12 <i class="conum" data-value="6"></i><b>(6)</b>
+    -dname "CN=domain.com, OU=Unit, O=Company, L=City, S=State, C=Country" <i class="conum" data-value="7"></i><b>(7)</b>
+    -ext san=dns:www.domain.com,dns:domain.org <i class="conum" data-value="8"></i><b>(8)</b>
+    -v <i class="conum" data-value="9"></i><b>(9)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the command to generate a key and certificate pair</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>specifies the number of days after which the certificate expires</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the algorithm <em>must</em> be RSA (the DSA algorithm does not work for web sites)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>indicates the strength of the key</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>the keyStore file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>the keyStore type, stick with the standard PKCS12</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>the distinguished name (more below)&#8201;&#8212;&#8201;customize it with your values for CN, OU, O, L, S and C</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>the extension with the subject alternative names (more below)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>verbose output</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>It is the job of other Jetty modules to configure the wrapped protocol.</p>
+<p>The command prompts for the KeyStore password that you must choose to protect the access to the KeyStore.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The important parts of the command above are the <em>Common Name</em> (CN) part of the distinguished name, and the subject alternative names (SAN).</p>
 </div>
 <div class="paragraph">
-<p>For example, it is the <a href="#og-protocols-https"><code>https</code> module</a> that configures the wrapped protocol to be HTTP/1.1.
-Similarly, it is the <a href="#og-protocols-http2"><code>http2</code> module</a> that configures the wrapped protocol to be HTTP/2.</p>
+<p>The CN value must be the main domain you own and that you want to use for your web applications.
+For example, if you have bought domains <code>domain.com</code> and <code>domain.org</code>, you want to specify <code>CN=domain.com</code> as your main domain.</p>
 </div>
 <div class="paragraph">
-<p>Recall from the <a href="#og-modules">section about modules</a>, that only modules that are explicitly enabled get their module configuration file (<code>*.ini</code>) saved in <code>$JETTY_BASE/start.d/</code>, and you want <code>$JETTY_BASE/start.d/ssl.ini</code> to be present so that you can configure the connector properties, the keystore properties and the TLS properties.</p>
+<p>Furthermore, to specify additional domains or subdomains within the same certificate, you must specify the SAN extension.
+In the example above, <code>san=dns:www.domain.com,dns:domain.org</code> specifies <code>www.domain.com</code> and <code>domain.org</code> as alternative names for your web applications (that you can configure using <a href="#og-deploy-virtual-hosts">virtual hosts</a>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-keystore-csr"><a class="anchor" href="#og-keystore-csr"></a><a class="link" href="#og-keystore-csr">Creating a Certificate Signing Request</a></h4>
+<div class="paragraph">
+<p>Self-signed certificates are not trusted by browsers and generic clients: you need to establish a trust chain by having your self-signed certificate signed by a certificate authority (CA).</p>
+</div>
+<div class="paragraph">
+<p>Browsers and generic clients (e.g. Java clients) have an internal list of trusted certificate authorities root certificates; they use these trusted certificates to verify the certificate they received from the server when they connect to your web applications.</p>
+</div>
+<div class="paragraph">
+<p>To have your self-signed certificate signed by a certificate authority you first need to produce a <em>certificate signing request</em> (CSR):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool
+    -certreq <i class="conum" data-value="1"></i><b>(1)</b>
+    -file domain.com.csr <i class="conum" data-value="2"></i><b>(2)</b>
+    -keystore keystore.p12 <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the command to generate a certificate signing request</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the file to save the CSR</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the keystore that contains the self-signed certificate</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then, you have to send the CSR file to the certificate authority of your choice, and wait for their reply (they will probably require a proof that you really own the domains indicated in your certificate).</p>
+</div>
+<div class="paragraph">
+<p>Eventually, the certificate authority will reply to you with one or more files containing the CA certificate chain, and your certificate signed by their certificate chain.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-keystore-csr-import"><a class="anchor" href="#og-keystore-csr-import"></a><a class="link" href="#og-keystore-csr-import">Importing the Signed Certificate</a></h4>
+<div class="paragraph">
+<p>The file you receive from the CA is typically in PEM format, and you <strong>must</strong> import it back into the same KeyStore file you used to generate the CSR.
+You must import <strong>both</strong> the certificate chain and your signed certificate.</p>
+</div>
+<div class="paragraph">
+<p>First, import the certificate chain:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool
+    -importcert <i class="conum" data-value="1"></i><b>(1)</b>
+    -alias ca <i class="conum" data-value="2"></i><b>(2)</b>
+    -file chain_from_ca.pem <i class="conum" data-value="3"></i><b>(3)</b>
+    -keystore keystore.p12 <i class="conum" data-value="4"></i><b>(4)</b>
+    -trustcacerts <i class="conum" data-value="5"></i><b>(5)</b>
+    -v <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the command to import certificates</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>use the <code>ca</code> alias to differentiate from the alias of the server certificate</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the file containing the certificate chain received from the CA</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>your KeyStore file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>specify that you trust CA certificates</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>verbose output</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then, import the signed certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool
+    -importcert
+    -file signed_certificate.pem
+    -keystore keystore.p12
+    -trustcacerts
+    -v</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you have a trusted certificate in your KeyStore that you can use for the domains of your web applications.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the section about configuring <a href="#og-protocols-ssl">secure protocols</a> to configure the secure connector with your newly created KeyStore.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-keystore-client-authn"><a class="anchor" href="#og-keystore-client-authn"></a><a class="link" href="#og-keystore-client-authn">Creating a KeyStore for Client Certificate Authentication</a></h4>
+<div class="paragraph">
+<p>For the majority of secure web sites, it is the client (typically the browser) that validates the certificate sent by the server (by verifying the certificate chain).
+This is the <em>server domain certificate</em>.</p>
+</div>
+<div class="paragraph">
+<p>However, the TLS protocol supports a <em>mutual authentication</em> mode where also the client must send a certificate to the server, that the server validates.</p>
+</div>
+<div class="paragraph">
+<p>You typically want to sign the client certificate(s) with a server certificate that you control, and you must distribute the client certificate(s) to all the clients that need it, and redistribute the client certificates when they expire.
+The <em>server authentication certificate</em> may be different from the <em>server domain certificate</em>, but it&#8217;s typically stored in the same KeyStore for simplicity (although under a different alias).</p>
+</div>
+<div class="paragraph">
+<p>First, you want to create the private key and server authentication certificate that you will use to sign client certificates:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool
+    -genkeypair
+    -alias server_authn <i class="conum" data-value="1"></i><b>(1)</b>
+    -validity 90
+    -keyalg RSA
+    -keysize 2048
+    -keystore keystore.p12 <i class="conum" data-value="2"></i><b>(2)</b>
+    -storetype pkcs12
+    -dname "CN=server_authn, OU=Unit, O=Company, L=City, S=State, C=Country" <i class="conum" data-value="3"></i><b>(3)</b>
+    -ext bc=ca:true <i class="conum" data-value="4"></i><b>(4)</b>
+    -v</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>use the <code>server_authn</code> alias to differentiate from the alias of the server certificate</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the KeyStore file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>the CN is not that important, since this certificate will not be validated by clients</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>the extension with the basic constraints (more below)</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The important difference with the <a href="#og-keystore-create">creation of a server certificate</a> is the <em>basic constraints</em> extension (<code>bc</code>) that indicates that this certificates acts as a certificate authority (<code>ca:true</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now you want to export both the private key and server authentication certificate.
+Unfortunately, the <code>keytool</code> program cannot export private keys, so you need to use a different command line program like <code>openssl</code>, or a graphical program like <a href="https://keystore-explorer.org/">KeyStore Explorer</a>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s use <code>openssl</code> to export the server authentication private key:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>openssl
+    pkcs12
+    -in keystore.p12
+    -nodes
+    -nocerts
+    -out server_authn.key</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s export the server authentication certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool
+    -exportcert
+    -keystore keystore.p12
+    -rfc
+    -file server_authn.crt
+    -v</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, you want to create a client KeyStore, so that you can sign the client certificate with the server authentication cryptographic material:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool
+    -genkeypair
+    -validity 90
+    -keyalg RSA
+    -keysize 2048
+    -keystore client_keystore.p12 <i class="conum" data-value="1"></i><b>(1)</b>
+    -storetype pkcs12
+    -dname "CN=client, OU=Unit, O=Company, L=City, S=State, C=Country" <i class="conum" data-value="2"></i><b>(2)</b>
+    -v</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>the client KeyStore file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>the CN is not that important, since it will not be validated by the server</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now produce a certificate signing request (CSR):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool
+    -certreq
+    -file client.csr
+    -keystore client_keystore.p12</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you need to sign the CSR, but again the <code>keytool</code> program does not have this functionality, and you must resort again to use <code>openssl</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>openssl
+    x509
+    -req
+    -days 90
+    -in client.csr
+    -CA server_authn.crt
+    -CAkey server_authn.key
+    -CAcreateserial
+    -sha256
+    -out signed.crt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you need to import the server authentication certificate and the signed client certificate into the client KeyStore.</p>
+</div>
+<div class="paragraph">
+<p>First, the server authentication certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool
+    -importcert
+    -alias ca
+    -file server_authn.crt
+    -keystore client_keystore.p12
+    -v</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, the signed client certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool
+    -importcert
+    -file signed.crt
+    -keystore client_keystore.p12
+    -v</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can distribute <code>client_keystore.p12</code> to your client(s).</p>
+</div>
+<div class="paragraph">
+<p>Refer to the section about configuring <a href="#og-protocols-ssl">secure protocols</a> to configure the secure connector to require client authentication.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2584,14 +3403,14 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 <div class="sect3">
 <h4 id="og-module-http"><a class="anchor" href="#og-module-http"></a><a class="link" href="#og-module-http">Module <code>http</code></a></h4>
 <div class="paragraph">
-<p>The <code>http</code> module provides support for the clear-text HTTP/1.1 protocol and depends on the <a href="#og-module-server"><code>server</code> module</a>.</p>
+<p>The <code>http</code> module provides the clear-text connector and support for the clear-text HTTP/1.1 protocol, and depends on the <a href="#og-module-server"><code>server</code> module</a>.</p>
 </div>
 <div class="paragraph">
-<p>The module file is <code>$JETTY_HOME/modules/http.mod</code>:</p>
+<p>The module properties to configure the clear-text connector are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/http.mod[]</pre>
+<pre>Unresolved directive in modules/module-http.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/http.mod[tags=documentation]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4909,7 +5728,7 @@ Within these elements there may be nested elements that will operate on that sco
 <div id="footer">
 <div id="footer-text">
 Version 11.0.0-SNAPSHOT<br>
-Last updated 2020-10-06 00:12:47 UTC
+Last updated 2020-10-09 00:12:37 UTC
 </div>
 </div>
 </body>
