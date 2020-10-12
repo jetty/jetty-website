@@ -74,10 +74,10 @@
         <th class="tableblock halign-left valign-top">Year</th>
         <th class="tableblock halign-left valign-top">Home</th>
         <th class="tableblock halign-left valign-top">Min JVM</th>
-        <th class="tableblock halign-left valign-top">Protocols</th>
         <th class="tableblock halign-left valign-top">Servlet</th>
         <th class="tableblock halign-left valign-top">JSP</th>
         <th class="tableblock halign-left valign-top">Status</th>
+        <th class="tableblock halign-left valign-top">Protocols</th>
     </tr>
     </thead>
     <tbody>
