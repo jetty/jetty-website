@@ -11,28 +11,28 @@
         <thead>
         <tr>
             <th class="halign-left valign-top">Release Version</th>
-            <th class="halign-left valign-top"></th>
-            <th class="halign-left valign-top"></th>
-            <th class="halign-left valign-top"></th>
+            <th class="halign-left valign-top">   </th>
+            <th class="halign-left valign-top">   </th>
+            <th class="halign-left valign-top">   </th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td class="halign-left valign-top"><p><b>Jetty 11</b></p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/documentation/jetty-11/index.html">Documentation</a></p></td>
-            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html">API </a></p></td>
+            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html"> API </a></p></td>
             <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.31.v20200723"> Source Code</a></p></td>
         </tr>
         <tr>
             <td class="halign-left valign-top"><p><b>Jetty 10</b></p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/documentation/jetty-10/index.html">Documentation</a></p></td>
-            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html">API </a></p></td>
+            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html"> API </a></p></td>
             <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.31.v20200723"> Source Code</a></p></td>
         </tr>
         <tr>
             <td class="halign-left valign-top"><p><b>Jetty 9</p></td>
             <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.4.x/index.html">Documentation</a></p></td>
-            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html">API </a></p></td>
+            <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.4.31.v20200723/index.html?overview-summary.html"> API </a></p></td>
             <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.31.v20200723"> Source Code</a></p></td>
         </tr>
         </tbody>
