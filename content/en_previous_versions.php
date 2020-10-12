@@ -27,13 +27,13 @@
   <table class="frame-all grid-all stretch">
   <caption class="title">Previous Downloads</caption>
   <colgroup>
-  <col style="width: 27.2727%;">
-  <col style="width: 9.0909%;">
-  <col style="width: 9.0909%;">
-  <col style="width: 9.0909%;">
-  <col style="width: 8%;">
-  <col style="width: 22%;">
-  <col style="width: 15%;">
+  <col style="width: 25%;">
+  <col style="width: 9%;">
+  <col style="width: 9%;">
+  <col style="width: 9%;">
+  <col style="width: 9%;">
+  <col style="width: 13%;">
+  <col style="width: 27%;">
   </colgroup>
   <thead>
   <tr>
