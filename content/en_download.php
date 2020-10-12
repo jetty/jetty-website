@@ -52,9 +52,8 @@
 
 <h3 id="what-jetty-version">What Version Do I Use?</h3>
 <div class="paragraph">
-    <p>Jetty 10 and 11 are the most recent versions of Jetty and has a great many improvements over previous versions.
-        This documentation which focuses on Jetty 10.
-        While many people continue to use older versions of Jetty, we generally recommend using Jetty 10 or 11 (more on the differences later) as they represent the version of Jetty that we will actively maintain and improve over the next few years.</p>
+    <p>Jetty 10 and 11 are the most recent versions of Jetty and have a great many improvements over previous versions.
+        While many people continue to use older versions of Jetty, we generally recommend using Jetty 10 or 11 ss they represent the version of Jetty that we will actively maintain and improve over the next few years.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Table 1. Jetty Versions</caption>
