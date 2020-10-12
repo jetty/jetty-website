@@ -32,8 +32,8 @@
   <col style="width: 9.0909%;">
   <col style="width: 9.0909%;">
   <col style="width: 8%;">
-  <col style="width: 10;">
-  <col style="width: 27.2728%;">
+  <col style="width: 22%;">
+  <col style="width: 15%;">
   </colgroup>
   <thead>
   <tr>
