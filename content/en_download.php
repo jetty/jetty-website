@@ -22,9 +22,9 @@
   <caption class="title">Downloads</caption>
   <colgroup>
   <col style="width: 40%;">
+  <col style="width: 10%;">
   <col style="width: 15%;">
-  <col style="width: 15%;">
-  <col style="width: 15%;">
+  <col style="width: 20%;">
   <col style="width: 15%;">
   </colgroup>
   <thead>
@@ -53,7 +53,7 @@
 <h3 id="what-jetty-version">What Version Do I Use?</h3>
 <div class="paragraph">
     <p>Jetty 10 and 11 are the most recent versions of Jetty and have a great many improvements over previous versions.
-        While many people continue to use older versions of Jetty, we generally recommend using Jetty 10 or 11 ss they represent the version of Jetty that we will actively maintain and improve over the next few years.</p>
+        While many people continue to use older versions of Jetty, we generally recommend using Jetty 10 or 11 as they represent the version of Jetty that we will actively maintain and improve over the next few years.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Table 1. Jetty Versions</caption>
