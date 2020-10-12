@@ -59,13 +59,13 @@
 <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Table 1. Jetty Versions</caption>
     <colgroup>
-        <col style="width: 6%;">
+        <col style="width: 8%;">
         <col style="width: 10%;">
         <col style="width: 14%;">
         <col style="width: 9%;">
         <col style="width: 10;">
         <col style="width: 6%;">
-        <col style="width: 21%;">
+        <col style="width: 19%;">
         <col style="width: 23%;">
     </colgroup>
     <thead>
@@ -154,7 +154,7 @@
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2009-2014</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse / Codehaus</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.6 <sup>(3)</sup></p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td>
@@ -164,7 +164,7 @@
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2008-2014</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse / Codehaus</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.1</p></td>
