@@ -4,8 +4,8 @@
     <table class="frame-all grid-all stretch">
         <colgroup>
             <col style="width: 25%;">
-            <col style="width: 25%;">
-            <col style="width: 25%;">
+            <col style="width: 40%;">
+            <col style="width: 10%;">
             <col style="width: 25%;">
         </colgroup>
         <thead>
