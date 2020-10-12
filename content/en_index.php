@@ -17,15 +17,48 @@
 <!-- Main content area -->
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
-  <p>Jetty provides a Web server and javax.servlet container, plus support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
-  These components are open source and available for commercial use and distribution.</p>
+  <p>Eclipse Jetty provides a web server and servlet container, additionally providing support for HTTP/2, WebSocket, OSGi, JMX, JNDI, JAAS and many other integrations.
+  These components are open source and are freely available for commercial use and distribution.</p>
 
   <p>Jetty is used in a wide variety of projects and products, both in development and production.
-  Jetty can be easily embedded in devices, tools, frameworks, application servers, and clusters.
-  See the Jetty Powered page for more uses of Jetty.</p>
+  Jetty is loved by developers because it has a long history of being easily embedded in devices, tools, frameworks,
+  application servers, and modern cloud services. See the Jetty Powered page for more uses of Jetty.</p>
 
-  <p>The current recommended version for use is Jetty 9 which can be obtained on the <a href="/jetty/download.html">Jetty Downloads page.</a>
-  Also available are the latest maintenance releases of Jetty 8 and Jetty 7,</p>
+  <p>With the direction Java and the JakartaEE project (formerly JavaEE) have taken, the current
+    recommended version of Jetty for use depends on the intended usage.
+    <br/>
+    <table class="frame-none grid-all stretch">
+    <colgroup>
+    <col style="width: 25%;">
+    <col style="width: 25%;">
+    <col style="width: 50%;">
+    </colgroup>
+    <thead>
+    <tr>
+    <th class="halign-left valign-top">Java</th>
+    <th class="halign-left valign-top">Servlet</th>
+    <th class="halign-left valign-top">Jetty</th>
+    </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td class="halign-left valign-top"><div class="content">Java 11+</div></td>
+      <td class="halign-left valign-top"><div class="content">JakartaEE 9 licensed (jakartaee.servlet.*)</div></td>
+      <td class="halign-left valign-top"><div class="content">Jetty 11.0.x</div></td>
+     </tr>
+     <tr>
+      <td class="halign-left valign-top"><div class="content">Java 11+</div></td>
+      <td class="halign-left valign-top"><div class="content">JakartaEE 8 licensed (javax.servlet.*)</div></td>
+      <td class="halign-left valign-top"><div class="content">Jetty 10.0.x</div></td>
+     </tr>
+     <tr>
+      <td class="halign-left valign-top"><div class="content">Java 8</div></td>
+      <td class="halign-left valign-top"><div class="content">JavaEE 8 licensed (javax.servlet.*)</div></td>
+      <td class="halign-left valign-top"><div class="content">Jetty 9.4.x</div></td>
+     </tr>
+    </tbody>
+   </table>
+  </p>
 
   <p>The Jetty project has been hosted at the Eclipse Foundation since 2009.
   Prior releases of Jetty have existed in part or completely under the Jetty project at the The Codehaus and Sourceforge before that.
