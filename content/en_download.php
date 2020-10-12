@@ -59,14 +59,14 @@
 <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Table 1. Jetty Versions</caption>
     <colgroup>
-        <col style="width: 6%;">
+        <col style="width: 9%;">
         <col style="width: 9%;">
         <col style="width: 15%;">
         <col style="width: 6%;">
-        <col style="width: 27;">
-        <col style="width: 10%;">
+        <col style="width: 10;">
         <col style="width: 6%;">
         <col style="width: 21%;">
+        <col style="width: 23%;">
     </colgroup>
     <thead>
     <tr>
@@ -86,150 +86,150 @@
         <td class="tableblock halign-left valign-top"><p class="tableblock">2020-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup></p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">4.0.2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UNSTABLE / Beta</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup></p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2019-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">4.0.2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UNSTABLE / Beta</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">9.4</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2016-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">9.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2015-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.8 <sup>(3)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540), WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">9.2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2014-2018</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.7 <sup>(3)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, javax.websocket, SPDY v3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life January 2018</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, javax.websocket, SPDY v3</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">9.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2013-2014</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.7 <sup>(3)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life May 2014</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">9.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2013-2013</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.7 <sup>(3)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.1-beta</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2013</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2009-2014</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.6 <sup>(3)</sup></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2014</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2008-2014</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse/Codehaus</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.5</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.1</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2014</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Venerable</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2006-2010</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Codehaus</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.4-1.5</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated / <strong>End of Life November 2010</strong></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Venerable</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2003-2009</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.2-1.5</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Antique</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2001-2006</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.2, J2ME</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Ancient</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1999-2002</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Sourceforge</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.2</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2068</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Fossilized</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2068</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1998-2000</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Mortbay</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.1</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Legendary</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1995-1998</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Mortbay</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.0</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">Mythical</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.0 RFC1945</p></td>
     </tr>
     </tbody>
 </table>
