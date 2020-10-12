@@ -59,10 +59,10 @@
 <table class="tableblock frame-all grid-all stretch">
     <caption class="title">Table 1. Jetty Versions</caption>
     <colgroup>
-        <col style="width: 9%;">
-        <col style="width: 9%;">
-        <col style="width: 15%;">
         <col style="width: 6%;">
+        <col style="width: 10%;">
+        <col style="width: 14%;">
+        <col style="width: 9%;">
         <col style="width: 10;">
         <col style="width: 6%;">
         <col style="width: 21%;">
