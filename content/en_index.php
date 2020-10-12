@@ -30,8 +30,8 @@
     <table class="frame-none grid-all stretch">
     <colgroup>
     <col style="width: 25%;">
-    <col style="width: 25%;">
     <col style="width: 50%;">
+    <col style="width: 25%;">
     </colgroup>
     <thead>
     <tr>
@@ -58,6 +58,8 @@
      </tr>
     </tbody>
    </table>
+
+   For more information related to help you make an informed decision, please check the <a href="Jetty Versions page.
   </p>
 
   <p>The Jetty project has been hosted at the Eclipse Foundation since 2009.
@@ -126,7 +128,7 @@
   <p>Tools, such as the Eclipse IDE</p>
   </li>
   <li>
-  <p>Devices, such as phones</p>
+  <p>Devices, such as Android</p>
   </li>
   <li>
   <p>More&#8230;&#8203;</p>
