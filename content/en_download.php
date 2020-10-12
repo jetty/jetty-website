@@ -158,7 +158,7 @@
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.6 <sup>(3)</sup></p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.2</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Deprecated</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Venerable</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616, WebSocket RFC 6455, SPDY v3</p></td>
     </tr>
     <tr>
@@ -178,7 +178,7 @@
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.4-1.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Venerable</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Antique</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
@@ -188,7 +188,7 @@
         <td class="tableblock halign-left valign-top"><p class="tableblock">1.2-1.5</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock">Antique</p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock">Relic</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 RFC2616</p></td>
     </tr>
     <tr>
