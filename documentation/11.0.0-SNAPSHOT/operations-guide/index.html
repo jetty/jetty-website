@@ -17,7 +17,7 @@
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
 <span id="revnumber">version 11.0.0-SNAPSHOT,</span>
-<span id="revdate">2020-10-10</span>
+<span id="revdate">2020-10-14</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -100,6 +100,13 @@
 <li><a href="#og-protocols-ssl-sni">Configuring SNI</a></li>
 </ul>
 </li>
+<li><a href="#og-protocols-proxy">Configuring Eclipse Jetty Behind a Load Balancer or Reverse Proxy</a>
+<ul class="sectlevel4">
+<li><a href="#og-protocols-proxy-forwarded">Configuring Jetty for the Forwarded Header</a></li>
+<li><a href="#og-protocols-proxy-protocol">Configuring Jetty for the Proxy Protocol</a></li>
+<li><a href="#og-protocols-proxy-haproxy">Configuring HAProxy and Jetty for HTTP/1.1 and HTTP/2</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#og-keystore">Configuring KeyStores</a>
@@ -117,8 +124,43 @@
 <li><a href="#og-module-http-selectors">Configuration of Selectors</a></li>
 </ul>
 </li>
+<li><a href="#og-module-http2">Module <code>http2</code></a></li>
+<li><a href="#og-module-http2c">Module <code>http2c</code></a></li>
+<li><a href="#og-module-http-forwarded">Module <code>http-forwarded</code></a></li>
+<li><a href="#og-module-https">Module <code>https</code></a></li>
 <li><a href="#og-module-server">Module <code>server</code></a></li>
+<li><a href="#og-module-ssl">Module <code>ssl</code></a>
+<ul class="sectlevel4">
+<li><a href="#og-module-ssl-connector">Secure Connector Properties</a></li>
+<li><a href="#og-module-ssl-keystore-tls">KeyStore Properties and TLS Properties</a></li>
+</ul>
+</li>
+<li><a href="#og-module-ssl-reload">Module <code>ssl-reload</code></a></li>
+<li><a href="#og-module-test-keystore">Module <code>test-keystore</code></a></li>
 <li><a href="#og-module-threadpool">Module <code>threadpool</code></a></li>
+</ul>
+</li>
+<li><a href="#og-xml">Jetty XML</a>
+<ul class="sectlevel3">
+<li><a href="#og-xml-syntax">Jetty XML Syntax</a>
+<ul class="sectlevel4">
+<li><a href="#og-xml-syntax-configure"><code>&lt;Configure&gt;</code></a></li>
+<li><a href="#og-xml-syntax-arg"><code>&lt;Arg&gt;</code></a></li>
+<li><a href="#og-xml-syntax-new"><code>&lt;New&gt;</code></a></li>
+<li><a href="#og-xml-syntax-call"><code>&lt;Call&gt;</code></a></li>
+<li><a href="#og-xml-syntax-get"><code>&lt;Get&gt;</code></a></li>
+<li><a href="#og-xml-syntax-set"><code>&lt;Set&gt;</code></a></li>
+<li><a href="#og-xml-syntax-map"><code>&lt;Map&gt;</code> and <code>&lt;Entry&gt;</code></a></li>
+<li><a href="#og-xml-syntax-put"><code>&lt;Put&gt;</code></a></li>
+<li><a href="#og-xml-syntax-array"><code>&lt;Array&gt;</code> and <code>&lt;Item&gt;</code></a></li>
+<li><a href="#og-xml-syntax-ref"><code>&lt;Ref&gt;</code></a></li>
+<li><a href="#og-xml-syntax-property"><code>&lt;Property&gt;</code></a></li>
+<li><a href="#og-xml-syntax-system-property"><code>&lt;SystemProperty&gt;</code></a></li>
+<li><a href="#og-xml-syntax-env"><code>&lt;Env&gt;</code></a></li>
+<li><a href="#og-xml-syntax-types">Type Coercion</a></li>
+<li><a href="#og-xml-syntax-scope">Scopes</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#og-sessions">HTTP Session Management</a>
@@ -196,25 +238,45 @@
 </li>
 </ul>
 </li>
-<li><a href="#og-xml">Jetty XML</a>
+<li><a href="#og-quickstart">Faster Web Application Deployment</a>
 <ul class="sectlevel3">
-<li><a href="#og-xml-syntax">Jetty XML Syntax</a>
+<li><a href="#og-enabling">Enabling</a></li>
+</ul>
+</li>
+<li><a href="#og-annotations">Annotations</a>
+<ul class="sectlevel3">
+<li><a href="#og-annotations-scanning">Annotation Scanning</a>
 <ul class="sectlevel4">
-<li><a href="#og-xml-syntax-configure"><code>&lt;Configure&gt;</code></a></li>
-<li><a href="#og-xml-syntax-arg"><code>&lt;Arg&gt;</code></a></li>
-<li><a href="#og-xml-syntax-new"><code>&lt;New&gt;</code></a></li>
-<li><a href="#og-xml-syntax-call"><code>&lt;Call&gt;</code></a></li>
-<li><a href="#og-xml-syntax-get"><code>&lt;Get&gt;</code></a></li>
-<li><a href="#og-xml-syntax-set"><code>&lt;Set&gt;</code></a></li>
-<li><a href="#og-xml-syntax-map"><code>&lt;Map&gt;</code> and <code>&lt;Entry&gt;</code></a></li>
-<li><a href="#og-xml-syntax-put"><code>&lt;Put&gt;</code></a></li>
-<li><a href="#og-xml-syntax-array"><code>&lt;Array&gt;</code> and <code>&lt;Item&gt;</code></a></li>
-<li><a href="#og-xml-syntax-ref"><code>&lt;Ref&gt;</code></a></li>
-<li><a href="#og-xml-syntax-property"><code>&lt;Property&gt;</code></a></li>
-<li><a href="#og-xml-syntax-system-property"><code>&lt;SystemProperty&gt;</code></a></li>
-<li><a href="#og-xml-syntax-env"><code>&lt;Env&gt;</code></a></li>
-<li><a href="#og-xml-syntax-types">Type Coercion</a></li>
-<li><a href="#og-xml-syntax-scope">Scopes</a></li>
+<li><a href="#og-the-container-classpath">The container classpath</a></li>
+<li><a href="#og-the-webapp-classpath">The webapp classpath</a></li>
+<li><a href="#og-multi-threading">Multi-threading</a></li>
+</ul>
+</li>
+<li><a href="#og-annotations-scis">ServletContainerInitializers</a>
+<ul class="sectlevel4">
+<li><a href="#og-exclusions">Exclusions</a></li>
+<li><a href="#og-ordering">Ordering</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#og-jsp">Java Server Pages</a>
+<ul class="sectlevel4">
+<li><a href="#og-configuration-of-the-jsp-servlet">Configuration of the JSP servlet</a></li>
+</ul>
+</li>
+<li><a href="#og-javaserver-pages-standard-tag-libraries">JavaServer Pages Standard Tag Libraries</a></li>
+<li><a href="#og-javaserver-faces-taglibs">JavaServer Faces Taglibs</a></li>
+<li><a href="#og-jndi">JNDI</a>
+<ul class="sectlevel3">
+<li><a href="#og-declaring-resources">Declaring resources</a>
+<ul class="sectlevel4">
+<li><a href="#og-jndi-env">org.eclipse.jetty.plus.jndi.EnvEntry</a></li>
+<li><a href="#og-jndi-resource">org.eclipse.jetty.plus.jndi.Resource</a></li>
+<li><a href="#og-jndi-tx">org.eclipse.jetty.plus.jndi.Transaction</a></li>
+<li><a href="#og-jndi-link">org.eclipse.jetty.plus.jndi.Link</a></li>
+<li><a href="#og-jndi-xml">Jetty XML files</a></li>
+<li><a href="#og-jndi-scope">Resource scoping</a></li>
 </ul>
 </li>
 </ul>
@@ -250,6 +312,18 @@
 <li>
 <p><a href="#og-protocols-http2">HTTP/2 Support</a></p>
 </li>
+<li>
+<p><a href="#og-quickstart">Faster Web Application Deployment</a></p>
+</li>
+<li>
+<p><a href="#og-annotations">Annotations</a></p>
+</li>
+<li>
+<p><a href="#og-jsp">JSP</a></p>
+</li>
+<li>
+<p><a href="#og-jndi">JNDI</a></p>
+</li>
 </ul>
 </div>
 <div class="paragraph">
@@ -284,6 +358,9 @@
 </li>
 <li>
 <p><a href="#og-protocols-http2s">Configure Secure HTTP/2</a></p>
+</li>
+<li>
+<p><a href="#og-protocols-proxy">Configure Jetty Behind a Load Balancer or Reverse Proxy</a></p>
 </li>
 </ul>
 </div>
@@ -2291,7 +2368,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="diag e2488cc783b3434076c5a44ee7f19a2b" width="380" height="420">
+<img src="diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="380" height="420">
 </div>
 </div>
 <div class="paragraph">
@@ -2299,7 +2376,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="diag 8a7fb4bb9c84453a4bf01a24558e8026" width="415" height="420">
+<img src="diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="415" height="420">
 </div>
 </div>
 <div class="paragraph">
@@ -2317,7 +2394,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="diag 7387dfbb6f9fb9cfa951a697aca488a8" width="307" height="210">
+<img src="diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="307" height="210">
 </div>
 </div>
 <div class="paragraph">
@@ -2325,7 +2402,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="diag 70817cc5c7137abc9759cdcd3edbb658" width="307" height="210">
+<img src="diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="307" height="210">
 </div>
 </div>
 <div class="paragraph">
@@ -2333,7 +2410,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-2830e38460d606111888c5df2a645163.png" alt="diag 2830e38460d606111888c5df2a645163" width="307" height="210">
+<img src="diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="307" height="210">
 </div>
 </div>
 </div>
@@ -2766,11 +2843,14 @@ The KeyStore contains two certificates, one for <code>one.com</code> and one for
 <div class="paragraph">
 <p>There are three <code>ssl</code> module properties that control the SNI behavior on the server: one that works at the TLS level, and two that works at the HTTP level.</p>
 </div>
+<div class="paragraph">
+<p>The property that works at the TLS level is:</p>
+</div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1"><code>jetty.sslContext.sniRequired</code></dt>
 <dd>
-<p>This is the TLS level property, defaults to <code>false</code>.</p>
+<p>Whether SNI is required at the TLS level, defaults to <code>false</code>.</p>
 </dd>
 </dl>
 </div>
@@ -2836,10 +2916,22 @@ The KeyStore contains two certificates, one for <code>one.com</code> and one for
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-The <em>default certificate</em> is the certificate returned by the TLS implementation in case there is no SNI match, and you should not rely on this certificate to be the same across Java vendors and versions, or Jetty versions, or TLS provider vendors and versions.
+<div class="paragraph">
+<p>The <em>default certificate</em> is the certificate returned by the TLS implementation in case there is no SNI match, and you should not rely on this certificate to be the same across Java vendors and versions, or Jetty versions, or TLS provider vendors and versions.</p>
+</div>
+<div class="paragraph">
+<p>In the example above it could be either the <code>one.com</code> certificate or the <code>two.net</code> certificate.</p>
+</div>
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When <code>jetty.sslContext.sniRequired=true</code>, clients that don&#8217;t send a valid SNI receive a TLS failure, and their attempt to connect to the server fails.
+The details of this failure may not be reported and could be difficult to figure out that the failure is related to an invalid SNI.</p>
+</div>
+<div class="paragraph">
+<p>For this reason, other two properties are defined at the HTTP level, so that clients can received an HTTP 400 response with more details about what went wrong while trying to connect to the server:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -2847,42 +2939,26 @@ The <em>default certificate</em> is the certificate returned by the TLS implemen
 <dd>
 <p>Whether SNI is required at the HTTP level, defaults to <code>false</code>.</p>
 </dd>
-<dt class="hdlist1"><code>jetty.ssl.sniHostCheck</code></dt>
-<dd>
-<p>Whether the SNI domain must be verified at the HTTP level against the <code>Host</code> header, defaults to <code>true</code>.</p>
-</dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>Their combined behavior is explained by the following table.</p>
+<p>Its behavior is similar to the <code>jetty.sslContext.sniRequired</code> property above, and is explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Behavior of the <code>jetty.ssl.[sniRequired|sniHostCheck]</code> properties</caption>
+<caption class="title">Table 2. Behavior of the <code>jetty.ssl.sniRequired</code> property</caption>
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>sniRequired=false</code><br>
-  <code>sniHostCheck=false</code></p>
+<p><code>sniRequired=false</code></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>sniRequired=false</code><br>
-  <code>sniHostCheck=true</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>sniRequired=true</code><br>
-  <code>sniHostCheck=false</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>sniRequired=true</code><br>
-  <code>sniHostCheck=true</code></p>
+<p><code>sniRequired=true</code></p>
 </div></div></td>
 </tr>
 <tr>
@@ -2890,16 +2966,10 @@ The <em>default certificate</em> is the certificate returned by the TLS implemen
 <p>SNI = <code>null</code></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>200 OK</p>
+<p>Accept</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>200 OK</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>400 Bad Request</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>400 Bad Request</p>
+<p>Reject: 400 Bad Request</p>
 </div></div></td>
 </tr>
 <tr>
@@ -2907,16 +2977,10 @@ The <em>default certificate</em> is the certificate returned by the TLS implemen
 <p>SNI = <code>wrong.org</code></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>200 OK</p>
+<p>Accept</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>400 Bad Request</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>400 Bad Request</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>400 Bad Request</p>
+<p>Reject: 400 Bad Request</p>
 </div></div></td>
 </tr>
 <tr>
@@ -2924,27 +2988,413 @@ The <em>default certificate</em> is the certificate returned by the TLS implemen
 <p>SNI = <code>one.com</code></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>200 OK</p>
+<p>Accept</p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>SNI matches <code>Host</code> header ?<br>
-200 OK : 400 Bad Request</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>200 OK</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>SNI matches <code>Host</code> header ?<br>
-200 OK : 400 Bad Request</p>
+<p>Accept</p>
 </div></div></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In the normal case, with modern TLS clients and HTTP requests with a correct <code>Host</code> header, Jetty will pick the correct certificate from the KeyStore based on the SNI and respond with an HTTP 200 OK.</p>
+<p>When <code>jetty.ssl.sniRequired=true</code>, the SNI is matched against the certificate sent to the client, and only if there is a match the request is accepted.</p>
+</div>
+<div class="paragraph">
+<p>When the request is accepted, there could be an additional check controlled by the following property:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>jetty.ssl.sniHostCheck</code></dt>
+<dd>
+<p>Whether the certificate sent to the client matches the <code>Host</code> header, defaults to <code>true</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Its behavior is explained by the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Behavior of the <code>jetty.ssl.sniHostCheck</code> property</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniHostCheck=false</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>sniHostCheck=true</code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>certificate = <code>one.com</code><br>
+<code>Host: wrong.org</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Accept</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Reject: 400 Bad Request</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>certificate = <code>one.com</code><br>
+<code>Host: one.com</code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Accept</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Accept</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In the normal case with the default server configuration, for a TLS clients that sends SNI, and then sends an HTTP request with the correct <code>Host</code> header, Jetty will pick the correct certificate from the KeyStore based on the SNI received from the client, and accept the request.</p>
+</div>
+<div class="paragraph">
+<p>Accepting the request does not mean that the request is responded with an HTTP 200 OK, but just that the request passed successfully the SNI checks and will be processed by the server.
+If the request URI is for a resource that does not exist, the response will likely be a 404 Not Found.</p>
 </div>
 <div class="paragraph">
 <p>You may modify the default values of the SNI properties if you want stricter control over old/broken TLS clients or bad HTTP requests.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-protocols-proxy"><a class="anchor" href="#og-protocols-proxy"></a><a class="link" href="#og-protocols-proxy">Configuring Eclipse Jetty Behind a Load Balancer or Reverse Proxy</a></h4>
+<div class="paragraph">
+<p>You may need to configure one or more Jetty instances behind an <em>intermediary</em>, typically a load balancer such as <a href="https://haproxy.org">HAProxy</a>, or a reverse proxy such as <a href="https://httpd.apache.org">Apache HTTP Server</a> or <a href="https://nginx.org">Nginx</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="460" height="316">
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>HAProxy can communicate either HTTP/1.1 or HTTP/2 to backend servers such as Jetty.</p>
+</div>
+<div class="paragraph">
+<p>Apache HTTP Server and Nginx can only speak HTTP/1.1 to backend servers such as Jetty, and have no plans to support HTTP/2 towards backend servers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In these setups, typically the proxy performs TLS offloading, and the communication with backend servers happens in clear-text.
+It is possible, however, to configure the proxy so that all the bytes arriving from the client are tunnelled opaquely to the backend Jetty server (that therefore needs to perform the TLS offloading) and viceversa the bytes arriving from the Jetty server are tunnelled opaquely to the client.</p>
+</div>
+<div class="paragraph">
+<p>Also in these setups, the TCP/IP connection terminating on the Jetty servers does not originate from the client, but from the proxy, so that the remote IP address and port number may be reported incorrectly in backend server logs, or worse applications may not work because they need to be able to differentiate different clients based on the client IP address.</p>
+</div>
+<div class="paragraph">
+<p>For this reason, intermediaries typically implement at least one of several <em>de facto</em> standards to communicate information about the original client connection to the backend Jetty server.</p>
+</div>
+<div class="paragraph">
+<p>Jetty supports two methods to process client information sent by intermediaries:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>Forwarded</code> HTTP header, defined in <a href="https://tools.ietf.org/html/rfc7239">RFC 7239</a> and replacing the old <code>X-Forwarded-*</code> headers, defined in <a href="#og-protocols-proxy-forwarded">this section</a>.</p>
+</li>
+<li>
+<p>The <a href="https://www.haproxy.org/download/2.2/doc/proxy-protocol.txt">Proxy Protocol</a>, defined in <a href="#og-protocols-proxy-protocol">this section</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In both methods, web applications that call <code>HttpServletRequest.getRemoteAddr()</code> will receive the remote client IP address as specified by the client information sent by the intermediary, not the physical IP address of TCP connection with the intermediary.
+Likewise, <code>HttpServletRequest.getRemotePort()</code> will return the remote client IP port as specified by the client information sent by the intermediary, and <code>HttpServletRequest.isSecure()</code> will return whether the client made a secure request using the <code>https</code> scheme as specified by the client information sent by the intermediary.</p>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-proxy-forwarded"><a class="anchor" href="#og-protocols-proxy-forwarded"></a><a class="link" href="#og-protocols-proxy-forwarded">Configuring Jetty for the Forwarded Header</a></h5>
+<div class="paragraph">
+<p>The <code>Forwarded</code> HTTP header is added by the intermediary with information about the client and the client request, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>GET / HTTP/1.1
+Host: domain.com
+Forwarded: for=2.36.72.144:21216;proto=https</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example above, the intermediary added the <code>Forwarded</code> header specifying that the client remote address is <code>2.36.72.144:21216</code> and that the request was made with the <code>https</code> scheme.</p>
+</div>
+<div class="paragraph">
+<p>Support for the <code>Forwarded</code> HTTP header (and its predecessor <code>X-Forwarded-*</code> headers) is enabled with the <code>http-forwarded</code> Jetty module with the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=http-forwarded</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>INFO  : http-forwarded  initialized in ${jetty.base}/start.d/http-forwarded.ini
+INFO  : Base directory was modified</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the <code>http-forwarded</code> Jetty module enabled, Jetty interprets the <code>Forwarded</code> header and makes its information available to web applications via the standard Servlet APIs.</p>
+</div>
+<div class="paragraph">
+<p>For further information about configuring the <code>http-forwarded</code> Jetty module, see <a href="#og-module-http-forwarded">this section</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-proxy-protocol"><a class="anchor" href="#og-protocols-proxy-protocol"></a><a class="link" href="#og-protocols-proxy-protocol">Configuring Jetty for the Proxy Protocol</a></h5>
+<div class="paragraph">
+<p>The <a href="https://www.haproxy.org/download/2.2/doc/proxy-protocol.txt">Proxy Protocol</a> is the <em>de facto</em> standard, introduced by <a href="https://haproxy.org">HAProxy</a>, to communicate client information to backend servers via the TCP connection, rather than via HTTP headers.</p>
+</div>
+<div class="paragraph">
+<p>The information about the client connection is sent as a small data frame on each newly established connection.
+This mechanism is therefore independent of any protocol, so it can be used for TLS, HTTP/1.1, HTTP/2, etc.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>There are 2 versions of the proxy protocol: v1 and v2, both supported by Jetty.</p>
+</div>
+<div class="paragraph">
+<p>Proxy protocol v1 is human readable, but it only carries information about the client TCP connection (IP address and IP port).</p>
+</div>
+<div class="paragraph">
+<p>Proxy protocol v2 has a binary format, carries the information about the client TCP connection, and can carry additional arbitrary information encoded in pairs <code>(type, value)</code> where <code>type</code> is a single byte that indicates the value&#8217;s meaning, and <code>value</code> is a variable length byte array that can encode user-defined data.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Support for the proxy protocol can be enabled for the clear-text connector or for the secure connector (or both).</p>
+</div>
+<div class="paragraph">
+<p>To enable proxy protocol support for the clear-text connector, enable the <code>proxy-protocol</code> Jetty module with the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=proxy-protocol</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>INFO  : proxy-protocol  initialized in ${jetty.base}/start.d/proxy-protocol.ini
+INFO  : Base directory was modified</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Starting Jetty yields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>2020-10-12 18:44:25.246:INFO :oejs.Server:main: jetty-10.0.0-SNAPSHOT; built: 2020-10-12T13:49:35.796Z; git: 1cd15e8d85feb308527c3df560734fc2ca1bc13c; jvm 15+36-1562
+2020-10-12 18:44:25.267:INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///tmp/jetty.base/webapps/]
+2020-10-12 18:44:25.276:INFO :oejs.AbstractConnector:main: Started ServerConnector@7a8c8dcf{[proxy], <mark>([proxy], http/1.1)</mark>}{0.0.0.0:8080}
+2020-10-12 18:44:25.285:INFO :oejs.Server:main: Started Server@5c5eefef{STARTING}[10.0.0-SNAPSHOT,sto=5000] @486ms</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how in the example above the list of protocols for the clear-text connector is first <code>proxy</code> and then <code>http/1.1</code>.
+For every new TCP connection, Jetty first interprets the proxy protocol bytes with the client information; after this initial proxy protocol processing, Jetty interprets the incoming bytes as HTTP/1.1 bytes.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, to enable proxy protocol support for the secure connector, enable the <code>proxy-protocol-ssl</code> Jetty module with the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=proxy-protocol-ssl</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>INFO  : proxy-protocol-ssl initialized in ${jetty.base}/start.d/proxy-protocol-ssl.ini
+INFO  : Base directory was modified</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Starting Jetty yields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>2020-10-12 19:09:38.397:INFO :oejs.Server:main: jetty-10.0.0-SNAPSHOT; built: 2020-10-12T13:49:35.796Z; git: 1cd15e8d85feb308527c3df560734fc2ca1bc13c; jvm 15+36-1562
+2020-10-12 19:09:38.417:INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///tmp/jetty.base/webapps/]
+2020-10-12 19:09:38.605:INFO :oejus.SslContextFactory:main: x509=X509@4a7f959b(mykey,h=[localhost],w=[]) for Server@5403f35f[provider=null,keyStore=file:///tmp/jetty.base/etc/test-keystore.p12,trustStore=file:///tmp/jetty.base/etc/test-keystore.p12]
+2020-10-12 19:09:38.697:INFO :oejs.AbstractConnector:main: Started ServerConnector@5afa3c9{[proxy], <mark>([proxy], ssl, http/1.1)</mark>}{0.0.0.0:8443}
+2020-10-12 19:09:38.705:INFO :oejs.Server:main: Started Server@54d9d12d{STARTING}[10.0.0-SNAPSHOT,sto=5000] @785ms</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how in the example above the list of protocols for the secure connector is first <code>proxy</code>, then <code>ssl</code> and then <code>http/1.1</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-proxy-haproxy"><a class="anchor" href="#og-protocols-proxy-haproxy"></a><a class="link" href="#og-protocols-proxy-haproxy">Configuring HAProxy and Jetty for HTTP/1.1 and HTTP/2</a></h5>
+<div class="paragraph">
+<p><a href="https://haproxy.org">HAProxy</a> is an open source solution that offers load balancing and proxying for TCP and HTTP based application, and can be used as a replacement for Apache or Nginx when these are used as reverse proxies.</p>
+</div>
+<div class="paragraph">
+<p>The deployment proposed here has HAProxy playing the role that Apache and Nginx usually do: to perform the TLS offloading (that is, decrypt incoming bytes and encrypt outgoing bytes) and then forwarding the now clear-text traffic to a backend Jetty server, speaking either HTTP/1.1 or HTTP/2.
+Since HAProxy&#8217;s TLS offloading is based on OpenSSL, it is much more efficient than the Java implementation shipped with OpenJDK.</p>
+</div>
+<div class="paragraph">
+<p>After you have installed HAProxy on your system, you want to configure it so that it can perform TLS offloading.</p>
+</div>
+<div class="paragraph">
+<p>HAProxy will need a single file containing the X509 certificates and the private key, all in <a href="https://en.wikipedia.org/wiki/X.509">PEM format</a>, with the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The site certificate; this certificate&#8217;s Common Name refers to the site domain (for example: CN=*.webtide.com) and is signed by Certificate Authority #1.</p>
+</li>
+<li>
+<p>The Certificate Authority #1 certificate; this certificate may be signed by Certificate Authority #2.</p>
+</li>
+<li>
+<p>The Certificate Authority #2 certificate; this certificate may be signed by Certificate Authority #3; and so on until the Root Certificate Authority.</p>
+</li>
+<li>
+<p>The Root Certificate Authority certificate.</p>
+</li>
+<li>
+<p>The private key corresponding to the site certificate.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="#og-keystore">section about KeyStores</a> for more information about generating the required certificates and private key.</p>
+</div>
+<div class="paragraph">
+<p>Now you can create the HAProxy configuration file (in Linux it&#8217;s typically `/etc/haproxy/haproxy.cfg).
+This is a minimal configuration:</p>
+</div>
+<div class="listingblock">
+<div class="title">haproxy.cfg</div>
+<div class="content">
+<pre class="highlight"><code>global
+tune.ssl.default-dh-param 1024
+
+defaults
+timeout connect 10000ms
+timeout client 60000ms
+timeout server 60000ms
+
+frontend fe_http <i class="conum" data-value="1"></i><b>(1)</b>
+mode http
+bind *:80
+# Redirect to https
+redirect scheme https code 301
+
+frontend fe_https <i class="conum" data-value="2"></i><b>(2)</b>
+mode tcp
+bind *:443 ssl no-sslv3 crt /path/to/domain.pem ciphers TLSv1.2 alpn h2,http/1.1
+default_backend be_http
+
+backend be_http <i class="conum" data-value="3"></i><b>(3)</b>
+mode tcp
+server domain 127.0.0.1:8282 send-proxy-v2</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>fe_http</code> front-end accepts connections on port 80 and redirects them to use the <code>https</code> scheme.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>fe_https</code> front-end accepts connections on port 443, and it is where the TLS decryption/encryption happens.
+You must specify the path to the PEM file containing the TLS key material (the <code>crt /path/to/domain.pem</code> part), the ciphers that are suitable for HTTP/2 (<code>ciphers TLSv1.2</code>), and the ALPN protocols supported (<code>alpn h2,http/1.1</code>).
+This front-end then forwards the now decrypted bytes to the backend in <code>mode tcp</code>.
+The <code>mode tcp</code> says that HAProxy will not try to interpret the bytes but instead opaquely forwards them to the backend.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>be_http</code> backend will forward (again in <code>mode tcp</code>) the clear-text bytes to a Jetty connector that talks clear-text HTTP/2 and HTTP/1.1 on port 8282.
+The <code>send-proxy-v2</code> directive sends the proxy protocol v2 bytes to the backend server.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>On the Jetty side, you need to enable the following modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=proxy-protocol,http2c,http,deploy</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You need to specify the host (<code>127.0.0.1</code>) and port (<code>8282</code>) you have configured in HAProxy when you start Jetty:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar jetty.http.host=127.0.0.1 jetty.http.port=8282</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You want the Jetty connector that listens on port <code>8282</code> to be available only to HAProxy, and not to remote clients.</p>
+</div>
+<div class="paragraph">
+<p>For this reason, you want to specify the <code>jetty.http.host</code> property on the command line (or in <code>$JETTY_BASE/start.d/http.ini</code> to make this setting persistent) to bind the Jetty connector only on the loopback interface (<code>127.0.0.1</code>), making it available to HAProxy but not to remote clients.</p>
+</div>
+<div class="paragraph">
+<p>If your Jetty instance runs on a different machine and/or on a different (sub)network, you may want to adjust both the back-end section of the HAProxy configuration file and the <code>jetty.http.host</code> property to match accordingly.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>With this configuration for HAProxy and Jetty, browsers supporting HTTP/2 will connect to HAProxy, which will decrypt the traffic and send it to Jetty.
+Likewise, HTTP/1.1 clients will connect to HAProxy, which will decrypt the traffic and send it to Jetty.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty connector, configured with the <code>http2c</code> and the <code>http</code> modules is able to distinguish whether the incoming bytes are HTTP/2 or HTTP/1.1 and will handle the request accordingly.</p>
+</div>
+<div class="paragraph">
+<p>The response is relayed back to HAProxy, which will encrypt it and send it back to the remote client.</p>
+</div>
+<div class="paragraph">
+<p>This configuration offers you efficient TLS offloading, HTTP/2 support and transparent fallback to HTTP/1.1 for clients that don&#8217;t support HTTP/1.1.</p>
 </div>
 </div>
 </div>
@@ -3043,6 +3493,10 @@ For example, if you have bought domains <code>domain.com</code> and <code>domain
 <div class="paragraph">
 <p>Furthermore, to specify additional domains or subdomains within the same certificate, you must specify the SAN extension.
 In the example above, <code>san=dns:www.domain.com,dns:domain.org</code> specifies <code>www.domain.com</code> and <code>domain.org</code> as alternative names for your web applications (that you can configure using <a href="#og-deploy-virtual-hosts">virtual hosts</a>).</p>
+</div>
+<div class="paragraph">
+<p>In rare cases, you may want to specify IP addresses, rather than domains, in the SAN extension.
+The syntax in such case is <code>san=ip:127.0.0.1,ip:[::1]</code>, which specifies as subject alternative names IPv4 <code>127.0.0.1</code> and IPv6 <code>[::1]</code>.</p>
 </div>
 </td>
 </tr>
@@ -3471,6 +3925,82 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 </div>
 <div class="sect3">
+<h4 id="og-module-http2"><a class="anchor" href="#og-module-http2"></a><a class="link" href="#og-module-http2">Module <code>http2</code></a></h4>
+<div class="paragraph">
+<p>The <code>http2</code> module enables support for the secure HTTP/2 protocol.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-http2.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/http2.mod[tags=documentation]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>jetty.http2.rateControl.maxEventsPerSecond</code> property controls the number of "bad" or "unnecessary" frames that a client may send before the server closes the connection (with code <a href="https://tools.ietf.org/html/rfc7540#section-7"><code>ENHANCE_YOUR_CALM</code></a>) to avoid a denial of service.</p>
+</div>
+<div class="paragraph">
+<p>For example, an attacker may send empty <code>SETTINGS</code> frames to a server in a tight loop.
+While the <code>SETTINGS</code> frames don&#8217;t change the server configuration and each of them is somehow harmless, the server will be very busy processing them because they are sent by the attacker one after the other, causing a CPU spike and eventually a denial of service (as all CPUs will be busy processing empty <code>SETTINGS</code> frames).</p>
+</div>
+<div class="paragraph">
+<p>The same attack may be performed with <code>PRIORITY</code> frames, empty <code>DATA</code> frames, <code>PING</code> frames, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-module-http2c"><a class="anchor" href="#og-module-http2c"></a><a class="link" href="#og-module-http2c">Module <code>http2c</code></a></h4>
+<div class="paragraph">
+<p>The <code>http2c</code> module enables support for the clear-text HTTP/2 protocol.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-http2c.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/http2c.mod[tags=documentation]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>jetty.http2.rateControl.maxEventsPerSecond</code> property controls the number of "bad" or "unnecessary" frames that a client may send before the server closes the connection (with code <a href="https://tools.ietf.org/html/rfc7540#section-7"><code>ENHANCE_YOUR_CALM</code></a>) to avoid a denial of service.</p>
+</div>
+<div class="paragraph">
+<p>For example, an attacker may send empty <code>SETTINGS</code> frames to a server in a tight loop.
+While the <code>SETTINGS</code> frames don&#8217;t change the server configuration and each of them is somehow harmless, the server will be very busy processing them because they are sent by the attacker one after the other, causing a CPU spike and eventually a denial of service (as all CPUs will be busy processing empty <code>SETTINGS</code> frames).</p>
+</div>
+<div class="paragraph">
+<p>The same attack may be performed with <code>PRIORITY</code> frames, empty <code>DATA</code> frames, <code>PING</code> frames, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-module-http-forwarded"><a class="anchor" href="#og-module-http-forwarded"></a><a class="link" href="#og-module-http-forwarded">Module <code>http-forwarded</code></a></h4>
+<div class="paragraph">
+<p>The <code>http-forwarded</code> module provides support for processing the <code>Forwarded</code> HTTP header (defined in <a href="https://tools.ietf.org/html/rfc7239">RFC 7239</a>) and the now obsoleted <code>X-Forwarded-*</code> HTTP headers.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-http-forwarded.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/http-forwarded.mod[tags=documentation]</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-module-https"><a class="anchor" href="#og-module-https"></a><a class="link" href="#og-module-https">Module <code>https</code></a></h4>
+<div class="paragraph">
+<p>The <code>https</code> module provides the HTTP/1.1 protocol to the <a href="#og-module-ssl"><code>ssl</code> module</a>.</p>
+</div>
+<div class="paragraph">
+<p>The module file is <code>$JETTY_HOME/modules/https.mod</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-https.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/https.mod[]</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="og-module-server"><a class="anchor" href="#og-module-server"></a><a class="link" href="#og-module-server">Module <code>server</code></a></h4>
 <div class="paragraph">
 <p>The <code>server</code> module provides generic server support, and configures generic HTTP properties that apply to all HTTP protocols, the scheduler properties and the server specific properties.</p>
@@ -3494,6 +4024,128 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 </div>
 <div class="sect3">
+<h4 id="og-module-ssl"><a class="anchor" href="#og-module-ssl"></a><a class="link" href="#og-module-ssl">Module <code>ssl</code></a></h4>
+<div class="paragraph">
+<p>The <code>ssl</code> module provides the secure connector, and allows you to configure the KeyStore properties and the TLS parameters, and depends on the <a href="#og-module-server"><code>server</code> module</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="og-module-ssl-connector"><a class="anchor" href="#og-module-ssl-connector"></a><a class="link" href="#og-module-ssl-connector">Secure Connector Properties</a></h5>
+<div class="paragraph">
+<p>The module properties to configure the secure connector are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-connector]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Among the configurable properties, the most relevant are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>jetty.ssl.port</code></dt>
+<dd>
+<p>the network port that Jetty listens to for secure connections&#8201;&#8212;&#8201;default <code>8443</code>.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.http.idleTimeout</code></dt>
+<dd>
+<p>the amount of time a connection can be idle (i.e. no bytes received and no bytes sent) until the server decides to close it to save resources&#8201;&#8212;&#8201;default <code>30000</code> milliseconds.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.http.acceptors</code></dt>
+<dd>
+<p>the number of threads that compete to accept connections&#8201;&#8212;&#8201;default -1 (i.e. an accept heuristic decides the value based on the number of cores).
+Refer to <a href="#og-module-http-acceptors">this section</a> for more information about acceptor threads.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.http.selectors</code></dt>
+<dd>
+<p>the number of NIO selectors (with an associated thread) that manage connections&#8201;&#8212;&#8201;default -1 (i.e. a select heuristic decides the value based on the number of cores).
+Refer to <a href="#og-module-http-selectors">this section</a> for more information about selector threads.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The module properties to configure the KeyStore and TLS parameters are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-ssl-context]</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-module-ssl-keystore-tls"><a class="anchor" href="#og-module-ssl-keystore-tls"></a><a class="link" href="#og-module-ssl-keystore-tls">KeyStore Properties and TLS Properties</a></h5>
+<div class="paragraph">
+<p>Among the configurable properties, the most relevant are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">jetty.sslContext.keyStorePath</dt>
+<dd>
+<p>the KeyStore path on the file system.
+If it is a relative path, it is relative to <code>$JETTY_BASE</code>.
+Defaults to <code>$JETTY_BASE/etc/keystore.p12</code>.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.sslContext.keyStorePassword</code></dt>
+<dd>
+<p>the KeyStore password, which you want to explicitly configure.
+The password may be obfuscated with the <a href="#og-password">Jetty Password Tool</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If you need to configure client certificate authentication, you want to configure one of these properties (they are mutually exclusive):</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>jetty.sslContext.needClientAuth</code></dt>
+<dd>
+<p>whether client certificate authentication should be required.</p>
+</dd>
+<dt class="hdlist1"><code>jetty.sslContext.wantClientAuth</code></dt>
+<dd>
+<p>whether client certificate authentication should be requested.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If you configure client certificate authentication, you need to configure and distribute a client KeyStore as explained in <a href="#og-keystore-client-authn">this section</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-module-ssl-reload"><a class="anchor" href="#og-module-ssl-reload"></a><a class="link" href="#og-module-ssl-reload">Module <code>ssl-reload</code></a></h4>
+<div class="paragraph">
+<p>The <code>ssl-reload</code> module provides a periodic scanning of the directory where the KeyStore file resides.
+When the scanning detects a change to the KeyStore file, the correspondent <code>SslContextFactory.Server</code> component is reloaded with the new KeyStore configuration.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-ssl-reload.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/ssl-reload.mod[tags=documentation]</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-module-test-keystore"><a class="anchor" href="#og-module-test-keystore"></a><a class="link" href="#og-module-test-keystore">Module <code>test-keystore</code></a></h4>
+<div class="paragraph">
+<p>The <code>test-keystore</code> module provides a KeyStore containing a self-signed certificate for domain <code>localhost</code>.</p>
+</div>
+<div class="paragraph">
+<p>The module file is <code>$JETTY_HOME/modules/test-keystore.mod</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Unresolved directive in modules/module-test-keystore.adoc - include::../../../../../../jetty-home/target/jetty-home/modules/test-keystore.mod[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how properties <code>jetty.sslContext.keyStorePath</code> and <code>jetty.sslContext.keyStorePassword</code> are configured, only if not already set (via the <code>?=</code> operator), directly in the module file, rather than in a <code>*.ini</code> file.
+This is done to avoid that these properties accidentally overwrite a real KeyStore configuration.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="og-module-threadpool"><a class="anchor" href="#og-module-threadpool"></a><a class="link" href="#og-module-threadpool">Module <code>threadpool</code></a></h4>
 <div class="paragraph">
 <p>The <code>threadpool</code> module allows you to configure the server-wide thread pool.</p>
@@ -3511,6 +4163,538 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 <div class="paragraph">
 <p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-xml"><a class="anchor" href="#og-xml"></a><a class="link" href="#og-xml">Jetty XML</a></h3>
+<div class="paragraph">
+<p>The Jetty XML format is a straightforward mapping of XML elements to Java APIs so that any object can be instantiated and getters, setters, and methods can be called.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty XML format is very similar to that of frameworks like Spring or Plexus, although it predates all of them and it&#8217;s typically more powerful as it can invoke any Java API.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty XML format is used in <a href="#og-modules">Jetty modules</a> to create the Jetty server components, as well as in <a href="#og-deploy">Jetty XML context files</a> to configure web applications, but it can be used to call any Java API.</p>
+</div>
+<div class="sect3">
+<h4 id="og-xml-syntax"><a class="anchor" href="#og-xml-syntax"></a><a class="link" href="#og-xml-syntax">Jetty XML Syntax</a></h4>
+<div class="paragraph">
+<p>The Jetty XML syntax defines XML element that allow you to call any Java API and that allow you to interact in a simpler way with the <a href="#og-modules">Jetty module system</a> and the <a href="#og-deploy">Jetty deploy system</a>.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty XML elements define attributes such as <code>id</code>, <code>name</code>, <code>class</code>, etc. that may be replaced by correspondent elements, so that these XML documents are equivalent:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Get id="stderr" class="java.lang.System" name="err"&gt;
+    &lt;Call name="println" arg="HELLO" /&gt;
+  &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Get&gt;
+    &lt;Id&gt;stderr&lt;/Id&gt;
+    &lt;Name&gt;err&lt;/Name&gt;
+    &lt;Class&gt;java.lang.System&lt;/Class&gt;
+    &lt;Call&gt;
+      &lt;Name&gt;println&lt;/Name&gt;
+      &lt;Arg&gt;HELLO&lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The version using attributes is typically shorter and nicer to read, but sometimes the attribute value cannot be a literal string (for example, it could be the value of a system property) and that&#8217;s where elements gives you the required flexibility.</p>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-configure"><a class="anchor" href="#og-xml-syntax-configure"></a><a class="link" href="#og-xml-syntax-configure"><code>&lt;Configure&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>Configure</code> must be the root element of the XML document.</p>
+</div>
+<div class="paragraph">
+<p>The following Jetty XML creates an empty <code>String</code> and assigns it the id <code>mystring</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="mystring" class="java.lang.String" /&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is equivalent to the following Java code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">var mystring = new String();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If an object with the id <code>mystring</code> already exists, then it is not created again but rather just referenced.</p>
+</div>
+<div class="paragraph">
+<p>Typically the <code>&lt;Configure&gt;</code> element is used to configure a <code>Server</code> instance or <code>ContextHandler</code> subclasses such as <code>WebAppContext</code> that represent web applications.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-arg"><a class="anchor" href="#og-xml-syntax-arg"></a><a class="link" href="#og-xml-syntax-arg"><code>&lt;Arg&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>Arg</code> is used to pass arguments to <a href="#og-xml-syntax-new">constructors</a> and <a href="#og-xml-syntax-call">method calls</a>.</p>
+</div>
+<div class="paragraph">
+<p>The following example creates a minimal Jetty <code>Server</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Arg type="int"&gt;8080&lt;/Arg&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Arguments may have a <code>type</code> attribute that explicitly performs <a href="#og-xml-syntax-types">type coercion</a>.</p>
+</div>
+<div class="paragraph">
+<p>Arguments may also have a <code>name</code> attribute, which is matched with the corresponding Java annotation in the source class, that helps to identify arguments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Arg name="port" type="int"&gt;8080&lt;/Arg&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-new"><a class="anchor" href="#og-xml-syntax-new"></a><a class="link" href="#og-xml-syntax-new"><code>&lt;New&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;New&gt;</code> creates a new object of the type specified by the mandatory <code>class</code> attribute.
+A sequence of <code>Arg</code> elements, that must be contiguous and before other elements, may be present to specify the constructor arguments.</p>
+</div>
+<div class="paragraph">
+<p>Within element <code>&lt;New&gt;</code> the newly created object is in <a href="#og-xml-syntax-scope">scope</a> and may be the implicit target of other, nested, elements.</p>
+</div>
+<div class="paragraph">
+<p>The following example creates an <code>ArrayList</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;New id="mylist" class="java.util.ArrayList"&gt;
+    &lt;Arg type="int"&gt;16&lt;/Arg&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is equivalent to the following Java code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">var mylist = new ArrayList(16);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-call"><a class="anchor" href="#og-xml-syntax-call"></a><a class="link" href="#og-xml-syntax-call"><code>&lt;Call&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Call&gt;</code> invokes a method specified by the mandatory <code>name</code> attribute.
+A sequence of <code>Arg</code> elements, that must be contiguous and before other elements, may be present to specify the method arguments.</p>
+</div>
+<div class="paragraph">
+<p>Within element <code>&lt;Call&gt;</code> the return value, if the return type is not <code>void</code>, is in <a href="#og-xml-syntax-scope">scope</a> and may be the implicit target of other, nested, elements.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;New class="java.util.ArrayList"&gt;
+    &lt;Call name="listIterator"&gt;
+      &lt;Arg type="int"&gt;0&lt;/Arg&gt;
+    &lt;/Call&gt;
+    &lt;Call name="next" /&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is equivalent to the following Java code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">new ArrayList().listIterator(0).next();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is possible to call <code>static</code> methods by specifying the <code>class</code> attribute:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Call id="myhost" name="getByName" class="java.net.InetAddress"&gt;
+    &lt;Arg&gt;jdk.java.net&lt;/Arg&gt;
+  &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is equivalent to the following Java code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">var myhost = InetAddress.getByName("jdk.java.net");</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-get"><a class="anchor" href="#og-xml-syntax-get"></a><a class="link" href="#og-xml-syntax-get"><code>&lt;Get&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Get&gt;</code> retrieves the value of a JavaBean property specified by the mandatory <code>name</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>If the JavaBean property is <code>foo</code> (or <code>Foo</code>), <code>&lt;Get&gt;</code> first attempts to invoke <em>method</em> <code>getFoo()</code>; failing that, attempts to retrieve the value from <em>field</em> <code>foo</code> (or <code>Foo</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;!-- Invokes getter method server.getVersion() --&gt;
+  &lt;Get id="version" name="version" /&gt;
+
+  &lt;!-- Gets the System.err field --&gt;
+  &lt;Get class="java.lang.System" name="err"&gt;
+    &lt;Call name="println"&gt;
+      &lt;Arg&gt;Jetty&lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-set"><a class="anchor" href="#og-xml-syntax-set"></a><a class="link" href="#og-xml-syntax-set"><code>&lt;Set&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Set&gt;</code> stores the value of a JavaBean property specified by the mandatory <code>name</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>If the JavaBean property is <code>foo</code> (or <code>Foo</code>), <code>&lt;Set&gt;</code> first attempts to invoke <em>method</em> <code>setFoo(&#8230;&#8203;)</code> with the value in the <a href="#og-xml-syntax-scope">scope</a> as argument; failing that, attempts to store the value in the scope to <em>field</em> <code>foo</code> (or <code>Foo</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;!-- The value in the &lt;Set&gt; scope is the string "true" --&gt;
+  &lt;Set name="dryRun"&gt;true&lt;/Set&gt;
+
+  &lt;!-- The value in the &lt;Set&gt; scope is the instance created by &lt;New&gt; --&gt;
+  &lt;Set name="requestLog"&gt;
+    &lt;New class="org.eclipse.jetty.server.CustomRequestLog" /&gt;
+  &lt;/Set&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-map"><a class="anchor" href="#og-xml-syntax-map"></a><a class="link" href="#og-xml-syntax-map"><code>&lt;Map&gt;</code> and <code>&lt;Entry&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Map&gt;</code> allows the creation of a new <code>java.util.Map</code> implementation, specified by the <code>class</code> attribute&#8201;&#8212;&#8201;by default a <code>HashMap</code>.</p>
+</div>
+<div class="paragraph">
+<p>The map entries are specified with a sequence of <code>&lt;Entry&gt;</code> elements, each with exactly 2 <code>&lt;Item&gt;</code> elements, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Map class="java.util.concurrent.ConcurrentHashMap"&gt;
+    &lt;Entry&gt;
+      &lt;Item&gt;host&lt;/Item&gt;
+      &lt;Item&gt;
+        &lt;Call class="java.net.InetAddress" name="getByName"&gt;
+          &lt;Arg&gt;localhost&lt;/Arg&gt;
+        &lt;/Call&gt;
+      &lt;/Item&gt;
+    &lt;/Entry&gt;
+  &lt;/Map&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-put"><a class="anchor" href="#og-xml-syntax-put"></a><a class="link" href="#og-xml-syntax-put"><code>&lt;Put&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Put&gt;</code> is a convenience element that puts a key/value pair into objects that implement <code>java.util.Map</code>.
+You can only specify the key value via the <code>name</code> attribute, so the key can only be a literal string (for keys that are not literal strings, use the <code>&lt;Call&gt;</code> element).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;New class="java.util.Properties"&gt;
+    &lt;Put name="host"&gt;
+      &lt;Call class="java.net.InetAddress" name="getByName"&gt;
+        &lt;Arg&gt;localhost&lt;/Arg&gt;
+      &lt;/Call&gt;
+    &lt;/Put&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-array"><a class="anchor" href="#og-xml-syntax-array"></a><a class="link" href="#og-xml-syntax-array"><code>&lt;Array&gt;</code> and <code>&lt;Item&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Array&gt;</code> creates a new array, whose component type may be specified by the <code>type</code> attribute.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure&gt;
+  &lt;Array type="java.lang.Object"&gt;
+    &lt;Item /&gt; &lt;!-- null --&gt;
+    &lt;Item&gt;literalString&lt;/Item&gt;
+    &lt;Item type="String"&gt;&lt;/Item&gt; &lt;!-- empty string --&gt;
+    &lt;Item type="Double"&gt;1.0D&lt;/Item&gt;
+    &lt;Item&gt;
+      &lt;New class="java.lang.Exception" /&gt;
+    &lt;/Item&gt;
+  &lt;/Array&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-ref"><a class="anchor" href="#og-xml-syntax-ref"></a><a class="link" href="#og-xml-syntax-ref"><code>&lt;Ref&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Ref&gt;</code> allows you to reference an object via the <code>refid</code> attribute`, putting it into <a href="#og-xml-syntax-scope">scope</a> so that nested elements can operate on it.
+You must give a unique <code>id</code> attribute to the objects you want to reference.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;!-- The Jetty Server has id="server" --&gt;
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Get class="java.lang.System" name="err"&gt;
+    &lt;!-- Here the System.err field is in scope, but you
+         want to operate on the server to get its version --&gt;
+    &lt;Ref refid="server"&gt;
+      &lt;!-- Store the server version under id="myversion" --&gt;
+      &lt;Get id="myversion" name="version" /&gt;
+    &lt;/Ref&gt;
+
+    &lt;Call name="println"&gt;
+      &lt;!-- Reference the server version stored above --&gt;
+      &lt;Arg&gt;Server version is: &lt;Ref refid="myversion" /&gt;&lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-property"><a class="anchor" href="#og-xml-syntax-property"></a><a class="link" href="#og-xml-syntax-property"><code>&lt;Property&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Property&gt;</code> retrieves the value of the Jetty module property specified by the <code>name</code> attribute, and it is mostly used when creating <a href="#og-modules">custom Jetty modules</a> or when using <a href="#og-deploy-jetty">Jetty context XML files</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, property names for backward compatibility.</p>
+</div>
+<div class="paragraph">
+<p>The <code>default</code> attribute allows you to specify a default value for the property, if it has not been explicitly defined.</p>
+</div>
+<div class="paragraph">
+<p>For example, you may want to configure the context path of your web application in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;Set name="contextPath"&gt;
+    <mark>&lt;Property name="com.myapps.mywiki.context.path" default="/wiki" /&gt;</mark>
+  &lt;/Set&gt;
+  &lt;Set name="war"&gt;/opt/myapps/mywiki.war&lt;/Set&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>contextPath</code> value is resolved by looking for the Jetty module property <code>com.myapps.mywiki.context.path</code>; if this property is not set, then the default value of <code>/wiki</code> is used.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-system-property"><a class="anchor" href="#og-xml-syntax-system-property"></a><a class="link" href="#og-xml-syntax-system-property"><code>&lt;SystemProperty&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;SystemProperty&gt;</code> retrieves the value of the JVM system property specified by the <code>name</code> attribute, via <code>System.getProperty(&#8230;&#8203;)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, system property names for backward compatibility.</p>
+</div>
+<div class="paragraph">
+<p>The <code>default</code> attribute allows you to specify a default value for the system property value, if it has not been explicitly defined.</p>
+</div>
+<div class="paragraph">
+<p>The following example creates a minimal Jetty <code>Server</code> that listens on a port specified by the <code>com.acme.http.port</code> system property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Arg type="int"&gt;
+    &lt;SystemProperty name="com.acme.http.port" default="8080" /&gt;
+  &lt;/Arg&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-env"><a class="anchor" href="#og-xml-syntax-env"></a><a class="link" href="#og-xml-syntax-env"><code>&lt;Env&gt;</code></a></h5>
+<div class="paragraph">
+<p>Element <code>&lt;Env&gt;</code> retrieves the value of the environment variable specified by the <code>name</code> attribute, via <code>System.getenv(&#8230;&#8203;)</code>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, environment variable names for backward compatibility.</p>
+</div>
+<div class="paragraph">
+<p>The <code>default</code> attribute allows you to specify a default value for the environment variable value, if it has not been explicitly defined.</p>
+</div>
+<div class="paragraph">
+<p>The following example creates a minimal Jetty <code>Server</code> that listens on a port specified by the <code>COM_ACME_HTTP_PORT</code> environment variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Arg type="int"&gt;
+    &lt;Env name="COM_ACME_HTTP_PORT" default="8080" /&gt;
+  &lt;/Arg&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-types"><a class="anchor" href="#og-xml-syntax-types"></a><a class="link" href="#og-xml-syntax-types">Type Coercion</a></h5>
+<div class="paragraph">
+<p>Elements that have the <code>type</code> attribute explicitly perform the type coercion of the string value present in the XML document to the Java type specified by the <code>type</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>Supported types are the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all primitive types and their boxed equivalents, for example <code>type="int"</code> but also <code>type="Integer"</code> (short form) and <code>type="java.lang.Integer"</code> (fully qualified form)</p>
+</li>
+<li>
+<p><code>java.lang.String</code>, in both short form and fully qualified form</p>
+</li>
+<li>
+<p><code>java.net.URL</code>, in both short form and fully qualified form</p>
+</li>
+<li>
+<p><code>java.net.InetAddress</code>, in both short form and fully qualified form</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-xml-syntax-scope"><a class="anchor" href="#og-xml-syntax-scope"></a><a class="link" href="#og-xml-syntax-scope">Scopes</a></h5>
+<div class="paragraph">
+<p>Elements that create new objects or that return a value create a <em>scope</em>.
+Within these elements there may be nested elements that will operate on that scope, i.e. on the new object or returned value.</p>
+</div>
+<div class="paragraph">
+<p>The following example illustrates how scopes work:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
+  &lt;Arg type="int"&gt;8080&lt;/Arg&gt;
+  &lt;!-- Here the Server object has been created and is in scope --&gt;
+
+  &lt;!-- Calls the setter on the Server object that is in scope --&gt;
+  &lt;Set name="stopTimeout"&gt;5000&lt;/Set&gt;
+
+  &lt;!-- Creates a new object --&gt;
+  &lt;New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration"&gt;
+    &lt;!-- Here the HttpConfiguration just created is in a nested scope --&gt;
+
+    &lt;!-- Calls the setter on the HttpConfiguration object that is in scope --&gt;
+    &lt;Set name="secureScheme"&gt;https&lt;/Set&gt;
+  &lt;/New&gt;
+
+  &lt;!-- Calls the getter on the Server object that is in scope --&gt;
+  &lt;Get name="ThreadPool"&gt;
+    &lt;!-- Here the ThreadPool object returned by the getter is in a nested scope --&gt;
+
+    &lt;!-- Calls the setter on the ThreadPool object that is in scope --&gt;
+    &lt;Set name="maxThreads" type="int"&gt;256&lt;/Set&gt;
+  &lt;/Get&gt;
+
+  &lt;!-- Gets the System.err field --&gt;
+  &lt;Get class="java.lang.System" name="err"&gt;
+    &lt;!-- Here the System.err object is in scope --&gt;
+
+    &lt;!-- Equivalent to: var myversion = server.getVersion() --&gt;
+    &lt;Ref refid="server"&gt;
+      &lt;!-- Here the "server" object is in scope --&gt;
+      &lt;Get id="myversion" name="version" /&gt;
+    &lt;/Ref&gt;
+
+    &lt;!-- Calls println() on the System.err object --&gt;
+    &lt;Call name="println"&gt;
+      &lt;Arg&gt;Server version is: &lt;Ref refid="myversion" /&gt;&lt;/Arg&gt;
+    &lt;/Call&gt;
+  &lt;/Get&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -5191,533 +6375,1462 @@ This can be useful for preventing the <a href="#og-session-base-scavenge">scaven
 </div>
 </div>
 <div class="sect2">
-<h3 id="og-xml"><a class="anchor" href="#og-xml"></a><a class="link" href="#og-xml">Jetty XML</a></h3>
+<h3 id="og-quickstart"><a class="anchor" href="#og-quickstart"></a><a class="link" href="#og-quickstart">Faster Web Application Deployment</a></h3>
 <div class="paragraph">
-<p>The Jetty XML format is a straightforward mapping of XML elements to Java APIs so that any object can be instantiated and getters, setters, and methods can be called.</p>
+<p>The auto discovery features of the Servlet Specification can make deployments slow and uncertain.
+Auto discovery of web application configuration can be useful during the development as it allows new features and frameworks to be enabled simply by dropping in a jar file.
+However for production deployment, the need to scan the contents of many jars can have a significant impact at startup time.</p>
 </div>
 <div class="paragraph">
-<p>The Jetty XML format is very similar to that of frameworks like Spring or Plexus, although it predates all of them and it&#8217;s typically more powerful as it can invoke any Java API.</p>
+<p>The <code>quickstart</code> module allows a webapp to be pre-scanned, making startup predictable and faster.
+During scanning all declarative configuration (ie from web.xml, web-fragment.xml and annotations) are encoded into an effective <code>web.xml</code>, called <code>WEB-INF/quickstart-web.xml</code>, which can be inspected to understand what will be deployed.
+NOTE:: Programmatic configuration is <em>not</em> encoded into the generated <code>quickstart-web.xml</code> file.</p>
 </div>
 <div class="paragraph">
-<p>The Jetty XML format is used in <a href="#og-modules">Jetty modules</a> to create the Jetty server components, as well as in <a href="#og-deploy">Jetty XML context files</a> to configure web applications, but it can be used to call any Java API.</p>
+<p>With <code>quickstart</code>, webapps that took many seconds to scan and deploy can now be deployed in a few hundred milliseconds.</p>
 </div>
 <div class="sect3">
-<h4 id="og-xml-syntax"><a class="anchor" href="#og-xml-syntax"></a><a class="link" href="#og-xml-syntax">Jetty XML Syntax</a></h4>
+<h4 id="og-enabling"><a class="anchor" href="#og-enabling"></a><a class="link" href="#og-enabling">Enabling</a></h4>
 <div class="paragraph">
-<p>The Jetty XML syntax defines XML element that allow you to call any Java API and that allow you to interact in a simpler way with the <a href="#og-modules">Jetty module system</a> and the <a href="#og-deploy">Jetty deploy system</a>.</p>
-</div>
-<div class="paragraph">
-<p>The Jetty XML elements define attributes such as <code>id</code>, <code>name</code>, <code>class</code>, etc. that may be replaced by correspondent elements, so that these XML documents are equivalent:</p>
+<p>Enable the <code>quickstart</code> module for your jetty base:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;Get id="stderr" class="java.lang.System" name="err"&gt;
-    &lt;Call name="println" arg="HELLO" /&gt;
-  &lt;/Get&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;Get&gt;
-    &lt;Id&gt;stderr&lt;/Id&gt;
-    &lt;Name&gt;err&lt;/Name&gt;
-    &lt;Class&gt;java.lang.System&lt;/Class&gt;
-    &lt;Call&gt;
-      &lt;Name&gt;println&lt;/Name&gt;
-      &lt;Arg&gt;HELLO&lt;/Arg&gt;
-    &lt;/Call&gt;
-  &lt;/Get&gt;
-&lt;/Configure&gt;</code></pre>
+<pre class="highlight"><code class="language-screen" data-lang="screen">$ cd $JETTY-BASE
+$ java -jar $JETTY_HOME/start.jar --add-module=quickstart</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The version using attributes is typically shorter and nicer to read, but sometimes the attribute value cannot be a literal string (for example, it could be the value of a system property) and that&#8217;s where elements gives you the required flexibility.</p>
+<p>The <code>$JETTY-BASE/start.d/quickstart.ini</code> file contains these configurable parameters:</p>
 </div>
-<div class="sect4">
-<h5 id="og-xml-syntax-configure"><a class="anchor" href="#og-xml-syntax-configure"></a><a class="link" href="#og-xml-syntax-configure"><code>&lt;Configure&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>Configure</code> must be the root element of the XML document.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">jetty.quickstart.mode</dt>
+<dd>
+<p>The values are:</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">AUTO</dt>
+<dd>
+<p>Allows jetty to run either with or without a <code>quickstart-web.xml</code> file.
+If jetty detects the file, then it will be used, otherwise the app is started normally.</p>
+</dd>
+<dt class="hdlist1">GENERATE</dt>
+<dd>
+<p>In this mode, jetty will generate a <code>quickstart-web.xml</code> file and then terminate.
+Use this mode first before changing to either <code>AUTO</code> or <code>QUICKSTART</code>.</p>
+</dd>
+<dt class="hdlist1">QUICKSTART</dt>
+<dd>
+<p>In this mode, if jetty does not detect a <code>quickstart-web.xml</code> file then jetty will not start.</p>
+</dd>
+</dl>
 </div>
-<div class="paragraph">
-<p>The following Jetty XML creates an empty <code>String</code> and assigns it the id <code>mystring</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure id="mystring" class="java.lang.String" /&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This is equivalent to the following Java code:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">var mystring = new String();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If an object with the id <code>mystring</code> already exists, then it is not created again but rather just referenced.</p>
-</div>
-<div class="paragraph">
-<p>Typically the <code>&lt;Configure&gt;</code> element is used to configure a <code>Server</code> instance or <code>ContextHandler</code> subclasses such as <code>WebAppContext</code> that represent web applications.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-arg"><a class="anchor" href="#og-xml-syntax-arg"></a><a class="link" href="#og-xml-syntax-arg"><code>&lt;Arg&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>Arg</code> is used to pass arguments to <a href="#og-xml-syntax-new">constructors</a> and <a href="#og-xml-syntax-call">method calls</a>.</p>
-</div>
-<div class="paragraph">
-<p>The following example creates a minimal Jetty <code>Server</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Arg type="int"&gt;8080&lt;/Arg&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
+</dd>
+<dt class="hdlist1">jetty.quickstart.origin</dt>
+<dd>
+<p>Use this parameter to set the name of the attribute in the <code>quickstart-web.xml</code> file that contains the origin of each element.
+Knowing the descriptor or annotation from which each element derives can be useful for debugging.
+Note that the origin attribute does not conform to the web xml schema, so if you deploy with xml validation, you&#8217;ll see errors.
+It is probably best to do a few trial runs with the attribute set, then turn it off for final generation.</p>
+</dd>
+<dt class="hdlist1">jetty.quickstart.xml</dt>
+<dd>
+<p>Use this parameter to change the name of the generated file.
+By default this is <code>quickstart-web.xml</code> in the webapp&#8217;s <code>WEB-INF</code> directory.
+The file named by this parameter will always be interpreted relative to <code>WEB-INF</code>.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
-<p>Arguments may have a <code>type</code> attribute that explicitly performs <a href="#og-xml-syntax-types">type coercion</a>.</p>
+<p>If your webapp is a war file, you will need to either first unpack it yourself, or use a context xml file (or code equivalent) that calls <code>WebAppContext.setExtractWAR(true)</code>.
+If you allow Jetty to do the unpacking, it will use the usual mechanisms to find the location to which to unpack.
+Note that by default Jetty unpacks to a temporary location which is <em>not</em> reused between executions.
+So either specify the directory to which to unpack, or make a <code>work</code> directory in your base to ensure the unpacked war is preserved and reused across restarts.</p>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-annotations"><a class="anchor" href="#og-annotations"></a><a class="link" href="#og-annotations">Annotations</a></h3>
 <div class="paragraph">
-<p>Arguments may also have a <code>name</code> attribute, which is matched with the corresponding Java annotation in the source class, that helps to identify arguments:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Arg name="port" type="int"&gt;8080&lt;/Arg&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-new"><a class="anchor" href="#og-xml-syntax-new"></a><a class="link" href="#og-xml-syntax-new"><code>&lt;New&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;New&gt;</code> creates a new object of the type specified by the mandatory <code>class</code> attribute.
-A sequence of <code>Arg</code> elements, that must be contiguous and before other elements, may be present to specify the constructor arguments.</p>
-</div>
-<div class="paragraph">
-<p>Within element <code>&lt;New&gt;</code> the newly created object is in <a href="#og-xml-syntax-scope">scope</a> and may be the implicit target of other, nested, elements.</p>
-</div>
-<div class="paragraph">
-<p>The following example creates an <code>ArrayList</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;New id="mylist" class="java.util.ArrayList"&gt;
-    &lt;Arg type="int"&gt;16&lt;/Arg&gt;
-  &lt;/New&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This is equivalent to the following Java code:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">var mylist = new ArrayList(16);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-call"><a class="anchor" href="#og-xml-syntax-call"></a><a class="link" href="#og-xml-syntax-call"><code>&lt;Call&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Call&gt;</code> invokes a method specified by the mandatory <code>name</code> attribute.
-A sequence of <code>Arg</code> elements, that must be contiguous and before other elements, may be present to specify the method arguments.</p>
-</div>
-<div class="paragraph">
-<p>Within element <code>&lt;Call&gt;</code> the return value, if the return type is not <code>void</code>, is in <a href="#og-xml-syntax-scope">scope</a> and may be the implicit target of other, nested, elements.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;New class="java.util.ArrayList"&gt;
-    &lt;Call name="listIterator"&gt;
-      &lt;Arg type="int"&gt;0&lt;/Arg&gt;
-    &lt;/Call&gt;
-    &lt;Call name="next" /&gt;
-  &lt;/New&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This is equivalent to the following Java code:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">new ArrayList().listIterator(0).next();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>It is possible to call <code>static</code> methods by specifying the <code>class</code> attribute:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;Call id="myhost" name="getByName" class="java.net.InetAddress"&gt;
-    &lt;Arg&gt;jdk.java.net&lt;/Arg&gt;
-  &lt;/Call&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This is equivalent to the following Java code:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">var myhost = InetAddress.getByName("jdk.java.net");</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-get"><a class="anchor" href="#og-xml-syntax-get"></a><a class="link" href="#og-xml-syntax-get"><code>&lt;Get&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Get&gt;</code> retrieves the value of a JavaBean property specified by the mandatory <code>name</code> attribute.</p>
-</div>
-<div class="paragraph">
-<p>If the JavaBean property is <code>foo</code> (or <code>Foo</code>), <code>&lt;Get&gt;</code> first attempts to invoke <em>method</em> <code>getFoo()</code>; failing that, attempts to retrieve the value from <em>field</em> <code>foo</code> (or <code>Foo</code>).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;!-- Invokes getter method server.getVersion() --&gt;
-  &lt;Get id="version" name="version" /&gt;
-
-  &lt;!-- Gets the System.err field --&gt;
-  &lt;Get class="java.lang.System" name="err"&gt;
-    &lt;Call name="println"&gt;
-      &lt;Arg&gt;Jetty&lt;/Arg&gt;
-    &lt;/Call&gt;
-  &lt;/Get&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-set"><a class="anchor" href="#og-xml-syntax-set"></a><a class="link" href="#og-xml-syntax-set"><code>&lt;Set&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Set&gt;</code> stores the value of a JavaBean property specified by the mandatory <code>name</code> attribute.</p>
-</div>
-<div class="paragraph">
-<p>If the JavaBean property is <code>foo</code> (or <code>Foo</code>), <code>&lt;Set&gt;</code> first attempts to invoke <em>method</em> <code>setFoo(&#8230;&#8203;)</code> with the value in the <a href="#og-xml-syntax-scope">scope</a> as argument; failing that, attempts to store the value in the scope to <em>field</em> <code>foo</code> (or <code>Foo</code>).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;!-- The value in the &lt;Set&gt; scope is the string "true" --&gt;
-  &lt;Set name="dryRun"&gt;true&lt;/Set&gt;
-
-  &lt;!-- The value in the &lt;Set&gt; scope is the instance created by &lt;New&gt; --&gt;
-  &lt;Set name="requestLog"&gt;
-    &lt;New class="org.eclipse.jetty.server.CustomRequestLog" /&gt;
-  &lt;/Set&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-map"><a class="anchor" href="#og-xml-syntax-map"></a><a class="link" href="#og-xml-syntax-map"><code>&lt;Map&gt;</code> and <code>&lt;Entry&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Map&gt;</code> allows the creation of a new <code>java.util.Map</code> implementation, specified by the <code>class</code> attribute&#8201;&#8212;&#8201;by default a <code>HashMap</code>.</p>
-</div>
-<div class="paragraph">
-<p>The map entries are specified with a sequence of <code>&lt;Entry&gt;</code> elements, each with exactly 2 <code>&lt;Item&gt;</code> elements, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;Map class="java.util.concurrent.ConcurrentHashMap"&gt;
-    &lt;Entry&gt;
-      &lt;Item&gt;host&lt;/Item&gt;
-      &lt;Item&gt;
-        &lt;Call class="java.net.InetAddress" name="getByName"&gt;
-          &lt;Arg&gt;localhost&lt;/Arg&gt;
-        &lt;/Call&gt;
-      &lt;/Item&gt;
-    &lt;/Entry&gt;
-  &lt;/Map&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-put"><a class="anchor" href="#og-xml-syntax-put"></a><a class="link" href="#og-xml-syntax-put"><code>&lt;Put&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Put&gt;</code> is a convenience element that puts a key/value pair into objects that implement <code>java.util.Map</code>.
-You can only specify the key value via the <code>name</code> attribute, so the key can only be a literal string (for keys that are not literal strings, use the <code>&lt;Call&gt;</code> element).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;New class="java.util.Properties"&gt;
-    &lt;Put name="host"&gt;
-      &lt;Call class="java.net.InetAddress" name="getByName"&gt;
-        &lt;Arg&gt;localhost&lt;/Arg&gt;
-      &lt;/Call&gt;
-    &lt;/Put&gt;
-  &lt;/New&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-array"><a class="anchor" href="#og-xml-syntax-array"></a><a class="link" href="#og-xml-syntax-array"><code>&lt;Array&gt;</code> and <code>&lt;Item&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Array&gt;</code> creates a new array, whose component type may be specified by the <code>type</code> attribute.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure&gt;
-  &lt;Array type="java.lang.Object"&gt;
-    &lt;Item /&gt; &lt;!-- null --&gt;
-    &lt;Item&gt;literalString&lt;/Item&gt;
-    &lt;Item type="String"&gt;&lt;/Item&gt; &lt;!-- empty string --&gt;
-    &lt;Item type="Double"&gt;1.0D&lt;/Item&gt;
-    &lt;Item&gt;
-      &lt;New class="java.lang.Exception" /&gt;
-    &lt;/Item&gt;
-  &lt;/Array&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-ref"><a class="anchor" href="#og-xml-syntax-ref"></a><a class="link" href="#og-xml-syntax-ref"><code>&lt;Ref&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Ref&gt;</code> allows you to reference an object via the <code>refid</code> attribute`, putting it into <a href="#og-xml-syntax-scope">scope</a> so that nested elements can operate on it.
-You must give a unique <code>id</code> attribute to the objects you want to reference.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;!-- The Jetty Server has id="server" --&gt;
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Get class="java.lang.System" name="err"&gt;
-    &lt;!-- Here the System.err field is in scope, but you
-         want to operate on the server to get its version --&gt;
-    &lt;Ref refid="server"&gt;
-      &lt;!-- Store the server version under id="myversion" --&gt;
-      &lt;Get id="myversion" name="version" /&gt;
-    &lt;/Ref&gt;
-
-    &lt;Call name="println"&gt;
-      &lt;!-- Reference the server version stored above --&gt;
-      &lt;Arg&gt;Server version is: &lt;Ref refid="myversion" /&gt;&lt;/Arg&gt;
-    &lt;/Call&gt;
-  &lt;/Get&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-property"><a class="anchor" href="#og-xml-syntax-property"></a><a class="link" href="#og-xml-syntax-property"><code>&lt;Property&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Property&gt;</code> retrieves the value of the Jetty module property specified by the <code>name</code> attribute, and it is mostly used when creating <a href="#og-modules">custom Jetty modules</a> or when using <a href="#og-deploy-jetty">Jetty context XML files</a>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, property names for backward compatibility.</p>
-</div>
-<div class="paragraph">
-<p>The <code>default</code> attribute allows you to specify a default value for the property, if it has not been explicitly defined.</p>
-</div>
-<div class="paragraph">
-<p>For example, you may want to configure the context path of your web application in this way:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
-  &lt;Set name="contextPath"&gt;
-    <mark>&lt;Property name="com.myapps.mywiki.context.path" default="/wiki" /&gt;</mark>
-  &lt;/Set&gt;
-  &lt;Set name="war"&gt;/opt/myapps/mywiki.war&lt;/Set&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>contextPath</code> value is resolved by looking for the Jetty module property <code>com.myapps.mywiki.context.path</code>; if this property is not set, then the default value of <code>/wiki</code> is used.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-system-property"><a class="anchor" href="#og-xml-syntax-system-property"></a><a class="link" href="#og-xml-syntax-system-property"><code>&lt;SystemProperty&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;SystemProperty&gt;</code> retrieves the value of the JVM system property specified by the <code>name</code> attribute, via <code>System.getProperty(&#8230;&#8203;)</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, system property names for backward compatibility.</p>
-</div>
-<div class="paragraph">
-<p>The <code>default</code> attribute allows you to specify a default value for the system property value, if it has not been explicitly defined.</p>
-</div>
-<div class="paragraph">
-<p>The following example creates a minimal Jetty <code>Server</code> that listens on a port specified by the <code>com.acme.http.port</code> system property:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Arg type="int"&gt;
-    &lt;SystemProperty name="com.acme.http.port" default="8080" /&gt;
-  &lt;/Arg&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-env"><a class="anchor" href="#og-xml-syntax-env"></a><a class="link" href="#og-xml-syntax-env"><code>&lt;Env&gt;</code></a></h5>
-<div class="paragraph">
-<p>Element <code>&lt;Env&gt;</code> retrieves the value of the environment variable specified by the <code>name</code> attribute, via <code>System.getenv(&#8230;&#8203;)</code>.</p>
-</div>
-<div class="paragraph">
-<p>The <code>deprecated</code> attribute allows you to specify a comma separated list of old, deprecated, environment variable names for backward compatibility.</p>
-</div>
-<div class="paragraph">
-<p>The <code>default</code> attribute allows you to specify a default value for the environment variable value, if it has not been explicitly defined.</p>
-</div>
-<div class="paragraph">
-<p>The following example creates a minimal Jetty <code>Server</code> that listens on a port specified by the <code>COM_ACME_HTTP_PORT</code> environment variable:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
-
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Arg type="int"&gt;
-    &lt;Env name="COM_ACME_HTTP_PORT" default="8080" /&gt;
-  &lt;/Arg&gt;
-&lt;/Configure&gt;</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-xml-syntax-types"><a class="anchor" href="#og-xml-syntax-types"></a><a class="link" href="#og-xml-syntax-types">Type Coercion</a></h5>
-<div class="paragraph">
-<p>Elements that have the <code>type</code> attribute explicitly perform the type coercion of the string value present in the XML document to the Java type specified by the <code>type</code> attribute.</p>
-</div>
-<div class="paragraph">
-<p>Supported types are the following:</p>
+<p>Enable the <code>annotations</code> module if your webapp - or any of its third party libraries - uses any of the following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>all primitive types and their boxed equivalents, for example <code>type="int"</code> but also <code>type="Integer"</code> (short form) and <code>type="java.lang.Integer"</code> (fully qualified form)</p>
+<p>Annotations:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>@Resource</p>
 </li>
 <li>
-<p><code>java.lang.String</code>, in both short form and fully qualified form</p>
+<p>@Resources</p>
 </li>
 <li>
-<p><code>java.net.URL</code>, in both short form and fully qualified form</p>
+<p>@PostConstruct</p>
 </li>
 <li>
-<p><code>java.net.InetAddress</code>, in both short form and fully qualified form</p>
+<p>@PreDestroy</p>
+</li>
+<li>
+<p>@DeclaredRoles</p>
+</li>
+<li>
+<p>@RunAs</p>
+</li>
+<li>
+<p>@MultipartConfig</p>
+</li>
+<li>
+<p>@WebServlet</p>
+</li>
+<li>
+<p>@WebFilter</p>
+</li>
+<li>
+<p>@WebListener</p>
+</li>
+<li>
+<p>@WebInitParam</p>
+</li>
+<li>
+<p>@ServletSecurity, @HttpConstraint, @HttpMethodConstraint</p>
+</li>
+<li>
+<p>@HandlesTypes</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>javax.servlet.ServletContainerInitializers</p>
+</li>
+<li>
+<p>JSP</p>
+</li>
+</ul>
 </div>
-<div class="sect4">
-<h5 id="og-xml-syntax-scope"><a class="anchor" href="#og-xml-syntax-scope"></a><a class="link" href="#og-xml-syntax-scope">Scopes</a></h5>
+<div class="sect3">
+<h4 id="og-annotations-scanning"><a class="anchor" href="#og-annotations-scanning"></a><a class="link" href="#og-annotations-scanning">Annotation Scanning</a></h4>
 <div class="paragraph">
-<p>Elements that create new objects or that return a value create a <em>scope</em>.
-Within these elements there may be nested elements that will operate on that scope, i.e. on the new object or returned value.</p>
+<p>According to more recent versions of the Servlet Specification, the web.xml file can contain the attribute <code>metadata-complete</code>.
+If this is set to <code>true</code>, then <em>no</em> annotation scanning takes place, and your descriptor must contain the equivalent xml statements of any annotations.</p>
 </div>
 <div class="paragraph">
-<p>The following example illustrates how scopes work:</p>
+<p>If it is <code>metadata-complete=false</code>, or your web.xml predates the inclusion of this attribute, annotation scanning is required to take place.</p>
+</div>
+<div class="paragraph">
+<p>To prevent annotation scanning you can use the <code>WebAppContext.setConfigurationDiscovered(false)</code> method.
+Here&#8217;s an example context xml file that calls this method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
 
-&lt;Configure id="server" class="org.eclipse.jetty.server.Server"&gt;
-  &lt;Arg type="int"&gt;8080&lt;/Arg&gt;
-  &lt;!-- Here the Server object has been created and is in scope --&gt;
-
-  &lt;!-- Calls the setter on the Server object that is in scope --&gt;
-  &lt;Set name="stopTimeout"&gt;5000&lt;/Set&gt;
-
-  &lt;!-- Creates a new object --&gt;
-  &lt;New id="httpConfig" class="org.eclipse.jetty.server.HttpConfiguration"&gt;
-    &lt;!-- Here the HttpConfiguration just created is in a nested scope --&gt;
-
-    &lt;!-- Calls the setter on the HttpConfiguration object that is in scope --&gt;
-    &lt;Set name="secureScheme"&gt;https&lt;/Set&gt;
-  &lt;/New&gt;
-
-  &lt;!-- Calls the getter on the Server object that is in scope --&gt;
-  &lt;Get name="ThreadPool"&gt;
-    &lt;!-- Here the ThreadPool object returned by the getter is in a nested scope --&gt;
-
-    &lt;!-- Calls the setter on the ThreadPool object that is in scope --&gt;
-    &lt;Set name="maxThreads" type="int"&gt;256&lt;/Set&gt;
-  &lt;/Get&gt;
-
-  &lt;!-- Gets the System.err field --&gt;
-  &lt;Get class="java.lang.System" name="err"&gt;
-    &lt;!-- Here the System.err object is in scope --&gt;
-
-    &lt;!-- Equivalent to: var myversion = server.getVersion() --&gt;
-    &lt;Ref refid="server"&gt;
-      &lt;!-- Here the "server" object is in scope --&gt;
-      &lt;Get id="myversion" name="version" /&gt;
-    &lt;/Ref&gt;
-
-    &lt;!-- Calls println() on the System.err object --&gt;
-    &lt;Call name="println"&gt;
-      &lt;Arg&gt;Server version is: &lt;Ref refid="myversion" /&gt;&lt;/Arg&gt;
-    &lt;/Call&gt;
-  &lt;/Get&gt;
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Set name="configurationDiscovered"&gt;false&lt;/Set&gt; <i class="conum" data-value="2"></i><b>(2)</b>
 &lt;/Configure&gt;</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies that scanning should not take place.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>However, despite <code>metadata-complete=true</code>, scanning of classes may <em>still</em> occur because of <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html">javax.servlet.ServletContainerInitializer</a>s.
+Classes implementing this interface are found by Jetty using the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">javax.util.ServiceLoader</a> mechanism, and if one is present <em>and</em> it includes the @HandlesTypes annotation, then Jetty must scan the class hierarchy of the web application.
+This may be very time-consuming if you have many jars.</p>
+</div>
+<div class="paragraph">
+<p>We will now look at ways to limit the jars that are scanned.</p>
+</div>
+<div class="sect4">
+<h5 id="og-the-container-classpath"><a class="anchor" href="#og-the-container-classpath"></a><a class="link" href="#og-the-container-classpath">The container classpath</a></h5>
+<div class="paragraph">
+<p>By default, Jetty will <em>not</em> scan any classes that are on the container&#8217;s classpath.</p>
+</div>
+<div class="paragraph">
+<p>Sometimes, you may have third party libraries on the container&#8217;s classpath that you need to be scanned.
+In this case, use the <code>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</code> context attribute to define which container jars and class directories to scan.
+The value of this attribute is a regular expression.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example from a context xml file that includes any jar whose name starts with "foo-" or "bar-", or a directory named "classes":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Call name="setAttribute"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;Arg&gt;org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern&lt;/Arg&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;Arg&gt;.*/foo-[^/]*\.jar$|.*/bar-[^/]*\.jar$|.*/classes/.*&lt;/Arg&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies a context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specifies the value of the context attribute.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that the order of the patterns defines the ordering of the scanning of the jars or class directories.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-the-webapp-classpath"><a class="anchor" href="#og-the-webapp-classpath"></a><a class="link" href="#og-the-webapp-classpath">The webapp classpath</a></h5>
+<div class="paragraph">
+<p>By default Jetty will scan <em>all</em> classes from <code>WEB-INF/classes</code> and <em>all</em> jars from <code>WEB-INF/lib</code> according to the order, if any, established by absolute or relative ordering clauses in web.xml.</p>
+</div>
+<div class="paragraph">
+<p>If your webapp contains many jar files that you know do not contain any annotations, you can significantly speed up deployment by omitting them from scanning.
+However, be careful if your webapp uses a <code>ServletContainerInitializer</code> with an <code>@HandlesTypes</code> annotation that you don&#8217;t exclude jars that contain classes matching the annotation.</p>
+</div>
+<div class="paragraph">
+<p>Use the <code>org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</code> context attribute to define a regular expression for jars and class directories to select for scanning.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of a context xml file that sets a pattern that matches any jar on the webapp&#8217;s classpath that starts with <code>spring-</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Call name="setAttribute"&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;Arg&gt;org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern&lt;/Arg&gt;  <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;Arg&gt;.*/spring-[^/]*\.jar$&lt;/Arg&gt;  <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies a context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specifies the value of the context attribute.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-multi-threading"><a class="anchor" href="#og-multi-threading"></a><a class="link" href="#og-multi-threading">Multi-threading</a></h5>
+<div class="paragraph">
+<p>By default Jetty performs annotation scanning in a multi-threaded manner in order to complete it in the minimum amount of time.</p>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t want multi-threaded scanning, you can configure Jetty to revert to single-threaded scanning.
+There are several options to configure this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the context attribute <code>org.eclipse.jetty.annotations.multiThreaded</code> to <code>false</code></p>
+</li>
+<li>
+<p>Set the <code>Server</code> attribute <code>org.eclipse.jetty.annotations.multiThreaded</code> to <code>false</code></p>
+</li>
+<li>
+<p>Set the System property <code>org.eclipse.jetty.annotations.multiThreaded</code> to <code>false</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Method 1 will only affect the current webapp.
+Method 2 will affect all webapps deployed to the same Server instance.
+Method 3 will affect all webapps deployed in the same JVM.</p>
+</div>
+<div class="paragraph">
+<p>By default, Jetty will wait a maximum of 60 seconds for all of the scanning threads to complete.
+You can set this to a higher or lower number of seconds by doing one of the following:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set the context attribute <code>org.eclipse.jetty.annotations.maxWait</code></p>
+</li>
+<li>
+<p>Set the <code>Server</code> attribute <code>org.eclipse.jetty.annotations.maxWait</code></p>
+</li>
+<li>
+<p>Set the System property <code>org.eclipse.jetty.annotations.maxWait</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Method 1 will only affect the current webapp.
+Method 2 will affect all webapps deployed to the same Server instance.
+Method 3 will affect all webapps deployed in the same JVM.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-annotations-scis"><a class="anchor" href="#og-annotations-scis"></a><a class="link" href="#og-annotations-scis">ServletContainerInitializers</a></h4>
+<div class="paragraph">
+<p>The <a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContainerInitializer.html">javax.servlet.ServletContainerInitializer</a> class can exist in: the container&#8217;s classpath, the webapp&#8217;s <code>WEB-INF/classes</code> directory, the webapp&#8217;s <code>WEB-INF/lib</code> jars, or any external extraClasspath that you have configured on the webapp.</p>
+</div>
+<div class="paragraph">
+<p>The Servlet Specification does not define any order in which a <code>ServletContainerInitializer</code> must be called when the webapp starts.
+By default Jetty will call them in the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>ServletContainerInitializers from the container&#8217;s classpath</p>
+</li>
+<li>
+<p>ServletContainerInitializers from WEB-INF/classes</p>
+</li>
+<li>
+<p>ServletContainerInitializers from WEB-INF/lib jars <em>in the order established in web.xml</em>, or in the order that the SCI is returned by the <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">javax.util.ServiceLoader</a> if there is <em>no</em> ordering.</p>
+</li>
+</ol>
+</div>
+<div class="sect4">
+<h5 id="og-exclusions"><a class="anchor" href="#og-exclusions"></a><a class="link" href="#og-exclusions">Exclusions</a></h5>
+<div class="paragraph">
+<p>By default, as according to the Servlet Specification, all <code>ServletContainerInitializer</code> that are discovered are invoked.</p>
+</div>
+<div class="paragraph">
+<p>Sometimes, depending on your requirements, you may need to prevent some being called at all.</p>
+</div>
+<div class="paragraph">
+<p>In this case, you can define the <code>org.eclipse.jetty.containerInitializerExclusionPattern</code> context attribute.</p>
+</div>
+<div class="paragraph">
+<p>This is a regular expression that defines <a href="http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">patterns</a> of classnames that you want to exclude.
+Here&#8217;s an example of setting the context attribute in a context xml file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Call name="setAttribute"&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;Arg&gt;org.eclipse.jetty.containerInitializerExclusionPattern&lt;/Arg&gt;  <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;Arg&gt;com.acme.*|com.corp.SlowContainerInitializer&lt;/Arg&gt;  <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies a context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specifies the value of the context attribute.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this example we exclude <strong>all</strong> <code>ServletContainerInitializer</code> instances in the <code>com.acme package</code>, and the specific class <code>com.corp.SlowContainerInitializer</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is possible to use exclusion and ordering together to control <code>ServletContainerInitializer</code> invocation - the exclusions will be applied before the ordering.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-ordering"><a class="anchor" href="#og-ordering"></a><a class="link" href="#og-ordering">Ordering</a></h5>
+<div class="paragraph">
+<p>If you need <code>ServletContainerInitializer</code> classes called in a specific order, you can use the context attribute <code>org.eclipse.jetty.containerInitializerOrder</code>.
+Set it to a list of comma separated class names of <code>ServletContainerInitializers</code> in the order that you want them applied.</p>
+</div>
+<div class="paragraph">
+<p>You may optionally use the wildcard character <code>*</code> <strong>once</strong> in the list.
+It will match all <code>ServletContainerInitializer</code> classes not explicitly named in the list.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example context xml file that ensures the <code>com.example.PrioritySCI</code> will be called first, followed by the <code>com.acme.FooSCI</code>, then all other SCIs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Call name="setAttribute"&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;Arg&gt;org.eclipse.jetty.containerInitializerOrder&lt;/Arg&gt;  <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;Arg&gt;org.eclipse.jetty.websocket.javax.server.JavaxWebSocketServletContainerInitializer, com.acme.FooSCI, *&lt;/Arg&gt;  <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies a context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specifies the value of the context attribute.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-jsp"><a class="anchor" href="#og-jsp"></a><a class="link" href="#og-jsp">Java Server Pages</a></h3>
+<div class="paragraph">
+<p>Jetty supports JSP via the <code>jsp</code> module, which is based on Apache Jasper:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSP for all web applications deployed on the server.
+
+[depend]
+servlet
+annotations
+apache-jsp</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Logging has been bridged to Jetty logging, so you can enable logging for the <code>org.apache.jasper</code> package, subpackages and classes as usual.</p>
+</div>
+<div class="sect4">
+<h5 id="og-configuration-of-the-jsp-servlet"><a class="anchor" href="#og-configuration-of-the-jsp-servlet"></a><a class="link" href="#og-configuration-of-the-jsp-servlet">Configuration of the JSP servlet</a></h5>
+<div class="paragraph">
+<p>The <code>org.eclipse.jetty.jsp.JettyJspServlet</code> is the servlet responsible for serving jsps.</p>
+</div>
+<div class="paragraph">
+<p>It is configured as the default jsp servlet in the <a href="../../../../../../jetty-home/target/jetty-home/etc/webdefault.xml">webdefault.xml</a> file.
+Notice that Jetty identifies the jsp servlet by the presence of the <code>id=jsp</code> attribute in the <code>&lt;servlet&gt;</code> declaration.</p>
+</div>
+<div class="paragraph">
+<p>That file maps the <code>org.eclipse.jetty.jsp.JettyJspServlet</code> to the following partial urls:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>*.jsp</code></p>
+</li>
+<li>
+<p><code>*.jspf</code></p>
+</li>
+<li>
+<p><code>*.jspx</code></p>
+</li>
+<li>
+<p><code>*.xsp</code></p>
+</li>
+<li>
+<p><code>*.JSP</code></p>
+</li>
+<li>
+<p><code>*.JSPF</code></p>
+</li>
+<li>
+<p><code>*.JSPX</code></p>
+</li>
+<li>
+<p><code>*.XSP</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can change to a different servlet, change or add <code>&lt;init-param&gt;</code>s or add extra <code>&lt;servlet-mapping&gt;</code>s in your <code>web.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of adding an <code>&lt;init-param&gt;</code> to augment the definitions from the standard <code>webdefault.xml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml"> &lt;servlet id="jsp"&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+     &lt;servlet-name&gt;jsp&lt;/servlet-name&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+     &lt;init-param&gt;
+         &lt;param-name&gt;keepgenerated&lt;/param-name&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+         &lt;param-value&gt;true&lt;/param-value&gt;  <i class="conum" data-value="4"></i><b>(4)</b>
+     &lt;/init-param&gt;
+   &lt;/servlet&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This identifies this servlet as the jsp servlet to Jetty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This identifies this declaration as augmenting the already-defined servlet called <code>jsp</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>This init param controls whether the jsp servlet retains the <code>*.java</code> files generated during jsp compilation.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This sets the value of the init param</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Another element you might consider adding to the default setup is <code>async-supported</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;servlet id="jsp"&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;servlet-name&gt;jsp&lt;/servlet-name&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;async-supported&gt;true&lt;/async-supported&gt;  <i class="conum" data-value="3"></i><b>(3)</b>
+&lt;/servlet&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This identifies this servlet as the jsp servlet to Jetty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>This identifies this declaration as augmenting the already-defined servlet called <code>jsp</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>By default, the jsp servlet does not support async.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>There are many configuration parameters for the Apache Jasper jsp servlet, here are some of them:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Jsp Servlet Parameters</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">init param</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top"><code>webdefault.xml</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">checkInterval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If non-zero and <code>development</code> is <code>false</code>, background jsp recompilation is enabled. This value is the interval in seconds between background recompile checks.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">classpath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The classpath is dynamically generated if the context has a URL classloader. The <code>org.apache.catalina.jsp_classpath</code>
+context attribute is used to add to the classpath, but if this is not set, this <code>classpath</code> configuration item is added to the classpath instead.`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">classdebuginfo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Include debugging info in class file.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilerClassName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If not set, defaults to the Eclipse jdt compiler.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compiler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Used if the Eclipse jdt compiler cannot be found on the
+classpath. It is the classname of a compiler that Ant should invoke.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilerTargetVM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Target vm to compile for.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilerSourceVM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets source compliance level for the jdt compiler.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">development</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>true</code> recompilation checks occur at the frequency governed by <code>modificationTestInterval</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">displaySourceFragment</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should a source fragment be included in
+exception messages</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dumpSmap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dump SMAP JSR45 info to a file.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enablePooling</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Determines whether tag handler pooling is enabled.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">engineOptionsClass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows specifying the Options class used to
+configure Jasper. If not present, the default EmbeddedServletOptions
+will be used.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">errorOnUseBeanInvalidClassAttribute</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should Jasper issue an error when
+the value of the class attribute in an useBean action is not a valid
+bean class</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fork</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only relevant if you use Ant to compile jsps: by default Jetty will use the Eclipse jdt compiler.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">genStrAsCharArray</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Option for generating Strings as char arrays.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ieClassId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The class-id value to be sent to Internet Explorer when
+using &lt;jsp:plugin&gt; tags.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">clsid:8AD9C840-044E-11D1-B3E9-00805F499D93</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javaEncoding</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pass through the encoding to use for the compilation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UTF8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jspIdleTimeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The amount of time in seconds a JSP can be idle before
+it is unloaded. A value of zero or less indicates never unload.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">keepgenerated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Do you want to keep the generated Java files around?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mappedFile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Support for mapped Files. Generates a servlet that has a
+print statement per line of the JSP file </p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maxLoadedJsps</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of JSPs that will be loaded for a web
+application. If more than this number of JSPs are loaded, the least
+recently used JSPs will be unloaded so that the number of JSPs loaded at
+any one time does not exceed this limit. A value of zero or less
+indicates no limit.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">modificationTestInterval</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If <code>development=true</code>, interval between
+recompilation checks, triggered by a request.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quoteAttributeEL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When EL is used in an attribute value on a JSP page, should the rules for quoting of attributes described in JSP.1.6 be applied to the expression</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recompileOnFail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If a JSP compilation fails should the
+modificationTestInterval be ignored and the next access trigger a
+re-compilation attempt? Used in development mode only and is disabled by
+default as compilation may be expensive and could lead to excessive
+resource usage.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scratchDir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where servlets are generated. The default is the value of the context attribute <code>javax.servlet.context.tempdir</code>, or the system property <code>java.io.tmpdir</code> if the context attribute is not set.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">strictQuoteEscaping</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should the quote escaping required by section JSP.1.6 of the JSP specification be applied to scriplet expression.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRUE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">suppressSmap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generation of SMAP info for JSR45 debugging.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trimSpaces</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Should template text that consists entirely of whitespace be removed from the output (true), replaced with a single space (single) or left unchanged (false)? Note that if a JSP page or tag file specifies a trimDirectiveWhitespaces value of true, that will take precedence over this configuration setting for that page/tag.
+trimmed?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">–</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">xpoweredBy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Generate an X-Powered-By response header.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FALSE</p></td>
+</tr>
+</tbody>
+</table>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>If the value you set doesn&#8217;t take effect, try using all lower case instead of camel case, or capitalizing only some of the words in the name, as Jasper is inconsistent in its parameter naming strategy.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-javaserver-pages-standard-tag-libraries"><a class="anchor" href="#og-javaserver-pages-standard-tag-libraries"></a><a class="link" href="#og-javaserver-pages-standard-tag-libraries">JavaServer Pages Standard Tag Libraries</a></h3>
+<div class="paragraph">
+<p>The JavaServer Pages Standlard Tag Library (JSTL) is part of the Jetty distribution, and is available via the <code>jstl</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSTL for all web applications deployed on the server.
+
+[depend]
+jsp
+apache-jstl</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When enabled, Jetty will make the JSTL tags available for your webapps.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-javaserver-faces-taglibs"><a class="anchor" href="#og-javaserver-faces-taglibs"></a><a class="link" href="#og-javaserver-faces-taglibs">JavaServer Faces Taglibs</a></h3>
+<div class="paragraph">
+<p>If you want to use JSF with your webapp, you should copy the relevant jars from your implementation of choice into your <code>$jetty.base</code> directory, ideally into <code>$jetty.base/lib/ext</code>.
+If that directory does not exist, enable the <code>ext</code> module, which will create the directory and ensure all jars within it are put onto the container classpath.</p>
+</div>
+<div class="paragraph">
+<p>Then you will need to tell Jetty which of those jars contains the <code>*.tld</code> files.
+To accomplish that, you need to specify either the name of the file or a pattern that matches the name/s of the file/s as the <code>org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</code> context attribute.
+You will need to preserve the existing value of the attribute, and add in your extra pattern.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of using a context xml file to add in a pattern to match files starting with <code>jsf-</code>, which contain the <code>*.tld</code> files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+    &lt;Call name="setAttribute"&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+      &lt;Arg&gt;org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern&lt;/Arg&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+      &lt;Arg.*/jetty-servlet-api-[^/]*\.jar$|.*/javax.servlet.jsp.jstl-.*\.jar$|.*/org.apache.taglibs.taglibs-standard-impl-.*\.jar$|.*/jsf-[^/]*\.jar$&gt;&lt;/Arg&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+    &lt;/Call&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies a context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the context attribute.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Adds the additional pattern <code>.*/jsf-[^/]*\.jar$</code> to those already existing.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-jndi"><a class="anchor" href="#og-jndi"></a><a class="link" href="#og-jndi">JNDI</a></h3>
+<div class="paragraph">
+<p>Enable the <code>plus</code> module in order to be able to use JNDI resources in your webapp.
+If you already have the <code>annotations</code> module enabled, then it will already be enabled.</p>
+</div>
+<div class="paragraph">
+<p>If you have extra jars associated with your JNDI resources, eg database drivers etc, that are not located inside your webapp then you should place those jars into your <code>$jetty.base/lib/ext</code> directory.
+If your base doesn&#8217;t already contain this directory, then enable the <code>ext</code> module, and Jetty will create the directory for you and ensure its contents are on the server&#8217;s classpath.</p>
+</div>
+<div class="paragraph">
+<p>You can now declare JNDI resources and reference them within your webapps.</p>
+</div>
+<div class="sect3">
+<h4 id="og-declaring-resources"><a class="anchor" href="#og-declaring-resources"></a><a class="link" href="#og-declaring-resources">Declaring resources</a></h4>
+<div class="paragraph">
+<p>You must declare the objects you want bound into the environment so that you can then hook them into your webapp via <code>env-entry</code>, <code>resource-ref</code> and <code>resource-env-refs</code> in <code>web.xml</code>, <code>web-fragment.xml</code> or <code>override-web.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>You make these declarations in Jetty XML files that are either <em>external</em>  or <em>internal</em> to your webapp.
+A server or context XML file is external to your webapp.
+The special <code>WEB-INF/jetty-env.xml</code> file is internal to your webapp.
+See the section on <a href="#og-jndi-xml">Jetty XML files</a> for more information on how to choose in which XML file to place your declarations.</p>
+</div>
+<div class="paragraph">
+<p>For now, let&#8217;s look at <em>what</em> you declare in the XML file, regardless of its location.</p>
+</div>
+<div class="paragraph">
+<p>Declaring a JDNI resource to be referenced later in your webapp is accomplished by declaring new instances of the following types:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="#og-jndi-env"><code>org.eclipse.jetty.plus.jndi.EnvEntry</code></a></dt>
+<dd>
+<p>Used for <code>env-entry</code> type of entries</p>
+</dd>
+<dt class="hdlist1"><a href="#og-jndi-resource"><code>org.eclipse.jetty.plus.jndi.Resource</code></a></dt>
+<dd>
+<p>Used for most other type of resources</p>
+</dd>
+<dt class="hdlist1"><a href="#og-jndi-tx"><code>org.eclipse.jetty.plus.jndi.Transaction</code></a></dt>
+<dd>
+<p>For a JTA manager</p>
+</dd>
+<dt class="hdlist1"><a href="#og-jndi-link"><code>org.eclipse.jetty.plus.jndi.Link</code></a></dt>
+<dd>
+<p>For the link between a <code>web.xml</code> resource name and a naming entry</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Declarations of each of these types follow a similar pattern:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New class="org.eclipse.jetty.plus.jndi.xxxx"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;&lt;!-- scope --&gt;&lt;/Arg&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;Arg&gt;&lt;!-- name --&gt;&lt;/Arg&gt;  <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;Arg&gt;&lt;!-- value --&gt;&lt;/Arg&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines a resource to Jetty.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specifies the <a href="#og-jndi-scope">scope</a> of the resource.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Specifies the name of the resource which will be looked up by the webapp relative to the <code>java:comp/env</code> namespace.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Specifies the value of the resource.</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-env"><a class="anchor" href="#og-jndi-env"></a><a class="link" href="#og-jndi-env">org.eclipse.jetty.plus.jndi.EnvEntry</a></h5>
+<div class="paragraph">
+<p>Sometimes it is useful to pass configuration information to a webapp at runtime that you either cannot or cannot conveniently code into a <code>web.xml</code> <code>&lt;env-entry&gt;</code>.
+In such cases, you can use the <code>org.eclipse.jetty.plus.jndi.EnvEntry</code> class, and optionally even override an entry of the same name in <code>web.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example that defines the equivalent of an <code>env-entry</code> called <code>mySpecialValue</code> with value <code>4000</code> that overrides an <code>&lt;env-entry&gt;</code> declaration of the same name in web.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New class="org.eclipse.jetty.plus.jndi.EnvEntry"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;&lt;/Arg&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;Arg&gt;mySpecialValue&lt;/Arg&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+  &lt;Arg type="java.lang.Integer"&gt;4000&lt;/Arg&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+  &lt;Arg type="boolean"&gt;true&lt;/Arg&gt; <i class="conum" data-value="5"></i><b>(5)</b>
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Define an <code>EnvEntry</code> that corresponds to an <code>&lt;env-entry&gt;</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><a href="#og-jndi-scope">Scoped</a> at the JVM level.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The name of the entry, corresponding to a lookup by the webapp of <code>java:comp/env/mySpecialValue</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The value of the entry, in this case the integer value <code>4000</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><code>true</code> means to override the value of an <code>&lt;env-entry&gt;</code> of the same name in <code>web.xml</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that if you don&#8217;t want to override the <code>web.xml</code> value, simply omit the last argument, or set it to <code>false</code>.</p>
+</div>
+<div class="paragraph">
+<p>The Servlet Specification allows binding only the following object types to an <code>env-entry</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>java.lang.String</p>
+</li>
+<li>
+<p>java.lang.Integer</p>
+</li>
+<li>
+<p>java.lang.Float</p>
+</li>
+<li>
+<p>java.lang.Double</p>
+</li>
+<li>
+<p>java.lang.Long</p>
+</li>
+<li>
+<p>java.lang.Short</p>
+</li>
+<li>
+<p>java.lang.Character</p>
+</li>
+<li>
+<p>java.lang.Byte</p>
+</li>
+<li>
+<p>java.lang.Boolean</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Jetty is a little more flexible and allows you to also bind:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>custom POJOs</p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Reference.html"><code>javax.naming.References</code></a></p>
+</li>
+<li>
+<p><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/naming/Referenceable.html"><code>javax.naming.Referenceables</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Be aware that if you take advantage of this feature, your web application is <em>not portable</em>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-resource"><a class="anchor" href="#og-jndi-resource"></a><a class="link" href="#og-jndi-resource">org.eclipse.jetty.plus.jndi.Resource</a></h5>
+<div class="paragraph">
+<p>You can configure any type of resource that you want to refer to in <code>web.xml</code> via a <code>resource-ref</code> or <code>resource-env-ref</code> by using the <code>org.eclipse.jetty.plus.jndi.Resource</code> type of naming entry.</p>
+</div>
+<div class="paragraph">
+<p>You provide the scope, the name of the object (relative to <code>java:comp/env</code>) and a POJO, <code>javax.naming.Reference</code> or <code>javax.naming.Referenceable</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s examine how to configure some of the most common types of resources.</p>
+</div>
+<div class="sect5">
+<h6 id="og-datasources"><a class="anchor" href="#og-datasources"></a><a class="link" href="#og-datasources">DataSources</a></h6>
+<div class="paragraph">
+<p>In this example, we&#8217;ll configure a <a href="http://db.apache.org/derby">Derby</a> DataSource named <code>jdbc/myds</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+    &lt;Arg&gt;&lt;Ref refid="wac"/&gt;&lt;/Arg&gt;
+    &lt;Arg&gt;jdbc/myds&lt;/Arg&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.apache.derby.jdbc.EmbeddedDataSource"&gt;
+        &lt;Set name="DatabaseName"&gt;test&lt;/Set&gt;
+        &lt;Set name="createDatabase"&gt;create&lt;/Set&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would linked into the webapps JNDI namespace via an entry in a <code>web.xml</code> like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;resource-ref&gt;
+  &lt;res-ref-name&gt;jdbc/myds&lt;/res-ref-name&gt;
+  &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+  &lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When configuring Resources, ensure that the type of object you configure matches the type of object you expect to look up in <code>java:comp/env</code>.
+For database connection factories, this means that the object you register as a Resource <em>must</em> implement the <code>javax.sql.DataSource</code> interface.</p>
+</div>
+<div class="paragraph">
+<p>Also note that the <a href="http://jcp.org/aboutJava/communityprocess/pr/jsr244/index.html">J2EE Specification</a> recommends storing DataSources relative to <code>jdbc/</code> and thus looked up by the application as <code>java:comp/env/jdbc/xxx</code>.
+Eg The Datasource bound in Jetty as <code>jdbc/users</code> would be looked up by the application as <code>java:comp/env/jdbc/users</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="og-jms-queues-topics-and-connectionfactories"><a class="anchor" href="#og-jms-queues-topics-and-connectionfactories"></a><a class="link" href="#og-jms-queues-topics-and-connectionfactories">JMS Queues, Topics and ConnectionFactories</a></h6>
+<div class="paragraph">
+<p>Jetty can bind any implementation of the JMS destinations and connection factories.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example of binding an <a href="http://activemq.apache.org">ActiveMQ</a> in-JVM connection factory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+    &lt;Arg&gt;&lt;Ref refid='wac'/&gt;&lt;/Arg&gt;
+    &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+        &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The corresponding entry in <code>web.xml</code> to bind the ConnectionFactory into the webapp&#8217;s JNDI namespace would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;resource-ref&gt;
+  &lt;res-ref-name&gt;jms/connectionFactory&lt;/res-ref-name&gt;
+  &lt;res-type&gt;javax.jms.ConnectionFactory&lt;/res-type&gt;
+  &lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <a href="http://jcp.org/aboutJava/communityprocess/pr/jsr244/index.html">J2EE Specification</a> recommends storing JMS connection factories under <code>jms/</code>.
+Eg The ConnectionFactory bound in Jetty as <code>jms/inqueue</code> would be looked up by the application as <code>java:comp/env/jms/inqueue</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="og-mail"><a class="anchor" href="#og-mail"></a><a class="link" href="#og-mail">Mail</a></h6>
+<div class="paragraph">
+<p>To configure access to <code>javax.mail.Session</code> from within a webapp, declare an <code>org.eclipse.jetty.plus.jndi.Resource</code> with an <code>org.eclipse.jetty.jndi.factories.MailSessionReference</code> that will hold the mail configuration and create the instance of the <code>Session</code> when it is referenced:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+    &lt;Arg&gt;&lt;Ref refid="wac"/&gt;&lt;/Arg&gt;
+    &lt;Arg&gt;mail/Session&lt;/Arg&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.eclipse.jetty.jndi.factories.MailSessionReference"&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+        &lt;Set name="user"&gt;fred&lt;/Set&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+        &lt;Set name="password"&gt;OBF:1xmk1w261z0f1w1c1xmq&lt;/Set&gt; <i class="conum" data-value="3"></i><b>(3)</b>
+        &lt;Set name="properties"&gt; <i class="conum" data-value="4"></i><b>(4)</b>
+          &lt;New class="java.util.Properties"&gt;
+            &lt;Put name="mail.smtp.host"&gt;XXX&lt;/Put&gt;
+            &lt;Put name="mail.from"&gt;me@me&lt;/Put&gt;
+            &lt;Put name="mail.debug"&gt;true&lt;/Put&gt;
+          &lt;/New&gt;
+        &lt;/Set&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the <code>org.eclipse.jetty.jndi.factories.MailSessionReference</code> class to hold the configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Set the username for the mail instance.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Set the password for the mail instance - use Jetty&#8217;s secure password obfuscation to obscure the password.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Set all other applicable properties.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The webapp performs a lookup for <code>java:comp/env/mail/Session</code> at runtime and obtains a <code>javax.mail.Session</code> that has the correct configuration to permit it to send email via SMTP.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Jetty does not provide the <code>javax.mail</code> and <code>javax.activation</code> jars.</p>
+</div>
+<div class="paragraph">
+<p>Note also that the <a href="http://jcp.org/aboutJava/communityprocess/pr/jsr244/index.html">J2EE Specification</a> recommends storing JavaMail connection factories under <code>mail/</code>.
+Eg The <code>MailSessionReference</code> bound to jetty as <code>mail/smtp</code> would be looked up by the application as <code>java:comp/env/mail/smtp</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-tx"><a class="anchor" href="#og-jndi-tx"></a><a class="link" href="#og-jndi-tx">org.eclipse.jetty.plus.jndi.Transaction</a></h5>
+<div class="paragraph">
+<p>To perform distributed transactions with your resources, a <em>transaction manager</em> that supports the JTA interfaces is required.
+The transaction manager is looked up by the application as <code>java:comp/UserTransaction</code>.</p>
+</div>
+<div class="paragraph">
+<p>Jetty does not ship with a JTA manager, but <em>does</em> provide the infrastructure to plug in the JTA manager of your choice.</p>
+</div>
+<div class="paragraph">
+<p>Use the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0-SNAPSHOT/org/eclipse/jetty/plus/jndi/Transaction.html">org.eclipse.jetty.plus.jndi.Transaction</a> object in a <a href="#og-jndi-xml">Jetty XML file</a> to configure the JTA manager.</p>
+</div>
+<div class="paragraph">
+<p>The following example configures the <a href="http://www.atomikos.com/">Atomikos</a> transaction manager:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New id="tx" class="org.eclipse.jetty.plus.jndi.Transaction"&gt;
+  &lt;Arg&gt;
+    &lt;New class="com.atomikos.icatch.jta.J2eeUserTransaction"/&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Jetty will automatically bind this JTA manager to the webapp&#8217;s JNDI namespace at <code>java:comp/UserTransaction</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-link"><a class="anchor" href="#og-jndi-link"></a><a class="link" href="#og-jndi-link">org.eclipse.jetty.plus.jndi.Link</a></h5>
+<div class="paragraph">
+<p>Usually, the name you provide for the <code>org.eclipse.jetty.plus.jndi.Resource</code> is the same name you reference in <code>web.xml</code>.
+This ensures that the two are linked together and thus accessible to your webapp.</p>
+</div>
+<div class="paragraph">
+<p>However, if the names cannot be the same, then it is possible to effectively alias one to another using an <code>org.eclipse.jetty.plus.jndi.Link</code>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at an example.</p>
+</div>
+<div class="paragraph">
+<p>Supposing you have a declaration for a Datasource named <code>jdbc/workforce</code> in a Jetty context XML file, but your web.xml wants to link to a <code>&lt;resource-ref&gt;</code> named <code>jdbc/employees</code>, and you cannot edit the web.xml.
+You can create a <code>WEB-INF/jetty-env.xml</code> file with an <code>org.eclipse.jetty.plus.jndi.Link</code> that ties together the names <code>jdbc/workforce</code> and <code>jdbc/employees</code>:</p>
+</div>
+<div class="paragraph">
+<p>The context XML file declares <code>jdbc/workforce</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;Configure id='wac' class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+  &lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+    &lt;Arg&gt;&lt;Ref refid="wac"/&gt;&lt;/Arg&gt;
+    &lt;Arg&gt;jdbc/workforce&lt;/Arg&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.apache.derby.jdbc.EmbeddedDataSource"&gt;
+        &lt;Set name="DatabaseName"&gt;test&lt;/Set&gt;
+        &lt;Set name="createDatabase"&gt;create&lt;/Set&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/New&gt;
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>web.xml</code> refers to it as <code>jdbc/employees</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;resource-ref&gt;
+  &lt;res-ref-name&gt;jdbc/employees&lt;/res-ref-name&gt;
+  &lt;res-type&gt;javax.sql.DataSource&lt;/res-type&gt;
+  &lt;res-auth&gt;Container&lt;/res-auth&gt;
+&lt;/resource-ref&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a <code>WEB-INF/jetty-env.xml</code> file with a <code>org.eclipse.jetty.plus.jndi.Link</code> to link these names together:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New class="org.eclipse.jetty.plus.jndi.Link"&gt;
+  &lt;Arg&gt;&lt;Ref refid='wac'/&gt;&lt;/Arg&gt;
+  &lt;Arg&gt;jdbc/employees&lt;/Arg&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;jdbc/workforce&lt;/Arg&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name as referenced in the <code>web.xml</code> file.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name as referenced in the context XML file.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-xml"><a class="anchor" href="#og-jndi-xml"></a><a class="link" href="#og-jndi-xml">Jetty XML files</a></h5>
+<div class="paragraph">
+<p>You can define naming resources in three places:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Server XML file</dt>
+<dd>
+<p>Naming resources defined in a server XML file are <a href="#og-jndi-scope">scoped</a> at either the JVM level or the <code>org.eclipse.jetty.server.Server</code> level.
+The classes for the resource <em>must</em> be visible at the Jetty <strong>container</strong> level.
+If instead the classes for the resource only exist inside your webapp, you must declare it in a <code>WEB-INF/jetty-env.xml</code> file.</p>
+</dd>
+<dt class="hdlist1">WEB-INF/jetty-env.xml</dt>
+<dd>
+<p>Naming resources in a <code>WEB-INF/jetty-env.xml</code> file are <a href="#og-jndi-scope">scoped</a> to the webapp in which the file resides.
+While you can enter JVM or Server scopes if you choose, we do not recommend doing so.
+The resources defined here may use classes from inside your webapp.
+This is a Jetty-specific mechanism.</p>
+</dd>
+<dt class="hdlist1">Context XML file</dt>
+<dd>
+<p>Entries in a context XML file should be <a href="#og-jndi-scope">scoped</a> at the level of the webapp to which they apply (although it is possible to use a less strict scoping level of Server or JVM, but not recommended).
+As with resources declared in a server XML file, classes associated with the resource <em>must</em> be visible on the <strong>container&#8217;s</strong> classpath.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jndi-scope"><a class="anchor" href="#og-jndi-scope"></a><a class="link" href="#og-jndi-scope">Resource scoping</a></h5>
+<div class="paragraph">
+<p>Naming resources within Jetty belong to one of three different scopes, in increasing order of restrictiveness:</p>
+</div>
+<div class="paragraph">
+<p><strong>JVM scope:</strong>
+The name is unique across the JVM instance, and is visible to all application code.
+This scope is represented by a <code>null</code> first parameter to the resource declaration.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;/Arg&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+       &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Empty first arg equates to JVM scope for the object bound to name <code>jms/connectionFactory</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Server scope:</strong>
+The name is unique to a Server instance, and is only visible to applications associated with that instance.
+This scope is represented by referencing the Server instance as the first parameter to the resource declaration.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New id="cf" class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;Ref refid="Server"/&gt;&lt;/Arg&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+      &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We refer to the id <code>Server</code> which identifies the default <code>org.eclipse.jetty.server.Server</code> instance.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Webapp scope:</strong>
+The name is unique to the <code>org.eclipse.jetty.webapp.WebAppContext</code> instance, and is only visible to that application.
+This scope is represented by referencing the instance as the first parameter to the resource declaration.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
+  &lt;Arg&gt;&lt;Ref refid='wac'/&gt;&lt;/Arg&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Arg&gt;jms/connectionFactory&lt;/Arg&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.apache.activemq.ActiveMQConnectionFactory"&gt;
+      &lt;Arg&gt;vm://localhost?broker.persistent=false&lt;/Arg&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>We refer to an instance of an <code>org.eclipse.jetty.webapp.WebAppContext</code> which has been previously defined.</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -5728,7 +7841,7 @@ Within these elements there may be nested elements that will operate on that sco
 <div id="footer">
 <div id="footer-text">
 Version 11.0.0-SNAPSHOT<br>
-Last updated 2020-10-10 00:12:49 UTC
+Last updated 2020-10-14 00:12:37 UTC
 </div>
 </div>
 </body>
