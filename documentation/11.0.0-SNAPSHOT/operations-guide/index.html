@@ -17,7 +17,7 @@
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
 <span id="revnumber">version 11.0.0-SNAPSHOT,</span>
-<span id="revdate">2020-10-14</span>
+<span id="revdate">2020-10-18</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -1756,7 +1756,7 @@ If you place both the Jetty context XML file <em>and</em> the <code>*.war</code>
 <h4 id="og-deploy-jndi"><a class="anchor" href="#og-deploy-jndi"></a><a class="link" href="#og-deploy-jndi">Configuring JNDI Entries</a></h4>
 <div class="paragraph">
 <p>A web application may <em>reference</em> a JNDI entry, such as a JDBC <code>DataSource</code> from the web application <code>web.xml</code> file.
-The JNDI entry must be <em>defined</em> in the Jetty context XML file, for example:</p>
+The JNDI entry must be <em>defined</em> in a <a href="#og-jndi-xml">Jetty XML file</a>, for example a context XML like so:</p>
 </div>
 <div class="listingblock">
 <div class="title">mywebapp.xml</div>
@@ -1764,11 +1764,11 @@ The JNDI entry must be <em>defined</em> in the Jetty context XML file, for examp
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
 
-&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+&lt;Configure id="wac" class="org.eclipse.jetty.webapp.WebAppContext"&gt;
   &lt;Set name="contextPath"&gt;/mywebapp&lt;/Set&gt;
   &lt;Set name="war"&gt;/opt/webapps/mywebapp.war&lt;/Set&gt;
 <mark>&nbsp;&nbsp;&lt;New class="org.eclipse.jetty.plus.jndi.Resource"&gt;
-    &lt;Arg /&gt;
+    &lt;Arg&gt;&lt;Ref refid="wac"/&gt;&lt;/Arg&gt;
     &lt;Arg&gt;jdbc/myds&lt;/Arg&gt;
      &lt;Arg&gt;
         &lt;New class="com.mysql.cj.jdbc.MysqlConnectionPoolDataSource"&gt;
@@ -1781,6 +1781,9 @@ The JNDI entry must be <em>defined</em> in the Jetty context XML file, for examp
 &lt;/Configure&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>For more information and examples on how to use JNDI in Jetty, refer to the <a href="#og-jndi">JNDI</a> feature section.</p>
+</div>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -1789,10 +1792,10 @@ The JNDI entry must be <em>defined</em> in the Jetty context XML file, for examp
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Class <code>com.mysql.cj.jdbc.MysqlConnectionPoolDataSource</code> is present in the MySQL JDBC driver file, <code>mysql-connector-java-&lt;version&gt;.jar</code>, which must be available to the web application.</p>
+<p>Class <code>com.mysql.cj.jdbc.MysqlConnectionPoolDataSource</code> is present in the MySQL JDBC driver file, <code>mysql-connector-java-&lt;version&gt;.jar</code>, which must be available on the server&#8217;s classpath .</p>
 </div>
 <div class="paragraph">
-<p>File <code>mysql-connector-java-&lt;version&gt;.jar</code> must be either present in <code>WEB-INF/lib</code>, or in the Jetty server class-path.</p>
+<p>If the class is instead present <em>within</em> the web application, then the JNDI entry must be declared in a <code>WEB-INF/jetty-env.xml</code> file - see the <a href="#og-jndi">JNDI</a> feature section for more information and examples.</p>
 </div>
 </td>
 </tr>
@@ -7731,17 +7734,16 @@ You can create a <code>WEB-INF/jetty-env.xml</code> file with an <code>org.eclip
 The classes for the resource <em>must</em> be visible at the Jetty <strong>container</strong> level.
 If instead the classes for the resource only exist inside your webapp, you must declare it in a <code>WEB-INF/jetty-env.xml</code> file.</p>
 </dd>
-<dt class="hdlist1">WEB-INF/jetty-env.xml</dt>
-<dd>
-<p>Naming resources in a <code>WEB-INF/jetty-env.xml</code> file are <a href="#og-jndi-scope">scoped</a> to the webapp in which the file resides.
-While you can enter JVM or Server scopes if you choose, we do not recommend doing so.
-The resources defined here may use classes from inside your webapp.
-This is a Jetty-specific mechanism.</p>
-</dd>
 <dt class="hdlist1">Context XML file</dt>
 <dd>
 <p>Entries in a context XML file should be <a href="#og-jndi-scope">scoped</a> at the level of the webapp to which they apply (although it is possible to use a less strict scoping level of Server or JVM, but not recommended).
 As with resources declared in a server XML file, classes associated with the resource <em>must</em> be visible on the <strong>container&#8217;s</strong> classpath.</p>
+</dd>
+<dt class="hdlist1">WEB-INF/jetty-env.xml</dt>
+<dd>
+<p>Naming resources in a <code>WEB-INF/jetty-env.xml</code> file are <a href="#og-jndi-scope">scoped</a> to the webapp in which the file resides.
+While you can enter JVM or Server scopes if you choose, we do not recommend doing so.
+The resources defined here may use classes from inside your webapp.</p>
 </dd>
 </dl>
 </div>
@@ -7841,7 +7843,7 @@ For example:</p>
 <div id="footer">
 <div id="footer-text">
 Version 11.0.0-SNAPSHOT<br>
-Last updated 2020-10-14 00:12:37 UTC
+Last updated 2020-10-18 00:12:47 UTC
 </div>
 </div>
 </body>
