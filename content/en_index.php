@@ -165,7 +165,7 @@
                 <div class="content">5.0</div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">JakartaEE 9/jakartaee.servlet.*</div>
+                <div class="content">JakartaEE 9/jakartaee.servlet.*&nbsp;&nbsp;</div>
             </td>
             <td class="halign-left valign-top">
                 <div class="content">Java 11+</div>
@@ -174,15 +174,17 @@
         </tbody>
     </table>
 
+    <br/>
+
     <p>For more information related to help you make an informed decision, please check the <a
-                href="/jetty/TODO.html">TODO</a>.</p>
+                href="/jetty/previous_versions.php">TODO</a>.</p>
 
     <br/>
 
     <p>The Jetty project has been hosted at the Eclipse Foundation since 2009.
         Prior releases of Jetty have existed in part or completely under the Jetty project at the The Codehaus and
         Sourceforge before that.
-        See the <a href="/jetty/about.html">About</a> page for more information about the history of Jetty.</p>
+        See the <a href="/jetty/about.php">About</a> page for more information about the history of Jetty.</p>
 
     <p>You can benefit from committer knowledge and get training, consulting services, professional support and even
         production SLAs, just ask us about it!</p>
