@@ -16,15 +16,14 @@
 
 <!-- Main content area -->
 <div id="midcolumn">
-    <h1><?php print $pageTitle; ?></h1>
-    <p>Eclipse Jetty provides a web server and servlet container, additionally providing support for HTTP/2, WebSocket,
+    <h1>The Eclipse Jetty Project</h1>
+    <p>Jetty provides a web server and servlet container, additionally providing support for HTTP/2, WebSocket,
         OSGi, JMX, JNDI, JAAS and many other integrations.
         These components are open source and are freely available for commercial use and distribution.</p>
 
     <p>Jetty is used in a wide variety of projects and products, both in development and production.
         Jetty has long been loved by developers due to its long history of being easily embedded in devices, tools,
-        frameworks,
-        application servers, and modern cloud services.</p>
+        frameworks, application servers, and modern cloud services.</p>
 
 
     <table class="frame-none grid-all stretch">
@@ -108,11 +107,15 @@
         </tbody>
     </table>
 
+    <br/>
+    <br/>
+
     <p>With the direction of Java and the JakartaEE project (formerly JavaEE) in 2020, the current
         recommended version of Jetty for use depends upon the servlet api version, desired licensing and package
         namespace as well as the intended Java version.</p>
 
     <br/>
+
     <table class="frame-none grid-all stretch">
         <colgroup>
             <col style="width: 25%;">
@@ -165,7 +168,7 @@
                 <div class="content">5.0</div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">JakartaEE 9/jakartaee.servlet.*&nbsp;&nbsp;</div>
+                <div class="content">JakartaEE 9/jakartaee.servlet.*&nbsp;&nbsp;&nbsp;</div>
             </td>
             <td class="halign-left valign-top">
                 <div class="content">Java 11+</div>
