@@ -19,8 +19,9 @@
     <h1><?php print $pageTitle; ?></h1>
     <p>The latest release of Eclipse Jetty is below, earlier minor release versions are available in <a
                 href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">Maven Central.</a></p>
+
+    <h2>Downloads</h2>
     <table class="frame-all grid-all stretch">
-        <caption class="title">Downloads</caption>
         <colgroup>
             <col style="width: 40%;">
             <col style="width: 10%;">
@@ -106,7 +107,7 @@
             <col style="width: 10%;">
             <col style="width: 14%;">
             <col style="width: 9%;">
-            <col style="width: 10;">
+            <col style="width: 10%;">
             <col style="width: 6%;">
             <col style="width: 19%;">
             <col style="width: 23%;">
