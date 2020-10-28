@@ -39,48 +39,48 @@
         </thead>
         <tbody>
         <tr>
-            <td class="halign-left valign-top"><p>TEST - <?php print $jetty['jetty_9.4_version']; ?></p></td>
+            <td class="halign-left valign-top"><p><?php print $jetty['jetty_9.4_version']; ?></p></td>
             <td class="halign-left valign-top"><p><a
                             href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4_version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4_version']; ?>.zip">.zip</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.33.v20201020/jetty-distribution-9.4.33.v20201020.tar.gz">.tgz</a>
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4_version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4_version']; ?>.tar.gz">.tgz</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/9.4.33.v20201020/index.html?overview-summary.html">apidocs </a>
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4_version']; ?>/index.html?overview-summary.html">apidocs </a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.33.v20201020"> source</a></p>
+                            href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4_version']; ?>"> source</a></p>
             </td>
         </tr>
         <tr>
-            <td class="halign-left valign-top"><p>10.0.0.beta3</p></td>
+            <td class="halign-left valign-top"><p><?php print $jetty['jetty_10.0_version']; ?></p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/10.0.0.beta3/jetty-home-10.0.0.beta3.zip">.zip</a>
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0_version']; ?>/jetty-home-<?php print $jetty['jetty_10.0_version']; ?>.zip">.zip</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/10.0.0.beta3/jetty-home-10.0.0.beta3.tar.gz">.tgz</a>
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0_version']; ?>/jetty-home-<?php print $jetty['jetty_10.0_version']; ?>.tar.gz">.tgz</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/10.0.0.beta3/index.html?overview-summary.html">apidocs </a>
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0_version']; ?>/index.html?overview-summary.html">apidocs </a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/10.0.0.beta3"> source</a></p>
+                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0_version']; ?>"> source</a></p>
             </td>
         </tr>
         <tr>
-            <td class="halign-left valign-top"><p>11.0.0.beta3</p></td>
+            <td class="halign-left valign-top"><p><?php print $jetty['jetty_11.0_version']; ?></p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/11.0.0.beta3/jetty-home-11.0.0.beta3.zip">.zip</a>
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0_version']; ?>/jetty-home-<?php print $jetty['jetty_11.0_version']; ?>.zip">.zip</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/11.0.0.beta3/jetty-home-11.0.0.beta3.tar.gz">.tgz</a>
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0_version']; ?>/jetty-home-<?php print $jetty['jetty_11.0_version']; ?>.tar.gz">.tgz</a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/index.html?overview-summary.html">apidocs </a>
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0_version']; ?>/index.html?overview-summary.html">apidocs </a>
                 </p></td>
             <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/11.0.0.beta3"> source</a></p>
+                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0_version']; ?>"> source</a></p>
         </tr>
         </tbody>
     </table>
