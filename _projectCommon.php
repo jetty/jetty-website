@@ -35,6 +35,16 @@ $Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jet
 $Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
 $Nav->addCustomNav("Enter Bug", "https://github.com/eclipse/jetty.project/issues/new", "_self", NULL);
 
+
+// Initialize custom jetty variables.
+$jetty = array();
+
+$jetty['jetty_9.2_version'] = '9.2.30.v20200428';
+$jetty['jetty_9.3_version'] = '9.3.29.v20201019';
+$jetty['jetty_9.4_version'] = '9.4.33.v20201020';
+$jetty['jetty_10.0_version'] = '10.0.0.beta3';
+$jetty['jetty_11.0_version'] = '11.0.0.beta3';
+
 // Initialize custom solstice $variables.
 $variables = array();
 

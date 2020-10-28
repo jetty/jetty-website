@@ -38,7 +38,7 @@
         </tbody>
     </table>
 
-    <div class="sect2">
+    <div>
         <h2 id="_prior_versions">Previous Versions</h2>
         <p>The most recent versions of prior Jetty releases can be found <a href="previous_versions.php">here, with their associated documentation.</a></p>
         <p>Note: The canonical repository for Jetty is Maven Central.  All releases are always available there first and this download page may lag a bit update wise as post release resources are put into place.  You can always browse for Jetty releases <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">here</a>.</p>
