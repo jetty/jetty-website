@@ -18,7 +18,6 @@
 <div id="midcolumn">
     <h1><?php print $pageTitle;?></h1>
 
-    B
     <?php if (count($jetty) > 0): ?>
         <table>
             <thead>

@@ -96,5 +96,14 @@ $links[] = array(
   'text' => 'Open Source or Professional Support' // Optional
 );
 
+$variables['header_nav'] = array(
+    'links' => $links, // Required
+    'logo' => array( // Required
+        'src' => '/jetty/common/images/jetty-logo.svg', // Required
+        'alt' => 'Eclipse Jetty Project', // Optional
+        'url' => '/jetty' // Optional
+        // 'target' => '_blank' // Optional
+    );
+
 // Set Solstice theme variables. (Array)
 $App->setThemeVariables($variables);
