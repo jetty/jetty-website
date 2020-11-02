@@ -28,22 +28,16 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // Define your project-wide Nav bars here.
 // Format is Link text, link URL (can be http://www.someothersite.com/), target
 // (_self, _blank).
-$Nav->addNavSeparator("Eclipse Jetty", "/jetty/");
+$Nav->addNavSeparator("Related Links", "/jetty/");
 $Nav->addCustomNav("About", "/jetty/about.html", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
-$Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
-$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
 $Nav->addCustomNav("Enter Bug", "https://github.com/eclipse/jetty.project/issues/new", "_self", NULL);
 
+#$Nav->addCustomNav("Project Page", "https://projects.eclipse.org/projects/rt.jetty", "_self", NULL);
+#$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
 
 // Initialize custom jetty variables.
-$jetty = array();
-
-$jetty['jetty_9.2_version'] = '9.2.30.v20200428';
-$jetty['jetty_9.3_version'] = '9.3.29.v20201019';
-$jetty['jetty_9.4_version'] = '9.4.33.v20201020';
-$jetty['jetty_10.0_version'] = '10.0.0.beta3';
-$jetty['jetty_11.0_version'] = '11.0.0.beta3';
+include '_jettyVersions.php';
 
 // Initialize custom solstice $variables.
 $variables = array();
@@ -72,7 +66,7 @@ $variables['main_container_html'] = '';
 $links = array();
 $links[] = array(
   'icon' => 'fa-download', // Required
-  'url' => '/jetty/download.html', // Required
+  'url' => '/jetty/download.php', // Required
   'title' => 'Download', // Required
   // 'target' => '_blank', // Optional
   'text' => 'Distributions, Javadoc, Checksums' // Optional
@@ -80,52 +74,26 @@ $links[] = array(
 
 $links[] = array(
   'icon' => 'fa-users', // Required
-  'url' => '/jetty/contribution-guide/index.html', // Required
-  'title' => 'Contribution Guide', // Required
+  'url' => '/jetty/getting_involved.php', // Required
+  'title' => 'Getting Involved', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Contributions, Community' // Optional
+  'text' => 'Contributions, Community, Mailing Lists' // Optional
 );
 
 $links[] = array(
   'icon' => 'fa-book', // Required
-  'url' => '/jetty/operations-guide/index.html', // Required
-  'title' => 'Operations Guide', // Required
+  'url' => '/jetty/documentation.php', // Required
+  'title' => 'Documentation', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Tutorials, How-tos, Features, etc.' // Optional
+  'text' => 'Guides: Development, Administration, etc' // Optional
 );
-
-/*$links[] = array(
-  'icon' => 'fa-support', // Required
-  'url' => '/jetty/getting-started-guide/index.html', // Required
-  'title' => 'Getting Started Guide', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'For beginners, the best way to get up and running fast, etc.' // Optional
-);*/
 
 $links[] = array(
   'icon' => 'fa-anchor', // Required
-  'url' => '/jetty/programming-guide/index.html', // Required
-  'title' => 'Programming Guide', // Required
+  'url' => '/jetty/support.php', // Required
+  'title' => 'Support', // Required
   // 'target' => '_blank', // Optional
-  'text' => 'Put Jetty inside your app!' // Optional
-);
-
-$links[] = array(
-    'icon' => 'fa-rocket', // Required
-    'url' => '/jetty/documentation.html', // Required
-    'title' => 'Documentation Hub', // Required
-    // 'target' => '_blank', // Optional
-    'text' => 'Current and previous versions of the Jetty documentation!' // Optional
-);
-
-$variables['header_nav'] = array(
-  'links' => $links, // Required
-  'logo' => array( // Required
-    'src' => '/jetty/common/images/jetty-logo.svg', // Required
-    'alt' => 'Eclipse Jetty Project', // Optional
-    'url' => '/jetty' // Optional
-    // 'target' => '_blank' // Optional
-  )
+  'text' => 'Open Source or Professional Support' // Optional
 );
 
 // Set Solstice theme variables. (Array)

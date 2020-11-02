@@ -17,16 +17,18 @@
 <!-- Main content area -->
 <div id="midcolumn">
     <h1><?php print $pageTitle; ?></h1>
-    <p>The latest release of Eclipse Jetty is below, earlier minor release versions are available in <a
-                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">Maven Central.</a></p>
+    <p>The latest releases of Eclipse Jetty are below, or as always available in <a
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty">Maven Central.</a></p>
 
-    <h2>Downloads</h2>
+    <br/>
     <table class="frame-all grid-all stretch">
         <colgroup>
-            <col style="width: 40%;">
+            <col style="width: 30%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
+            <col style="width: 10%;">
             <col style="width: 10%;">
             <col style="width: 15%;">
-            <col style="width: 20%;">
             <col style="width: 15%;">
         </colgroup>
         <thead>
@@ -36,52 +38,51 @@
             <th class="halign-left valign-top"></th>
             <th class="halign-left valign-top"></th>
             <th class="halign-left valign-top"></th>
+            <th class="halign-left valign-top"></th>
+            <th class="halign-left valign-top"></th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td class="halign-left valign-top"><p><?php print $jetty['jetty_9.4_version']; ?></p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4_version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4_version']; ?>.zip">.zip</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4_version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4_version']; ?>.tar.gz">.tgz</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4_version']; ?>/index.html?overview-summary.html">apidocs </a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4_version']; ?>"> source</a></p>
+            <td class="halign-left valign-top"><?php print $jetty['jetty_9.4.version']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4.version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4.version']; ?>.zip">.zip</a></td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_9.4.zip.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4.version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4.version']; ?>.tar.gz">.tgz</a>
+                </td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_9.4.tgz.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4.version']; ?>/index.html?overview-summary.html">apidocs </a></td>
+            <td class="halign-left valign-top"><a
+                            href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4.version']; ?>"> source</a>
             </td>
         </tr>
         <tr>
-            <td class="halign-left valign-top"><p><?php print $jetty['jetty_10.0_version']; ?></p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0_version']; ?>/jetty-home-<?php print $jetty['jetty_10.0_version']; ?>.zip">.zip</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0_version']; ?>/jetty-home-<?php print $jetty['jetty_10.0_version']; ?>.tar.gz">.tgz</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0_version']; ?>/index.html?overview-summary.html">apidocs </a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0_version']; ?>"> source</a></p>
-            </td>
+            <td class="halign-left valign-top"><?php print $jetty['jetty_10.0.version']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0.version']; ?>/jetty-home-<?php print $jetty['jetty_10.0.version']; ?>.zip">.zip</a></td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_10.0.zip.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0.version']; ?>/jetty-home-<?php print $jetty['jetty_10.0.version']; ?>.tar.gz">.tgz</a></td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_10.0.tgz.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0.version']; ?>/index.html?overview-summary.html">apidocs </a></td>
+            <td class="halign-left valign-top"><a
+                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0.version']; ?>"> source</a></td>
         </tr>
         <tr>
-            <td class="halign-left valign-top"><p><?php print $jetty['jetty_11.0_version']; ?></p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0_version']; ?>/jetty-home-<?php print $jetty['jetty_11.0_version']; ?>.zip">.zip</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0_version']; ?>/jetty-home-<?php print $jetty['jetty_11.0_version']; ?>.tar.gz">.tgz</a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0_version']; ?>/index.html?overview-summary.html">apidocs </a>
-                </p></td>
-            <td class="halign-left valign-top"><p><a
-                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0_version']; ?>"> source</a></p>
+            <td class="halign-left valign-top"><?php print $jetty['jetty_11.0.version']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0.version']; ?>/jetty-home-<?php print $jetty['jetty_11.0.version']; ?>.zip">.zip</a></td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_11.0.zip.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0.version']; ?>/jetty-home-<?php print $jetty['jetty_11.0.version']; ?>.tar.gz">.tgz</a></td>
+            <td class="halign-left valign-top">MD5: <?php print $jetty['jetty_11.0.tgz.md5']; ?></td>
+            <td class="halign-left valign-top"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0.version']; ?>/index.html?overview-summary.html">apidocs </a></td>
+            <td class="halign-left valign-top"><a
+                        href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0.version']; ?>"> source</a></td>
         </tr>
         </tbody>
     </table>
@@ -97,7 +98,7 @@
         <p>Jetty 10 and 11 are the most recent versions of Jetty and have a great many improvements over previous
             releases.</p>
         <p>While many people continue to use older versions of Jetty like 9.4 for a variety of reasons, we generally recommend using Jetty 10 or 11 as
-            they represent the version of Jetty that we will actively maintain and improve over the next few years.</p>
+            they represent the version of Jetty that we will actively maintain and improve over the next few years.  The decision to use Jetty 10 or 11 depends entirely on which flavor of servlet package name needs to be used.</p>
     </div>
 
     <h3 id="version-table">Jetty Versions</h3>
