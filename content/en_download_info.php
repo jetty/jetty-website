@@ -18,6 +18,8 @@
 <div id="midcolumn">
     <h1><?php print $pageTitle;?></h1>
 
+    A
+
     <?php print print_r($jetty, true);?>
 
 </div>
