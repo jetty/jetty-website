@@ -18,8 +18,21 @@
 <div id="midcolumn">
     <h1><?php print $pageTitle;?></h1>
 
-    A
-
-    <?php print print_r($jetty, true);?>
-
+    B
+    <?php if (count($jetty) > 0): ?>
+        <table>
+            <thead>
+            <tr>
+                <th><?php echo implode('</th><th>', array_keys(current($jetty))); ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($jetty as $row): array_map('htmlentities', $row); ?>
+                <tr>
+                    <td><?php echo implode('</td><td>', $row); ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </div>
