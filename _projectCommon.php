@@ -37,7 +37,7 @@ $Nav->addCustomNav("Enter Bug", "https://github.com/eclipse/jetty.project/issues
 #$Nav->addCustomNav("IP Log", "http://www.eclipse.org/projects/ip_log.php?projectid=rt.jetty", "_self", NULL);
 
 // Initialize custom jetty variables.
-include '_jettyVersions.php';
+//include '_jettyVersions.php';
 
 // Initialize custom solstice $variables.
 $variables = array();
