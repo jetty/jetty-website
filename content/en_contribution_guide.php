@@ -17,7 +17,7 @@
 <!-- Main content area -->
 <div id="midcolumn">
 
-    <iframe src="./contribution-guide/index.html" title="Jetty Contribution Guide"/>
+    <iframe src="./documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
 
 </div>
 <!-- ./end  #midcolumn -->

@@ -19,7 +19,7 @@ $App = new App();
 $Theme = $App->getThemeClass();
 
 // Shared variables/configs for all pages of your website.
-require_once ('_projectCommon.php');
+require_once('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
 $pageTitle = "Jetty Contribution Guide";
