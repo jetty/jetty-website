@@ -13,7 +13,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-/*$jetty = array (
+$jetty = array (
     'jetty_9.2' => array (
         'version' => '9.2.30.v20200428',
         'zip.md5' => 'fb9aa271289360caa00651fc3e348f90',
@@ -43,9 +43,9 @@
         'zip.md5' => '678bd612dc6d65579fe50ac7d1757f7a',
         'tgz.md5' => 'a9a8498248f08e5c44b2b99d6ea1e3e7'
     )
-);*/
+);
 
-
+/*
 $jetty = array();
 
 $jetty['jetty_9.2.version'] = '9.2.30.v20200428';
@@ -63,4 +63,4 @@ $jetty['jetty_10.0.tgz.md5'] = '738acfbd802b994d51319d228d1a7ee0';
 $jetty['jetty_11.0.version'] = '11.0.0.beta3';
 $jetty['jetty_11.0.zip.md5'] = '678bd612dc6d65579fe50ac7d1757f7a';
 $jetty['jetty_11.0.tgz.md5'] = 'a9a8498248f08e5c44b2b99d6ea1e3e7';
-
+*/
