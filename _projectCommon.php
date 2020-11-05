@@ -12,10 +12,10 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-require_once ($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.php");
-require_once ($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/nav.class.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/nav.class.php");
 
-$Nav  = new Nav();
+$Nav = new Nav();
 
 // Set the theme for your project's web pages.
 // See the Committer Tools "Phoenix" secion in the How Do I? for list of themes
@@ -64,36 +64,37 @@ $variables['main_container_html'] = '';
 // Insert header navigation for project websites.
 // Bug 436108 - https://bugs.eclipse.org/bugs/show_bug.cgi?id=436108
 $links = array();
+
 $links[] = array(
-  'icon' => 'fa-download', // Required
-  'url' => '/jetty/download.php', // Required
-  'title' => 'Download', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Distributions, Javadoc, Checksums' // Optional
+    'icon' => 'fa-download', // Required
+    'url' => '/jetty/download.php', // Required
+    'title' => 'Download', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Distributions, Javadoc, Checksums' // Optional
 );
 
 $links[] = array(
-  'icon' => 'fa-users', // Required
-  'url' => '/jetty/getting_involved.php', // Required
-  'title' => 'Getting Involved', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Contributions, Community, Mailing Lists' // Optional
+    'icon' => 'fa-users', // Required
+    'url' => '/jetty/getting_involved.php', // Required
+    'title' => 'Getting Involved', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Contributions, Community, Mailing Lists' // Optional
 );
 
 $links[] = array(
-  'icon' => 'fa-book', // Required
-  'url' => '/jetty/documentation.php', // Required
-  'title' => 'Documentation', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Guides: Development, Administration, etc' // Optional
+    'icon' => 'fa-book', // Required
+    'url' => '/jetty/documentation.php', // Required
+    'title' => 'Documentation', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Guides: Development, Administration, etc' // Optional
 );
 
 $links[] = array(
-  'icon' => 'fa-anchor', // Required
-  'url' => '/jetty/support.php', // Required
-  'title' => 'Support', // Required
-  // 'target' => '_blank', // Optional
-  'text' => 'Open Source or Professional Support' // Optional
+    'icon' => 'fa-anchor', // Required
+    'url' => '/jetty/support.php', // Required
+    'title' => 'Support', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Open Source or Professional Support' // Optional
 );
 
 $variables['header_nav'] = array(
@@ -103,7 +104,8 @@ $variables['header_nav'] = array(
         'alt' => 'Eclipse Jetty Project', // Optional
         'url' => '/jetty' // Optional
         // 'target' => '_blank' // Optional
-    );
+    )
+);
 
 // Set Solstice theme variables. (Array)
 $App->setThemeVariables($variables);
