@@ -17,6 +17,7 @@ require_once ($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.
 
 $App = new App();
 $Theme = $App->getThemeClass();
+$Theme->setLayout('default');
 
 // Shared variables/configs for all pages of your website.
 require_once('_projectCommon.php');
