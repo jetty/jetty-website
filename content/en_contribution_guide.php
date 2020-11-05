@@ -15,11 +15,9 @@
 ?>
 
 <!-- Main content area -->
-<div id="midcolumn">
 
     <iframe style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
 
-</div>
 <!-- ./end  #midcolumn -->
 
 <!-- Start of the right column -->
