@@ -13,16 +13,16 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.php");
+require_once ($_SERVER['DOCUMENT_ROOT'] . "/eclipse.org-common/system/app.class.php");
 
 $App = new App();
 $Theme = $App->getThemeClass();
 
 // Shared variables/configs for all pages of your website.
-require_once('_projectCommon.php');
+require_once ('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Eclipse Jetty";
+$pageTitle = "Jetty Contribution Guide";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
@@ -33,7 +33,7 @@ if (isset($Nav)) {
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include("content/en_" . $App->getScriptName());
+include ("content/en_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 

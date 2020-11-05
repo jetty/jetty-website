@@ -63,7 +63,8 @@
             <td class="halign-left valign-top"><a
                             href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_10.0']['version']; ?>.tar.gz">.tgz</a></td>
             <td class="halign-left valign-top">(<a
-                        href="/jetty/download_info.php">info</a>)</td>            <td class="halign-left valign-top"><a
+                        href="/jetty/download_info.php">info</a>)</td>
+            <td class="halign-left valign-top"><a
                             href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0']['version']; ?>/index.html?overview-summary.html">apidocs </a></td>
             <td class="halign-left valign-top"><a
                             href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0']['version']; ?>"> source</a></td>
@@ -75,7 +76,8 @@
             <td class="halign-left valign-top"><a
                             href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.tar.gz">.tgz</a></td>
             <td class="halign-left valign-top">(<a
-                        href="/jetty/download_info.php">info</a>)</td>            <td class="halign-left valign-top"><a
+                        href="/jetty/download_info.php">info</a>)</td>
+            <td class="halign-left valign-top"><a
                             href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0']['version']; ?>/index.html?overview-summary.html">apidocs </a></td>
             <td class="halign-left valign-top"><a
                         href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0']['version']; ?>"> source</a></td>
