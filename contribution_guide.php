@@ -32,7 +32,7 @@ if (isset($Nav)) {
     $Theme->setNav($Nav);
 }
 
-$variables['header_nav'] = "";
+unset( $variables['header_nav']);
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
