@@ -14,9 +14,15 @@
  */
 ?>
 
+<script type="text/javascript">
+    function resizeIframe(iframe) {
+        iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+    }
+</script>
+
 <!-- Main content area -->
 
-    <iframe style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
+    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
 
 <!-- ./end  #midcolumn -->
 
