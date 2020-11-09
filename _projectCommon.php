@@ -75,7 +75,7 @@ $links[] = array(
 
 $links[] = array(
     'icon' => 'fa-users', // Required
-    'url' => '/jetty/getting_involved.php', // Required
+    'url' => '/jetty/documentation/jetty-10/contribution_guide.php', // Required
     'title' => 'Getting Involved', // Required
     // 'target' => '_blank', // Optional
     'text' => 'Contributions, Community, Mailing Lists' // Optional

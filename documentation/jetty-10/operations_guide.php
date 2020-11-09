@@ -23,7 +23,7 @@ $Theme->setLayout('default');
 require_once('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Jetty Contribution Guide";
+$pageTitle = "Jetty 10 Operations Guide";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
@@ -39,7 +39,7 @@ $Theme->setThemeVariables($variables);
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include ("content/en_" . $App->getScriptName());
+include ("content/en_10_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 
