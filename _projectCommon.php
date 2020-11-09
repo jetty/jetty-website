@@ -54,8 +54,8 @@ $variables['hide_breadcrumbs'] = FALSE;
 // Insert HTML before the left nav. (String)
 $variables['leftnav_html'] = '';
 
-// Update the main container class (String)
-$variables['main_container_classes'] = 'container-full';
+// Update the main container class (String) container-full works as well
+$variables['main_container_classes'] = 'container';
 
 // Insert HTML after opening the main content container, before the left
 // sidebar. (String)
