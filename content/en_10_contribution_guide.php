@@ -24,7 +24,7 @@
 
 <!-- Main content area -->
 
-    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
+    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution_guide/index.html" title="Jetty Contribution Guide"/>
 
 <!-- ./end  #midcolumn -->
 
