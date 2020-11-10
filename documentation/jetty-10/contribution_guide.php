@@ -35,7 +35,7 @@ if (isset($Nav)) {
 
 $variables = array();
 $variables['main_container_classes'] = 'container-full';
-$variables['header_nav'] = "";
+//$variables['header_nav'] = "";
 $Theme->setThemeVariables($variables);
 
 
