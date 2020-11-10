@@ -22,13 +22,18 @@
         <table>
             <thead>
             <tr>
-                <th><?php echo implode('</th><th>', array_keys(current($jetty))); ?></th>
+                <th>Version</th>
+                <th>Metadata</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($jetty as $row): array_map('htmlentities', $row); ?>
                 <tr>
-                    <td><?php echo implode('</td><td>', $row); ?></td>
+                    <td><?php print $row['version'];?></td>
+                    <td>
+                        zip.mp5 <?php print $row['zip.md5']; ?><br/>
+                        tgz.md5 <?php print $row['tgz.md5']; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
