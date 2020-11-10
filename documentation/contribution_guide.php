@@ -20,7 +20,7 @@ $Theme = $App->getThemeClass();
 $Theme->setLayout('default');
 
 // Shared variables/configs for all pages of your website.
-require_once('_projectCommon.php');
+require_once('../_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
 $pageTitle = "Jetty 10 Contribution Guide";
@@ -41,7 +41,7 @@ $Theme->setThemeVariables($variables);
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include ("content/en_10_" . $App->getScriptName());
+include ("../content/en_10_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 
