@@ -32,12 +32,12 @@ if (isset($Nav)) {
     $Theme->setNav($Nav);
 }
 
-/*
+
 $variables = array();
 $variables['main_container_classes'] = 'container-full';
 $variables['header_nav'] = "";
 $Theme->setThemeVariables($variables);
-*/
+
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
