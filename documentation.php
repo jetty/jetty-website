@@ -33,7 +33,12 @@ if (isset($Nav)) {
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include ("content/en_" . $App->getScriptName());
+
+
+print "File: " . "content/en_10_" . $App->getScriptName();
+print "Changed: " . date("F d Y H:i:s.", filemtime("content/en_10_" . $App->getScriptName()));
+
+//include ("content/en_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 
