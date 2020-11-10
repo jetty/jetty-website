@@ -31,8 +31,8 @@
                 <tr>
                     <td><?php print $row['version'];?></td>
                     <td>
-                        zip.mp5 <?php print $row['zip.md5']; ?><br/>
-                        tgz.md5 <?php print $row['tgz.md5']; ?>
+                        <b>zip.mp5</b> <?php print $row['zip.md5']; ?><br/>
+                        <b>tgz.md5</b> <?php print $row['tgz.md5']; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

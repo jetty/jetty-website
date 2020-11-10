@@ -134,7 +134,7 @@
         <tbody>
         <tr>
             <td class="halign-left valign-top">
-                <div class="content">Jetty 9.4.x</div>
+                <div class="content"><p>Jetty 9.4.x</p></div>
             </td>
             <td class="halign-left valign-top">
                 <div class="content">3.1</div>
@@ -148,7 +148,7 @@
         </tr>
         <tr>
             <td class="halign-left valign-top">
-                <div class="content">Jetty 10.0.x</div>
+                <div class="content"><p>Jetty 10.0.x</p></div>
             </td>
             <td class="halign-left valign-top">
                 <div class="content">4.0</div>
@@ -162,7 +162,7 @@
         </tr>
         <tr>
             <td class="halign-left valign-top">
-                <div class="content">Jetty 11.0.x</div>
+                <div class="content"><p>Jetty 11.0.x</p></div>
             </td>
             <td class="halign-left valign-top">
                 <div class="content">5.0</div>
@@ -184,13 +184,11 @@
 
     <br/>
 
-    <p>The Jetty project has been hosted at the Eclipse Foundation since 2009.
-        Prior releases of Jetty have existed in part or completely under the Jetty project at the The Codehaus and
-        Sourceforge before that.
-        See the <a href="/jetty/about.php">About</a> page for more information about the history of Jetty.</p>
+    <p>The Jetty project has been hosted at the Eclipse Foundation since 2009. See the
+        <a href="/jetty/about.php">About</a> page for more information about the history of Jetty.</p>
 
-    <p>You can benefit from committer knowledge and get training, consulting services, professional support and even
-        production SLAs, just ask us about it!</p>
+    <p><b><i>You can benefit from committer knowledge and get training, consulting services, professional support and
+                even production SLAs directly from the developers, just ask us about it!</i></b></p>
     <p></p>
     <p></p>
 </div>
