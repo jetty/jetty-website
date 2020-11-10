@@ -22,11 +22,6 @@
     }
 </script>
 
-<p>
-    <?php print "Changed: " . date ("F d Y H:i:s.", filemtime("content/en_10_" . $App->getScriptName())); ?>
-
-</p>
-
 <!-- Main content area -->
 
     <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/contribution-guide/index.html" title="Jetty Contribution Guide"/>
