@@ -30,6 +30,7 @@ $Theme->setDisplayFooterPrefix(FALSE);
 // (_self, _blank).
 $Nav->addNavSeparator("Related Links", "/jetty/");
 $Nav->addCustomNav("About", "/jetty/about.html", "_self", NULL);
+$Nav->addCustomNav("Contribute", "/jetty/contribute.html", "_self", NULL);
 $Nav->addCustomNav("Source code", "https://github.com/eclipse/jetty.project", "_self", NULL);
 $Nav->addCustomNav("Enter Bug", "https://github.com/eclipse/jetty.project/issues/new", "_self", NULL);
 
