@@ -205,6 +205,4 @@
         </div>
     </div>
 </div>
-
-</div>
 <!-- ./end  #rightcolumn -->
