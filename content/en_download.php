@@ -23,20 +23,18 @@
     <br/>
     <table class="tableblock frame-all grid-all stretch">
         <colgroup>
-            <col style="width: 20%;">
+            <col style="width: 30%;">
             <col style="width: 10%;">
             <col style="width: 10%;">
-            <col style="width: 20%;">
-            <col style="width: 20%;">
-            <col style="width: 20%;">
+            <col style="width: 25%;">
+            <col style="width: 25%;">
         </colgroup>
         <thead>
         <tr>
             <th class="tableblock halign-left valign-top">Release</th>
             <th class="tableblock halign-left valign-top"></th>
             <th class="tableblock halign-left valign-top"></th>
-            <th class="tableblock halign-left valign-top"></th>
-            <th class="tableblock halign-left valign-top"></th>
+            <th class="tableblock halign-left valign-top">Metadata</th>
             <th class="tableblock halign-left valign-top"></th>
         </tr>
         </thead>
@@ -51,8 +49,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                             href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4']['version']; ?>/index.html?overview-summary.html">apidocs </a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4']['version']; ?>/index.html?overview-summary.html">apidocs</a> / <a
                             href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>"> source</a></p>
             </td>
         </tr>
@@ -65,8 +62,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0']['version']; ?>/index.html?overview-summary.html">apidocs </a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0']['version']; ?>/index.html?overview-summary.html">apidocs </a> / <a
                             href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0']['version']; ?>"> source</a></p></td>
         </tr>
         <tr>
@@ -78,8 +74,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0']['version']; ?>/index.html?overview-summary.html">apidocs </a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0']['version']; ?>/index.html?overview-summary.html">apidocs </a> / <a
                         href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0']['version']; ?>"> source</a></p></td>
         </tr>
         </tbody>
