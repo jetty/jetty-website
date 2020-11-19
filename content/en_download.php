@@ -84,7 +84,7 @@
         </tr>
         </tbody>
     </table>
-
+    <br/>
     <p><strong>Note:</strong> Release notes can be found in the <code>VERSION.txt</code> file included with the
         distribution and on the <a href="https://github.com/eclipse/jetty.project/releases">GitHub Releases</a> page for
         the Jetty project.</p>
