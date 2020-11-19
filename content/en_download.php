@@ -35,7 +35,7 @@
             <th class="tableblock halign-left valign-top"></th>
             <th class="tableblock halign-left valign-top"></th>
             <th class="tableblock halign-left valign-top">Metadata</th>
-            <th class="tableblock halign-left valign-top"></th>
+            <th class="tableblock halign-left valign-top">Resources</th>
         </tr>
         </thead>
         <tbody>
