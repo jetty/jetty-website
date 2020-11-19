@@ -16,16 +16,14 @@
 
 <div id="midcolumn">
 
-    <h1><?php print $pageTitle; ?></h1>
-
-    <h2>Commercial Support</h2>
+    <h1>Commercial Support</h1>
 
     <p>
         Commercial support for Jetty is available directly from the developers through <a
                 href="https://webtide.com">Webtide</a>.
     </p>
 
-    <h2>Open Source Support</h2>
+    <h1>Open Source Support</h1>
 
     <h3>Mailing Lists</h3>
     <div class="paragraph">
