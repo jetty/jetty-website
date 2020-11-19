@@ -21,7 +21,7 @@
                 href="https://repo1.maven.org/maven2/org/eclipse/jetty">Maven Central.</a></p>
 
     <br/>
-    <table class="frame-all grid-all stretch">
+    <table class="tableblock frame-all grid-all stretch">
         <colgroup>
             <col style="width: 20%;">
             <col style="width: 10%;">
