@@ -19,20 +19,26 @@
     <h1><?php print $pageTitle;?></h1>
 
     <?php if (count($jetty) > 0): ?>
-        <table>
+        <table class="frame-all grid-all stretch">
+            <colgroup>
+                <col style="width: 40%;">
+                <col style="width: 60%;">
+            </colgroup>
             <thead>
             <tr>
-                <th>Version</th>
-                <th>Metadata</th>
+                <th class="tableblock halign-left valign-top">Version</th>
+                <th class="tableblock halign-left valign-top">Metadata</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($jetty as $row): array_map('htmlentities', $row); ?>
                 <tr>
-                    <td><?php print $row['version'];?></td>
-                    <td>
-                        <b>zip.mp5</b> <?php print $row['zip.md5']; ?><br/>
-                        <b>tgz.md5</b> <?php print $row['tgz.md5']; ?>
+                    <td class="tableblock halign-left valign-top"><?php print $row['version'];?></td>
+                    <td class="tableblock halign-left valign-top">
+                        <p class="tableblock">
+                            <b>zip.mp5</b> <?php print $row['zip.md5']; ?><br/>
+                            <b>tgz.md5</b> <?php print $row['tgz.md5']; ?>
+                        </p>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -29,11 +29,11 @@
         the github project <a href="https://github.com/eclipse/jetty.project">here</a>. If you are looking for a bit of
         inspiration on what to work on, take a look at the issues for the project where we maintain a <a
                 href="https://github.com/eclipse/jetty.project/labels/Help%20Wanted">Help Wanted</a> tag. The Jetty
-        project uses Apache Maven as the <a href="https://eclipse.org/jetty/develop.php#t-contributing-build">build
+        project uses Apache Maven as the <a href="/jetty/develop.php#t-contributing-build">build
             system</a> and there are coding conventions that we would appreciate you following documented <a
-                href="https://eclipse.org/jetty/develop.php#cg-coding-standards">here</a>. Please keep in mind that as
+                href="/jetty/develop.php#cg-coding-standards">here</a>. Please keep in mind that as
         an Eclipse project there is a bit more administrative burden required on your part to contribute code,
-        information on that can be found <a href="https://eclipse.org/jetty/contribute.php">here</a>.
+        information on that can be found <a href="/jetty/contribute.php">here</a>.
     </p>
 
     <h3>Get Involved in the Documentation</h3>
@@ -42,7 +42,7 @@
                 href="https://github.com/eclipse/jetty.project/tree/jetty-10.0.x/jetty-documentation">alongside the
             source</a> but don't let that dissuade you from from contributing to the documentation, it is a great place
         to build commit karma and help the community at large. You'll need to follow the same rules as committing to the
-        code which can be read about <a href="https://staging.eclipse.org/jetty/contribute.php">here.</a>
+        code which can be read about <a href="/jetty/contribute.php">here.</a>
     </p>
 
     <h3>Get Involved in the Community</h3>
