@@ -79,11 +79,17 @@ function create_archive_directory() {
 
 function create_temp_directory() {
 
-  rm -Rf "$TEMP_DIR"
-
   if [ ! -d "$TEMP_DIR" ]; then
     mkdir "$TEMP_DIR"
   fi
+}
+
+function delete_temp_directory() {
+    rm -Rf "$TEMP_DIR";
+}
+
+function resetLog() {
+  rm "$LOG_FILE";
 }
 
 #
@@ -91,7 +97,7 @@ function create_temp_directory() {
 #
 function clean_archive_directory() {
 
-  # TODO implement
+  # TODO implement correct behavior
   if [ -d "$ARC_DIR" ]; then
     rm -R "$ARC_DIR"
   fi
@@ -105,7 +111,12 @@ function download() {
 
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
     echo "  downloading $filename"
-    wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE"
+    wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+    exit_status=$?;
+    if [[ exit_status -ne 0 ]]; then
+      echo "download failed: $filename";
+      rm "$ARC_DIR/$filename";
+    fi
   #else
   #  echo "  found: $filename";
   fi
@@ -120,25 +131,27 @@ function download_distribution_files() {
     artifact="jetty-distribution"
   fi
 
-  filename_zasc="$artifact-$version.zip.asc"
-  filename_zmd5="$artifact-$version.zip.md5"
-  filename_zsha1="$artifact-$version.zip.sha1"
-  filename_tasc="$artifact-$version.tar.gz.asc"
-  filename_tmd5="$artifact-$version.tar.gz.md5"
-  filename_tsha1="$artifact-$version.tar.gz.sha1"
-  download "$artifact" "$version" "$filename_zasc"
-  download "$artifact" "$version" "$filename_zmd5"
-  download "$artifact" "$version" "$filename_zsha1"
-  download "$artifact" "$version" "$filename_tasc"
-  download "$artifact" "$version" "$filename_tmd5"
-  download "$artifact" "$version" "$filename_tsha1"
+  filename_zasc="$artifact-$version.zip.asc";
+  filename_zmd5="$artifact-$version.zip.md5";
+  filename_zsha1="$artifact-$version.zip.sha1";
+  filename_tasc="$artifact-$version.tar.gz.asc";
+  filename_tmd5="$artifact-$version.tar.gz.md5";
+  filename_tsha1="$artifact-$version.tar.gz.sha1";
+  download "$artifact" "$version" "$filename_zasc";
+  download "$artifact" "$version" "$filename_zmd5";
+  download "$artifact" "$version" "$filename_zsha1";
+  download "$artifact" "$version" "$filename_tasc";
+  download "$artifact" "$version" "$filename_tmd5";
+  download "$artifact" "$version" "$filename_tsha1";
 }
 
 function download_documentation_files() {
-  artifact="jetty-documentation"
-  version=$1
-  filename="$artifact-$version-html.zip"
-  download "$artifact" "$version" "$filename"
+  artifact="jetty-documentation";
+  version=$1;
+  html_filename="$artifact-$version-html.zip";
+  javadoc_filename="$artifact-$version-javadoc.jar";
+  download "$artifact" "$version" "$html_filename";
+  download "$artifact" "$version" "$javadoc_filename";
 }
 
 function download_missing_files() {
@@ -220,8 +233,8 @@ function generate_version_php() {
 
 function process_documentation() {
   # shellcheck disable=SC2206
-  versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
-  create_temp_directory
+  versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
+  create_temp_directory;
 
   for version in "${versions[@]}"; do
     temp_ver_dir="$TEMP_DIR/$version";
@@ -230,11 +243,34 @@ function process_documentation() {
 
   # TODO make dynamic
   {
-    rsync -avh "$TEMP_DIR/$jetty_9_4/$jetty_9_4" "$(pwd)/documentation/jetty-9" --delete;
+    rsync -avh "$TEMP_DIR/$jetty_9_4/$jetty_9_4/" "$(pwd)/documentation/jetty-9" --delete;
     rsync -avh "$TEMP_DIR/$jetty_10_0/$jetty_10_0/" "$(pwd)/documentation/jetty-10";
     rsync -avh "$TEMP_DIR/$jetty_11_0/$jetty_11_0/" "$(pwd)/documentation/jetty-11";
-  } &>>"$LOG_FILE"
+  } &>>"$LOG_FILE";
+
+  delete_temp_directory;
 }
+
+function process_javadoc() {
+  versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
+
+  create_temp_directory;
+
+  for version in "${versions[@]}"; do
+    temp_ver_dir="$TEMP_DIR/$version";
+    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-javadoc.jar" &>>"$LOG_FILE";
+  done
+
+  # TODO make dynamic
+  {
+    #rsync -avh "$TEMP_DIR/$jetty_9_4/$jetty_9_4" "$(pwd)/javadoc/jetty-9" --delete;
+    rsync -avh "$TEMP_DIR/$jetty_10_0/" "$(pwd)/javadoc/jetty-10" --delete;
+    rsync -avh "$TEMP_DIR/$jetty_11_0/" "$(pwd)/javadoc/jetty-11" --delete;
+  } &>>"$LOG_FILE"
+
+  delete_temp_directory;
+}
+
 
 #
 # main
@@ -244,26 +280,28 @@ function main() {
 
   # print out the settings this script operates under
   if [[ $directive == "-s" ]]; then
-    set_global_variables
-    gather_current_versions
-    print_global_variables
-    print_execution_variables
-    exit
+    set_global_variables;
+    gather_current_versions;
+    print_global_variables;
+    print_execution_variables;
+    exit 0;
   fi
 
   # run an update process for any version changes
   if [[ $directive == "-u" ]]; then
-    set_global_variables
-    gather_current_versions
-    download_missing_files
-    generate_version_php
-    process_documentation
-    exit
+    set_global_variables;
+    resetLog;
+    gather_current_versions;
+    download_missing_files;
+    generate_version_php;
+    process_documentation;
+    process_javadoc;
+    exit 0;
   fi
 
   # print usage
-  usage
-  exit
+  usage;
+  exit 0;
 }
 
 main "$1"
