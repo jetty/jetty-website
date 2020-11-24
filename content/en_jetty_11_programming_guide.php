@@ -29,7 +29,7 @@
 
     <br/>
 
-    <iframe id="embeddoc" onload="resizeIframe(this)" style="border: none" src="/jetty/documentation/jetty-11/programming-guide/index.html" title="Jetty 11: Programming Guide"></iframe>
+    <iframe id="embeddoc" onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-11/programming-guide/index.html" title="Jetty 11: Programming Guide"></iframe>
 </div>
 <!-- ./end  #midcolumn -->
 
