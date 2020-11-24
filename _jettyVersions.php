@@ -48,6 +48,3 @@ $jetty = array (
     'tgz.sha1' => 'a00a5d317669a5f28fd1846449d91e57db34f2d2',
   )
 );
-
-
-
