@@ -18,47 +18,7 @@
     <h1><?php print $pageTitle;?></h1>
     <p>The latest documentation releases are Eclipse Jetty is below, earlier minor release versions are available in <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-documentation">Maven Central.</a></p>
 
-    <table class="frame-all grid-all stretch">
-        <colgroup>
-            <col style="width: 40%;">
-            <col style="width: 40%;">
-            <col style="width: 20%;">
-        </colgroup>
-        <thead>
-        <tr>
-            <th class="tableblock halign-left valign-top">Release Version</th>
-            <th class="tableblock halign-left valign-top">Guides</th>
-            <th class="tableblock halign-left valign-top">Resources</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 11</b></p></td>
-            <td class="tableblock halign-left valign-top">
-                <p class="tableblock">
-                    <a href="/jetty/documentation/jetty-11/operations_guide.php">Operations Guide</a><br/>
-                    <a href="/jetty/documentation/jetty-11/programming_guide.php">Programming Guide</a><br/>
-                </p>
-            </td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://eclipse.org/jetty/javadoc/11.0/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_11.0_version']; ?>">source</a></p></td>
-        </tr>
-        <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 10</b></p></td>
-            <td class="tableblock halign-left valign-top">
-                <p class="tableblock">
-                    <a href="/jetty/documentation/jetty-10/operations_guide.php">Operations Guide</a><br/>
-                    <a href="/jetty/documentation/jetty-10/programming_guide.php">Programming Guide</a><br/>
-                </p>
-            </td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.eclipse.org/jetty/javadoc/10.0/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_10.0_version']; ?>">source</a></p></td>
-        </tr>
-        <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 9</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/documentation/jetty-9/index.php">Documentation</a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.eclipse.org/jetty/javadoc/9.4/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4_version']; ?>">source</a></p></td>
-        </tr>
-        </tbody>
-    </table>
+    <?php include("en_doc_table.php") ?>
 
     <div>
         <h2 id="_prior_versions">Previous Versions</h2>

@@ -19,7 +19,7 @@
     <h1><?php print $pageTitle;?></h1>
 
     <?php if (count($jetty) > 0): ?>
-        <table class="frame-all grid-all stretch">
+        <table class="tableblock frame-all grid-all stretch">
             <colgroup>
                 <col style="width: 30%;">
                 <col style="width: 70%;">

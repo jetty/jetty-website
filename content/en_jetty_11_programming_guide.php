@@ -25,7 +25,13 @@
 <!-- Main content area -->
 
 <div id="midcolumn">
-    <?php include ("en_doc_header.php"); ?>
+    <p>
+        Note: This documentation is for Jetty 11, if you are using another version of Jetty the following table will help get you where you need to go!
+    </p>
+
+    <?php include("en_doc_table.php"); ?>
+
+    <br/>
 
     <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-11/programming-guide/index.html" title="Jetty 11: Programming Guide"></iframe>
 </div>
