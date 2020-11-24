@@ -23,7 +23,7 @@ $Theme->setLayout('default');
 require_once('../../_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Jetty 10 Operations Guide";
+$pageTitle = "Jetty10 Operations Guide";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
