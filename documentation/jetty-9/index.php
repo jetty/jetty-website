@@ -39,7 +39,7 @@ $Theme->setThemeVariables($variables);
 
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include ("../../content/en_9_" . $App->getScriptName());
+include ("../../content/en_jetty_9_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 
