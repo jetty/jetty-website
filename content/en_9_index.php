@@ -31,14 +31,18 @@
 <!-- ./end  #midcolumn -->
 
 <!-- Start of the right column -->
-<!--
+
 <div id="rightcolumn">
   <div class="sideitem">
-    <h2>Related Links</h2>
+    <h2>Quick Links</h2>
     <ul>
-      <li><a target="_self" href="/eclipse.org-common/themes/solstice/docs/">Documentation</a></li>
+        <li><a target="_self" href="/jetty/documentation/jetty-11/operations_guide.php">Jetty 11 Operations Guide</a></li>
+        <li><a target="_self" href="/jetty/documentation/jetty-11/programming_guide.php">Jetty 11 Programming Guide</a></li>
+        <li><a target="_self" href="/jetty/documentation/jetty-10/operations_guide.php">Jetty 10 Operations Guide</a></li>
+        <li><a target="_self" href="/jetty/documentation/jetty-10/programming_guide.php">Jetty 10 Programming Guide</a></li>
+        <li><a target="_self" href="/jetty/documentation/jetty-9/index.php">Jetty 9 Documentation</a></li>
     </ul>
   </div>
 </div>
--->
+
 <!-- ./end  #rightcolumn -->
