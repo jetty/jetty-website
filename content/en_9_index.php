@@ -23,9 +23,12 @@
 </script>
 
 <!-- Main content area -->
+<div id="midcolumn">
 
-    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-9/index.html" title="Jetty 9 Documentation"/>
+    <?php include ("content/en_doc_header.php"); ?>
 
+    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-9/index.html" title="Jetty 9: Documentation"/>
+</div>
 <!-- ./end  #midcolumn -->
 
 <!-- Start of the right column -->

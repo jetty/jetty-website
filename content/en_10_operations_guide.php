@@ -23,9 +23,11 @@
 </script>
 
 <!-- Main content area -->
+<div id="midcolumn">
 
-    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/operations-guide/index.html" title="Jetty Contribution Guide"/>
+    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/operations-guide/index.html" title="Jetty 10: Operations Guide"/>
 
+</div>
 <!-- ./end  #midcolumn -->
 
 <!-- Start of the right column -->
