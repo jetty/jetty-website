@@ -16,11 +16,8 @@
 
 
 
-<script type="text/javascript">
-    function resizeIframe(iframe) {
-        iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
-    }
-</script>
+<?php include("en_js_iframe.php"); ?>
+
 
 <!-- Main content area -->
 <div id="midcolumn">
@@ -32,7 +29,7 @@
 
     <br/>
 
-    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/programming-guide/index.html" title="Jetty 10: Programming Guide"></iframe>
+    <iframe id="embeddoc" onload="resizeIframe(this)" style="border: none" src="/jetty/documentation/jetty-10/programming-guide/index.html" title="Jetty 10: Programming Guide"></iframe>
 </div>
 <!-- ./end  #midcolumn -->
 
