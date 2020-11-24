@@ -14,7 +14,6 @@
  */
 ?>
 
-<!-- Main content area -->
-<div id="midcolumn">
+<p>
     Note: <i>add language to direct to other version of documentation.</i>
-</div>
+</p>
