@@ -16,11 +16,10 @@
 
 
 <script type="text/javascript">
-    var iframeWin = document.getElementById('embeddoc').contentWindow;
-    iframeWin.addEventListener('resize', function(){ resizeIframe(document.getElementById('embeddoc')) });
 
     function resizeIframe(iframe) {
         iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
         iframe.width = iframe.contentWindow.document.body.scrollWidth + "px";
     }
+
 </script>

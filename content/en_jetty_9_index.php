@@ -30,6 +30,10 @@
 
     <iframe id="embeddoc" onload="resizeIframe(this)" style="border: none" src="/jetty/documentation/jetty-9/index.html" title="Jetty 9: Documentation"></iframe>
 
+    <script type="text/javascript">
+        var iframeWin = document.getElementById('embeddoc').contentWindow;
+        iframeWin.addEventListener('resize', function(){ resizeIframe(document.getElementById('embeddoc')) });
+    </script>
 </div>
 <!-- ./end  #midcolumn -->
 
