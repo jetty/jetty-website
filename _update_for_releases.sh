@@ -37,7 +37,7 @@ function print_execution_variables() {
 
 function gather_current_versions() {
 
-  version_file="_jettyVersions.txt"
+  local version_file="_jettyVersions.txt"
 
   # TODO make dynamic
   # shellcheck disable=SC2162
@@ -85,11 +85,19 @@ function create_temp_directory() {
 }
 
 function delete_temp_directory() {
-    rm -Rf "$TEMP_DIR";
+  rm -Rf "$TEMP_DIR";
 }
 
-function resetLog() {
+function reset_log() {
   rm "$LOG_FILE";
+}
+
+function get_primary_version() {
+  local version="$1";
+
+  IFS='.' read -ra ver <<<"$version"
+
+  echo "jetty-${ver[0]}";
 }
 
 #
@@ -105,9 +113,9 @@ function clean_archive_directory() {
 }
 
 function download() {
-  artifact=$1
-  version=$2
-  filename=$3
+  local artifact=$1
+  local version=$2
+  local filename=$3
 
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
     echo "  downloading $filename"
@@ -123,20 +131,20 @@ function download() {
 }
 
 function download_distribution_files() {
-  version=$1
+  local version=$1
 
   if [[ "$version" == "1"* ]]; then
-    artifact="jetty-home"
+    local artifact="jetty-home"
   else
-    artifact="jetty-distribution"
+    local artifact="jetty-distribution"
   fi
 
-  filename_zasc="$artifact-$version.zip.asc";
-  filename_zmd5="$artifact-$version.zip.md5";
-  filename_zsha1="$artifact-$version.zip.sha1";
-  filename_tasc="$artifact-$version.tar.gz.asc";
-  filename_tmd5="$artifact-$version.tar.gz.md5";
-  filename_tsha1="$artifact-$version.tar.gz.sha1";
+  local filename_zasc="$artifact-$version.zip.asc";
+  local filename_zmd5="$artifact-$version.zip.md5";
+  local filename_zsha1="$artifact-$version.zip.sha1";
+  local filename_tasc="$artifact-$version.tar.gz.asc";
+  local filename_tmd5="$artifact-$version.tar.gz.md5";
+  local filename_tsha1="$artifact-$version.tar.gz.sha1";
   download "$artifact" "$version" "$filename_zasc";
   download "$artifact" "$version" "$filename_zmd5";
   download "$artifact" "$version" "$filename_zsha1";
@@ -146,10 +154,10 @@ function download_distribution_files() {
 }
 
 function download_documentation_files() {
-  artifact="jetty-documentation";
-  version=$1;
-  html_filename="$artifact-$version-html.zip";
-  javadoc_filename="$artifact-$version-javadoc.jar";
+  local artifact="jetty-documentation";
+  local version=$1;
+  local html_filename="$artifact-$version-html.zip";
+  local javadoc_filename="$artifact-$version-javadoc.jar";
   download "$artifact" "$version" "$html_filename";
   download "$artifact" "$version" "$javadoc_filename";
 }
@@ -189,7 +197,7 @@ function generate_version_php() {
 
   # shellcheck disable=SC2206
   # TODO make dynamic
-  versions=($jetty_9_2 $jetty_9_3 $jetty_9_4 $jetty_10_0 $jetty_11_0)
+  local versions=($jetty_9_2 $jetty_9_3 $jetty_9_4 $jetty_10_0 $jetty_11_0)
 
   rm "$VERSIONS_PHP"
 
@@ -233,39 +241,43 @@ function generate_version_php() {
 
 function process_documentation() {
   # shellcheck disable=SC2206
-  versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
+  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
   create_temp_directory;
 
   for version in "${versions[@]}"; do
-    temp_ver_dir="$TEMP_DIR/$version";
+    local temp_ver_dir="$TEMP_DIR/$version";
     unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip" &>>"$LOG_FILE";
   done
 
-  # TODO make dynamic
   {
-    rsync -avh "$TEMP_DIR/$jetty_9_4/$jetty_9_4/" "$(pwd)/documentation/jetty-9" --delete;
-    rsync -avh "$TEMP_DIR/$jetty_10_0/$jetty_10_0/" "$(pwd)/documentation/jetty-10";
-    rsync -avh "$TEMP_DIR/$jetty_11_0/$jetty_11_0/" "$(pwd)/documentation/jetty-11";
+    for version in "${versions[@]}"; do
+      local primary_version=$(get_primary_version "$version");
+
+      if [[ $primary_version == "jetty-9" ]]; then
+        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version" --delete;
+      else
+        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
+      fi
+    done;
   } &>>"$LOG_FILE";
 
   delete_temp_directory;
 }
 
 function process_javadoc() {
-  versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
+  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
 
   create_temp_directory;
 
   for version in "${versions[@]}"; do
-    temp_ver_dir="$TEMP_DIR/$version";
+    local temp_ver_dir="$TEMP_DIR/$version";
     unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-javadoc.jar" &>>"$LOG_FILE";
   done
 
-  # TODO make dynamic
   {
-    #rsync -avh "$TEMP_DIR/$jetty_9_4/$jetty_9_4" "$(pwd)/javadoc/jetty-9" --delete;
-    rsync -avh "$TEMP_DIR/$jetty_10_0/" "$(pwd)/javadoc/jetty-10" --delete;
-    rsync -avh "$TEMP_DIR/$jetty_11_0/" "$(pwd)/javadoc/jetty-11" --delete;
+    for version in "${versions[@]}"; do
+      rsync -avh "$TEMP_DIR/$version/" "$(pwd)/javadoc/$(get_primary_version "$version")" --delete;
+    done;
   } &>>"$LOG_FILE"
 
   delete_temp_directory;
@@ -290,7 +302,7 @@ function main() {
   # run an update process for any version changes
   if [[ $directive == "-u" ]]; then
     set_global_variables;
-    resetLog;
+    reset_log;
     gather_current_versions;
     download_missing_files;
     generate_version_php;
