@@ -27,7 +27,8 @@
 
     <?php include ("en_doc_header.php"); ?>
 
-    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/operations-guide/index.html" title="Jetty 10: Operations Guide"/>
+    <iframe onload="resizeIframe(this)" style="width: 100%;border: none" src="/jetty/documentation/jetty-10/operations-guide/index.html" title="Jetty 10: Operations Guide"></iframe>
+
 </div>
 <!-- ./end  #midcolumn -->
 
