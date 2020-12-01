@@ -43,7 +43,7 @@
             <div class="paragraph">
                 <p>The following sections provide information about Jetty security issues.</p>
             </div>
-            <table class="tableblock frame-all grid-all" style="width: 99%;">
+            <table class="tableblock frame-all grid-all" style="width: 100%;">
                 <caption class="title">Table 1. Resolved Issues</caption>
                 <colgroup>
                     <col>
@@ -56,7 +56,7 @@
                 </colgroup>
                 <thead>
                 <tr>
-                    <th class="tableblock halign-left valign-top">yyyy/mm/dd</th>
+                    <th class="tableblock halign-left valign-top">Date</th>
                     <th class="tableblock halign-left valign-top">ID</th>
                     <th class="tableblock halign-left valign-top">Exploitable</th>
                     <th class="tableblock halign-left valign-top">Severity</th>
@@ -444,20 +444,6 @@
             <div class="paragraph">
                 <p>When a security issue is reported, things move quickly.
                     Below is an outline of the process by which the Ecllipse Jetty team identifies and handles reported security issues.</p>
-            </div>
-            <div class="admonitionblock note">
-                <table>
-                    <tr>
-                        <td class="icon">
-                            <div class="title">Note</div>
-                        </td>
-                        <td class="content">
-                            <div class="paragraph">
-                                <p>If you suspect you have found a security issue, please do not report it publicly. Instead, send an email to <em>security@webtide.com</em>.</p>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
             </div>
             <div class="olist arabic">
                 <ol class="arabic">
