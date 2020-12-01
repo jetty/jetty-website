@@ -98,6 +98,15 @@ $links[] = array(
     'text' => 'Open Source or Professional Support' // Optional
 );
 
+$links[] = array(
+    'icon' => 'fa-bullhorn', // Required
+    'url' => '/jetty/security_reports.php', // Required
+    'title' => 'Security Reports', // Required
+    // 'target' => '_blank', // Optional
+    'text' => 'Information on Past Vulnerabilities' // Optional
+);
+
+
 $variables['header_nav'] = array(
     'links' => $links, // Required
     'logo' => array ( // Required
