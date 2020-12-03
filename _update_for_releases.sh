@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 function usage() {
-  echo "Usage: "
-  echo " ./update_for_releases.sh"
-  echo "   -s : configured settings"
-  echo "   -c : clean archive of unused versions"
-  echo "   -u : update"
+  echo "Usage: ";
+  echo " ./update_for_releases.sh";
+  echo "   -s : configured settings";
+  echo "   -c : clean archive of unused versions";
+  echo "   -u : update (pulls from staging if needed)";
 }
 
 function set_global_variables() {
@@ -14,6 +14,7 @@ function set_global_variables() {
   ARC_DIR=$(pwd)/_archive
   TEMP_DIR=$ARC_DIR/temp
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
+  STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
   DOC_ROOT="$MAVEN_ROOT/jetty-documentation"
   LOG_FILE="$ARC_DIR/update.log"
 }
@@ -23,6 +24,7 @@ function print_global_variables() {
   echo "Versions File (php): $VERSIONS_PHP"
   echo "Archive Directory: $ARC_DIR"
   echo "Maven Root URL: $MAVEN_ROOT"
+  echo "Maven Staging Root URL: $STAGING_ROOT"
   echo "Documentation Root URL: $DOC_ROOT"
 }
 
@@ -120,13 +122,18 @@ function download() {
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
     echo "  downloading $filename"
     wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
-    exit_status=$?;
-    if [[ exit_status -ne 0 ]]; then
-      echo "download failed: $filename";
-      rm "$ARC_DIR/$filename";
+    local download_status=$?;
+
+    if [[ download_status -ne 0 ]]; then
+      echo "  staging download $filename"
+      wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+      local staging_status=$?;
+
+      if [[ staging_status -ne 0 ]]; then
+        echo "download failed: $filename";
+        rm "$ARC_DIR/$filename";
+      fi
     fi
-  #else
-  #  echo "  found: $filename";
   fi
 }
 
