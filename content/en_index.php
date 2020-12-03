@@ -183,7 +183,7 @@
         <a href="/jetty/about.php">About</a> page for more information about the history of Jetty.</p>
 
     <p><b><i>You can benefit from committer knowledge and get training, consulting services, professional support and
-                even production SLAs directly from the developers, just ask us about it!</i></b></p>
+                even production SLAs directly from the developers, <a href="/jetty/support.php"> just ask us about it!</a></i></b></p>
     <p></p>
     <p></p>
 </div>
