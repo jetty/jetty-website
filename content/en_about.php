@@ -54,13 +54,13 @@
     <h3>Codehaus</h3>
     <p>
         In 2005, the jetty project moved to the The Codehaus for its hosting services and open source community. In
-        2009, after the core components of Jetty moved to eclipse, the jetty @ codehaus project continues to provide
-        integrations, extensions and packaging of jetty.
+        2009, after the core components of Jetty moved to Eclipse, the Jetty @ codehaus project continued to provide
+        integrations, extensions and packaging of Jetty.
     </p>
 
     <h3>Sourceforge</h3>
     <p>
-        From 2000 to 2005, the jetty project was hosted at sourceforge.net where versions 3.x, 4.x and 5.x were
+        From 2000 to 2005, the Jetty project was hosted at sourceforge.net where versions 3.x, 4.x and 5.x were
         produced.
     </p>
 

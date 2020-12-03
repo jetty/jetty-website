@@ -18,7 +18,7 @@
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
   <div class="paragraph">
-  <p>The most recent release of recent previous versions are below.
+  <p>The most recent releases of previous versions are below.
   Earlier releases in a minor release version are available in <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution">Maven Central.</a></p>
   </div>
   <div class="paragraph">

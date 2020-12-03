@@ -28,7 +28,7 @@
         <div class="ulist">
             <ul>
                 <li>
-                    <p>You must have a signed Eclipse Contributor Agreement.</p>
+                    <p>You must have a signed Eclipse Contributor Agreement. The ECA is <strong>critically</strong> important to the process.</p</p>
                 </li>
                 <li>
                     <p>This agreement must be under the <em>same</em> email address as the Git pull request originates from.</p>
@@ -50,13 +50,9 @@
                     </div>
                 </li>
                 <li>
-                    <p>This may not be the final form a commit will take, there may be some back and forth and you may be asked to re-issue a pull request.</p>
+                    <p>The initial pull request may not be the final form a commit will take. There may be some back and forth and you may be asked to re-issue a pull request based on feedback.</p>
                 </li>
             </ul>
-        </div>
-        <div class="paragraph">
-            <p>Not everything is specifically relevant since we are at GitHub but the crux of things are detailed there.
-                The ECA is <strong>critically</strong> important to the process.</p>
         </div>
         <div class="sect3">
             <h4 id="cg-contributing-eca"><a class="anchor" href="#cg-contributing-eca"></a><a class="link" href="#cg-contributing-eca">Sign an Eclipse Contributor Agreement (ECA)</a></h4>
@@ -91,7 +87,7 @@
                                 </td>
                                 <td class="content">
                                     Log into the <a href="https://www.eclipse.org">Eclipse home page</a> (you will need to create an account with the Eclipse Foundation if you have not already done so), click on "Eclipse ECA", and complete the form.
-                                    Be sure to use the <em>same email address</em> when you create any Git commit records.
+                                    Be sure to use the <strong>same email address</strong> when you create any Git commit records.
                                 </td>
                             </tr>
                         </table>
@@ -186,7 +182,7 @@
                                     <p>These pull requests have a green check mark after the commit title.</p>
                                 </li>
                                 <li>
-                                    <p>If the pull request can be immediately applied we will do so.</p>
+                                    <p>If the pull request can be immediately applied, we will do so.</p>
                                 </li>
                                 <li>
                                     <p>There may need to be some conversation on the issue in which case a committer will follow up with the author in the pull request.</p>

@@ -76,10 +76,10 @@
                     <div class="ulist">
                         <ul>
                             <li>
-                                <p>Large clusters, such as the Facebook Presto</p>
+                                <p>Large clusters, such as Facebook Presto</p>
                             </li>
                             <li>
-                                <p>Cloud computing, such as the Google AppEngine</p>
+                                <p>Cloud computing, such as Google AppEngine</p>
                             </li>
                             <li>
                                 <p>SaaS, such as Yahoo! and Zimbra</p>
@@ -111,7 +111,7 @@
     <br/>
 
     <p>With the direction of Java and the JakartaEE project (formerly JavaEE) in 2020, the current
-        recommended version of Jetty for use depends upon the servlet api version, desired licensing and package
+        recommended version of Jetty for use depends upon the servlet api version, desired licensing, and package
         namespace as well as the intended Java version.</p>
 
     <br/>
@@ -176,11 +176,6 @@
         </tr>
         </tbody>
     </table>
-
-    <br/>
-
-    <p>For more information related to help you make an informed decision, please check the <a
-                href="/jetty/previous_versions.php">TODO</a>.</p>
 
     <br/>
 

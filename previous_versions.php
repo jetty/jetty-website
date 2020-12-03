@@ -22,7 +22,7 @@ $Theme = $App->getThemeClass();
 require_once ('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Jetty Previous Versions";
+$pageTitle = "Previous Jetty Versions";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);

@@ -29,8 +29,8 @@
     <div class="paragraph">
         <p>Mailing lists are a wonderful way to interact with the community at large and for a certain class of issue
             have the best chances of achieving resolution. There are a number of mailing lists available within the
-            Jetty project and a good rule of thumb to choose between the developer and user lists is to ask yourself if
-            your question is broadly interesting to the community, use the users list and if narrowly focused on Jetty
+            Jetty project. A good rule of thumb when choosing between the developer and user lists is to ask yourself who the audience is. If
+            your question is broadly interesting to the community, use the users list, and if narrowly focused on Jetty
             internals or minutiae, then the dev list might be a better option.</p>
     </div>
     <div class="ulist">
@@ -96,9 +96,7 @@
                 <p>Check out the general <a href="https://stackoverflow.com/questions/tagged/jetty">Jetty</a> tag!</p>
             </li>
             <li>
-                <p>The <a href="https://stackoverflow.com/questions/tagged/embedded-jetty">Embedded-Jetty</a> tag has a
-                    fair
-                    amount of traffic as well.</p>
+                <p>The <a href="https://stackoverflow.com/questions/tagged/embedded-jetty">Embedded-Jetty</a> tag is also popular for questions on Jetty internals.</p>
             </li>
         </ul>
     </div>
