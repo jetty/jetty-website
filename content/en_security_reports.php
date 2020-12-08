@@ -24,12 +24,12 @@
             <div class="paragraph">
                 <p>There are a number of avenues for reporting security issues to the Jetty project available.
                     If the issue is directly related to Jetty itself then reporting to the Jetty developers is encouraged.
-                    The most direct method is to mail <em>security@webtide.com</em>.
+                    The most direct method is to mail <a href="mailto:security@webtide.com">security@webtide.com</a>.
                     Since Webtide is comprised of the active committers of the Jetty project this is our preferred reporting method.
                     We are generally flexible in how we work with reporters of security issues but we reserve the right to act in the interests of the Jetty project in all circumstances.</p>
             </div>
             <div class="paragraph">
-                <p>If the issue is related to Eclipse or its Jetty integration then we encourage you to reach out to <em>security@eclipse.org</em>.</p>
+                <p>If the issue is related to Eclipse or its Jetty integration then we encourage you to reach out to <a href="mailto:security@eclipse.org">security@eclipse.org</a>.</p>
             </div>
             <div class="paragraph">
                 <p>If the issue is related to integrations with Jetty we are happy to work with you to identify the proper entity and either of the approaches above is fine.</p>
