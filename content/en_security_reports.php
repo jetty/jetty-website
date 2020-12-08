@@ -43,16 +43,16 @@
             <div class="paragraph">
                 <p>The following sections provide information about Jetty security issues.</p>
             </div>
-            <table class="tableblock frame-all grid-all" style="width: 100%;">
+            <table class="tableblock frame-all grid-all stretch">
                 <caption class="title">Table 1. Resolved Issues</caption>
                 <colgroup>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
+                    <col style="width: 10%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 10%;"/>
+                    <col style="width: 40%;"/>
                 </colgroup>
                 <thead>
                 <tr>
