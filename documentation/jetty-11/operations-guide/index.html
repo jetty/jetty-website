@@ -16,8 +16,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.0.beta3,</span>
-<span id="revdate">2020-10-21</span>
+<span id="revnumber">version 11.0.0,</span>
+<span id="revdate">2020-12-02</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -281,6 +281,38 @@
 </li>
 </ul>
 </li>
+<li><a href="#og-jaas">JAAS</a>
+<ul class="sectlevel3">
+<li><a href="#og-jaas-configuration">Configuration</a>
+<ul class="sectlevel4">
+<li><a href="#og-jaas-module">The <code>jaas</code> module</a></li>
+<li><a href="#og-jaas-webapp">Configure the webapp for JAAS</a></li>
+<li><a href="#og-jaas-loginconf">Configure JAAS</a></li>
+</ul>
+</li>
+<li><a href="#og-jaas-loginmodules">Provided LoginModules</a>
+<ul class="sectlevel4">
+<li><a href="#og-jdbcloginmodule">JDBCLoginModule</a></li>
+<li><a href="#og-datasourceloginmodule">DataSourceLoginModule</a></li>
+<li><a href="#og-propertyfileloginmodule">PropertyFileLoginModule</a></li>
+<li><a href="#og-ldaploginmodule">LdapLoginModule</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#og-jmx">Eclipse Jetty Monitoring &amp; Management</a>
+<ul class="sectlevel3">
+<li><a href="#og-jmx-local">Enabling Local JMX Support</a></li>
+<li><a href="#og-jmx-remote">Enabling Remote JMX Support</a>
+<ul class="sectlevel4">
+<li><a href="#og-jmx-remote-ssh-tunnel">Remote JMX Access with Port Forwarding via SSH Tunnel</a></li>
+<li><a href="#og-jmx-remote-auth">Remote JMX Access Authentication &amp; Authorization</a></li>
+<li><a href="#og-jmx-remote-secure">Securing Remote JMX Access with TLS</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#og-troubleshooting">Eclipse Jetty Troubleshooting</a></li>
 </ul>
 </li>
 </ul>
@@ -313,16 +345,22 @@
 <p><a href="#og-protocols-http2">HTTP/2 Support</a></p>
 </li>
 <li>
+<p><a href="#og-annotations">Annotations</a></p>
+</li>
+<li>
 <p><a href="#og-quickstart">Faster Web Application Deployment</a></p>
 </li>
 <li>
-<p><a href="#og-annotations">Annotations</a></p>
+<p><a href="#og-jaas">JAAS</a></p>
+</li>
+<li>
+<p><a href="#og-jndi">JNDI</a></p>
 </li>
 <li>
 <p><a href="#og-jsp">JSP</a></p>
 </li>
 <li>
-<p><a href="#og-jndi">JNDI</a></p>
+<p><a href="#og-jmx">Monitoring &amp; Management</a></p>
 </li>
 </ul>
 </div>
@@ -362,22 +400,8 @@
 <li>
 <p><a href="#og-protocols-proxy">Configure Jetty Behind a Load Balancer or Reverse Proxy</a></p>
 </li>
-</ul>
-</div>
-<div class="paragraph">
-<p>TODO</p>
-</div>
-<div class="ulist">
-<ul>
 <li>
-<p>Jetty Behind a Load Balancer</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Forward Header Customizer</p>
-</li>
-</ul>
-</div>
+<p><a href="#og-troubleshooting">Troubleshooting</a></p>
 </li>
 </ul>
 </div>
@@ -441,16 +465,16 @@ $ java -jar $JETTY_HOME/start.jar --add-module=server,http,deploy</pre>
 <p>The Eclipse Jetty distribution is available for download from <a href="https://www.eclipse.org/jetty/download.html" class="bare">https://www.eclipse.org/jetty/download.html</a></p>
 </div>
 <div class="paragraph">
-<p>The Eclipse Jetty distribution is available in both <code>zip</code> and <code>gzip</code> formats; download the one most appropriate for your system, typically <code>zip</code> for Windows and <code>gzip</code> for other operative systems.</p>
+<p>The Eclipse Jetty distribution is available in both <code>zip</code> and <code>gzip</code> formats; download the one most appropriate for your system, typically <code>zip</code> for Windows and <code>gzip</code> for other operating systems.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Eclipse Jetty</a></h4>
 <div class="paragraph">
-<p>After the download, unpacking the Eclipse Jetty distribution will extract the files into a directory called <code>jetty-distribution-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.0</code>, so that the directory is called <code>jetty-distribution-10.0.0</code>.</p>
+<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.0</code>, so that the directory is called <code>jetty-home-10.0.0</code>.</p>
 </div>
 <div class="paragraph">
-<p>Unpack the Eclipse Jetty distribution compressed file in a convenient location, for example under <code>/opt</code>.</p>
+<p>Unpack Eclipse Jetty compressed file in a convenient location, for example under <code>/opt</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -481,8 +505,8 @@ Versions that have been deprecated or are released as Milestones (M), Alpha, Bet
 </table>
 </div>
 <div class="paragraph">
-<p>If you are new to Jetty, read the <a href="#og-begin-arch">Jetty architecture short section</a> to become familiar with the terms used in this document.
-Otherwise, you can jump to the <a href="#og-begin-start">start Jetty section</a>.</p>
+<p>If you are new to Jetty, you should read the <a href="#og-begin-arch">Jetty architecture section below</a> to become familiar with the terms used in this documentation.
+Otherwise, you can jump to the <a href="#og-begin-start">section on starting Jetty</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -493,15 +517,15 @@ Otherwise, you can jump to the <a href="#og-begin-start">start Jetty section</a>
 <div class="ulist">
 <ul>
 <li>
-<p>the <a href="#og-begin-arch-modules">Jetty <em>module</em> system</a>, that provides the Jetty features</p>
+<p>The <a href="#og-begin-arch-modules">Jetty <em>module</em> system</a>, that provides the Jetty features</p>
 </li>
 <li>
-<p>the <a href="#og-begin-arch-jetty-base"><code>$JETTY_BASE</code> directory</a>, that provides a place where you configure the modules, and therefore the features, you need for your web applications</p>
+<p>The <a href="#og-begin-arch-jetty-base"><code>$JETTY_BASE</code> directory</a>, that provides a place where you configure the modules, and therefore the features you need for your web applications</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>After installing Jetty, you want to setup a <a href="#og-begin-arch-jetty-base"><code>$JETTY_BASE</code> directory</a> where you configure <a href="#og-begin-arch-modules">Jetty modules</a>.</p>
+<p>After installing Jetty, you will want to set up a <a href="#og-begin-arch-jetty-base"><code>$JETTY_BASE</code> directory</a> where you configure <a href="#og-begin-arch-modules">Jetty modules</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="og-begin-arch-modules"><a class="anchor" href="#og-begin-arch-modules"></a><a class="link" href="#og-begin-arch-modules">Eclipse Jetty Architecture: Modules</a></h5>
@@ -512,14 +536,14 @@ Otherwise, you can jump to the <a href="#og-begin-start">start Jetty section</a>
 <p>A Jetty <em>module</em> is made of one or more components that work together to provide typically one feature, although they may provide more than one feature.</p>
 </div>
 <div class="paragraph">
-<p>A Jetty module is nothing more than Jetty components assembled together like you would do using Java APIs, just done in a declarative way using configuration files rather than using Java APIs.
-What you can do in Java code to assemble Jetty components, it can be done using Jetty modules.</p>
+<p>A Jetty module is nothing more than Jetty components assembled together like you would do using Java APIs, just done in a declarative way using configuration files.
+What you can do in Java code to assemble Jetty components can be done using Jetty modules.</p>
 </div>
 <div class="paragraph">
-<p>A Jetty module may be dependent on other Jetty modules: for example, the <code>http</code> Jetty module depends on the <code>server</code> Jetty module, that in turn depends on the <code>threadpool</code> and <code>logging</code> Jetty modules.</p>
+<p>A Jetty module may be dependent on other Jetty modules: for example, the <code>http</code> Jetty module depends on the <code>server</code> Jetty module which in turn depends on the <code>threadpool</code> and <code>logging</code> Jetty modules.</p>
 </div>
 <div class="paragraph">
-<p>Every feature in a Jetty server is enabled by enabling correspondent Jetty modules.</p>
+<p>Every feature in a Jetty server is enabled by enabling the corresponding Jetty module(s).</p>
 </div>
 <div class="paragraph">
 <p>For example, if you enable only the <code>http</code> Jetty module, then your Jetty standalone server will only be able to listen to a network port for clear-text HTTP requests.
@@ -529,7 +553,7 @@ It will not be able to process secure HTTP (i.e. <code>https</code>) requests, i
 <p>You can even start a Jetty server <em>without</em> listening on a network port&#8201;&#8212;&#8201;for example because you have enabled a custom module you wrote that provides the features you need.</p>
 </div>
 <div class="paragraph">
-<p>This allows the Jetty standalone server to be as small as necessary: modules that are not enabled are not loaded, don&#8217;t waste memory, and you don&#8217;t risk that client use a module that you did not know was even there.</p>
+<p>This allows the Jetty standalone server to be as small as necessary: modules that are not enabled are not loaded, don&#8217;t waste memory, and you don&#8217;t risk a client using a module that you did not know was even there.</p>
 </div>
 <div class="paragraph">
 <p>For more detailed information about the Jetty module system, see <a href="#og-modules">this section</a>.</p>
@@ -548,7 +572,7 @@ There should always only be <strong>one</strong> Jetty Home (per version of Jett
 </div>
 <div class="paragraph">
 <p>For example, with the <code>$JETTY_HOME</code> installation the default value for the network port for clear-text HTTP is <code>8080</code>.
-However, you want that port to be <code>6060</code>, for example because you are behind a load balancer that is configured to forward to the backend on port <code>6060</code>.</p>
+However, you want that port to be <code>6060</code>, because you are behind a load balancer that is configured to forward to the backend on port <code>6060</code>.</p>
 </div>
 <div class="paragraph">
 <p>Instead, you want to configure the clear-text HTTP port in your <code>$JETTY_BASE</code>.
@@ -992,18 +1016,33 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 <p>TODO: review in light of Jetty 10</p>
 </div>
 <div class="paragraph">
-<p>The most basic way of starting the Jetty standalone server is to execute the <code>start.jar</code>, which is a bootstrap for starting Jetty with the configuration you want.</p>
+<p>The most basic way of starting the Jetty standalone server is to execute the <code>start.jar</code> from a base directory containing
+the configuration of jetty:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>[jetty-distribution-{VERSION}]$ java -jar start.jar
-2013-09-23 11:27:06.654:INFO:oejs.Server:main: jetty-{VERSION}
+<pre>[] mkdir /var/jetty-base
+[] cd /var/jetty-base
+[] java -jar $JETTY_HOME/start.jar
+ERROR : No enabled jetty modules found!
 ...</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Jetty is a highly modularized web server container.
-Very little is mandatory and required, and most components are optional; you enable or disable them according to the needs of your environment.</p>
+<p>Jetty is a highly modularized web server container. Very little is mandatory and required, and most components are optional; you enable or disable them according to the needs of your environment. You use start.jar to configure the modules:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[] java -jar $JETTY_HOME/start.jar --add-module=http
+...
+INFO  : http            initialized in ${jetty.base}/start.d/http.ini
+...
+
+[] java -jar $JETTY_HOME/start.jar
+2020-12-02 09:31:45.563:INFO :oejs.Server:main: jetty-10.0.0; built: 2020-11-30T14:38:10.953Z; git: cac070fdb134df192252e99653d99d7c3fb91b87; jvm 15.0.1+9
+2020-12-02 09:31:45.601:INFO :oejs.AbstractConnector:main: Started ServerConnector@3eb7fc54{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+2020-12-02 09:31:45.615:INFO :oejs.Server:main: Started Server@55a561cf{STARTING}[10.0.0,sto=5000] @760ms</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>At its most basic, you configure Jetty from two elements:</p>
@@ -1350,7 +1389,7 @@ $ dot -Tpng -o modules.png modules.dot</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>See <a href="http://graphviz.org/">graphviz.org</a> for details on <a href="http://graphviz.org/content/command-line-invocation">how to post-process this dotty file</a> into the output best suited for your needs.</p>
+<p>See <a href="http://graphviz.org/">graphviz.org</a> for details on how to post-process this dotty file into the output best suited for your needs.</p>
 </div>
 </dd>
 <dt class="hdlist1">--create-files</dt>
@@ -1677,7 +1716,7 @@ Recall that the <code>DeploymentManager</code> component of the Jetty <code>depl
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1818,7 +1857,7 @@ By using virtual hosts, you will be able to have the first web application avail
 <p>Another typical case is when you want to use different subdomains for different web application, for example a project website is at <code>http://project.org/</code> and the project documentation is at <code>http://docs.project.org</code>.</p>
 </div>
 <div class="paragraph">
-<p>Virtual hosts can be used with any context that is a subclass of <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a>.</p>
+<p>Virtual hosts can be used with any context that is a subclass of <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="og-deploy-virtual-hosts-names"><a class="anchor" href="#og-deploy-virtual-hosts-names"></a><a class="link" href="#og-deploy-virtual-hosts-names">Virtual Host Names</a></h5>
@@ -1843,7 +1882,7 @@ By using virtual hosts, you will be able to have the first web application avail
 <dt class="hdlist1"><code>@ConnectorName</code></dt>
 <dd>
 <p>A Jetty <code>ServerConnector</code> name to indicate that a web application should handle requests received on the <code>ServerConnector</code> with that name, and therefore received on a specific IP port.
-A <code>ServerConnector</code> name can be set via <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)" class="bare">http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)</a>.</p>
+A <code>ServerConnector</code> name can be set via <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)" class="bare">http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)</a>.</p>
 </dd>
 <dt class="hdlist1"><code>www.√integral.com</code></dt>
 <dd>
@@ -2677,7 +2716,7 @@ etc/tls-config.xml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 <p>The <code>tls-config.xml</code> file references the <code>sslContextFactory</code> component (created by the <code>ssl</code> Jetty module) that configures the KeyStore and TLS parameters, so that you can now call its APIs via XML, and you will have full flexibility for any advanced configuration you want (see below for few examples).</p>
 </div>
 <div class="paragraph">
-<p>Refer to the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/util/ssl/SslContextFactory.html">SslContextFactory javadocs</a> for the list of methods that you can call through the Jetty XML file.</p>
+<p>Refer to the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/util/ssl/SslContextFactory.html">SslContextFactory javadocs</a> for the list of methods that you can call through the Jetty XML file.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -6965,7 +7004,7 @@ Here&#8217;s an example context xml file that calls this method:</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -7011,7 +7050,7 @@ The value of this attribute is a regular expression.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -7063,7 +7102,7 @@ However, be careful if your webapp uses a <code>ServletContainerInitializer</cod
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -7185,7 +7224,7 @@ Here&#8217;s an example of setting the context attribute in a context xml file:<
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -7238,7 +7277,7 @@ It will match all <code>ServletContainerInitializer</code> classes not explicitl
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -7660,7 +7699,7 @@ You will need to preserve the existing value of the attribute, and add in your e
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -8055,7 +8094,7 @@ The transaction manager is looked up by the application as <code>java:comp/UserT
 <p>Jetty does not ship with a JTA manager, but <em>does</em> provide the infrastructure to plug in the JTA manager of your choice.</p>
 </div>
 <div class="paragraph">
-<p>Use the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0.beta3/org/eclipse/jetty/plus/jndi/Transaction.html">org.eclipse.jetty.plus.jndi.Transaction</a> object in a <a href="#og-jndi-xml">Jetty XML file</a> to configure the JTA manager.</p>
+<p>Use the <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/plus/jndi/Transaction.html">org.eclipse.jetty.plus.jndi.Transaction</a> object in a <a href="#og-jndi-xml">Jetty XML file</a> to configure the JTA manager.</p>
 </div>
 <div class="paragraph">
 <p>The following example configures the <a href="http://www.atomikos.com/">Atomikos</a> transaction manager:</p>
@@ -8261,13 +8300,1037 @@ For example:</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="og-jaas"><a class="anchor" href="#og-jaas"></a><a class="link" href="#og-jaas">JAAS</a></h3>
+<div class="paragraph">
+<p>JAAS implements a Java version of the standard Pluggable Authentication Module (PAM) framework.</p>
+</div>
+<div class="paragraph">
+<p>JAAS can be used for two purposes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>for authentication of users, to reliably and securely determine who is currently executing Java code, regardless of whether the code is running as an application, an applet, a bean, or a servlet</p>
+</li>
+<li>
+<p>for authorization of users to ensure they have the access control rights (permissions) required to do the actions performed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>JAAS authentication is performed in a pluggable fashion.
+This permits applications to remain independent from underlying authentication technologies.
+New or updated authentication technologies can be plugged under an application without requiring modifications to the application itself.</p>
+</div>
+<div class="paragraph">
+<p>See Java Authentication and Authorization Service (JAAS) <a href="http://java.sun.com/javase/7/docs/technotes/guides/security/jaas/JAASRefGuide.html">Reference Guide</a> for more information about JAAS.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty JAAS support aims to dictate as little as possible whilst providing a sufficiently flexible infrastructure to allow users to drop either one of the <a href="#og-jaas-loginmodules">JAAS Login Modules that ships with Jetty</a>, or their
+own custom <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/auth/spi/LoginModule.html">LoginModules</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="og-jaas-configuration"><a class="anchor" href="#og-jaas-configuration"></a><a class="link" href="#og-jaas-configuration">Configuration</a></h4>
+<div class="sect4">
+<h5 id="og-jaas-module"><a class="anchor" href="#og-jaas-module"></a><a class="link" href="#og-jaas-module">The <code>jaas</code> module</a></h5>
+<div class="paragraph">
+<p>Enable the <code>jaas</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JAAS for deployed web applications.
+
+[depend]
+server
+
+[lib]
+lib/jetty-jaas-${jetty.version}.jar
+
+[xml]
+etc/jetty-jaas.xml
+
+[ini-template]
+## The file location (relative to $jetty.base) for the
+## JAAS "java.security.auth.login.config" system property
+# jetty.jaas.login.conf=etc/login.conf</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configurable items in the resulting <code>$jetty.base/start.d/jaas.ini</code> file are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">jetty.jaas.login.conf</dt>
+<dd>
+<p>This is the location of the file that will be referenced by the System property <code>java.security.auth.login.config</code>: Jetty sets this System property for you based on the value of this property.
+The value of this property is assumed to be <em>relative to the <code>$jetty.base</code></em>.
+The default value is <code>etc/login.conf</code>, which resolves to  <code>$jetty.base/etc/login.conf</code>.
+If you don&#8217;t want to put your login module configuration file here, you can change this property to point to where it is.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>See more about the contents of this file in the <a href="#og-jaas-loginconf">Configuring JAAS</a> section.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jaas-webapp"><a class="anchor" href="#og-jaas-webapp"></a><a class="link" href="#og-jaas-webapp">Configure the webapp for JAAS</a></h5>
+<div class="paragraph">
+<p>The <code>&lt;realm-name&gt;</code> in <code>web.xml</code> will be used to identify the <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration that integrates JAAS with Jetty.</p>
+</div>
+<div class="paragraph">
+<p>For example, this <code>web.xml</code> contains a realm called <code>Test JAAS Realm</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;login-config&gt;
+  &lt;auth-method&gt;FORM&lt;/auth-method&gt;
+  &lt;realm-name&gt;Test JAAS Realm&lt;/realm-name&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;form-login-config&gt;
+    &lt;form-login-page&gt;/login/login&lt;/form-login-page&gt;
+    &lt;form-error-page&gt;/login/error&lt;/form-error-page&gt;
+  &lt;/form-login-config&gt;
+&lt;/login-config&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the realm, which must be <em>identical</em> to the name of an <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We now need to declare an <code>org.eclipse.jetty.jaas.JAASLoginService</code> that references the realm name of <code>Test JAAS Realm</code>.
+Here&#8217;s an example of a suitable XML snippet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;New class="org.eclipse.jetty.jaas.JAASLoginService"&gt;
+  &lt;Set name="Name"&gt;Test JAAS Realm&lt;/Set&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;Set name="LoginModuleName"&gt;xyz&lt;/Set&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+&lt;/New&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name is the <em>same</em> as that declared in the <code>&lt;realm-name&gt;</code> in <code>web.xml</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name that identifies a set of <code>javax.security.auth.spi.LoginModule</code> configurations that comprise the <a href="#og-jaas-loginconf">JAAS config file</a> identified in the <code>jetty.jaas.login.conf</code> property of the <a href="#og-jaas-module"><code>jaas</code> module</a>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>org.eclipse.jetty.jaas.JAASLoginService</code> can be declared in a couple of different places, pick whichever suits your purposes best:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you have more than one webapp that you would like to use the same security infrastructure, then you can declare your <code>org.eclipse.jetty.jaas.JAASLoginService</code> as a bean that is added to the <code>org.eclipse.jetty.server.Server</code>.
+The file in which you declare this needs to be on Jetty&#8217;s execution path.
+The recommended procedure is to create a file in your <code>$jetty.base/etc</code> directory and then ensure it is on the classpath either by adding it to the Jetty <a href="#og-start-jar">start command line</a>, or more conveniently to a <a href="#custom-modules">custom module</a>.</p>
+<div class="paragraph">
+<p>Here&#8217;s an example of this type of XML file:</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+
+  &lt;Call name="addBean"&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.eclipse.jetty.jaas.JAASLoginService"&gt;
+        &lt;Set name="name"&gt;Test JAAS Realm&lt;/Set&gt;
+        &lt;Set name="LoginModuleName"&gt;xyz&lt;/Set&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+
+&lt;/Configure&gt;</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Alternatively, if you want to use JAAS with a specific webapp only, you declare your <code>org.eclipse.jetty.jaas.JAASLoginService</code> in a context XLM file specific to that webapp:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://www.eclipse.org/jetty/configure_10_0.dtd"&gt;
+
+&lt;Configure class="org.eclipse.jetty.webapp.WebAppContext"&gt;
+
+  &lt;Set name="securityHandler"&gt;
+    &lt;New class="org.eclipse.jetty.security.ConstraintSecurityHandler"&gt;
+     &lt;Set name="loginService"&gt;
+       &lt;New class="org.eclipse.jetty.jaas.JAASLoginService"&gt;
+         &lt;Set name="name"&gt;Test JAAS Realm&lt;/Set&gt;
+         &lt;Set name="loginModuleName"&gt;xyz&lt;/Set&gt;
+       &lt;/New&gt;
+     &lt;/Set&gt;
+    &lt;/New&gt;
+  &lt;/Set&gt;
+
+&lt;/Configure&gt;</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jaas-loginconf"><a class="anchor" href="#og-jaas-loginconf"></a><a class="link" href="#og-jaas-loginconf">Configure JAAS</a></h5>
+<div class="paragraph">
+<p>We now need to setup the contents of the file we specified as the <code>jetty.jaas.login.conf</code> property when we <a href="#og-jaas-module">configured the <code>jaas</code> module</a>.
+Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/auth/login/Configuration.html">syntax rules</a> of this file for a full description.</p>
+</div>
+<div class="paragraph">
+<p>Remembering the example we set up <a href="#og-jaas-webapp">previously</a>, the contents of the <code>$jetty.base/etc/login.conf</code> file could look as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ini" data-lang="ini">xyz  { <i class="conum" data-value="1"></i><b>(1)</b>
+       com.acme.SomeLoginModule required debug=true; <i class="conum" data-value="2"></i><b>(2)</b>
+       com.other.OtherLoginModule optional; <i class="conum" data-value="3"></i><b>(3)</b>
+     };</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the configuration <em>exactly</em> as specified in your <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The first <code>LoginModule</code> declaration, containing the classname of the <code>LoginModule</code> and its configuration properties.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A second <code>LoginModule</code> declaration.
+You can provide as many <code>LoginModule</code> alternatives as you like, with a minimum of one.
+Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/auth/login/Configuration.html">JAAS documentation</a> for more information on the standard configuration properties, and how JAAS interprets this file.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-jaas-loginmodules"><a class="anchor" href="#og-jaas-loginmodules"></a><a class="link" href="#og-jaas-loginmodules">Provided LoginModules</a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/jaas/spi/JDBCLoginModule.html"><code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code></a></p>
+</li>
+<li>
+<p><a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/jaas/spi/PropertyFileLoginModule.html"><code>org.eclipse.jetty.jaas.spi.PropertyFileLoginModule</code></a></p>
+</li>
+<li>
+<p><a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/jaas/spi/DataSourceLoginModule.html"><code>org.eclipse.jetty.jaas.spi.DataSourceLoginModule</code></a></p>
+</li>
+<li>
+<p><a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/jaas/spi/LdapLoginModule.html"><code>org.eclipse.jetty.jaas.ldap.LdapLoginModule</code></a></p>
+</li>
+</ul>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Passwords can be stored in clear text, obfuscated or checksummed.
+The class <a href="http://www.eclipse.org/jetty/javadoc/11.0.0/org/eclipse/jetty/util/security/Password.html"><code>org.eclipse.jetty.util.security.Password</code></a> should be used to generate all varieties of passwords,the output from which can be put in to property files or entered into database tables.
+</td>
+</tr>
+</table>
+</div>
+</blockquote>
+</div>
+<div class="sect4">
+<h5 id="og-jdbcloginmodule"><a class="anchor" href="#og-jdbcloginmodule"></a><a class="link" href="#og-jdbcloginmodule">JDBCLoginModule</a></h5>
+<div class="paragraph">
+<p>The <code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code> stores user passwords and roles in a database accessed via JDBC calls.
+You can configure the JDBC connection information, as well as the names of the table and columns storing the username and credential, and the names of the table and columns storing the roles.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example <a href="#og-jaas-loginconf">login module configuration file</a> entry for it using an HSQLDB driver:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ini" data-lang="ini">jdbc { <i class="conum" data-value="1"></i><b>(1)</b>
+      org.eclipse.jetty.jaas.spi.JDBCLoginModule required <i class="conum" data-value="2"></i><b>(2)</b><i class="conum" data-value="3"></i><b>(3)</b>
+      dbUrl="jdbc:hsqldb:." <i class="conum" data-value="4"></i><b>(4)</b>
+      dbUserName="sa" <i class="conum" data-value="5"></i><b>(5)</b>
+      dbDriver="org.hsqldb.jdbcDriver" <i class="conum" data-value="6"></i><b>(6)</b>
+      userTable="myusers" <i class="conum" data-value="7"></i><b>(7)</b>
+      userField="myuser" <i class="conum" data-value="8"></i><b>(8)</b>
+      credentialField="mypassword" <i class="conum" data-value="9"></i><b>(9)</b>
+      userRoleTable="myuserroles" <i class="conum" data-value="10"></i><b>(10)</b>
+      userRoleUserField="myuser" <i class="conum" data-value="11"></i><b>(11)</b>
+      userRoleRoleField="myrole"; <i class="conum" data-value="12"></i><b>(12)</b>
+      };</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the <code>LoginModule</code> class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A standard JAAS flag making successful authentication via this <code>LoginModule</code> mandatory.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The JDBC url used to connect to the database.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The name of the JDBC user to use for the connection.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The name of the JDBC Driver class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The name of the table holding the user authenication information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The name of the column holding the user name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>The name of the column holding the user credential.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The name of the table holding the user authorization information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>The name of the column holding the user name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>The name of the column holding the user role.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The properties <strong>7</strong>-<strong>12</strong> are used to format the following queries:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sql" data-lang="sql">  select &lt;credentialField&gt; from &lt;userTable&gt;
+          where &lt;userField&gt; =?
+  select &lt;userRoleRoleField&gt; from &lt;userRoleTable&gt;
+          where &lt;userRoleUserField&gt; =?</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Credential and role information is lazily read from the database when a previously unauthenticated user requests authentication.
+Note that this information is <em>only</em> cached for the length of the authenticated session.
+When the user logs out or the session expires, the information is flushed from memory.</p>
+</div>
+<div class="paragraph">
+<p>Note that passwords can be stored in the database in plain text or encoded formats - see the note on "Passwords/Credentials" above.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-datasourceloginmodule"><a class="anchor" href="#og-datasourceloginmodule"></a><a class="link" href="#og-datasourceloginmodule">DataSourceLoginModule</a></h5>
+<div class="paragraph">
+<p>Similar to the <code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code>, but using a <code>javax.sql.DataSource</code> to connect to the database instead of a JDBC driver.
+The <code>javax.sql.DataSource</code> is obtained at runtime by performing a JNDI lookup on <code>java:comp/env/${dnJNDIName}</code>.</p>
+</div>
+<div class="paragraph">
+<p>A sample login module configuration for this <code>LoginModule</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ds { <i class="conum" data-value="1"></i><b>(1)</b>
+     org.eclipse.jetty.jaas.spi.DataSourceLoginModule required <i class="conum" data-value="2"></i><b>(2)</b><i class="conum" data-value="3"></i><b>(3)</b>
+     dbJNDIName="ds" <i class="conum" data-value="4"></i><b>(4)</b>
+     userTable="myusers" <i class="conum" data-value="5"></i><b>(5)</b>
+     userField="myuser" <i class="conum" data-value="6"></i><b>(6)</b>
+     credentialField="mypassword" <i class="conum" data-value="7"></i><b>(7)</b>
+     userRoleTable="myuserroles" <i class="conum" data-value="8"></i><b>(8)</b>
+     userRoleUserField="myuser" <i class="conum" data-value="9"></i><b>(9)</b>
+     userRoleRoleField="myrole"; <i class="conum" data-value="10"></i><b>(10)</b>
+    };</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the <code>LoginModule</code> class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A standard JAAS flag making successful authentication via this <code>LoginModule</code> mandatory.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The JNDI name, relative to <code>java:comp/env/</code> to lookup to obtain the <code>javax.sql.DataSource</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The name of the table holding the user authenication information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The name of the column holding the user name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The name of the column holding the user credential.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The name of the table holding the user authorization information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>The name of the column holding the user name.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>The name of the column holding the user role.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-propertyfileloginmodule"><a class="anchor" href="#og-propertyfileloginmodule"></a><a class="link" href="#og-propertyfileloginmodule">PropertyFileLoginModule</a></h5>
+<div class="paragraph">
+<p>With this login module implementation, the authentication and role information is read from a property file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>props { <i class="conum" data-value="1"></i><b>(1)</b>
+        org.eclipse.jetty.jaas.spi.PropertyFileLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b><i class="conum" data-value="3"></i><b>(3)</b>
+        file="/somewhere/somefile.props"; <i class="conum" data-value="4"></i><b>(4)</b>
+      };</pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the <code>LoginModule</code> class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A standard JAAS flag making successful authentication via this <code>LoginModule</code> mandatory.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The location of a properties file containing the authentication and authorization information.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The property file must be of the format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-text subs=verbatim" data-lang="text subs=verbatim">&lt;username&gt;: &lt;password&gt; [,&lt;rolename&gt; ...]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ini" data-lang="ini">fred: OBF:1xmk1w261u9r1w1c1xmq,user,admin
+harry: changeme,user,developer
+tom: MD5:164c88b302622e17050af52c89945d44,user
+dick: CRYPT:adpexzg3FUZAk,admin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The contents of the file are fully read in and cached in memory the first time a user requests authentication.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-ldaploginmodule"><a class="anchor" href="#og-ldaploginmodule"></a><a class="link" href="#og-ldaploginmodule">LdapLoginModule</a></h5>
+<div class="paragraph">
+<p>The <code>org.eclipse.jetty.jaas.spi.LdapLoginModule</code> uses LDAP to access authentication and authorization information stored in a directory.
+The LDAP connection information and structure of the authentication/authorization data can be configured.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ini" data-lang="ini">example  { <i class="conum" data-value="1"></i><b>(1)</b>
+   org.eclipse.jetty.jaas.spi.LdapLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b><i class="conum" data-value="3"></i><b>(3)</b>
+   contextFactory="com.sun.jndi.ldap.LdapCtxFactory" <i class="conum" data-value="4"></i><b>(4)</b>
+   hostname="ldap.example.com" <i class="conum" data-value="5"></i><b>(5)</b>
+   port="389" <i class="conum" data-value="6"></i><b>(6)</b>
+   bindDn="cn=Directory Manager" <i class="conum" data-value="7"></i><b>(7)</b>
+   bindPassword="directory" <i class="conum" data-value="8"></i><b>(8)</b>
+   authenticationMethod="simple" <i class="conum" data-value="9"></i><b>(9)</b>
+   useLdaps="true" <i class="conum" data-value="10"></i><b>(10)</b>
+   userBaseDn="ou=people,dc=alcatel" <i class="conum" data-value="11"></i><b>(11)</b>
+   userRdnAttribute="uid" <i class="conum" data-value="12"></i><b>(12)</b>
+   userIdAttribute="cn" <i class="conum" data-value="13"></i><b>(13)</b>
+   userPasswordAttribute="userPassword" <i class="conum" data-value="14"></i><b>(14)</b>
+   userObjectClass="inetOrgPerson" <i class="conum" data-value="15"></i><b>(15)</b>
+   roleBaseDn="ou=groups,dc=example,dc=com" <i class="conum" data-value="16"></i><b>(16)</b>
+   roleNameAttribute="cn" <i class="conum" data-value="17"></i><b>(17)</b>
+   roleMemberAttribute="uniqueMember" <i class="conum" data-value="18"></i><b>(18)</b>
+   roleObjectClass="groupOfUniqueNames"; <i class="conum" data-value="19"></i><b>(19)</b>
+   forceBindingLogin="false" <i class="conum" data-value="20"></i><b>(20)</b>
+   debug="false" <i class="conum" data-value="21"></i><b>(21)</b>
+   };</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the configuration.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the <code>LoginModule</code> class.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A standard JAAS flag making successful authentication via this <code>LoginModule</code> mandatory.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The name of the context factory to use for the LDAP connection.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The hostname for the LDAP connection. Optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The port for the LDAP connection. Optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The caller security Principal. Optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>The caller security credential. Optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>The security level for the LDAP connection environment. Optional.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
+<td>If true, use <code>ldaps</code> instead of <code>ldap</code> for the connection url.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="11"></i><b>11</b></td>
+<td>The distinguished name of the directory to search for user information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="12"></i><b>12</b></td>
+<td>The name of the attribute for the user roles.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="13"></i><b>13</b></td>
+<td>The name of the attribute for the user id.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="14"></i><b>14</b></td>
+<td>The name of the attribute for the user password.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="15"></i><b>15</b></td>
+<td>The <code>ObjectClass</code> for users.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="16"></i><b>16</b></td>
+<td>The distinguished name of the directory to search for role information.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="17"></i><b>17</b></td>
+<td>The name of the attribute for roles.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="18"></i><b>18</b></td>
+<td>The name of the attribute storing the user for the roles <code>ObjectClass</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="19"></i><b>19</b></td>
+<td>The name of the <code>ObjectClass</code> for roles.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="20"></i><b>20</b></td>
+<td>If true, the authentication proceeds on the basis of a successful LDAP binding using the username and credential provided by the user.
+If false, then authentication proceeds based on username and password information retrieved from LDAP.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="21"></i><b>21</b></td>
+<td>If true, failed login attempts are logged on the server.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-jmx"><a class="anchor" href="#og-jmx"></a><a class="link" href="#og-jmx">Eclipse Jetty Monitoring &amp; Management</a></h3>
+<div class="paragraph">
+<p>Monitoring and management of a Jetty server is important because it allows you to monitor the status of the server (<em>"Is the server processing requests?"</em>) and to manage&#8201;&#8212;&#8201;i.e. read and possibly change&#8201;&#8212;&#8201;its configuration.</p>
+</div>
+<div class="paragraph">
+<p>The ability to read and change the Jetty configuration is very important for troubleshooting Jetty&#8201;&#8212;&#8201;please refer to the <a href="#og-troubleshooting">troubleshooting section</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>Jetty relies on the Java Management Extensions (JMX) APIs included in OpenJDK to provide monitoring and management.</p>
+</div>
+<div class="paragraph">
+<p>The JMX APIs support a JVM-local <code>MBeanServer</code>, accessible only from within the JVM itself (or by tools that can <em>attach</em> to a running JVM), and a way to expose the <code>MBeanServer</code> to remote clients via Java&#8217;s RMI (Remote Method Invocation).</p>
+</div>
+<div class="sect3">
+<h4 id="og-jmx-local"><a class="anchor" href="#og-jmx-local"></a><a class="link" href="#og-jmx-local">Enabling Local JMX Support</a></h4>
+<div class="paragraph">
+<p>As with many other Jetty features, local JMX support is enabled with the <code>jmx</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=jmx</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the <code>jmx</code> Jetty module enabled, Jetty components will be exported as JMX <em>MBeans</em> to the JVM platform <code>MBeanServer</code>, so that they can be accessed by JMX compliant tools.</p>
+</div>
+<div class="paragraph">
+<p>Each Jetty component will export to its correspondent MBean relevant configuration parameters, so that a JMX tool can read and possibly change the component configuration through the MBean.</p>
+</div>
+<div class="paragraph">
+<p>Note that the Jetty MBeans are registered into the platform <code>MBeanServer</code>, but are not available to remote clients: they are <em>local</em> to the JVM.</p>
+</div>
+<div class="paragraph">
+<p>This configuration is useful when you develop and test your Jetty server locally.</p>
+</div>
+<div class="paragraph">
+<p>JMX compliant tools such as <a href="https://adoptopenjdk.net/jmc.html">Java Mission Control (JMC)</a> can be started locally on your machine and can attach to other JVMs running on your machine, showing you the registered MBeans among which you will find the Jetty MBeans.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Enabling only the local JMX support is the most secure option for monitoring and management, but only users that have local access to the JVM will be able to browse the MBeans.
+If you need to access the MBeans from a remote machine, read <a href="#og-jmx-remote">this section</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-jmx-remote"><a class="anchor" href="#og-jmx-remote"></a><a class="link" href="#og-jmx-remote">Enabling Remote JMX Support</a></h4>
+<div class="paragraph">
+<p>There are two ways to configure a Jetty server so that it is possible to access the JVM platform MBeans from remote clients:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use the <code>com.sun.management.jmxremote</code> and related system properties when starting Jetty.
+Unfortunately, this solution does not work well with firewalls, and will not be discussed further.</p>
+</li>
+<li>
+<p>Use the <code>jmx-remote</code> Jetty module.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both ways use Java&#8217;s Remote Method Invocation (RMI) to communicate between the client and the server.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="title">Refresher: How RMI Works</div>
+<div class="paragraph">
+<p>A server application that wants to make an object available to remote clients must <em>export</em> the object.</p>
+</div>
+<div class="paragraph">
+<p>Exporting an object creates an RMI <em>stub</em> that contains the host/port of the RMI <em>server</em> that accepts incoming invocations from clients and forwards them to the object.
+During the creation of the RMI stub, the host stored in the RMI stub is retrieved from the local name resolution system (for example, in Linux, from <code>/etc/hosts</code>).</p>
+</div>
+<div class="paragraph">
+<p>The RMI stub is then sent, along with a name that uniquely identifies the object, to the RMI <em>registry</em>.
+The RMI registry is a service that maps names to RMI stubs; it may be external to both clients and server, although often it is part of the server JVM.</p>
+</div>
+<div class="paragraph">
+<p>When a client application wants to connect to the server object using RMI, it first connects to the RMI registry to download the RMI stub for the RMI server; recall that the RMI stub contains the host/port to connect to the RMI server.
+Then, the client uses the RMI stub to connect to the RMI server, typically to a host/port that may be different from the RMI registry host/port (in particular, by default the RMI server port will be different from the RMI registry port).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Remote access to the platform MBeans, and therefore the Jetty MBeans, is enabled by the <code>jmx-remote</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=jmx-remote</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command creates the <code>jmx-remote.ini</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>JETTY_BASE
+└── start.d
+    └── <mark>jmx-remote.ini</mark></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Enabling the <code>jmx-remote</code> module transitively enables the <a href="#og-jmx-local"><code>jmx</code> module</a> as well.</p>
+</div>
+<div class="paragraph">
+<p>The configuration for the RMI registry and the RMI server is specified by a <code>JMXServiceURL</code>.
+The string format of an RMI <code>JMXServiceURL</code> is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>service:jmx:rmi://&lt;rmi_server_host&gt;:&lt;rmi_server_port&gt;/jndi/rmi://&lt;rmi_registry_host&gt;:&lt;rmi_registry_port&gt;/jmxrmi</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Below you can find examples of <code>JMXServiceURL</code>s:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code><strong>service:jmx:rmi:///jndi/rmi:///jmxrmi</strong>
+where:
+  rmi_server_host = local host address
+  rmi_server_port = randomly chosen
+  rmi_registry_host = local host address
+  rmi_registry_port = 1099
+
+<strong>service:jmx:rmi://0.0.0.0:1099/jndi/rmi://0.0.0.0:1099/jmxrmi</strong>
+where:
+  rmi_server_host = any address
+  rmi_server_port = 1099
+  rmi_registry_host = any address
+  rmi_registry_port = 1099
+
+<strong>service:jmx:rmi://localhost:1100/jndi/rmi://localhost:1099/jmxrmi</strong>
+where:
+  rmi_server_host = loopback address
+  rmi_server_port = 1100
+  rmi_registry_host = loopback address
+  rmi_registry_port = 1099</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default <code>JMXServiceURL</code> configured by the <code>jmx-remote</code> module is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>service:jmx:rmi://localhost:1099/jndi/rmi://localhost:1099/jmxrmi</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the default configuration, only clients that are local to the server machine can connect to the RMI registry and RMI server - this is done for security reasons.
+However, even with this local-only configuration, it would still be possible to access the MBeans from remote using an SSH tunnel, as explained in <a href="#og-jmx-remote-ssh-tunnel">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>By specifying an appropriate <code>JMXServiceURL</code>, you can fine tune the network address the RMI registry and the RMI server bind to, and the ports that the RMI registry and the RMI server listen to.
+The RMI server and RMI registry hosts and ports can be the same (as in the default configuration) because RMI is able to multiplex traffic arriving to one port to multiple RMI objects.</p>
+</div>
+<div class="paragraph">
+<p>If you need to allow JMX remote access through a firewall, you must open both the RMI registry and the RMI server ports.
+The default configuration simplifies the firewall configuration because you only need to open port <code>1099</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When Jetty is started with the <code>jmx-remote</code> module enabled, the RMI stub of the Jetty component that provides access to the MBeans is exported to the RMI registry.</p>
+</div>
+<div class="paragraph">
+<p>The RMI stub contains the host/port to connect to the RMI server, but the host is typically the machine host name, not the host specified in the <code>JMXServiceURL</code> (the latter is only used to specify the network address the RMI server binds to).</p>
+</div>
+<div class="paragraph">
+<p>To control the host stored in the RMI stub you need to set the system property <code>java.rmi.server.hostname</code> with the desired value in the module configuration file, <code>jmx-remote.ini</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+If your client cannot connect to the server, the most common cause is a mismatch between the RMI server host of the <code>JMXServiceURL</code> and the RMI server host of the RMI stub.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can customize the RMI server host/port, the RMI registry host/port and the system property <code>java.rmi.server.hostname</code> by editing the <code>jmx-remote.ini</code> configuration file.
+Further information about the <code>jmx-remote</code> module configuration can be found <a href="#og-module-jmx-remote">here</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="og-jmx-remote-ssh-tunnel"><a class="anchor" href="#og-jmx-remote-ssh-tunnel"></a><a class="link" href="#og-jmx-remote-ssh-tunnel">Remote JMX Access with Port Forwarding via SSH Tunnel</a></h5>
+<div class="paragraph">
+<p>You can access JMX MBeans on a remote machine when the RMI ports are not open, for example because of firewall policies, but you have SSH access to the machine, using local port forwarding via an SSH tunnel.</p>
+</div>
+<div class="paragraph">
+<p>In this case you want to configure the <code>JMXServiceURL</code> that binds the RMI server and the RMI registry to the loopback interface only and to the same port:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>service:jmx:rmi://localhost:1099/jndi/rmi://localhost:1099/jmxrmi</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You must set the system property <code>-Djava.rmi.server.hostname=localhost</code> so that the RMI stub contains <code>localhost</code> as the host name to connect to.
+This is, incidentally, the default configuration of the <code>jmx-remote</code> module.</p>
+</div>
+<div class="paragraph">
+<p>Then you setup the local port forwarding with the SSH tunnel:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ ssh -L 1099:localhost:1099 &lt;user&gt;@&lt;machine_host&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Thanks to the local port forwarding of the SSH tunnel, when the client connects to <code>localhost:1099</code> on your local computer, the traffic will be forwarded to <code>machine_host</code> and when there, the SSH daemon will forward the traffic to <code>localhost:1099</code> on <code>machine_host</code>, which is exactly where the RMI server and the RMI registry listens to.</p>
+</div>
+<div class="paragraph">
+<p>The client first contacts the RMI registry, so it connects to <code>localhost:1099</code> on your local computer; the traffic is forwarded to <code>machine_host</code> through the SSH tunnel, connects to the RMI registry and the RMI stub is downloaded to the client.</p>
+</div>
+<div class="paragraph">
+<p>Then the client uses the RMI stub to connect to the RMI server. The RMI stub contains <code>localhost</code> as the RMI server host because that is what you have configured with the system property <code>java.rmi.server.hostname</code>.</p>
+</div>
+<div class="paragraph">
+<p>The client will connect again to <code>localhost:1099</code> on your local computer, this time to contact the RMI server; the traffic is forwarded to <code>machine_host</code> through the SSH tunnel, arrives to <code>machine_host</code> and connects to the RMI server.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jmx-remote-auth"><a class="anchor" href="#og-jmx-remote-auth"></a><a class="link" href="#og-jmx-remote-auth">Remote JMX Access Authentication &amp; Authorization</a></h5>
+<div class="paragraph">
+<p>The standard <code>javax.management.remote.JMXConnectorServer</code> class, used by the <code>jmx-remote</code> module to provide remote JMX access to Jetty MBeans, provides several options to authenticate and authorize users.
+For a complete guide to controlling authentication and authorization in JMX, see <a href="https://docs.oracle.com/en/java/javase/11/management/monitoring-and-management-using-jmx-technology.html">the official JMX documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The simplest way to control JMX authentication and authorization is to specify two files: one contains username and password pairs, and the other contains username and permission pairs.</p>
+</div>
+<div class="paragraph">
+<p>This is achieved by enbling the <code>jmx-remote-auth</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=jmx-remote-auth</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Enabling the <code>jmx-remote-auth</code> Jetty module creates the following files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$JETTY_BASE
+├── etc
+│   ├── jmxremote.access
+│   ├── jmxremote.password
+│   └── jmx-remote-auth.xml
+└── start.d
+    ├── jmx-remote-auth.ini
+    └── jmx-remote.ini</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you edit the <code>$JETTY_BASE/etc/jmxremote.password</code> file, adding the username/password pairs that you need:</p>
+</div>
+<div class="listingblock">
+<div class="title">$JETTY_BASE/etc/jmxremote.password</div>
+<div class="content">
+<pre># The file format is: &lt;username&gt; &lt;password&gt;
+alice wonderland
+bob marley</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You must also edit the <code>$JETTY_BASE/etc/jmxremote.access</code> file to give permissions to your users:</p>
+</div>
+<div class="listingblock">
+<div class="title">$JETTY_BASE/etc/jmxremote.access</div>
+<div class="content">
+<pre># The file format is: &lt;username&gt; &lt;readonly|readwrite&gt;
+alice readwrite
+bob readonly</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above files define user <code>alice</code> with password <code>wonderland</code> to have <code>readwrite</code> access, and user <code>bob</code> with password <code>marley</code> to have <code>readonly</code> access.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-jmx-remote-secure"><a class="anchor" href="#og-jmx-remote-secure"></a><a class="link" href="#og-jmx-remote-secure">Securing Remote JMX Access with TLS</a></h5>
+<div class="paragraph">
+<p>The JMX communication via RMI happens by default in clear-text, but it is possible to secure the JMX communication via RMI with TLS.</p>
+</div>
+<div class="paragraph">
+<p>If you want to reuse the configuration that you are using for the <a href="#og-protocols-https"><code>https</code> module</a>, you can just enable the <code>jmx-remote-ssl.xml</code> Jetty module:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-module=jmx-remote-ssl</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>jmx-remote-ssl</code> Jetty module depends on the <code>ssl</code> Jetty module that in turn requires a KeyStore (read <a href="#og-protocols-ssl">this section</a> for more information).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The KeyStore must contain a valid certificate signed by a Certification Authority.
+Having certificates signed by a Certification Authority simplifies by a lot the configuration needed to get the RMI communication over TLS working properly.</p>
+</div>
+<div class="paragraph">
+<p>The RMI mechanic is the usual one: the RMI client (typically a monitoring console) will connect first to the RMI registry (using TLS), download the RMI stub that contains the address and port of the RMI server to connect to, then connect to the RMI server (using TLS).</p>
+</div>
+<div class="paragraph">
+<p>This also mean that if the RMI registry and the RMI server are on different hosts, the RMI client must have available the cryptographic material to validate the certificates from both hosts.
+This is where having certificates signed by a Certification Authority simplifies the configuration: if they are signed by a well known Certification Authority, the client does not need any extra configuration&#8201;&#8212;&#8201;everything will be handled by the Java runtime.</p>
+</div>
+<div class="paragraph">
+<p>If the certificates are not signed by a Certification Authority (for example the certificate is self-signed), then you need to specify the TLS system properties that allow RMI (especially when acting as an RMI client) to retrieve the cryptographic material necessary to establish the TLS connection.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When the RMI server exports the <code>JMXConnectorServer</code> it acts as an RMI <em>client</em> towards the RMI registry, and as such you must specify the TLS system properties as detailed below.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You must edit the <code>$JETTY_BASE/start.d/jmx-remote-ssl.ini</code> file and add the TrustStore path and password:</p>
+</div>
+<div class="listingblock">
+<div class="title">$JETTY_BASE/start.d/jmx-remote-ssl.ini</div>
+<div class="content">
+<pre>--module=jmx-remote-ssl
+
+# System properties necessary for non-trusted certificates.
+-Djavax.net.ssl.trustStore=/path/to/trustStore.p12
+-Djavax.net.ssl.trustStorePassword=password</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The TrustStore must contain the certificate you want to trust.</p>
+</div>
+<div class="paragraph">
+<p>If you are using self-signed certificates, the KeyStore already contains the self-signed certificate and therefore the KeyStore can be used as a TrustStore, and the system properties above can refer to the KeyStore path and password.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>JMX compliant tools that offer a graphical user interface also must be started specifying the TrustStore path and password.</p>
+</div>
+<div class="paragraph">
+<p>For example, to launch <a href="https://adoptopenjdk.net/jmc.html">Java Mission Control (JMC)</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ jmc -vmargs -Djavax.net.ssl.trustStore=/path/to/trustStore.p12 -Djavax.net.ssl.trustStorePassword=password</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="og-troubleshooting"><a class="anchor" href="#og-troubleshooting"></a><a class="link" href="#og-troubleshooting">Eclipse Jetty Troubleshooting</a></h3>
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.0.beta3<br>
-Last updated 2020-10-19 15:19:52 -0500
+Version 11.0.0<br>
+Last updated 2020-12-02 15:32:18 -0600
 </div>
 </div>
 </body>

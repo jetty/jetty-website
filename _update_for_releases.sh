@@ -314,7 +314,9 @@ function main() {
     download_missing_files;
     generate_version_php;
     process_documentation;
-    process_javadoc;
+    # automated javadoc is not supported yet, no artifacts are deployed
+    # process_javadoc;
+    echo "sorry, javadoc is still a manual process"
     exit 0;
   fi
 
