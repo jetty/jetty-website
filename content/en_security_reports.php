@@ -38,7 +38,7 @@
                 <p>We prefer that security issues are reported directly to Jetty developers as opposed through GitHub Issues since it has no facility to tag issues as <em>private</em>.</p>
             </div>
             <div class="paragraph">
-                <p>For more information on the process by which we handle security issues, please refer to <a href="/jetty/security-processes.php">this guide.</a></p>
+                <p>For more information on the process by which we handle security issues, please refer to <a href="/jetty/security_processes.php">this guide.</a></p>
             </div>
         </div>
         <div class="sect2">
