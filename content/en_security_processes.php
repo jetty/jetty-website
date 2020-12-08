@@ -146,7 +146,7 @@
                         Webtide uses Jetty for several of its own backend servers and web applications and new builds are tested against these before a release candidate ever moves forward for public availability.</p>
                 </div>
                 <div class="paragraph">
-                    <p>In addition to our own testing, Webtide works with several client partners who have opted to test and install early release builds in their environments.
+                    <p>In addition to our own testing, Webtide works with several partners who have opted to test and install early release builds in their environments.
                         These partners test not only Jetty as a platform but install their web applications and perform security and penetration testing against these builds.</p>
                 </div>
                 <div class="paragraph">
