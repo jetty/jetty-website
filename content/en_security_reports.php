@@ -61,7 +61,7 @@
                 <tr>
                     <th class="tableblock halign-left valign-top">Date</th>
                     <th class="tableblock halign-left valign-top">ID</th>
-                    <th class="tableblock halign-left valign-top">Exploitable</th>
+                    <th class="tableblock halign-left valign-top">Exploit</th>
                     <th class="tableblock halign-left valign-top">Severity</th>
                     <th class="tableblock halign-left valign-top">Affects</th>
                     <th class="tableblock halign-left valign-top">Fixed Version</th>
