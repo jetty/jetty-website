@@ -1,4 +1,4 @@
-security_reports.php<?php
+<?php
 /**
  * Copyright (c) 2014-2017, 2018 Eclipse Foundation.
  *
@@ -22,7 +22,7 @@ $Theme = $App->getThemeClass();
 require_once ('_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Jetty Security Reports";
+$pageTitle = "Jetty Security Processes";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
