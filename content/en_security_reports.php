@@ -46,7 +46,7 @@
             <div class="paragraph">
                 <p>The following sections provide information about Jetty security issues.</p>
             </div>
-            <table class="tableblock frame-all grid-all stretch">
+            <table class="seclist tableblock frame-all grid-all stretch">
                 <caption class="title">Table 1. Resolved Issues</caption>
                 <colgroup>
                     <col style="width: 10%;"/>
@@ -71,7 +71,7 @@
                 <tbody>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2020-27218</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="hasTooltip"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218">CVE-2020-27218<span>Testing></span>a></span></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.0.RC0 - 9.4.34, 10.0.0.alpha0 - 10.0.0.beta2, 11.0.0.alpha0 - 11.0.0.beta2</p></td>
