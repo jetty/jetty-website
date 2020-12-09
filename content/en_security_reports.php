@@ -70,7 +70,7 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17/123</p></td>
                     <td class="tableblock halign-left valign-top"><p class="hasTooltip"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218">CVE-2020-27218<span>Testing></span>a></span></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
