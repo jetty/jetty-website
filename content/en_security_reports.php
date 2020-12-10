@@ -76,44 +76,43 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.0.RC0 - 9.4.34, 10.0.0.alpha0 - 10.0.0.beta2, 11.0.0.alpha0 - 11.0.0.beta2</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.35, 10.0.0.beta3, 11.0.0.beta3</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218">If GZIP request body inflation is enabled and requests
-                                from different clients are multiplexed onto a single connection, and if an attacker can send a request with a body that is received entirely but not consumed by the application, then a subsequent request on the same connection will see that body prepended to its body.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/10/19</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27216" title=" using a shared temp directory on UNIX-based systems an attacker could exploit the creation of a randomly generated file or directory allowing them to execute code and allowing for local privilege escalation.">CVE-2020-27216</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27216" title="If using a shared temp directory on UNIX-based systems an attacker could exploit the creation of a randomly generated file or directory allowing them to execute code and allowing for local privilege escalation.">CVE-2020-27216</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.32</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.3.29, 9.4.33</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27216">If using a shared temp directory on UNIX-based systems an attacker could exploit the creation of a randomly generated file or directory allowing them to execute code and allowing for local privilege escalation.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/07/09</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-17638</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17638" title="In the case of too large response headers, Jetty throws an exception to produce an HTTP 431 error. When this happens, the ByteBuffer containing the HTTP response headers is released back to the ByteBufferPool twice.">CVE-2019-17638</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 9.4.27, &lt; = 9.4.29</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.30</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17638">In the case of too large response headers, Jetty throws an exception to produce an HTTP 431 error. When this happens, the ByteBuffer containing the HTTP response headers is released back to the ByteBufferPool twice.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/11/25</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9518</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17632" title="The generation of default unhandled Error response content (in text/html and text/json Content-Type) does not escape Exception messages in stacktraces included in error output.">CVE-2019-9518</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 9.4.21, &lt; = 9.4.23</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.24</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17632">The generation of default unhandled Error response content (in text/html and text/json Content-Type) does not escape Exception messages in stacktraces included in error output.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9518</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9518" title="Some HTTP/2 implementations are vulnerable to a flood of empty frames, potentially leading to a denial of service.">CVE-2019-9518</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9518">Some HTTP/2 implementations are vulnerable to a flood of empty frames, potentially leading to a denial of service.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
