@@ -71,7 +71,7 @@
                 <tbody>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218" title="TEST">CVE-2020-27218</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218" title="If GZIP request body inflation is enabled and requests from different clients are multiplexed onto a single connection, and if an attacker can send a request with a body that is received entirely but not consumed by the application, then a subsequent request on the same connection will see that body prepended to its body.">CVE-2020-27218</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.0.RC0 - 9.4.34, 10.0.0.alpha0 - 10.0.0.beta2, 11.0.0.alpha0 - 11.0.0.beta2</p></td>
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/10/19</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2020-27216</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27216" title=" using a shared temp directory on UNIX-based systems an attacker could exploit the creation of a randomly generated file or directory allowing them to execute code and allowing for local privilege escalation.">CVE-2020-27216</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.32</p></td>
