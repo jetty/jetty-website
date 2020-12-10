@@ -99,7 +99,7 @@
                 <tbody>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tooltip">CVE-2020-27218<span class="tooltiptext">Testing</span></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tooltip">TESTCVE-2020-27218<span class="tooltiptext">Testing</span></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.0.RC0 - 9.4.34, 10.0.0.alpha0 - 10.0.0.beta2, 11.0.0.alpha0 - 11.0.0.beta2</p></td>
