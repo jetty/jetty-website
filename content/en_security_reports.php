@@ -116,48 +116,48 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9516</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9516" title="Some HTTP/2 implementations are vulnerable to a header leak, potentially leading to a denial of service.">CVE-2019-9516</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9516">Some HTTP/2 implementations are vulnerable to a header leak, potentially leading to a denial of service.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9515</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9515" title="Some HTTP/2 implementations are vulnerable to a settings flood, potentially leading to a denial of service when an attacker sent a stream of SETTINGS frames to the peer.">CVE-2019-9515</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9515">Some HTTP/2 implementations are vulnerable to a settings flood, potentially leading to a denial of service when an attacker sent a stream of SETTINGS frames to the peer.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9514</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9514" title="Some HTTP/2 implementations are vulnerable to a reset flood, potentially leading to a denial of service.">CVE-2019-9514</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9514">Some HTTP/2 implementations are vulnerable to a reset flood, potentially leading to a denial of service.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9512</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9512" title="Some HTTP/2 implementations are vulnerable to ping floods which could lead to a denial of service.">CVE-2019-9512</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9512">Some HTTP/2 implementations are vulnerable to ping floods which could lead to a denial of service.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/08/13</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-9511</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9511" title="Some HTTP/2 implementations are vulnerable to window size manipulation and stream prioritization manipulation which could lead to a denial of service.">CVE-2019-9511</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.20</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.21</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9511">Some HTTP/2 implementations are vulnerable to window size manipulation and stream prioritization manipulation which could lead to a denial of service.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/04/11</p></td>
@@ -170,21 +170,21 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/04/11</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-10246</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-10246" title="Use of <code>DefaultServlet</code> or <code>ResourceHandler</code> with indexing was vulnerable to XSS behaviors to expose the directory listing on Windows operating systems.">CVE-2019-10246</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.16</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.2.28, 9.3.27, 9.4.17</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-10246">Use of <code>DefaultServlet</code> or <code>ResourceHandler</code> with indexing was vulnerable to XSS behaviors to expose the directory listing on Windows operating systems.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/04/11</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2019-10241</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-10241" title="Use of <code>DefaultServlet</code> or <code>ResourceHandler</code> with indexing was vulnerable to XSS behaviors to expose the directory listing.">CVE-2019-10241</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt; = 9.4.15</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.2.27, 9.3.26, 9.4.16</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-10241">Use of <code>DefaultServlet</code> or <code>ResourceHandler</code> with indexing was vulnerable to XSS behaviors to expose the directory listing.</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2018/06/25</p></td>
