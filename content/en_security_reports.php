@@ -15,6 +15,34 @@
 ?>
 
 <!-- Main content area -->
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 105%;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
+</style>
+
 <div id="midcolumn">
   <h1><?php print $pageTitle;?></h1>
 
@@ -71,7 +99,7 @@
                 <tbody>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">CVE-2020-27218</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tooltip">CVE-2020-27218<span class="tooltiptext">Testing</span></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.0.RC0 - 9.4.34, 10.0.0.alpha0 - 10.0.0.beta2, 11.0.0.alpha0 - 11.0.0.beta2</p></td>
