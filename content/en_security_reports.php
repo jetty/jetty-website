@@ -254,15 +254,15 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">All versions</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.6.0.RCO/p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.6.0.RCO</p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2009/11/05</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555" title="Work around by turning off SSL renegotiation in Jetty. If using JVM 1.6u19 setAllowRenegotiate(true) may be called on connectors.">CVE-2009-3555</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">JVM&lt;1.6u19</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">jetty-7.01.v20091125, jetty-6.1.22</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">JVM 1.6u19</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.01, 6.1.22</p></td>
                 </tr>
 <!--                <tr>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2009/06/18</p></td>-->
@@ -293,7 +293,7 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2007-6672" title="Static content visible in WEB-INF and past security constraints.">CVE-2007-6672</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.rrc0-6.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.rc0-6.1.6</p></td>
                     <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
                                 <p>6.1.7</p>
                             </div></div></td>
@@ -304,7 +304,7 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc1 (patch in CVS for jetty5)</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc1 </p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/05</p></td>
@@ -312,7 +312,7 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 </p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/03</p></td>
@@ -320,7 +320,7 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 </p></td>
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2006/11/22</p></td>
