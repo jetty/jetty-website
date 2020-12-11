@@ -14,8 +14,6 @@
  */
 ?>
 
-<meta name="google-site-verification" content="EWy5PWorlERh2sy6Ux5C8s1Qz57VZDMsLO5Wo2qMVa0" />
-
 <!-- Main content area -->
 <div id="midcolumn">
     <h1>The Eclipse Jetty Project</h1>
