@@ -248,27 +248,22 @@
 <!--                            <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=413684">413684</a></p></td>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Constraints bypassed if Unix symlink alias checker used on Windows.</p></td>-->
 <!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2011/12/29</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.ocert.org/advisories/ocert-2011-003.html">CERT2011-003</a> <a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-4461">CVE-2011-4461</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">All versions</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.6.0.RCO-->
-<!--                            <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=367638">Jetty-367638</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Added ContextHandler.setMaxFormKeys (intkeys) to limit the number of parameters (default 1000).</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2009/11/05</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.kb.cert.org/vuls/id/120541">CERT2011-003</a> <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555">CERT2011-003</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">JVM&lt;1.6u19</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">jetty-7.01.v20091125, jetty-6.1.22</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Work-->
-<!--                            around by turning off SSL renegotiation in Jetty. If using JVM &gt; 1.6u19-->
-<!--                            setAllowRenegotiate(true) may be called on connectors.</p></td>-->
-<!--                </tr>-->
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2011/12/29</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2011-4461" title="Added ContextHandler.setMaxFormKeys (intkeys) to limit the number of parameters (default 1000).">CVE-2011-4461</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">All versions</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.6.0.RCO/p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2009/11/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3555" title="Work around by turning off SSL renegotiation in Jetty. If using JVM 1.6u19 setAllowRenegotiate(true) may be called on connectors.">CVE-2009-3555</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">JVM&lt;1.6u19</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">jetty-7.01.v20091125, jetty-6.1.22</p></td>
+                </tr>
 <!--                <tr>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2009/06/18</p></td>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Jetty-1042</p></td>-->
@@ -293,71 +288,57 @@
 <!--                            </div></div></td>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">View arbitrary disk content in some specific configurations.</p></td>-->
 <!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/12/22</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.kb.cert.org/vuls/id/553235">CERT553235</a> <a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2007-6672">CVE-2007-6672</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.rrc0-6.1.6</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">-->
-<!--                                <p>6.1.7</p>-->
-<!--                            </div>-->
-<!--                            <div class="paragraph">-->
-<!--                                <p>CERT553235</p>-->
-<!--                            </div></div></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Static content visible in WEB-INF and past security constraints.</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/05</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.kb.cert.org/vuls/id/438616">CERT438616</a> <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5614">CVE-2007-5614</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc1 (patch in CVS for jetty5)</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Single quote in-->
-<!--                            cookie name.</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/05</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.kb.cert.org/vuls/id/237888">CERT237888&gt;</a> <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5613">CVE-2007-5613</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">XSS in demo dup-->
-<!--                            servlet.</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/03</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.kb.cert.org/vuls/id/212984">CERT212984-->
-<!--                                &gt;</a> <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5615">CVE-2007-5615</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">CRLF-->
-<!--                            Response splitting.</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2006/11/22</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-6969">CVE-2006-6969</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.0, &lt;6.0.2, &lt;5.1.12, &lt;4.2.27</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.0pre3, 6.0.2, 5.1.12,-->
-<!--                            4.2.27</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Session ID predictability.</p></td>-->
-<!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2006/06/01</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-2759">CVE-2006-2759</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.0.*, &lt;6.0.0Beta17</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.0.0Beta17</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">JSP source-->
-<!--                            visibility.</p></td>-->
-<!--                </tr>-->
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/12/22</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2007-6672" title="Static content visible in WEB-INF and past security constraints.">CVE-2007-6672</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.rrc0-6.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+                                <p>6.1.7</p>
+                            </div></div></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5614" title="Single quote in cookie name.">CVE-2007-5614</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc1 (patch in CVS for jetty5)</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5613" title="XSS in demo dup servlet.">CVE-2007-5613</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2007/11/03</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-5615" title="CRLF Response splitting.">CVE-2007-5615</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.6rc0 (patch in CVS for jetty5)</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2006/11/22</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-6969" title="Session ID predictability.">CVE-2006-6969</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">high</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.1.0, &lt;6.0.2, &lt;5.1.12, &lt;4.2.27</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.1.0pre3, 6.0.2, 5.1.12,
+                            4.2.27</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2006/06/01</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-2759" title="JSP source visibility.">CVE-2006-2759</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;6.0.*, &lt;6.0.0Beta17</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">6.0.0Beta17</p></td>
+                </tr>
 <!--                <tr>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2006/01/05</p></td>-->
 <!--                    <td class="tableblock halign-left valign-top"></td>-->
@@ -368,15 +349,14 @@
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">Fixed //security-->
 <!--                            constraint bypass on Windows.</p></td>-->
 <!--                </tr>-->
-<!--                <tr>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2005/11/18</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-2758">CVE-2006-2758</a></p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;5.1.6</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">5.1.6, 6.0.0Beta4</p></td>-->
-<!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">JSP source visibility.</p></td>-->
-<!--                </tr>-->
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2005/11/18</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-2758" title="JSP source visibility.">CVE-2006-2758</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">medium</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">&lt;5.1.6</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">5.1.6, 6.0.0Beta4</p></td>
+                </tr>
 <!--                <tr>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">2004/02/04</p></td>-->
 <!--                    <td class="tableblock halign-left valign-top"><p class="tableblock">JSSE 1.0.3_01</p></td>-->
