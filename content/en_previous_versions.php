@@ -54,7 +54,7 @@
   <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.3.29.20201019/index.html?overview-summary.html">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/9.3.29.20201019">source</a></p></td>
   <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.3.29.20201019/index.html">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>Java 8+</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.2.26.v20180806</p></td>
@@ -63,7 +63,7 @@
   <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.2.22.v20170606/index.html?overview-summary.html">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.2.26.v20180806">source</a></p></td>
   <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.2.22.v20170531/index.html">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>EOL</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.1.6.v20160112</p></td>
@@ -72,7 +72,7 @@
   <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.1.5.v20140505/apidocs/index.html?overview-summary.html">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.1.5.v20140505/xref/index.html">xref</a></p></td>
   <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.1.5.v20140505/index.html">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>EOL</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.0.7.v20131107</p></td>
@@ -81,7 +81,7 @@
   <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.0.7.v20131107/apidocs/index.html?overview-summary.html">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.0.7.v20131107/xref/index.html">xref</a></p></td>
   <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.0.6.v20130930/index.html">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>EOL</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>8.1.21.v20160908</p></td>
@@ -90,7 +90,7 @@
   <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/8.1.17.v20150415/apidocs">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/8.1.17.v20150415/xref">xref</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://wiki.eclipse.org/Jetty">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>EOL</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>7.6.21.v20160908</p></td>
@@ -99,7 +99,7 @@
   <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/7.6.17.v20150415/apidocs">apidocs</a></p></td>
   <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/7.6.17.v20150415/xref">xref</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://wiki.eclipse.org/Jetty">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>EOL</p></td>
+  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   </tbody>
   </table>
