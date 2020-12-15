@@ -28,19 +28,13 @@
   <caption class="title">Previous Downloads</caption>
   <colgroup>
   <col style="width: 25%;">
-  <col style="width: 9%;">
-  <col style="width: 9%;">
-  <col style="width: 9%;">
-  <col style="width: 9%;">
-  <col style="width: 13%;">
-  <col style="width: 27%;">
+  <col style="width: 25%;">
+  <col style="width: 25%;">
+  <col style="width: 25%;">
   </colgroup>
   <thead>
   <tr>
   <th class="halign-left valign-top">Release</th>
-  <th class="halign-left valign-top"></th>
-  <th class="halign-left valign-top"></th>
-  <th class="halign-left valign-top"></th>
   <th class="halign-left valign-top"></th>
   <th class="halign-left valign-top"></th>
   <th class="halign-left valign-top">Note</th>
@@ -51,54 +45,24 @@
   <td class="halign-left valign-top"><p>9.3.29.20201019</p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.29.20201019/jetty-distribution-9.3.29.20201019.zip">.zip</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.29.20201019/jetty-distribution-9.3.29.20201019.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.3.24.v20180605/index.html?overview-summary.html">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.3.29.v20201019">source</a></p></td>
-  <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.3.29.v20201019/index.html">documentation</a></p></td>
   <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.2.26.v20180806</p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.2.26.v20180806/jetty-distribution-9.2.26.v20180806.zip">.zip</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.2.26.v20180806/jetty-distribution-9.2.26.v20180806.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://www.eclipse.org/jetty/javadoc/9.2.22.v20170606/index.html?overview-summary.html">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.2.26.v20180806">source</a></p></td>
-  <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.2.22.v20170531/index.html">documentation</a></p></td>
   <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.1.6.v20160112</p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.1.6.v20160112/jetty-distribution-9.1.6.v20160112.zip">.zip</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.1.6.v20160112/jetty-distribution-9.1.6.v20160112.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.1.5.v20140505/apidocs/index.html?overview-summary.html">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.1.5.v20140505/xref/index.html">xref</a></p></td>
-  <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.1.5.v20140505/index.html">documentation</a></p></td>
   <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   <tr>
   <td class="halign-left valign-top"><p>9.0.7.v20131107</p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.0.7.v20131107/jetty-distribution-9.0.7.v20131107.zip">.zip</a></p></td>
   <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.0.7.v20131107/jetty-distribution-9.0.7.v20131107.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.0.7.v20131107/apidocs/index.html?overview-summary.html">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://archive.eclipse.org/jetty/9.0.7.v20131107/xref/index.html">xref</a></p></td>
-  <td class="halign-left valign-top"><p><a href="/jetty/documentation/9.0.6.v20130930/index.html">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
-  </tr>
-  <tr>
-  <td class="halign-left valign-top"><p>8.1.21.v20160908</p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/8.1.21.v20160908/jetty-distribution-8.1.21.v20160908.zip">.zip</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/8.1.21.v20160908/jetty-distribution-8.1.21.v20160908.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/8.1.17.v20150415/apidocs">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/8.1.17.v20150415/xref">xref</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://wiki.eclipse.org/Jetty">documentation</a></p></td>
-  <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
-  </tr>
-  <tr>
-  <td class="halign-left valign-top"><p>7.6.21.v20160908</p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/7.6.21.v20160908/jetty-distribution-7.6.21.v20160908.zip">.zip</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/7.6.21.v20160908/jetty-distribution-7.6.21.v20160908.tar.gz">.tgz</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/7.6.17.v20150415/apidocs">apidocs</a></p></td>
-  <td class="halign-left valign-top"><p><a href="http://download.eclipse.org/jetty/7.6.17.v20150415/xref">xref</a></p></td>
-  <td class="halign-left valign-top"><p><a href="https://wiki.eclipse.org/Jetty">documentation</a></p></td>
   <td class="halign-left valign-top"><p>End of Life (EOL)</p></td>
   </tr>
   </tbody>
@@ -112,12 +76,6 @@
   <ul>
   <li>
   <p>Composite Jetty 9 P2 Provisioning - http://download.eclipse.org/jetty/updates/jetty-bundles-9.x</p>
-  </li>
-  <li>
-  <p>Composite Jetty 8 P2 Provisioning - http://download.eclipse.org/jetty/updates/jetty-bundles-8.x</p>
-  </li>
-  <li>
-  <p>Composite Jetty 7 P2 Provisioning - http://download.eclipse.org/jetty/updates/jetty-bundles-7.x</p>
   </li>
   </ul>
   </div>
