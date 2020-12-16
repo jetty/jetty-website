@@ -49,7 +49,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                             href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_9.4']['version']; ?>/index.html?overview-summary.html">apidocs</a> / <a
+                            href="http://www.eclipse.org/jetty/javadoc/jetty-9/index.html?overview-summary.html">apidocs</a> / <a
                             href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>"> source</a></p>
             </td>
         </tr>
@@ -62,7 +62,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_10.0']['version']; ?>/index.html?overview-summary.html">apidocs </a> / <a
+                            href="http://www.eclipse.org/jetty/javadoc/jetty-10/index.html?overview-summary.html">apidocs </a> / <a
                             href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0']['version']; ?>"> source</a></p></td>
         </tr>
         <tr>
@@ -74,7 +74,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="http://www.eclipse.org/jetty/javadoc/<?php print $jetty['jetty_11.0']['version']; ?>/index.html?overview-summary.html">apidocs </a> / <a
+                            href="http://www.eclipse.org/jetty/javadoc/jetty-11/index.html?overview-summary.html">apidocs </a> / <a
                         href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0']['version']; ?>"> source</a></p></td>
         </tr>
         </tbody>
@@ -126,7 +126,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">5.0</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UNSTABLE / Beta</strong></p>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable</strong></p>
             </td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup></p></td>
@@ -138,7 +138,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">4.0</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>UNSTABLE / Beta</strong></p>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable</strong></p>
             </td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
