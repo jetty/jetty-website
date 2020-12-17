@@ -109,7 +109,7 @@
         <thead>
         <tr>
             <th class="tableblock halign-left valign-top">Version</th>
-            <th class="tableblock halign-left valign-top">Year</th>
+            <th class="tableblock halign-left valign-top">Years</th>
             <th class="tableblock halign-left valign-top">Home</th>
             <th class="tableblock halign-left valign-top">Min JVM</th>
             <th class="tableblock halign-left valign-top">Servlet</th>
