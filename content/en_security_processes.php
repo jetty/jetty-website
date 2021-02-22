@@ -49,6 +49,9 @@
                         <p>Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.</p>
                     </li>
                     <li>
+                        <p>Copy this list as a markdown in the security advisory for tracking the completion of various tasks.</p>
+                    </li>
+                    <li>
                         <p>Initial triage and discussion are performed in the comments of the advisory.</p>
                     </li>
                     <li>
@@ -95,7 +98,7 @@
                         <p>Build and test fix(es) locally and in CI environment.</p>
                     </li>
                     <li>
-                        <p>Merge tests and fix  - ensure description does not mention vulnerability directly.</p>
+                        <p>Merge tests and fix  - ensure description does not mention vulnerability directly. Do not merge directly from the security advisory as it can be traced back before publication.</p>
                     </li>
                     <li>
                         <p>Build and stage release candidate.</p>
@@ -146,7 +149,7 @@
                         Webtide uses Jetty for several of its own backend servers and web applications and new builds are tested against these before a release candidate ever moves forward for public availability.</p>
                 </div>
                 <div class="paragraph">
-                    <p>In addition to our own testing, Webtide works with several partners who have opted to test and install early release builds in their environments.
+                    <p>In addition to our own testing, Webtide works with several 111111111111partners who have opted to test and install early release builds in their environments.
                         These partners test not only Jetty as a platform but install their web applications and perform security and penetration testing against these builds.</p>
                 </div>
                 <div class="paragraph">
