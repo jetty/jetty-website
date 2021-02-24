@@ -23,7 +23,7 @@ $Theme->setLayout('default');
 require_once('../../_projectCommon.php');
 
 // Begin: page-specific settings. Change these.
-$pageTitle = "Jetty 9 Documentation;
+$pageTitle = "Jetty 9 Documentation";
 $Theme->setPageAuthor('Jesse McConnell');
 $Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
@@ -32,14 +32,16 @@ if (isset($Nav)) {
     $Theme->setNav($Nav);
 }
 
+
 $variables = array();
 $variables['main_container_classes'] = 'container-full';
 //$variables['header_nav'] = "";
 $Theme->setThemeVariables($variables);
 
+
 // Place your html content in a file called content/en_pagename.php
 ob_start();
-include ("../../content/en_jetty_9_index" . $App->getScriptName());
+include ("../../content/en_jetty_9_" . $App->getScriptName());
 $html = ob_get_clean();
 $Theme->setHtml($html);
 

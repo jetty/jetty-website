@@ -50,7 +50,7 @@
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 9</p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/documentation/jetty-9/jetty9.php">Documentation</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/documentation/jetty-9/index.php">Documentation</a></p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-9/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">source</a></p></td>
     </tr>
     </tbody>
