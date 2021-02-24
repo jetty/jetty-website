@@ -12,6 +12,7 @@ function set_global_variables() {
   VERSIONS_TXT=$(pwd)/_jettyVersions.txt
   VERSIONS_PHP=$(pwd)/_jettyVersions.php
   ARC_DIR=$(pwd)/_archive
+  JAVADOC_DIR=$(pwd)/javadoc
   TEMP_DIR=$ARC_DIR/temp
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
@@ -100,6 +101,32 @@ function get_primary_version() {
   IFS='.' read -ra ver <<<"$version"
 
   echo "jetty-${ver[0]}";
+}
+
+function get_javadoc_version() {
+  local primary_version=$1
+  local javadoc_version
+
+  if [[ $primary_version == "jetty-9" ]]; then
+    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Project \([0-9.v]*\) API.*/\1/' "$JAVADOC_DIR/jetty-9/index.html")
+  elif [[ $primary_version == "jetty-10" ]]; then
+    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-10/index.html")
+  elif [[ $primary_version == "jetty-11" ]]; then
+    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/'  "$JAVADOC_DIR/jetty-11/index.html")
+  fi
+
+  # shellcheck disable=SC2046
+  version=
+
+  echo "$version"
+}
+
+function get_version_from_file_1x() {
+  local filename=$1
+
+  version=$("$filename")
+
+  echo "$version"
 }
 
 #
@@ -258,13 +285,10 @@ function process_documentation() {
 
   {
     for version in "${versions[@]}"; do
-      local primary_version=$(get_primary_version "$version");
+      local primary_version;
+      primary_version=$(get_primary_version "$version");
 
-      if [[ $primary_version == "jetty-9" ]]; then
-        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version" --delete;
-      else
-        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
-      fi
+      rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
     done;
   } &>>"$LOG_FILE";
 
@@ -272,22 +296,26 @@ function process_documentation() {
 }
 
 function process_javadoc() {
+  # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
 
-  create_temp_directory;
-
   for version in "${versions[@]}"; do
-    local temp_ver_dir="$TEMP_DIR/$version";
-    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-javadoc.jar" &>>"$LOG_FILE";
-  done
+    local primary_version;
+    local current_javadoc_version;
 
-  {
-    for version in "${versions[@]}"; do
-      rsync -avh "$TEMP_DIR/$version/" "$(pwd)/javadoc/$(get_primary_version "$version")" --delete;
-    done;
-  } &>>"$LOG_FILE"
+    primary_version=$(get_primary_version "$version");
 
-  delete_temp_directory;
+    if [[ $primary_version == "jetty-9" ]]; then
+      current_javadoc_version=$(get_version_from_file_9 "javadoc/jetty-9/index.html")
+    elif [[ $primary_version == "jetty-10" ]]; then
+      current_javadoc_version=$(get_version_from_file_1x "javadoc/jetty-10/index.html")
+    elif [[ $primary_version == "jetty-11" ]]; then
+      current_javadoc_version=$(get_version_from_file_1x "javadoc/jetty-11/index.html")
+    fi
+
+    echo "$primary_version $current_javadoc_version";
+  done;
+
 }
 
 
@@ -315,8 +343,17 @@ function main() {
     generate_version_php;
     process_documentation;
     # automated javadoc is not supported yet, no artifacts are deployed
-    # process_javadoc;
+    #process_javadoc;
     echo "sorry, javadoc is still a manual process"
+    exit 0;
+  fi
+
+  # just to test some things
+  if [[ $directive == "-t" ]]; then
+    echo "testing javadoc"
+    set_global_variables;
+    gather_current_versions;
+    process_javadoc
     exit 0;
   fi
 
