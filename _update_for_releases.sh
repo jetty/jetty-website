@@ -18,7 +18,8 @@ function set_global_variables() {
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
   GITHUB_ROOT="https://github.com/eclipse/jetty.project/archive"
-  DOC_ROOT="$MAVEN_ROOT/jetty-documentation"
+  DOC_ROOT_9="$MAVEN_ROOT/jetty-documentation"
+  DOC_ROOT_1x="$MAVEN_ROOT/documentation/jetty-documentation"
   LOG_FILE="$ARC_DIR/update.log"
 }
 
@@ -28,7 +29,9 @@ function print_global_variables() {
   echo "Archive Directory: $ARC_DIR"
   echo "Maven Root URL: $MAVEN_ROOT"
   echo "Maven Staging Root URL: $STAGING_ROOT"
-  echo "Documentation Root URL: $DOC_ROOT"
+  echo "Documentation Root 9 URL: $DOC_ROOT_9"
+  echo "Documentation Root 10 URL: $DOC_ROOT_10"
+  echo "Github Root URL: $GITHUB_ROOT"
 }
 
 function print_execution_variables() {
@@ -227,16 +230,23 @@ function download_documentation_files() {
   local artifact="jetty-documentation";
   local version=$1;
   local html_filename="$artifact-$version-html.zip";
-  local javadoc_filename="$artifact-$version-javadoc.jar";
-  maven_download "$artifact" "$version" "$html_filename";
-  maven_download "$artifact" "$version" "$javadoc_filename";
+
+  local primary_version
+  primary_version=$(get_primary_version "$version")
+
+  if [[ $primary_version == "jetty-9" ]]; then
+    maven_download "$artifact" "$version" "$html_filename";
+  else
+    # this is a hack, should clean this up
+    maven_download "documentation/$artifact" "$version" "$html_filename";
+  fi
 }
 
 function download_github_files() {
   local version=$1
   local filename="jetty-$version.zip"
 
-  github_download filename
+  github_download "$filename"
 
 }
 

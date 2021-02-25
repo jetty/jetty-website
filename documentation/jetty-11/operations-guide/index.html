@@ -20,7 +20,7 @@
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
 <span id="revnumber">version 11.0.1,</span>
-<span id="revdate">2021-02-24</span>
+<span id="revdate">2021-02-19</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -575,11 +575,10 @@ $ cd $JETTY_BASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
+<pre class="CodeRay highlight nowrap"><code>ERROR : No enabled jetty modules found!
+INFO  : ${jetty.home} = /path/to/jetty.home
+INFO  : ${jetty.base} = /path/to/jetty.base
+ERROR : Please create and/or configure a ${jetty.base} directory.
 
 Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
        java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
@@ -609,14 +608,17 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-module=server
+INFO  : logging-jetty   transitively enabled
+INFO  : http            initialized in ${jetty.base}/start.d/http.ini
+INFO  : resources       transitively enabled
+INFO  : threadpool      transitively enabled, ini template available with --add-module=threadpool
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-module=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -629,14 +631,9 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:16:32.648:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:16:32.720:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@41a0aa7d<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2021-02-19 16:16:32.743:</strong>INFO :oejs.Server:main: Started Server@10163d6{STARTING}[11.0.1,sto=5000] @1005ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -722,14 +719,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:16:34.152:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:16:34.220:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@41a0aa7d<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2021-02-19 16:16:34.239:</strong>INFO :oejs.Server:main: Started Server@10163d6{STARTING}[11.0.1,sto=5000] @995ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -835,14 +827,12 @@ Their deployment is described in <a href="#og-deploy">this section</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : webapp          transitively enabled, ini template available with --add-module=webapp
+INFO  : security        transitively enabled
+INFO  : servlet         transitively enabled
+INFO  : deploy          initialized in ${jetty.base}/start.d/deploy.ini
+INFO  : mkdir ${jetty.base}/webapps
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -899,14 +889,13 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:16:37.587:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:16:37.656:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
+<strong>2021-02-19 16:16:37.792:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
+<strong>2021-02-19 16:16:37.811:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
+<mark><strong>2021-02-19 16:16:37.858:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@2cb2fc20{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
+<strong>2021-02-19 16:16:37.883:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@736c5e26{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2021-02-19 16:16:37.916:</strong>INFO :oejs.Server:main: Started Server@35841320{STARTING}[11.0.1,sto=5000] @1336ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -942,7 +931,7 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="383" height="263">
+<img src="diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="450" height="440">
 </div>
 </div>
 <div class="paragraph">
@@ -1540,14 +1529,98 @@ JVM Options Module
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
+<pre class="CodeRay highlight nowrap"><code>Enabled Modules:
+----------------
+    0) resources       transitive provider of resources for logging-jetty
+    1) logging/slf4j   transitive provider of logging/slf4j for logging-jetty
+                       dynamic dependency of logging-jetty
+    2) logging-jetty   transitive provider of logging for threadpool
+                       transitive provider of logging for bytebufferpool
+                       transitive provider of logging for server
+    3) bytebufferpool  transitive provider of bytebufferpool for server
+                       init template available with --add-module=bytebufferpool
+    4) threadpool      transitive provider of threadpool for server
+                       init template available with --add-module=threadpool
+    5) jvm             ${jetty.base}/start.d/jvm.ini
+    6) server          ${jetty.base}/start.d/server.ini
+    7) http            ${jetty.base}/start.d/http.ini
+    8) postgresql      ${jetty.base}/start.d/postgresql.ini
 
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+Java Environment:
+-----------------
+ java.home = /path/to/java.home (null)
+ java.vm.vendor = AdoptOpenJDK (null)
+ java.vm.version = 11.0.9+11 (null)
+ java.vm.name = OpenJDK 64-Bit Server VM (null)
+ java.vm.info = mixed mode (null)
+ java.runtime.name = OpenJDK Runtime Environment (null)
+ java.runtime.version = 11.0.9+11 (null)
+ java.io.tmpdir = /path/to/jetty.base/work (null)
+ user.dir = /path/to/jetty.base (null)
+ user.language = en (null)
+ user.country = US (null)
+
+Jetty Environment:
+-----------------
+ jetty.version = 11.0.1
+ jetty.tag.version = master
+ jetty.home = /path/to/jetty.home
+ jetty.base = /path/to/jetty.base
+
+Config Search Order:
+--------------------
+ &lt;command-line&gt;
+ ${jetty.base} -&gt; /path/to/jetty.base
+ ${jetty.home} -&gt; /path/to/jetty.home
+
+JVM Arguments:
+--------------
+ -Xmx1g
+ -Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags
+
+System Properties:
+------------------
+ (no system properties specified)
+
+Properties:
+-----------
+ java.version = 11.0.9
+ java.version.major = 11
+ java.version.micro = 9
+ java.version.minor = 0
+ java.version.platform = 11
+ jetty.base = /path/to/jetty.base
+ jetty.base.uri = file:///path/to/jetty.base
+ jetty.home = /path/to/jetty.home
+ jetty.home.uri = file:///path/to/jetty.home
+ jetty.webapp.addServerClasses = org.eclipse.jetty.logging.,org.slf4j.
+ postgresql-version = 42.2.18
+ runtime.feature.alpn = true
+ slf4j.version = 2.0.0-alpha1
+
+Jetty Server Classpath:
+-----------------------
+Version Information on 10 entries in the classpath.
+Note: order presented here is how they would appear on the classpath.
+      changes to the --module=name command line options will be reflected here.
+ 0:                    (dir) | ${jetty.base}/resources
+ 1:             2.0.0-alpha1 | ${jetty.home}/lib/logging/slf4j-api-2.0.0-alpha1.jar
+ 2:                   11.0.1 | ${jetty.home}/lib/logging/jetty-slf4j-impl-11.0.1.jar
+ 3:                    5.0.2 | ${jetty.home}/lib/jetty-jakarta-servlet-api-5.0.2.jar
+ 4:                   11.0.1 | ${jetty.home}/lib/jetty-http-11.0.1.jar
+ 5:                   11.0.1 | ${jetty.home}/lib/jetty-server-11.0.1.jar
+ 6:                   11.0.1 | ${jetty.home}/lib/jetty-xml-11.0.1.jar
+ 7:                   11.0.1 | ${jetty.home}/lib/jetty-util-11.0.1.jar
+ 8:                   11.0.1 | ${jetty.home}/lib/jetty-io-11.0.1.jar
+ 9:                  42.2.18 | ${jetty.base}/lib/postgresql-42.2.18.jar
+
+Jetty Active XMLs:
+------------------
+ ${jetty.home}/etc/jetty-bytebufferpool.xml
+ ${jetty.home}/etc/jetty-threadpool.xml
+ ${jetty.home}/etc/jetty.xml
+ ${jetty.home}/etc/jetty-http.xml
+ ${jetty.home}/etc/jetty-halt.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1600,14 +1673,7 @@ Some option, such as <code>--jpms</code>, imply <code>--exec</code>, as it won&#
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>/path/to/java.home/bin/java</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1620,43 +1686,11 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: \
-Cannot \
-read \
-file: \
-/path/to/jetty.home/etc/jetty-halt.xml
-        at \
-org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at \
-org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at \
-org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at \
-org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: \
-java \
--jar \
-$JETTY_HOME/start.jar \
-[options] \
-[properties] \
-[configs]
- \
- \
- \
- \
- \
- \
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
---help \
- \
-# \
-for \
-more \
-information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>-Djava.io.tmpdir=/path/to/jetty.base/work \
+-Djetty.home=/path/to/jetty.home \
+-Djetty.base=/path/to/jetty.base \
+-Xmx1g \
+-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1669,50 +1703,16 @@ information</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException:\
- \
-Cannot \
-read \
-file:\
- \
-/path/to/jetty.home/etc/jetty-halt.xml
-        at \
-org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:\
-265)
-        at \
-org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:\
-1461)
-        at \
-org.eclipse.jetty.start.Main.processCommandLine(Main.java:\
-354)
-        at \
-org.eclipse.jetty.start.Main.main(Main.java:\
-75)
-
-Usage:\
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
-[options] \
-[properties] \
-[configs]
- \
- \
- \
- \
- \
- \
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
---help \
- \
-# \
-for \
-more \
-information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--class-path \
+/path/to/jetty.base/resources:\
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-jakarta-servlet-api-5.0.2.jar:\
+/path/to/jetty.home/lib/jetty-http-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-server-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-xml-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-util-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-io-11.0.1.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1725,50 +1725,19 @@ information</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException:\
- \
-Cannot \
-read \
-file:\
- \
-/path/to/jetty.home/etc/jetty-halt.xml
-        at \
-org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:\
-265)
-        at \
-org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:\
-1461)
-        at \
-org.eclipse.jetty.start.Main.processCommandLine(Main.java:\
-354)
-        at \
-org.eclipse.jetty.start.Main.main(Main.java:\
-75)
-
-Usage:\
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
-[options] \
-[properties] \
-[configs]
- \
- \
- \
- \
- \
- \
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
---help \
- \
-# \
-for \
-more \
-information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module-path \
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-jakarta-servlet-api-5.0.2.jar:\
+/path/to/jetty.home/lib/jetty-http-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-server-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-xml-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-util-11.0.1.jar:\
+/path/to/jetty.home/lib/jetty-io-11.0.1.jar \
+--class-path \
+/path/to/jetty.base/resources \
+--add-modules \
+ALL-MODULE-PATH</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1781,14 +1750,7 @@ information</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1801,14 +1763,7 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module org.eclipse.jetty.xml/org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1825,43 +1780,23 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: \
-Cannot \
-read \
-file: \
-/path/to/jetty.home/etc/jetty-halt.xml
-        at \
-org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at \
-org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at \
-org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at \
-org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: \
-java \
--jar \
-$JETTY_HOME/start.jar \
-[options] \
-[properties] \
-[configs]
- \
- \
- \
- \
- \
- \
- \
-java \
--jar \
-$JETTY_HOME/start.jar \
---help \
- \
-# \
-for \
-more \
-information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>java.version=11.0.9 \
+java.version.major=11 \
+java.version.micro=9 \
+java.version.minor=0 \
+java.version.platform=11 \
+jetty.base=/path/to/jetty.base \
+jetty.base.uri=file:///path/to/jetty.base \
+jetty.home=/path/to/jetty.home \
+jetty.home.uri=file:///path/to/jetty.home \
+jetty.webapp.addServerClasses=org.eclipse.jetty.logging.,org.slf4j. \
+runtime.feature.alpn=true \
+slf4j.version=2.0.0-alpha1 \
+/path/to/jetty.home/etc/jetty-bytebufferpool.xml \
+/path/to/jetty.home/etc/jetty-threadpool.xml \
+/path/to/jetty.home/etc/jetty.xml \
+/path/to/jetty.home/etc/jetty-http.xml \
+/path/to/jetty.home/etc/jetty-halt.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1925,7 +1860,7 @@ This step produces a list of <em>enabled</em> modules; for each enabled module a
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="307" height="210">
+<img src="diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="363" height="259">
 </div>
 </div>
 <div class="paragraph">
@@ -1938,7 +1873,7 @@ In the forked JVM, the System ClassLoader has the server class-path and/or modul
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="307" height="210">
+<img src="diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="381" height="281">
 </div>
 </div>
 <div class="paragraph">
@@ -2180,14 +2115,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=ivnr6cag3vgg</mark>
+<strong>2021-02-19 16:16:55.145:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:16:55.208:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2488f87e{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2021-02-19 16:16:55.233:</strong>INFO :oejs.Server:main: Started Server@d29f28{STARTING}[11.0.1,sto=5000] @1026ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3546,32 +3477,36 @@ Excess buffers will not be pooled and will be eventually garbage collected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
-
-[description]
+<pre>[description]
 Configures the ByteBufferPool used by ServerConnectors.
+
+[depends]
+logging
 
 [xml]
 etc/jetty-bytebufferpool.xml
 
 [ini-template]
-### Server ByteBufferPool Configuration
-## Minimum capacity to pool ByteBuffers
+## Minimum capacity of a single ByteBuffer.
 #jetty.byteBufferPool.minCapacity=0
 
-## Maximum capacity to pool ByteBuffers
+## Maximum capacity of a single ByteBuffer.
+## Requests for ByteBuffers larger than this value results
+## in the ByteBuffer being allocated but not pooled.
 #jetty.byteBufferPool.maxCapacity=65536
 
-## Capacity factor
+## Bucket capacity factor.
+## ByteBuffers are allocated out of buckets that have
+## a capacity that is multiple of this factor.
 #jetty.byteBufferPool.factor=1024
 
-## Maximum queue length for each bucket (-1 for unbounded)
+## Maximum queue length for each bucket (-1 for unbounded).
 #jetty.byteBufferPool.maxQueueLength=-1
 
-## Maximum heap memory retainable by the pool (-1 for unlimited)
+## Maximum heap memory retainable by the pool (-1 for unlimited).
 #jetty.byteBufferPool.maxHeapMemory=-1
 
-## Maximum direct memory retainable by the pool (-1 for unlimited)
+## Maximum direct memory retainable by the pool (-1 for unlimited).
 #jetty.byteBufferPool.maxDirectMemory=-1</pre>
 </div>
 </div>
@@ -3604,10 +3539,8 @@ etc/jetty-bytebufferpool.xml
 </div>
 <div class="listingblock">
 <div class="content">
-<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
-
-[description]
-Enables webapplication deployment from the webapps directory.
+<pre>[description]
+Enables web application deployment from the $JETTY_BASE/webapps/ directory.
 
 [depend]
 webapp
@@ -3665,7 +3598,42 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>### Clear-Text HTTP Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.http.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.http.port=8080
+
+## The connector idle timeout, in milliseconds.
+# jetty.http.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.http.acceptors=-1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.http.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.http.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.http.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.http.reuseAddress=true
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.http.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedSendBufferSize=-1</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3739,7 +3707,21 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2.maxConcurrentStreams=128
+
+## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2.initialStreamRecvWindow=524288
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2.initialSessionRecvWindow=1048576
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2.rateControl.maxEventsPerSecond=20</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3763,7 +3745,21 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2c.maxConcurrentStreams=1024
+
+  ## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2c.initialStreamRecvWindow=65535
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2.initialSessionRecvWindow=1048576
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2.rateControl.maxEventsPerSecond=20</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3787,7 +3783,46 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>### ForwardedRequestCustomizer Configuration
+
+## Whether to process only the RFC7239 "Forwarded" header.
+## "X-Forwarded-*" headers are not processed.
+# jetty.httpConfig.forwardedOnly=false
+
+## Whether the address obtained from "Forwarded: by=" or
+## "X-Forwarded-Server" is used in the request authority.
+# jetty.httpConfig.forwardedProxyAsAuthority=false
+
+## Whether the "X-Forwarded-Port" header is used in the request authority,
+## or else it is the remote client port.
+# jetty.httpConfig.forwardedPortAsAuthority=true
+
+## The name of the RFC 7239 HTTP header.
+# jetty.httpConfig.forwardedHeader=Forwarded
+
+## The name of the obsolete forwarded host HTTP header.
+# jetty.httpConfig.forwardedHostHeader=X-Forwarded-Host
+
+## The name of the obsolete forwarded server HTTP header.
+# jetty.httpConfig.forwardedServerHeader=X-Forwarded-Server
+
+## The name of the obsolete forwarded scheme HTTP header.
+# jetty.httpConfig.forwardedProtoHeader=X-Forwarded-Proto
+
+## The name of the obsolete forwarded for HTTP header.
+# jetty.httpConfig.forwardedForHeader=X-Forwarded-For
+
+## The name of the obsolete forwarded port HTTP header.
+# jetty.httpConfig.forwardedPortHeader=X-Forwarded-Port
+
+## The name of the obsolete forwarded https HTTP header.
+# jetty.httpConfig.forwardedHttpsHeader=X-Proxied-Https
+
+## The name of the obsolete forwarded SSL session ID HTTP header.
+# jetty.httpConfig.forwardedSslSessionIdHeader=Proxy-ssl-id
+
+## The name of the obsolete forwarded SSL cipher HTTP header.
+# jetty.httpConfig.forwardedCipherSuiteHeader=Proxy-auth-cert</pre>
 </div>
 </div>
 </div>
@@ -3804,7 +3839,7 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 <pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
 
 [description]
-Adds HTTPS protocol support to the TLS(SSL) Connector
+Adds HTTPS protocol support to the TLS(SSL) Connector.
 
 [tags]
 connector
@@ -3816,6 +3851,7 @@ ssl
 ssl
 
 [optional]
+alpn
 http2
 http-forwarded
 
@@ -3837,24 +3873,23 @@ etc/jetty-https.xml</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
-
-[description]
-Enables the core Jetty server on the classpath.
+<pre>[description]
+Enables and configures the Jetty server.
+This module does not enable any network protocol support.
+To enable a specific network protocol such as HTTP/1.1, you must enable the correspondent Jetty module.
 
 [optional]
 jvm
 ext
 resources
-logging
 
 [depend]
 threadpool
 bytebufferpool
+logging
 
 [lib]
-lib/servlet-api-3.1.jar
-lib/jetty-schemas-3.1.jar
+lib/jetty-jakarta-servlet-api-5.0.*.jar
 lib/jetty-http-${jetty.version}.jar
 lib/jetty-server-${jetty.version}.jar
 lib/jetty-xml-${jetty.version}.jar
@@ -3863,9 +3898,6 @@ lib/jetty-io-${jetty.version}.jar
 
 [xml]
 etc/jetty.xml
-
-[jpms]
-patch-module: servlet.api=lib/jetty-schemas-3.1.jar
 
 [ini-template]
 ### Common HTTP configuration
@@ -3902,14 +3934,14 @@ patch-module: servlet.api=lib/jetty-schemas-3.1.jar
 ## Maximum number of error dispatches to prevent looping
 # jetty.httpConfig.maxErrorDispatches=10
 
+## HTTP Compliance: RFC7230, RFC7230_LEGACY, RFC2616, RFC2616_LEGACY, LEGACY
+# jetty.httpConfig.compliance=RFC7230
+
 ## Cookie compliance mode for parsing request Cookie headers: RFC2965, RFC6265
 # jetty.httpConfig.requestCookieCompliance=RFC6265
 
 ## Cookie compliance mode for generating response Set-Cookie: RFC2965, RFC6265
 # jetty.httpConfig.responseCookieCompliance=RFC6265
-
-## multipart/form-data compliance mode of: LEGACY(slow), RFC7578(fast)
-# jetty.httpConfig.multiPartFormDataCompliance=LEGACY
 
 ## Relative Redirect Locations allowed
 # jetty.httpConfig.relativeRedirectAllowed=false
@@ -3969,7 +4001,56 @@ See also the <a href="#og-troubleshooting-dump">Jetty Server Dump</a> section fo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>### TLS (SSL) Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.ssl.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.ssl.port=8443
+
+## The connector idle timeout, in milliseconds.
+# jetty.ssl.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.ssl.acceptors=-1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.ssl.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.ssl.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.ssl.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.ssl.reuseAddress=true
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.ssl.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedSendBufferSize=-1
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with an HTTP 400 response.
+# jetty.ssl.sniRequired=false
+
+## Whether client SNI data is checked to match CN and SAN in server certificates.
+## When SNI is checked, if the match fails the connection is rejected with an HTTP 400 response.
+# jetty.ssl.sniHostCheck=true
+
+## The max age, in seconds, for the Strict-Transport-Security response header.
+# jetty.ssl.stsMaxAgeSeconds=31536000
+
+## Whether to include the subdomain property in any Strict-Transport-Security header.
+# jetty.ssl.stsIncludeSubdomains=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4002,7 +4083,71 @@ Refer to <a href="#og-module-http-selectors">this section</a> for more informati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre>### SslContextFactory Configuration
+## Note that OBF passwords are not secure, just protected from casual observation.
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with a TLS handshake error.
+# jetty.sslContext.sniRequired=false
+
+## The Endpoint Identification Algorithm.
+## Same as javax.net.ssl.SSLParameters#setEndpointIdentificationAlgorithm(String).
+# jetty.sslContext.endpointIdentificationAlgorithm=
+
+## The JSSE Provider.
+# jetty.sslContext.provider=
+
+## The KeyStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.keyStorePath=etc/keystore.p12
+## The KeyStore absolute file path.
+# jetty.sslContext.keyStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The TrustStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.trustStorePath=etc/keystore.p12
+## The TrustStore absolute file path.
+# jetty.sslContext.trustStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The KeyStore password.
+# jetty.sslContext.keyStorePassword=
+
+## The Keystore type.
+# jetty.sslContext.keyStoreType=PKCS12
+
+## The KeyStore provider.
+# jetty.sslContext.keyStoreProvider=
+
+## The KeyManager password.
+# jetty.sslContext.keyManagerPassword=
+
+## The TrustStore password.
+# jetty.sslContext.trustStorePassword=
+
+## The TrustStore type.
+# jetty.sslContext.trustStoreType=PKCS12
+
+## The TrustStore provider.
+# jetty.sslContext.trustStoreProvider=
+
+## Whether client certificate authentication is required.
+# jetty.sslContext.needClientAuth=false
+
+## Whether client certificate authentication is desired, but not required.
+# jetty.sslContext.wantClientAuth=false
+
+## Whether cipher order is significant.
+# jetty.sslContext.useCipherSuitesOrder=true
+
+## The SSLSession cache size.
+# jetty.sslContext.sslSessionCacheSize=-1
+
+## The SSLSession cache timeout (in seconds).
+# jetty.sslContext.sslSessionTimeout=-1
+
+## Whether TLS renegotiation is allowed.
+# jetty.sslContext.renegotiationAllowed=true
+
+## The max number of TLS renegotiations per connection.
+# jetty.sslContext.renegotiationLimit=5</pre>
 </div>
 </div>
 </div>
@@ -4055,7 +4200,8 @@ When the scanning detects a change to the KeyStore file, the correspondent <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre></pre>
+<pre># Monitored directory scan period, in seconds.
+# jetty.sslContext.reload.scanInterval=1</pre>
 </div>
 </div>
 </div>
@@ -4070,7 +4216,38 @@ The KeyStore file is automatically deleted when the JVM exits, and re-created wh
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-test-keystore.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/test-keystore.mod[]</pre>
+<pre>[description]
+Test keystore with self-signed SSL Certificate.
+DO NOT USE IN PRODUCTION!!!
+
+[tags]
+demo
+ssl
+
+[depend]
+ssl
+
+[files]
+maven://org.bouncycastle/bcpkix-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcprov-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+
+[lib]
+lib/jetty-keystore-${jetty.version}.jar
+lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+
+[xml]
+etc/jetty-test-keystore.xml
+
+[ini]
+bouncycastle.version?=1.62
+jetty.webapp.addServerClasses+=,${jetty.base.uri}/lib/bouncycastle/
+jetty.sslContext.keyStorePath?=etc/test-keystore.p12
+jetty.sslContext.keyStoreType?=PKCS12
+jetty.sslContext.keyStorePassword?=OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4
+jetty.sslContext.trustStorePath?=etc/test-keystore.p12
+jetty.sslContext.trustStoreType?=PKCS12
+jetty.sslContext.keyStorePassword?=OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4095,30 +4272,29 @@ Start with the default value of <code>maxThreads</code>, and tune for larger val
 </div>
 <div class="listingblock">
 <div class="content">
-<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+<pre>[description]
+Enables and configures the Server ThreadPool.
 
-[description]
-Enables the Server thread pool.
+[depends]
+logging
 
 [xml]
 etc/jetty-threadpool.xml
 
 [ini-template]
-
-### Server Thread Pool Configuration
-## Minimum Number of Threads
+## Minimum number of pooled threads.
 #jetty.threadPool.minThreads=10
 
-## Maximum Number of Threads
+## Maximum number of pooled threads.
 #jetty.threadPool.maxThreads=200
 
-## Number of reserved threads (-1 for heuristic)
+## Number of reserved threads (-1 for heuristic).
 #jetty.threadPool.reservedThreads=-1
 
-## Thread Idle Timeout (in milliseconds)
+## Thread idle timeout (in milliseconds).
 #jetty.threadPool.idleTimeout=60000
 
-## Whether to Output a Detailed Dump
+## Whether to output a detailed dump.
 #jetty.threadPool.detailedDump=false</pre>
 </div>
 </div>
@@ -4837,14 +5013,19 @@ INFO  : Base directory was modified</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-module=server
+INFO  : logging-jetty   transitively enabled
+INFO  : resources       transitively enabled
+INFO  : https           initialized in ${jetty.base}/start.d/https.ini
+INFO  : ssl             initialized in ${jetty.base}/start.d/ssl.ini
+INFO  : threadpool      transitively enabled, ini template available with --add-module=threadpool
+INFO  : logging/slf4j   transitive provider of logging/slf4j for logging-jetty
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-module=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4888,14 +5069,11 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : test-keystore   initialized in ${jetty.base}/start.d/test-keystore.ini
+INFO  : mkdir ${jetty.base}/lib/bouncycastle
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15on/1.62/bcpkix-jdk15on-1.62.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15on-1.62.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15on/1.62/bcprov-jdk15on-1.62.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15on-1.62.jar
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4923,14 +5101,11 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:17:00.041:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-02-19 16:17:00.891:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:17:01.084:</strong>INFO :oejus.SslContextFactory:main: x509=X509@ff684e1(jetty-test-keystore,h=[localhost],w=[]) for Server@6e35bc3d[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=file:///path/to/jetty.base/etc/test-keystore.p12]
+<strong>2021-02-19 16:17:01.220:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@18c5069b<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-02-19 16:17:01.242:</strong>INFO :oejs.Server:main: Started Server@388526fb{STARTING}[11.0.1,sto=5000] @2467ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4985,7 +5160,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="380" height="420">
+<img src="diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="384" height="423">
 </div>
 </div>
 <div class="paragraph">
@@ -4993,7 +5168,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="415" height="420">
+<img src="diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="421" height="423">
 </div>
 </div>
 <div class="paragraph">
@@ -5011,7 +5186,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="307" height="210">
+<img src="diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="140" height="290">
 </div>
 </div>
 <div class="paragraph">
@@ -5019,7 +5194,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="307" height="210">
+<img src="diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="225" height="403">
 </div>
 </div>
 <div class="paragraph">
@@ -5027,7 +5202,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="307" height="210">
+<img src="diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="336" height="629">
 </div>
 </div>
 </div>
@@ -5081,14 +5256,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:17:04.280:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-02-19 16:17:04.980:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:17:05.185:</strong>INFO :oejus.SslContextFactory:main: x509=X509@56303b57(jetty-test-keystore,h=[localhost],w=[]) for Server@2f48b3d2[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=file:///path/to/jetty.base/etc/test-keystore.p12]
+<strong>2021-02-19 16:17:05.317:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@631f4046<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-02-19 16:17:05.335:</strong>INFO :oejs.Server:main: Started Server@6127a7e{STARTING}[11.0.1,sto=5000] @2389ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5140,14 +5312,9 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:17:07.307:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:17:07.377:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@48bb62<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2021-02-19 16:17:07.399:</strong>INFO :oejs.Server:main: Started Server@54bff557{STARTING}[11.0.1,sto=5000] @1041ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5701,7 +5868,7 @@ If the request URI is for a resource that does not exist, the response will like
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="460" height="316">
+<img src="diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="253" height="414">
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -5781,14 +5948,8 @@ Forwarded: for=2.36.72.144:21216;proto=https</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : http-forwarded  initialized in ${jetty.base}/start.d/http-forwarded.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5848,14 +6009,8 @@ This mechanism is therefore independent of any protocol, so it can be used for T
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol  initialized in ${jetty.base}/start.d/proxy-protocol.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5868,14 +6023,9 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:17:11.435:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:17:11.503:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1703b948<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2021-02-19 16:17:11.519:</strong>INFO :oejs.Server:main: Started Server@6babf3bf{STARTING}[11.0.1,sto=5000] @1036ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5903,14 +6053,8 @@ For every new TCP connection, Jetty first interprets the proxy protocol bytes wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol-ssl initialized in ${jetty.base}/start.d/proxy-protocol-ssl.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5923,14 +6067,11 @@ Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.io.IOException: Cannot read file: /path/to/jetty.home/etc/jetty-halt.xml
-	at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-	at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-	at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-	at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-02-19 16:17:15.001:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-02-19 16:17:15.852:</strong>INFO :oejs.Server:main: jetty-11.0.1; built: 2021-02-19T22:03:05.556Z; git: e98092c1791fbda9d157dd5339cf3a909e90ab40; jvm 11.0.9+11
+<strong>2021-02-19 16:17:16.062:</strong>INFO :oejus.SslContextFactory:main: x509=X509@10b9db7b(jetty-test-keystore,h=[localhost],w=[]) for Server@305a0c5f[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=file:///path/to/jetty.base/etc/test-keystore.p12]
+<strong>2021-02-19 16:17:16.193:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@418315ec<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-02-19 16:17:16.214:</strong>INFO :oejs.Server:main: Started Server@4c51cf28{STARTING}[11.0.1,sto=5000] @2467ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8618,7 +8759,7 @@ It will match all <code>ServletContainerInitializer</code> classes not explicitl
 <pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
 
 [description]
-Enables JSP for all webapplications deployed on the server.
+Enables JSP for all web applications deployed on the server.
 
 [depend]
 servlet
@@ -8969,11 +9110,11 @@ trimmed?</p></td>
 <pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
 
 [description]
-Enables JSTL for all webapplications deployed on the server
+Enables JSTL for all web applications deployed on the server.
 
 [depend]
 jsp
-apache-jstl</pre>
+glassfish-jstl</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9654,7 +9795,7 @@ own custom <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/aut
 <pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
 
 [description]
-Enable JAAS for deployed webapplications.
+Enables JAAS for deployed web applications.
 
 [depend]
 server
@@ -10780,13 +10921,83 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>        at org.eclipse.jetty.start.StartArgs.addUniqueXmlFile(StartArgs.java:265)
-        at org.eclipse.jetty.start.StartArgs.resolveExtraXmls(StartArgs.java:1461)
-        at org.eclipse.jetty.start.Main.processCommandLine(Main.java:354)
-        at org.eclipse.jetty.start.Main.main(Main.java:75)
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>Server@d29f28{STARTING}[11.0.1,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp1233990028]@498d318c{STARTED,4&lt;=4&lt;=200,i=2,r=8,q=0}[ReservedThreadExecutor@548d708a{s=0/8,p=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  += ReservedThreadExecutor@548d708a{s=0/8,p=0} - STARTED
+|  +&gt; threads size=4
+|     +&gt; qtp1233990028-12 RUNNABLE tid=12 prio=5 SELECTING
+|     +&gt; qtp1233990028-13 TIMED_WAITING tid=13 prio=5 IDLE
+|     +&gt; qtp1233990028-14 TIMED_WAITING tid=14 prio=5 IDLE
+|     +&gt; qtp1233990028-15-acceptor-0@4b6ab6d7-ServerConnector@1e6a3214{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=15 prio=3 ACCEPTING <i class="conum" data-value="3"></i><b>(3)</b>
++- org.eclipse.jetty.io.ArrayByteBufferPool@7f485fda
++= ScheduledExecutorScheduler@2a5c8d3f{STARTED} - STARTED
++= HandlerList@28261e8e{STARTED} - STARTED
+|  += ContextHandlerCollection@d737b89{STARTED} - STARTED
+|  += DefaultHandler@8519cb4{STARTED} - STARTED
++= ServerConnector@1e6a3214{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  +~ QueuedThreadPool[qtp1233990028]@498d318c{STARTED,4&lt;=4&lt;=200,i=2,r=8,q=0}[ReservedThreadExecutor@548d708a{s=0/8,p=0}] - STARTED
+|  +~ ScheduledExecutorScheduler@2a5c8d3f{STARTED} - STARTED
+|  +- org.eclipse.jetty.io.ArrayByteBufferPool@7f485fda
+|  +- org.eclipse.jetty.server.AbstractConnector$1@35dab4eb
+|  += HttpConnectionFactory@482bce4f[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@5e2c3d18{32768/8192,8192/8192,https://:0,[]}
+|  |     +&gt; customizers size=0
+|  |     +&gt; formEncodedMethods size=2
+|  |     |  +&gt; POST
+|  |     |  +&gt; PUT
+|  |     +&gt; outputBufferSize=32768
+|  |     +&gt; outputAggregationSize=8192
+|  |     +&gt; requestHeaderSize=8192
+|  |     +&gt; responseHeaderSize=8192
+|  |     +&gt; headerCacheSize=1024
+|  |     +&gt; secureScheme=https
+|  |     +&gt; securePort=0
+|  |     +&gt; idleTimeout=-1
+|  |     +&gt; sendDateHeader=true
+|  |     +&gt; sendServerVersion=true
+|  |     +&gt; sendXPoweredBy=false
+|  |     +&gt; delayDispatchUntilContent=true
+|  |     +&gt; persistentConnectionsEnabled=true
+|  |     +&gt; maxErrorDispatches=10
+|  |     +&gt; minRequestDataRate=0
+|  |     +&gt; minResponseDataRate=0
+|  |     +&gt; requestCookieCompliance=org.eclipse.jetty.http.CookieCompliance@7a35b0f5
+|  |     +&gt; responseCookieCompliance=org.eclipse.jetty.http.CookieCompliance@7a35b0f5
+|  |     +&gt; notifyRemoteAsyncErrors=true
+|  |     +&gt; relativeRedirectAllowed=false
+|  += SelectorManager@ServerConnector@1e6a3214{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += ManagedSelector@402c4085{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
+|  |     += EatWhatYouKill@6fa51cd4/SelectorProducer@31ea9581/PRODUCING/p=false/QueuedThreadPool[qtp1233990028]@498d318c{STARTED,4&lt;=4&lt;=200,i=2,r=8,q=0}[ReservedThreadExecutor@548d708a{s=0/8,p=0}][pc=0,pic=0,pec=0,epc=0]@2021-02-19T16:17:18.935835-06:00 - STARTED
+|  |     |  +- SelectorProducer@31ea9581
+|  |     |  +~ QueuedThreadPool[qtp1233990028]@498d318c{STARTED,4&lt;=4&lt;=200,i=2,r=8,q=0}[ReservedThreadExecutor@548d708a{s=0/8,p=0}] - STARTED
+|  |     +&gt; updates @ 2021-02-19T16:17:18.926285-06:00 size=0
+|  |     +&gt; keys @ 2021-02-19T16:17:18.930742-06:00 size=0
+|  +- sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+|  +- qtp1233990028-15-acceptor-0@4b6ab6d7-ServerConnector@1e6a3214{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@231f98ef
++= ErrorHandler@7c137fd5{STARTED} - STARTED
++&gt; startJarLoader@1563da5
+   +&gt; URLs size=9
+   |  +&gt; file:/path/to/jetty.base/resources/
+   |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-11.0.1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-jakarta-servlet-api-5.0.2.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-11.0.1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-11.0.1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-11.0.1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-11.0.1.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-11.0.1.jar
+   +&gt; jdk.internal.loader.ClassLoaders$AppClassLoader@277050dc
+      +&gt; packages size=4
+      |  +&gt; package org.eclipse.jetty.start.config
+      |  +&gt; package org.eclipse.jetty.start.builders
+      |  +&gt; package org.eclipse.jetty.start.shaded.util
+      |  +&gt; package org.eclipse.jetty.start
+      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@4082ba93
+         +&gt; packages size=2
+            +&gt; package sun.util.resources.provider
+            +&gt; package sun.util.resources.cldr.provider
+key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +&gt; undefined</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -11455,7 +11666,7 @@ Within these elements there may be nested elements that will operate on that sco
 <div id="footer">
 <div id="footer-text">
 Version 11.0.1<br>
-Last updated 2021-02-23 11:23:01 -0600
+Last updated 2021-02-19 13:07:31 -0600
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
