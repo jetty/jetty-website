@@ -14,8 +14,10 @@ function set_global_variables() {
   ARC_DIR=$(pwd)/_archive
   JAVADOC_DIR=$(pwd)/javadoc
   TEMP_DIR=$ARC_DIR/temp
+  SCRIPT_DIR=$(pwd)
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
+  GITHUB_ROOT="https://github.com/eclipse/jetty.project/archive"
   DOC_ROOT="$MAVEN_ROOT/jetty-documentation"
   LOG_FILE="$ARC_DIR/update.log"
 }
@@ -36,6 +38,13 @@ function print_execution_variables() {
   echo "Jetty 9.4 = $jetty_9_4"
   echo "Jetty 10.0 = $jetty_10_0"
   echo "Jetty 11.0 = $jetty_11_0"
+}
+
+
+function init() {
+  set_global_variables;
+  reset_log;
+  create_archive_directory;
 }
 
 function gather_current_versions() {
@@ -82,17 +91,22 @@ function create_archive_directory() {
 
 function create_temp_directory() {
 
-  if [ ! -d "$TEMP_DIR" ]; then
+  if [[ ! -d "$TEMP_DIR" ]]; then
     mkdir "$TEMP_DIR"
   fi
 }
 
 function delete_temp_directory() {
-  rm -Rf "$TEMP_DIR";
+
+  if [[ -d "$TEMP_DIR" ]]; then
+    rm -Rf "$TEMP_DIR";
+  fi
 }
 
 function reset_log() {
-  rm "$LOG_FILE";
+  if [[ -e "$LOG_FILE" ]]; then
+    rm "$LOG_FILE";
+  fi
 }
 
 function get_primary_version() {
@@ -112,13 +126,10 @@ function get_javadoc_version() {
   elif [[ $primary_version == "jetty-10" ]]; then
     javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-10/index.html")
   elif [[ $primary_version == "jetty-11" ]]; then
-    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/'  "$JAVADOC_DIR/jetty-11/index.html")
+    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-11/index.html")
   fi
 
-  # shellcheck disable=SC2046
-  version=
-
-  echo "$version"
+  echo "$javadoc_version"
 }
 
 function get_version_from_file_1x() {
@@ -141,7 +152,7 @@ function clean_archive_directory() {
 
 }
 
-function download() {
+function maven_download() {
   local artifact=$1
   local version=$2
   local filename=$3
@@ -164,6 +175,22 @@ function download() {
   fi
 }
 
+function github_download() {
+  local filename=$1
+
+  if [[ ! -f "$ARC_DIR/$filename" ]]; then
+    echo "  downloading $filename"
+    wget -O "$ARC_DIR/$filename" "$GITHUB_ROOT/$filename" &>>"$LOG_FILE";
+    local download_status=$?;
+
+    if [[ download_status -ne 0 ]]; then
+      echo "download failed: $filename";
+      rm "$ARC_DIR/$filename";
+    fi
+  fi
+}
+
+
 function download_distribution_files() {
   local version=$1
 
@@ -179,12 +206,12 @@ function download_distribution_files() {
   local filename_tasc="$artifact-$version.tar.gz.asc";
   local filename_tmd5="$artifact-$version.tar.gz.md5";
   local filename_tsha1="$artifact-$version.tar.gz.sha1";
-  download "$artifact" "$version" "$filename_zasc";
-  download "$artifact" "$version" "$filename_zmd5";
-  download "$artifact" "$version" "$filename_zsha1";
-  download "$artifact" "$version" "$filename_tasc";
-  download "$artifact" "$version" "$filename_tmd5";
-  download "$artifact" "$version" "$filename_tsha1";
+  maven_download "$artifact" "$version" "$filename_zasc";
+  maven_download "$artifact" "$version" "$filename_zmd5";
+  maven_download "$artifact" "$version" "$filename_zsha1";
+  maven_download "$artifact" "$version" "$filename_tasc";
+  maven_download "$artifact" "$version" "$filename_tmd5";
+  maven_download "$artifact" "$version" "$filename_tsha1";
 }
 
 function download_documentation_files() {
@@ -192,8 +219,8 @@ function download_documentation_files() {
   local version=$1;
   local html_filename="$artifact-$version-html.zip";
   local javadoc_filename="$artifact-$version-javadoc.jar";
-  download "$artifact" "$version" "$html_filename";
-  download "$artifact" "$version" "$javadoc_filename";
+  maven_download "$artifact" "$version" "$html_filename";
+  maven_download "$artifact" "$version" "$javadoc_filename";
 }
 
 function download_missing_files() {
@@ -299,22 +326,38 @@ function process_javadoc() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
 
+  create_temp_directory
+
   for version in "${versions[@]}"; do
     local primary_version;
-    local current_javadoc_version;
+    local javadoc_version;
 
     primary_version=$(get_primary_version "$version");
+    javadoc_version=$(get_javadoc_version "$primary_version");
 
-    if [[ $primary_version == "jetty-9" ]]; then
-      current_javadoc_version=$(get_version_from_file_9 "javadoc/jetty-9/index.html")
-    elif [[ $primary_version == "jetty-10" ]]; then
-      current_javadoc_version=$(get_version_from_file_1x "javadoc/jetty-10/index.html")
-    elif [[ $primary_version == "jetty-11" ]]; then
-      current_javadoc_version=$(get_version_from_file_1x "javadoc/jetty-11/index.html")
+    if [[ $version == "$javadoc_version" ]]; then
+      #echo "Skipping javadoc generation for $version";
+
+      build_javadoc "$version"
     fi
-
-    echo "$primary_version $current_javadoc_version";
   done;
+
+  #delete_temp_directory
+}
+
+function build_javadoc() {
+  local version=$1
+  local filename="jetty-$version.zip"
+
+  github_download "$filename";
+
+  local temp_build_dir="$TEMP_DIR/$version";
+
+  unzip -d "$temp_build_dir" "$ARC_DIR/$filename" &>>"$LOG_FILE";
+
+  cd "$temp_build_dir/jetty.project-jetty-$version" || return
+
+
 
 }
 
@@ -327,7 +370,7 @@ function main() {
 
   # print out the settings this script operates under
   if [[ $directive == "-s" ]]; then
-    set_global_variables;
+    init;
     gather_current_versions;
     print_global_variables;
     print_execution_variables;
@@ -336,8 +379,7 @@ function main() {
 
   # run an update process for any version changes
   if [[ $directive == "-u" ]]; then
-    set_global_variables;
-    reset_log;
+    init;
     gather_current_versions;
     download_missing_files;
     generate_version_php;
@@ -351,7 +393,7 @@ function main() {
   # just to test some things
   if [[ $directive == "-t" ]]; then
     echo "testing javadoc"
-    set_global_variables;
+    init;
     gather_current_versions;
     process_javadoc
     exit 0;
