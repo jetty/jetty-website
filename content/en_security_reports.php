@@ -93,7 +93,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2019/11/25</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17632" title="The generation of default unhandled Error response content (in text/html and text/json Content-Type) does not escape Exception messages in stacktraces included in error output.">CVE-2019-9518</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-17632" title="The generation of default unhandled Error response content (in text/html and text/json Content-Type) does not escape Exception messages in stacktraces included in error output.">CVE-2019-17632</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">&gt;= 9.4.21, &lt; = 9.4.23</p></td>
