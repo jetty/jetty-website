@@ -42,6 +42,13 @@ function print_execution_variables() {
 
 
 function init() {
+  echo ""
+
+  if [[ -z "${JAVA_HOME}" ]]; then
+    echo "Error: JAVA_HOME environment variable not set, required for javadoc generation."
+    exit 1
+  fi
+
   set_global_variables;
   reset_log;
   create_archive_directory;
@@ -158,18 +165,19 @@ function maven_download() {
   local filename=$3
 
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
-    echo "  downloading $filename"
+    echo "  - downloading $filename"
     wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
     local download_status=$?;
 
     if [[ download_status -ne 0 ]]; then
-      echo "  staging download $filename"
+      echo "  - staging download $filename"
       wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
       local staging_status=$?;
 
       if [[ staging_status -ne 0 ]]; then
-        echo "download failed: $filename";
+        echo "  - download failed: $filename";
         rm "$ARC_DIR/$filename";
+        exit 1
       fi
     fi
   fi
@@ -179,13 +187,14 @@ function github_download() {
   local filename=$1
 
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
-    echo "  downloading $filename"
+    echo "  - downloading $filename"
     wget -O "$ARC_DIR/$filename" "$GITHUB_ROOT/$filename" &>>"$LOG_FILE";
     local download_status=$?;
 
     if [[ download_status -ne 0 ]]; then
-      echo "download failed: $filename";
+      echo "  - download failed: $filename";
       rm "$ARC_DIR/$filename";
+      exit 1
     fi
   fi
 }
@@ -223,8 +232,18 @@ function download_documentation_files() {
   maven_download "$artifact" "$version" "$javadoc_filename";
 }
 
+function download_github_files() {
+  local version=$1
+  local filename="jetty-$version.zip"
+
+  github_download filename
+
+}
+
 function download_missing_files() {
   create_archive_directory
+
+  echo " - phase: downloads"
 
   # TODO make dynamic
   # Jetty 9.2
@@ -233,17 +252,12 @@ function download_missing_files() {
   # Jetty 9.3
   download_distribution_files "$jetty_9_3"
 
-  # Jetty 9.4
-  download_distribution_files "$jetty_9_4"
-  download_documentation_files "$jetty_9_4"
-
-  # Jetty 10.0
-  download_distribution_files "$jetty_10_0"
-  download_documentation_files "$jetty_10_0"
-
-  # Jetty 11.0
-  download_distribution_files "$jetty_11_0"
-  download_documentation_files "$jetty_11_0"
+  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
+  for version in "${versions[@]}"; do
+    download_distribution_files "$version"
+    download_documentation_files "$version"
+    download_github_files "$version"
+  done
 }
 
 function get_dist_info() {
@@ -259,6 +273,8 @@ function generate_version_php() {
   # shellcheck disable=SC2206
   # TODO make dynamic
   local versions=($jetty_9_2 $jetty_9_3 $jetty_9_4 $jetty_10_0 $jetty_11_0)
+
+    echo " - phase: version_php generation"
 
   rm "$VERSIONS_PHP"
 
@@ -303,6 +319,9 @@ function generate_version_php() {
 function process_documentation() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
+
+  echo " - phase: documentation"
+
   create_temp_directory;
 
   for version in "${versions[@]}"; do
@@ -315,6 +334,8 @@ function process_documentation() {
       local primary_version;
       primary_version=$(get_primary_version "$version");
 
+      echo "  - deploying documentation for $version"
+
       rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
     done;
   } &>>"$LOG_FILE";
@@ -326,19 +347,23 @@ function process_javadoc() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
 
+  echo " - phase: javadoc"
+
   create_temp_directory
 
   for version in "${versions[@]}"; do
     local primary_version;
     local javadoc_version;
+    local temp_build_dir="$TEMP_DIR/$version";
 
     primary_version=$(get_primary_version "$version");
     javadoc_version=$(get_javadoc_version "$primary_version");
 
     if [[ $version == "$javadoc_version" ]]; then
-      #echo "Skipping javadoc generation for $version";
-
-      build_javadoc "$version"
+      echo "  - skipping javadoc generation for $version";
+    else
+      build_javadoc "$primary_version" "$version" "$temp_build_dir"
+      deploy_javadoc "$primary_version" "$version" "$temp_build_dir"
     fi
   done;
 
@@ -346,18 +371,57 @@ function process_javadoc() {
 }
 
 function build_javadoc() {
-  local version=$1
+  local primary_version=$1
+  local version=$2
+  local temp_build_dir=$3
+
   local filename="jetty-$version.zip"
+
+  echo "  - building javadoc for $version"
 
   github_download "$filename";
 
-  local temp_build_dir="$TEMP_DIR/$version";
+  {
+    unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+    cd "$temp_build_dir/jetty.project-jetty-$version" || exit 1
 
-  unzip -d "$temp_build_dir" "$ARC_DIR/$filename" &>>"$LOG_FILE";
+    if [[ $primary_version == "jetty-9" ]]; then
+      mvn clean install -DskipTests
+      mvn javadoc:aggregate
+    elif [[ $primary_version == "jetty-10" ]]; then
+      mvn clean install -DskipTests
+      cd javadoc || exit 1
+      mvn clean install
+      cd .. || exit 1
+    elif [[ $primary_version == "jetty-11" ]]; then
+      mvn clean install -DskipTests
+      cd javadoc || exit 1
+      mvn clean install
+      cd .. || exit 1
+    fi
 
-  cd "$temp_build_dir/jetty.project-jetty-$version" || return
+    cd "$SCRIPT_DIR" || exit 1
+  } &>>"$LOG_FILE";
+}
 
 
+function deploy_javadoc() {
+  local primary_version=$1
+  local version=$2
+  local temp_build_dir=$3
+  local javadoc_src_dir
+
+  echo "  - deploying javadoc for $version"
+
+  if [[ $primary_version == "jetty-9" ]]; then
+    javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/target/site/apidocs/"
+  elif [[ $primary_version == "jetty-10" ]]; then
+    javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/javadoc/target/site/apidocs/"
+  elif [[ $primary_version == "jetty-11" ]]; then
+    javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/javadoc/target/site/apidocs/"
+  fi
+
+  rsync -avh "$javadoc_src_dir" "$JAVADOC_DIR/$primary_version" &>>"$LOG_FILE";
 
 }
 
@@ -384,20 +448,18 @@ function main() {
     download_missing_files;
     generate_version_php;
     process_documentation;
-    # automated javadoc is not supported yet, no artifacts are deployed
-    #process_javadoc;
-    echo "sorry, javadoc is still a manual process"
+    process_javadoc;
     exit 0;
   fi
 
   # just to test some things
-  if [[ $directive == "-t" ]]; then
-    echo "testing javadoc"
-    init;
-    gather_current_versions;
-    process_javadoc
-    exit 0;
-  fi
+  #if [[ $directive == "-t" ]]; then
+  #  echo "testing javadoc"
+  #  init;
+  #  gather_current_versions;
+  #  process_javadoc
+  #  exit 0;
+  #fi
 
   # print usage
   usage;
