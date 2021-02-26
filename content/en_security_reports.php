@@ -68,6 +68,14 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/02/26</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27223" title="When Jetty handles a request containing multiple Accept headers with a large number of “quality” (i.e. q) parameters, the server may enter a denial of service (DoS) state.">CVE-2020-27223</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.6.v20170531 - 9.4.36.v20210114, 10.0.0, 11.0.0</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.37, 10.0.1, 11.0.1</p></td>
+                </tr>
+                <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2020/11/17</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27218" title="If GZIP request body inflation is enabled and requests from different clients are multiplexed onto a single connection, and if an attacker can send a request with a body that is received entirely but not consumed by the application, then a subsequent request on the same connection will see that body prepended to its body.">CVE-2020-27218</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
