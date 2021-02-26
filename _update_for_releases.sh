@@ -377,7 +377,7 @@ function process_javadoc() {
     fi
   done;
 
-  #delete_temp_directory
+  delete_temp_directory
 }
 
 function build_javadoc() {
