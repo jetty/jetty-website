@@ -42,105 +42,105 @@
             </div>
             <div class="olist arabic">
                 <ol class="arabic">
-                    <li>
+                    <li><input type="checkbox">
                         <p>On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Copy this list as a markdown in the security advisory for tracking the completion of various tasks.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Initial triage and discussion are performed in the comments of the advisory.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>If enough information exists to attempt reproduction or fix, then a private repository is created as part of the GitHub security advisory.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>If the vulnerability cannot be confirmed then close the security advisory, else continue.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Generate a <a href="https://www.first.org/cvss/calculator/3.0">CVE score</a> and add it to the advisory description.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Identify a <a href="https://cwe.mitre.org/data/definitions/699.html">CWE Definition</a> and add it to the advisory description.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Identify vulnerable version(s), including current and past versions that are affected (e.g. 9.4.0 through 9.4.35, and 10.0.0.alpha1 through 10.0.0.beta3&#8230;&#8203;etc.)</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Identify and document workaround(s), if applicable, in the comments of the security advisory.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Open an <a href="https://bugs.eclipse.org/bugs/">Eclipse Bugzilla</a> to get a CVE allocated. Should be opened under the <em>Community</em> "Product" category with a "Component" of <em>Vulnerability Reports</em>. The CVE <a href="https://www.eclipse.org/projects/handbook/#vulnerability-cve">should include</a> the following:</p>
                         <div class="olist loweralpha">
                             <ol class="loweralpha" type="a">
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Version(s) affected</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>CVE Score</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>CWE Identifier(s)</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Brief description of the issue</p>
                                 </li>
                             </ol>
                         </div>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Once the CVE is allocated update the Security Advisory with the number</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Build and test fix(es) locally and in CI environment.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Merge tests and fix  - ensure description does not mention vulnerability directly. Do not merge directly from the security advisory as it can be traced back before publication.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Build and stage release candidate.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Notify interested parties of pending security advisory and staged release:</p>
                         <div class="olist loweralpha">
                             <ol class="loweralpha" type="a">
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Include CVE number, CVE score, and CWE</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Include Workarounds</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Stress that it is confidential</p>
                                 </li>
-                                <li>
+                                <li><input type="checkbox">
                                     <p>Advise the security advisory will be published in 2 days unless they indicate they need more time.</p>
                                 </li>
                             </ol>
                         </div>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>If testing is OK, then the release is promoted.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Interested parties are notified of the availability of release on Maven Central.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Publish security advisory and CVE publicly.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Edit VERSION.txt and so that the CVE number is now recorded against merged PR.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Edit the <a href="https://github.com/eclipse/jetty.project/releases">release(s)</a> on Github to identify CVE number that was addressed/resolved.</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Update downstream images (Docker, etc.).</p>
                     </li>
-                    <li>
+                    <li><input type="checkbox">
                         <p>Review security processes & completion.</p>
                     </li>
                 </ol>
