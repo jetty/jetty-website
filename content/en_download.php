@@ -50,7 +50,7 @@
                             href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
                             href="http://www.eclipse.org/jetty/javadoc/jetty-9/index.html?overview-summary.html">apidocs</a> / <a
-                            href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>"> source</a></p>
+                            href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_9.4']['version']; ?>"> source</a></p>
             </td>
         </tr>
         <tr>
@@ -63,7 +63,7 @@
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
                             href="http://www.eclipse.org/jetty/javadoc/jetty-10/index.html?overview-summary.html">apidocs </a> / <a
-                            href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_10.0']['version']; ?>"> source</a></p></td>
+                            href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_10.0']['version']; ?>"> source</a></p></td>
         </tr>
         <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_11.0']['version']; ?></p></td>
@@ -75,7 +75,7 @@
                         href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
                             href="http://www.eclipse.org/jetty/javadoc/jetty-11/index.html?overview-summary.html">apidocs </a> / <a
-                        href="https://github.com/eclipse/jetty.project/tree/<?php print $jetty['jetty_11.0']['version']; ?>"> source</a></p></td>
+                        href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_11.0']['version']; ?>"> source</a></p></td>
         </tr>
         </tbody>
     </table>
