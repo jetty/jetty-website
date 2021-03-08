@@ -43,105 +43,105 @@
             <div class="olist arabic">
                 <ol class="arabic">
                     <li>
-                        <p>[ ] On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.</p>
+                        <p>On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.</p>
                     </li>
                     <li>
-                        <p>[ ] Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.</p>
+                        <p>Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.</p>
                     </li>
                     <li>
-                        <p>[ ] Copy this list as a markdown in the security advisory for tracking the completion of various tasks.</p>
+                        <p>Copy this list as a markdown in the security advisory for tracking the completion of various tasks.</p>
                     </li>
                     <li>
-                        <p>[ ] Initial triage and discussion are performed in the comments of the advisory.</p>
+                        <p>Initial triage and discussion are performed in the comments of the advisory.</p>
                     </li>
                     <li>
-                        <p>[ ] If enough information exists to attempt reproduction or fix, then a private repository is created as part of the GitHub security advisory.</p>
+                        <p>If enough information exists to attempt reproduction or fix, then a private repository is created as part of the GitHub security advisory.</p>
                     </li>
                     <li>
-                        <p>[ ] f the vulnerability cannot be confirmed then close the security advisory, else continue.</p>
+                        <p>If the vulnerability cannot be confirmed then close the security advisory, else continue.</p>
                     </li>
                     <li>
-                        <p>[ ] Generate a <a href="https://www.first.org/cvss/calculator/3.0">CVE score</a> and add it to the advisory description.</p>
+                        <p>Generate a <a href="https://www.first.org/cvss/calculator/3.0">CVE score</a> and add it to the advisory description.</p>
                     </li>
                     <li>
-                        <p>[ ] Identify a <a href="https://cwe.mitre.org/data/definitions/699.html">CWE Definition</a> and add it to the advisory description.</p>
+                        <p>Identify a <a href="https://cwe.mitre.org/data/definitions/699.html">CWE Definition</a> and add it to the advisory description.</p>
                     </li>
                     <li>
-                        <p>[ ] Identify vulnerable version(s), including current and past versions that are affected (e.g. 9.4.0 through 9.4.35, and 10.0.0.alpha1 through 10.0.0.beta3&#8230;&#8203;etc.)</p>
+                        <p>Identify vulnerable version(s), including current and past versions that are affected (e.g. 9.4.0 through 9.4.35, and 10.0.0.alpha1 through 10.0.0.beta3&#8230;&#8203;etc.)</p>
                     </li>
                     <li>
-                        <p>[ ] Identify and document workaround(s), if applicable, in the comments of the security advisory.</p>
+                        <p>Identify and document workaround(s), if applicable, in the comments of the security advisory.</p>
                     </li>
                     <li>
-                        <p>[ ] Open an <a href="https://bugs.eclipse.org/bugs/">Eclipse Bugzilla</a> to get a CVE allocated. Should be opened under the <em>Community</em> "Product" category with a "Component" of <em>Vulnerability Reports</em>. The CVE <a href="https://www.eclipse.org/projects/handbook/#vulnerability-cve">should include</a> the following:</p>
+                        <p>Open an <a href="https://bugs.eclipse.org/bugs/">Eclipse Bugzilla</a> to get a CVE allocated. Should be opened under the <em>Community</em> "Product" category with a "Component" of <em>Vulnerability Reports</em>. The CVE <a href="https://www.eclipse.org/projects/handbook/#vulnerability-cve">should include</a> the following:</p>
                         <div class="olist loweralpha">
                             <ol class="loweralpha" type="a">
                                 <li>
-                                    <p>[ ] Version(s) affected</p>
+                                    <p>Version(s) affected</p>
                                 </li>
                                 <li>
-                                    <p>[ ] CVE Score</p>
+                                    <p>CVE Score</p>
                                 </li>
                                 <li>
-                                    <p>[ ] CWE Identifier(s)</p>
+                                    <p>CWE Identifier(s)</p>
                                 </li>
                                 <li>
-                                    <p>[ ] Brief description of the issue</p>
+                                    <p>Brief description of the issue</p>
                                 </li>
                             </ol>
                         </div>
                     </li>
                     <li>
-                        <p>[ ] Once the CVE is allocated update the Security Advisory with the number</p>
+                        <p>Once the CVE is allocated update the Security Advisory with the number</p>
                     </li>
                     <li>
-                        <p>[ ] Build and test fix(es) locally and in CI environment.</p>
+                        <p>Build and test fix(es) locally and in CI environment.</p>
                     </li>
                     <li>
-                        <p>[ ] Merge tests and fix  - ensure description does not mention vulnerability directly. Do not merge directly from the security advisory as it can be traced back before publication.</p>
+                        <p>Merge tests and fix  - ensure description does not mention vulnerability directly. Do not merge directly from the security advisory as it can be traced back before publication.</p>
                     </li>
                     <li>
-                        <p>[ ] Build and stage release candidate.</p>
+                        <p>Build and stage release candidate.</p>
                     </li>
                     <li>
-                        <p>[ ] Notify interested parties of pending security advisory and staged release:</p>
+                        <p>Notify interested parties of pending security advisory and staged release:</p>
                         <div class="olist loweralpha">
                             <ol class="loweralpha" type="a">
                                 <li>
-                                    <p>[ ] Include CVE number, CVE score, and CWE</p>
+                                    <p>Include CVE number, CVE score, and CWE</p>
                                 </li>
                                 <li>
-                                    <p>[ ] Include Workarounds</p>
+                                    <p>Include Workarounds</p>
                                 </li>
                                 <li>
-                                    <p>[ ] Stress that it is confidential</p>
+                                    <p>Stress that it is confidential</p>
                                 </li>
                                 <li>
-                                    <p>[ ] Advise the security advisory will be published in 2 days unless they indicate they need more time.</p>
+                                    <p>Advise the security advisory will be published in 2 days unless they indicate they need more time.</p>
                                 </li>
                             </ol>
                         </div>
                     </li>
                     <li>
-                        <p>[ ] If testing is OK, then the release is promoted.</p>
+                        <p>If testing is OK, then the release is promoted.</p>
                     </li>
                     <li>
-                        <p>[ ] Interested parties are notified of the availability of release on Maven Central.</p>
+                        <p>Interested parties are notified of the availability of release on Maven Central.</p>
                     </li>
                     <li>
-                        <p>[ ] Publish security advisory and CVE publicly.</p>
+                        <p>Publish security advisory and CVE publicly.</p>
                     </li>
                     <li>
-                        <p>[ ] Edit VERSION.txt and so that the CVE number is now recorded against merged PR.</p>
+                        <p>Edit VERSION.txt and so that the CVE number is now recorded against merged PR.</p>
                     </li>
                     <li>
-                        <p>[ ] Edit the <a href="https://github.com/eclipse/jetty.project/releases"release(s)</a> on Github to identify CVE number that was addressed/resolved.</p>
+                        <p>Edit the <a href="https://github.com/eclipse/jetty.project/releases"release(s)</a> on Github to identify CVE number that was addressed/resolved.</p>
                     </li>
                     <li>
-                        <p>[ ] Update downstream images (Docker, etc.).</p>
+                        <p>Update downstream images (Docker, etc.).</p>
                     </li>
                     <li>
-                        <p>[ ] Review security processes & completion.</p>
+                        <p>Review security processes & completion.</p>
                     </li>
                 </ol>
             </div>
