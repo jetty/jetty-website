@@ -135,7 +135,7 @@
                         <p>Edit VERSION.txt and so that the CVE number is now recorded against merged PR.</p>
                     </li>
                     <li>
-                        <p>Edit the <a href="https://github.com/eclipse/jetty.project/releases"release(s)</a> on Github to identify CVE number that was addressed/resolved.</p>
+                        <p>Edit the <a href="https://github.com/eclipse/jetty.project/releases">release(s)</a> on Github to identify CVE number that was addressed/resolved.</p>
                     </li>
                     <li>
                         <p>Update downstream images (Docker, etc.).</p>
