@@ -42,12 +42,12 @@
             </div>
             <div class="olist arabic">
                 <pre>
-- [ ] On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.</p>
+- [ ] On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.
 
 - [ ] Copy this list as a markdown in the security advisory for tracking the completion of various tasks.
 
 - [ ] Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.
-                    
+
 - [ ] Initial triage and discussion are performed in the comments of the advisory.
 
 - [ ] If enough information exists to attempt reproduction or fix, then a private repository is created as part of the GitHub security advisory.
