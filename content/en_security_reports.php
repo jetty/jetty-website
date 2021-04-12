@@ -68,6 +68,30 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/04/01</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28165" title="When using SSL/TLS with Jetty, either with HTTP/1.1, HTTP/2, or WebSocket, the server may receive an invalid large (greater than 17408) TLS frame that is incorrectly handled, causing CPU resources to eventually reach 100% usage.">CVE-2021-28165</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">7.2.2 - 9.4.38, 10.0.0.alpha0 - 10.0.1, 11.0.0.alpha0 - 11.0.1</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.39, 10.0.2, 11.0.2</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/04/01</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28164" title="The default compliance mode allows requests with URIs that contain %2e or %2e%2e segments to access protected resources within the WEB-INF directory. For example a request to /context/%2e/WEB-INF/web.xml can retrieve the web.xml file. This can reveal sensitive information regarding the implementation of a web application.">CVE-2021-28164</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.37, 9.4.38</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.39</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/04/01</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28163" title="If the ${jetty.base} directory or the ${jetty.base}/webapps directory is a symlink (soft link in Linux), the contents of the ${jetty.base}/webapps directory may be deployed as a static web application, exposing the content of the directory for download.">CVE-2021-28163</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.32 - 9.4.38, 10.0.0.beta2 - 10.0.1, 11.0.0.beta2 - 11.0.1</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.39, 10.0.2, 11.0.2</p></td>
+                </tr>
+                <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2021/02/26</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-27223" title="When Jetty handles a request containing multiple Accept headers with a large number of “quality” (i.e. q) parameters, the server may enter a denial of service (DoS) state.">CVE-2020-27223</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
