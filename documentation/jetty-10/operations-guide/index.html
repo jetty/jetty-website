@@ -15,12 +15,12 @@
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Eclipse Jetty: Operations Guide</h1>
+<h1><a href="https://eclipse.org/jetty">Eclipse Jetty</a>: Operations Guide</h1>
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 10.0.2,</span>
-<span id="revdate">2021-03-26</span>
+<span id="revnumber">version 10.0.3,</span>
+<span id="revdate">2021-05-20</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -191,11 +191,22 @@
 <li><a href="#og-protocols-proxy-haproxy">HAProxy and Jetty with HTTP/1.1 and HTTP/2</a></li>
 </ul>
 </li>
+<li><a href="#og-protocols-websocket">WebSocket</a>
+<ul class="sectlevel4">
+<li><a href="#og-protocols-websocket-configure">Configuring WebSocket</a></li>
+<li><a href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></li>
+<li><a href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#og-keystore">Configuring SSL/TLS KeyStores</a>
 <ul class="sectlevel3">
-<li><a href="#og-keystore-create">Creating a KeyStore</a></li>
+<li><a href="#og-keystore-create">Creating a KeyStore</a>
+<ul class="sectlevel4">
+<li><a href="#og-keystore-create-many">KeyStores with Multiple Entries</a></li>
+</ul>
+</li>
 <li><a href="#og-keystore-csr">Creating a Certificate Signing Request</a></li>
 <li><a href="#og-keystore-csr-import">Importing the Signed Certificate</a></li>
 <li><a href="#og-keystore-client-authn">Creating a KeyStore for Client Certificate Authentication</a></li>
@@ -536,7 +547,7 @@ $ java -jar $JETTY_HOME/start.jar --add-module=server,http,deploy</pre>
 <div class="sect3">
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
-<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.2</code>, so that the directory is called <code>jetty-home-10.0.2</code>.</p>
+<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.3</code>, so that the directory is called <code>jetty-home-10.0.3</code>.</p>
 </div>
 <div class="paragraph">
 <p>Unpack Eclipse Jetty compressed file in a convenient location, for example under <code>/opt</code>.</p>
@@ -657,9 +668,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:29.182:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:29.242:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4686afc2<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2021-03-26 06:27:29.255:</strong>INFO :oejs.Server:main: Started Server@1b6e1eff{STARTING}[10.0.2,sto=5000] @698ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:15.665:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:15.708:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2794eab6<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2021-05-20 21:26:15.720:</strong>INFO :oejs.Server:main: Started Server@550ee7e5{STARTING}[10.0.3,sto=5000] @673ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -745,9 +756,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:30.323:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:30.378:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4686afc2<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
-<strong>2021-03-26 06:27:30.392:</strong>INFO :oejs.Server:main: Started Server@1b6e1eff{STARTING}[10.0.2,sto=5000] @749ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:16.747:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:16.807:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2794eab6<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2021-05-20 21:26:16.819:</strong>INFO :oejs.Server:main: Started Server@550ee7e5{STARTING}[10.0.3,sto=5000] @709ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -915,13 +926,13 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:32.712:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:32.757:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
-<strong>2021-03-26 06:27:32.856:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
-<strong>2021-03-26 06:27:32.865:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
-<mark><strong>2021-03-26 06:27:32.890:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@3fa247d1{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
-<strong>2021-03-26 06:27:32.902:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@61544ae6{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2021-03-26 06:27:32.917:</strong>INFO :oejs.Server:main: Started Server@61c4eee0{STARTING}[10.0.2,sto=5000] @911ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:19.136:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:19.204:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
+<strong>2021-05-20 21:26:19.300:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
+<strong>2021-05-20 21:26:19.309:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
+<mark><strong>2021-05-20 21:26:19.332:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@5f0fd5a0{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
+<strong>2021-05-20 21:26:19.344:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1603cd68{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2021-05-20 21:26:19.357:</strong>INFO :oejs.Server:main: Started Server@533bda92{STARTING}[10.0.3,sto=5000] @918ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1588,8 +1599,9 @@ Java Environment:
 
 Jetty Environment:
 -----------------
- jetty.version = 10.0.2
- jetty.tag.version = master
+ jetty.version = 10.0.3
+ jetty.tag.version = jetty-10.0.3
+ jetty.build = 60d766fc285ea66840ebc5be4598d43ec325055d
  jetty.home = /path/to/jetty.home
  jetty.base = /path/to/jetty.base
 
@@ -1631,13 +1643,13 @@ Note: order presented here is how they would appear on the classpath.
       changes to the --module=name command line options will be reflected here.
  0:                    (dir) | ${jetty.base}/resources
  1:             2.0.0-alpha1 | ${jetty.home}/lib/logging/slf4j-api-2.0.0-alpha1.jar
- 2:                   10.0.2 | ${jetty.home}/lib/logging/jetty-slf4j-impl-10.0.2.jar
+ 2:                   10.0.3 | ${jetty.home}/lib/logging/jetty-slf4j-impl-10.0.3.jar
  3:                    4.0.6 | ${jetty.home}/lib/jetty-servlet-api-4.0.6.jar
- 4:                   10.0.2 | ${jetty.home}/lib/jetty-http-10.0.2.jar
- 5:                   10.0.2 | ${jetty.home}/lib/jetty-server-10.0.2.jar
- 6:                   10.0.2 | ${jetty.home}/lib/jetty-xml-10.0.2.jar
- 7:                   10.0.2 | ${jetty.home}/lib/jetty-util-10.0.2.jar
- 8:                   10.0.2 | ${jetty.home}/lib/jetty-io-10.0.2.jar
+ 4:                   10.0.3 | ${jetty.home}/lib/jetty-http-10.0.3.jar
+ 5:                   10.0.3 | ${jetty.home}/lib/jetty-server-10.0.3.jar
+ 6:                   10.0.3 | ${jetty.home}/lib/jetty-xml-10.0.3.jar
+ 7:                   10.0.3 | ${jetty.home}/lib/jetty-util-10.0.3.jar
+ 8:                   10.0.3 | ${jetty.home}/lib/jetty-io-10.0.3.jar
  9:                  42.2.18 | ${jetty.base}/lib/postgresql-42.2.18.jar
 
 Jetty Active XMLs:
@@ -1732,13 +1744,13 @@ Some option, such as <code>--jpms</code>, imply <code>--exec</code>, as it won&#
 <pre class="CodeRay highlight nowrap"><code>--class-path \
 /path/to/jetty.base/resources:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.2.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.3.jar:\
 /path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
-/path/to/jetty.home/lib/jetty-http-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-server-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-xml-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-util-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-io-10.0.2.jar</code></pre>
+/path/to/jetty.home/lib/jetty-http-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.3.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1753,13 +1765,13 @@ Some option, such as <code>--jpms</code>, imply <code>--exec</code>, as it won&#
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>--module-path \
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.2.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.3.jar:\
 /path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
-/path/to/jetty.home/lib/jetty-http-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-server-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-xml-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-util-10.0.2.jar:\
-/path/to/jetty.home/lib/jetty-io-10.0.2.jar \
+/path/to/jetty.home/lib/jetty-http-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.3.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.3.jar \
 --class-path \
 /path/to/jetty.base/resources \
 --add-modules \
@@ -2142,9 +2154,9 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>Error binding ShutdownMonitor to port 8181: java.net.BindException: Address already in use (Bind failed)
-<strong>2021-03-26 06:27:42.471:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:42.524:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@57c5f704{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2021-03-26 06:27:42.545:</strong>INFO :oejs.Server:main: Started Server@193f604a{STARTING}[10.0.2,sto=5000] @753ms</code></pre>
+<strong>2021-05-20 21:26:29.430:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:29.478:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2a265ea9{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2021-05-20 21:26:29.490:</strong>INFO :oejs.Server:main: Started Server@3514a4c0{STARTING}[10.0.3,sto=5000] @726ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3677,7 +3689,7 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 # jetty.http.idleTimeout=30000
 
 ## The number of acceptors (-1 picks a default value based on number of cores).
-# jetty.http.acceptors=-1
+# jetty.http.acceptors=1
 
 ## The number of selectors (-1 picks a default value based on number of cores).
 # jetty.http.selectors=-1
@@ -3718,18 +3730,22 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 </dd>
 <dt class="hdlist1"><code>jetty.http.acceptors</code></dt>
 <dd>
-<p>The number of threads that compete to accept connections&#8201;&#8212;&#8201;default -1 (i.e. an accept heuristic decides the value based on the number of cores).</p>
+<p>The number of threads that compete to accept connections&#8201;&#8212;&#8201;default 1. Use -1 to let the accept heuristic decides the value; the current heuristic calculates a value based on the number of cores).
+Refer to <a href="#og-module-http-acceptors">this section</a> for more information about acceptor threads.</p>
 </dd>
 <dt class="hdlist1"><code>jetty.http.selectors</code></dt>
 <dd>
-<p>The number of NIO selectors (with an associated thread) that manage connections&#8201;&#8212;&#8201;default -1 (i.e. a select heuristic decides the value based on the number of cores).</p>
+<p>The number of NIO selectors (with an associated thread) that manage connections&#8201;&#8212;&#8201;default -1 (i.e. a select heuristic decides the value; the current heuristic calculates a value based on the number of cores).</p>
 </dd>
 </dl>
 </div>
 <div class="sect5">
 <h6 id="og-module-http-acceptors"><a class="anchor" href="#og-module-http-acceptors"></a><a class="link" href="#og-module-http-acceptors">Configuration of Acceptors</a></h6>
 <div class="paragraph">
-<p>Accepting connections is a blocking operation, so a thread is blocked in the <code>accept()</code> call until a connection is accepted, and other threads are blocked on the lock acquired just before the <code>accept()</code> call.</p>
+<p>Accepting connections from remote clients may be configured as a blocking operation, or a non-blocking operation.</p>
+</div>
+<div class="paragraph">
+<p>When accepting connections is configured as a blocking operation (the number of acceptors is greater than zero), a thread is blocked in the <code>accept()</code> call until a connection is accepted, and other acceptor threads (if any) are blocked on the lock acquired by the accepting thread just before the <code>accept()</code> call.</p>
 </div>
 <div class="paragraph">
 <p>When the accepting thread accepts a connection, it performs a little processing of the just accepted connection, before forwarding it to other components.</p>
@@ -3738,7 +3754,11 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 <p>During this little processing other connections may be established; if there is only one accepting thread, the newly established connections are waiting for the accepting thread to finish the processing of the previously accepted connection and call again <code>accept()</code>.</p>
 </div>
 <div class="paragraph">
-<p>Servers that manage a very high number of connections that may (naturally) come and go, or that handle inefficient protocols that open and close connections very frequently (such as HTTP/1.0) may benefit of an increased number of acceptor threads.</p>
+<p>Servers that manage a very high number of connections that may (naturally) come and go, or that handle inefficient protocols that open and close connections very frequently (such as HTTP/1.0) may benefit of an increased number of acceptor threads, so that when one acceptor thread processes a just accepted connection, another acceptor thread can immediately take over accepting connections.</p>
+</div>
+<div class="paragraph">
+<p>When accepting connections is configured as a non-blocking operation (the number of acceptors is zero), then the server socket is set in non-blocking mode and added to a NIO selector.
+In this way, no dedicated acceptor threads exist: the work of accepting connections is performed by the selector thread.</p>
 </div>
 </div>
 <div class="sect5">
@@ -4087,7 +4107,7 @@ See also the <a href="#og-troubleshooting-dump">Jetty Server Dump</a> section fo
 # jetty.ssl.idleTimeout=30000
 
 ## The number of acceptors (-1 picks a default value based on number of cores).
-# jetty.ssl.acceptors=-1
+# jetty.ssl.acceptors=1
 
 ## The number of selectors (-1 picks a default value based on number of cores).
 # jetty.ssl.selectors=-1
@@ -4136,18 +4156,18 @@ See also the <a href="#og-troubleshooting-dump">Jetty Server Dump</a> section fo
 <dd>
 <p>The network port that Jetty listens to for secure connections&#8201;&#8212;&#8201;default <code>8443</code>.</p>
 </dd>
-<dt class="hdlist1"><code>jetty.http.idleTimeout</code></dt>
+<dt class="hdlist1"><code>jetty.ssl.idleTimeout</code></dt>
 <dd>
 <p>The amount of time a connection can be idle (i.e. no bytes received and no bytes sent) until the server decides to close it to save resources&#8201;&#8212;&#8201;default <code>30000</code> milliseconds.</p>
 </dd>
-<dt class="hdlist1"><code>jetty.http.acceptors</code></dt>
+<dt class="hdlist1"><code>jetty.ssl.acceptors</code></dt>
 <dd>
-<p>The number of threads that compete to accept connections&#8201;&#8212;&#8201;default -1 (i.e. an accept heuristic decides the value based on the number of cores).
+<p>The number of threads that compete to accept connections&#8201;&#8212;&#8201;default 1. Use -1 to let the accept heuristic decides the value; the current heuristic calculates a value based on the number of cores).
 Refer to <a href="#og-module-http-acceptors">this section</a> for more information about acceptor threads.</p>
 </dd>
-<dt class="hdlist1"><code>jetty.http.selectors</code></dt>
+<dt class="hdlist1"><code>jetty.ssl.selectors</code></dt>
 <dd>
-<p>The number of NIO selectors (with an associated thread) that manage connections&#8201;&#8212;&#8201;default -1 (i.e. a select heuristic decides the value based on the number of cores).
+<p>The number of NIO selectors (with an associated thread) that manage connections&#8201;&#8212;&#8201;default -1 (i.e. a select heuristic decides the value; the current heuristic calculates a value based on the number of cores).
 Refer to <a href="#og-module-http-selectors">this section</a> for more information about selector threads.</p>
 </dd>
 </dl>
@@ -4547,7 +4567,7 @@ Recall that the <code>DeploymentManager</code> component of the Jetty <code>depl
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -4688,7 +4708,7 @@ By using virtual hosts, you will be able to have the first web application avail
 <p>Another typical case is when you want to use different subdomains for different web application, for example a project website is at <code>http://project.org/</code> and the project documentation is at <code>http://docs.project.org</code>.</p>
 </div>
 <div class="paragraph">
-<p>Virtual hosts can be used with any context that is a subclass of <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a>.</p>
+<p>Virtual hosts can be used with any context that is a subclass of <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/server/handler/ContextHandler.html">ContextHandler</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="og-deploy-virtual-hosts-names"><a class="anchor" href="#og-deploy-virtual-hosts-names"></a><a class="link" href="#og-deploy-virtual-hosts-names">Virtual Host Names</a></h5>
@@ -4713,7 +4733,7 @@ By using virtual hosts, you will be able to have the first web application avail
 <dt class="hdlist1"><code>@ConnectorName</code></dt>
 <dd>
 <p>A Jetty <code>ServerConnector</code> name to indicate that a web application should handle requests received on the <code>ServerConnector</code> with that name, and therefore received on a specific IP port.
-A <code>ServerConnector</code> name can be set via <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)" class="bare">http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)</a>.</p>
+A <code>ServerConnector</code> name can be set via <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)" class="bare">https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/server/AbstractConnector.html#setName(java.lang.String)</a>.</p>
 </dd>
 <dt class="hdlist1"><code>www.√integral.com</code></dt>
 <dd>
@@ -5200,11 +5220,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:45.807:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-03-26 06:27:46.432:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:46.631:</strong>INFO :oejus.SslContextFactory:main: x509=X509@ff684e1(jetty-test-keystore,h=[localhost],w=[]) for Server@6e35bc3d[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-03-26 06:27:46.742:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@18c5069b<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-03-26 06:27:46.757:</strong>INFO :oejs.Server:main: Started Server@2dcd168a{STARTING}[10.0.2,sto=5000] @1846ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:32.721:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-05-20 21:26:33.371:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:33.559:</strong>INFO :oejus.SslContextFactory:main: x509=X509@1e8ce150(jetty-test-keystore,h=[localhost],w=[]) for Server@628c4ac0[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2021-05-20 21:26:33.669:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1755e85b<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-05-20 21:26:33.684:</strong>INFO :oejs.Server:main: Started Server@460ebd80{STARTING}[10.0.3,sto=5000] @1851ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5355,11 +5375,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:48.822:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-03-26 06:27:49.419:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:49.625:</strong>INFO :oejus.SslContextFactory:main: x509=X509@56303b57(jetty-test-keystore,h=[localhost],w=[]) for Server@2f48b3d2[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-03-26 06:27:49.737:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4189d70b<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-03-26 06:27:49.748:</strong>INFO :oejs.Server:main: Started Server@75f95314{STARTING}[10.0.2,sto=5000] @1877ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:35.694:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-05-20 21:26:36.294:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:36.473:</strong>INFO :oejus.SslContextFactory:main: x509=X509@44e3a2b2(jetty-test-keystore,h=[localhost],w=[]) for Server@44040454[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2021-05-20 21:26:36.581:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2a54c243<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-05-20 21:26:36.598:</strong>INFO :oejs.Server:main: Started Server@3212a8d7{STARTING}[10.0.3,sto=5000] @1816ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5411,9 +5431,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:51.171:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:51.217:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@413d1baf<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
-<strong>2021-03-26 06:27:51.231:</strong>INFO :oejs.Server:main: Started Server@342c38f8{STARTING}[10.0.2,sto=5000] @741ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:37.944:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:37.989:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@353352b6<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2021-05-20 21:26:38.000:</strong>INFO :oejs.Server:main: Started Server@7c711375{STARTING}[10.0.3,sto=5000] @680ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5566,7 +5586,7 @@ etc/tls-config.xml <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 <p>The <code>tls-config.xml</code> file references the <code>sslContextFactory</code> component (created by the <code>ssl</code> Jetty module) that configures the KeyStore and TLS parameters, so that you can now call its APIs via XML, and you will have full flexibility for any advanced configuration you want (see below for few examples).</p>
 </div>
 <div class="paragraph">
-<p>Refer to the <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/util/ssl/SslContextFactory.html">SslContextFactory javadocs</a> for the list of methods that you can call through the Jetty XML file.</p>
+<p>Refer to the <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/util/ssl/SslContextFactory.html">SslContextFactory javadocs</a> for the list of methods that you can call through the Jetty XML file.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -6116,9 +6136,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:54.064:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:54.111:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5ab956d7<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2021-03-26 06:27:54.121:</strong>INFO :oejs.Server:main: Started Server@15aab8c6{STARTING}[10.0.2,sto=5000] @716ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:40.704:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:40.750:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@46cdf8bd<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2021-05-20 21:26:40.760:</strong>INFO :oejs.Server:main: Started Server@24fcf36f{STARTING}[10.0.3,sto=5000] @732ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6160,11 +6180,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-03-26 06:27:56.731:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-03-26 06:27:57.292:</strong>INFO :oejs.Server:main: jetty-10.0.2; built: 2021-03-26T06:15:43.282Z; git: 7bd207b30931f3f61d110b1121118fbb5d10cb48; jvm 11.0.9+11
-<strong>2021-03-26 06:27:57.483:</strong>INFO :oejus.SslContextFactory:main: x509=X509@9ef8eb7(jetty-test-keystore,h=[localhost],w=[]) for Server@4535b6d5[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-03-26 06:27:57.600:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5c530d1e<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-03-26 06:27:57.613:</strong>INFO :oejs.Server:main: Started Server@503ecb24{STARTING}[10.0.2,sto=5000] @1879ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2021-05-20 21:26:43.158:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2021-05-20 21:26:43.930:</strong>INFO :oejs.Server:main: jetty-10.0.3; built: 2021-05-20T21:15:05.272Z; git: 60d766fc285ea66840ebc5be4598d43ec325055d; jvm 11.0.9+11
+<strong>2021-05-20 21:26:44.104:</strong>INFO :oejus.SslContextFactory:main: x509=X509@4b41e4dd(jetty-test-keystore,h=[localhost],w=[]) for Server@40844aab[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2021-05-20 21:26:44.227:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5b33fd94<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2021-05-20 21:26:44.236:</strong>INFO :oejs.Server:main: Started Server@5b1ebf56{STARTING}[10.0.3,sto=5000] @1956ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6310,6 +6330,155 @@ Likewise, HTTP/1.1 clients will connect to HAProxy, which will decrypt the traff
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="og-protocols-websocket"><a class="anchor" href="#og-protocols-websocket"></a><a class="link" href="#og-protocols-websocket">WebSocket</a></h4>
+<div class="paragraph">
+<p>WebSocket is a network protocol for bidirectional data communication initiated via the <a href="https://tools.ietf.org/html/rfc7230#section-6.7">HTTP/1.1 upgrade mechanism</a>.
+WebSocket provides a simple, low-level, framing protocol layered over TCP.
+One or more WebSocket frames compose a WebSocket <em>message</em> that is either a UTF-8 <em>text</em> message or <em>binary</em> message.</p>
+</div>
+<div class="paragraph">
+<p>Jetty provides an implementation of the following standards and specifications.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="http://tools.ietf.org/html/rfc6455">RFC-6455</a> - The WebSocket Protocol</dt>
+<dd>
+<p>Jetty supports version 13 of the released and final specification.</p>
+</dd>
+<dt class="hdlist1"><a href="http://www.jcp.org/en/jsr/detail?id=356">JSR-356</a> - The Java WebSocket API (<code>javax.websocket</code>)</dt>
+<dd>
+<p>This is the official Java API for working with WebSockets.</p>
+</dd>
+<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc7692">RFC-7692</a> - WebSocket Per-Message Deflate Extension</dt>
+<dd>
+<p>This is the replacement for perframe-compression, switching the compression to being based on the entire message, not the individual frames.</p>
+</dd>
+<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc8441">RFC-8441</a> - Bootstrapping WebSockets with HTTP/2</dt>
+<dd>
+<p>Allows a single stream of an HTTP/2 connection to be upgraded to WebSocket.
+This allows one TCP connection to be shared by both protocols and extends HTTP/2&#8217;s more efficient use of the network to WebSockets.</p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-configure"><a class="anchor" href="#og-protocols-websocket-configure"></a><a class="link" href="#og-protocols-websocket-configure">Configuring WebSocket</a></h5>
+<div class="paragraph">
+<p>Jetty provides two WebSocket implementations: one based on the Java WebSocket APIs defined by JSR 356, provided by module <code>websocket-javax</code>, and one based on Jetty specific WebSocket APIs, provided by module <code>websocket-jetty</code>.
+The Jetty <code>websocket</code> module enables both implementations, but each implementation can be enabled independently.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember that a WebSocket connection is always initiated from the HTTP protocol (either an HTTP/1.1 upgrade or an HTTP/2 connect), therefore to enable WebSocket you need to enable HTTP.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To enable WebSocket support, you also need to decide what version of the HTTP protocol you want WebSocket to be initiated from, and whether you want secure HTTP.</p>
+</div>
+<div class="paragraph">
+<p>For example, to enable clear-text WebSocket from HTTP/1.1, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,websocket</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable secure WebSocket from HTTP/2, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http2,websocket</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When enabling secure protocols you need a valid KeyStore (read <a href="#og-keystore">this section</a> to create your own KeyStore).
+As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that creates on-the-fly a KeyStore containing a self-signed certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=test-keystore</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable WebSocket on both HTTP/1.1 and HTTP/2, both clear-text and secure, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,https,http2c,http2,websocket</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-disable"><a class="anchor" href="#og-protocols-websocket-disable"></a><a class="link" href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></h5>
+<div class="paragraph">
+<p>Enabling the WebSocket Jetty modules comes with a startup cost because Jetty must perform two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Scan web applications <code>*.war</code> files (and all the jars and classes inside it) looking for WebSocket EndPoints classes (either annotated with WebSocket API annotations or extending/implementing WebSocket API classes/interfaces).
+This can be a significant cost if your web application contains a lot of classes and/or jar files.</p>
+</li>
+<li>
+<p>Configure and wire WebSocket EndPoints so that WebSocket messages are delivered to the correspondent WebSocket EndPoint.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>WebSocket support is by default enabled for all web applications.</p>
+</div>
+<div class="paragraph">
+<p>For a specific web application, you can disable step 2 for Java WebSocket support (i.e. when the <code>websocket-javax</code> module is enabled) by setting the context attribute <code>org.eclipse.jetty.websocket.javax</code> to <code>false</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">4.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="comment">&lt;!-- Disable Javax WebSocket --&gt;</span>
+  <span class="tag">&lt;context-param&gt;</span>
+    <span class="tag">&lt;param-name&gt;</span>org.eclipse.jetty.websocket.javax<span class="tag">&lt;/param-name&gt;</span>
+    <span class="tag">&lt;param-value&gt;</span>false<span class="tag">&lt;/param-value&gt;</span>
+  <span class="tag">&lt;/context-param&gt;</span>
+
+  ...
+
+<span class="tag">&lt;/web-app&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Furthermore, for a specific web application, you can disable step 1 (and therefore also step 2) as described in the <a href="#og-annotations">annotations processing section</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-webapp-client"><a class="anchor" href="#og-protocols-websocket-webapp-client"></a><a class="link" href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></h5>
+<div class="paragraph">
+<p>Web applications may need to use a WebSocket client to communicate with third party WebSocket services.</p>
+</div>
+<div class="paragraph">
+<p>If the web application uses the Java WebSocket APIs, the WebSocket client APIs are provided by the Servlet Container and are available to the web application by enabling the WebSocket server APIs, and therefore you must enable the <code>websocket-javax</code> Jetty module.</p>
+</div>
+<div class="paragraph">
+<p>However, the Java WebSocket Client APIs are quite limited (for example, they do not support secure WebSocket).
+For this reason, web applications may want to use the Jetty WebSocket Client APIs.</p>
+</div>
+<div class="paragraph">
+<p>When using the Jetty WebSocket Client APIs, web applications should include the required jars and their dependencies in the <code>WEB-INF/lib</code> directory of the <code>*.war</code> file.
+Alternatively, when deploying your web applications in Jetty, you can enable the <code>websocket-jetty-client</code> Jetty module to allow web applications to use the Jetty WebSocket Client APIs provided by Jetty, without the need to include jars and their dependencies in the <code>*.war</code> file.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="og-keystore"><a class="anchor" href="#og-keystore"></a><a class="link" href="#og-keystore">Configuring SSL/TLS KeyStores</a></h3>
@@ -6335,14 +6504,15 @@ The private key, the public certificate and the certificate chain, but more gene
 <div class="content">
 <pre class="CodeRay highlight"><code>keytool
     -genkeypair <i class="conum" data-value="1"></i><b>(1)</b>
-    -validity 90 <i class="conum" data-value="2"></i><b>(2)</b>
-    -keyalg RSA <i class="conum" data-value="3"></i><b>(3)</b>
-    -keysize 2048 <i class="conum" data-value="4"></i><b>(4)</b>
-    -keystore /path/to/keystore.p12 <i class="conum" data-value="5"></i><b>(5)</b>
-    -storetype pkcs12 <i class="conum" data-value="6"></i><b>(6)</b>
-    -dname &quot;CN=domain.com, OU=Unit, O=Company, L=City, S=State, C=Country&quot; <i class="conum" data-value="7"></i><b>(7)</b>
-    -ext san=dns:www.domain.com,dns:domain.org <i class="conum" data-value="8"></i><b>(8)</b>
-    -v <i class="conum" data-value="9"></i><b>(9)</b></code></pre>
+    -alias mykey <i class="conum" data-value="2"></i><b>(2)</b>
+    -validity 90 <i class="conum" data-value="3"></i><b>(3)</b>
+    -keyalg RSA <i class="conum" data-value="4"></i><b>(4)</b>
+    -keysize 2048 <i class="conum" data-value="5"></i><b>(5)</b>
+    -keystore /path/to/keystore.p12 <i class="conum" data-value="6"></i><b>(6)</b>
+    -storetype pkcs12 <i class="conum" data-value="7"></i><b>(7)</b>
+    -dname &quot;CN=domain.com, OU=Unit, O=Company, L=City, S=State, C=Country&quot; <i class="conum" data-value="8"></i><b>(8)</b>
+    -ext san=dns:www.domain.com,dns:domain.org <i class="conum" data-value="9"></i><b>(9)</b>
+    -v <i class="conum" data-value="10"></i><b>(10)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -6353,34 +6523,38 @@ The private key, the public certificate and the certificate chain, but more gene
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>specifies the number of days after which the certificate expires</td>
+<td>the alias name of the key and certificate pair</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>the algorithm <em>must</em> be RSA (the DSA algorithm does not work for web sites)</td>
+<td>specifies the number of days after which the certificate expires</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>indicates the strength of the key</td>
+<td>the algorithm <em>must</em> be RSA (the DSA algorithm does not work for web sites)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>the keyStore file</td>
+<td>indicates the strength of the key</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>the keyStore type, stick with the standard PKCS12</td>
+<td>the KeyStore file</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>the distinguished name (more below)&#8201;&#8212;&#8201;customize it with your values for CN, OU, O, L, S and C</td>
+<td>the KeyStore type, stick with the standard PKCS12</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>the extension with the subject alternative names (more below)</td>
+<td>the distinguished name (more below)&#8201;&#8212;&#8201;customize it with your values for CN, OU, O, L, S and C</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>the extension with the subject alternative names (more below)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="10"></i><b>10</b></td>
 <td>verbose output</td>
 </tr>
 </table>
@@ -6413,6 +6587,19 @@ The syntax in such case is <code>san=ip:127.0.0.1,ip:[::1]</code>, which specifi
 </td>
 </tr>
 </table>
+</div>
+<div class="sect4">
+<h5 id="og-keystore-create-many"><a class="anchor" href="#og-keystore-create-many"></a><a class="link" href="#og-keystore-create-many">KeyStores with Multiple Entries</a></h5>
+<div class="paragraph">
+<p>A single KeyStore may contain multiple key/certificate pairs.
+This is useful when you need to support multiple domains on the same Jetty server (typically accomplished using <a href="#og-deploy-virtual-hosts">virtual hosts</a>).</p>
+</div>
+<div class="paragraph">
+<p>You can create multiple key/certificate pairs as detailed in the <a href="#og-keystore-create">previous section</a>, provided that you assign each one to a different alias.</p>
+</div>
+<div class="paragraph">
+<p>Compliant TLS clients will send the <a href="#og-protocols-ssl-sni">TLS SNI extension</a> when creating new connections, and Jetty will automatically choose the right certificate by matching the SNI name sent by the client with the CN or SAN of certificates present in the KeyStore.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -8550,7 +8737,7 @@ Here&#8217;s an example context xml file that calls this method:</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -8596,7 +8783,7 @@ The value of this attribute is a regular expression.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -8648,7 +8835,7 @@ However, be careful if your webapp uses a <code>ServletContainerInitializer</cod
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -8770,7 +8957,7 @@ Here&#8217;s an example of setting the context attribute in a context xml file:<
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -8823,7 +9010,7 @@ It will match all <code>ServletContainerInitializer</code> classes not explicitl
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -9245,7 +9432,7 @@ You will need to preserve the existing value of the attribute, and add in your e
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -9640,7 +9827,7 @@ The transaction manager is looked up by the application as <code>java:comp/UserT
 <p>Jetty does not ship with a JTA manager, but <em>does</em> provide the infrastructure to plug in the JTA manager of your choice.</p>
 </div>
 <div class="paragraph">
-<p>Use the <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/plus/jndi/Transaction.html">org.eclipse.jetty.plus.jndi.Transaction</a> object in a <a href="#og-jndi-xml">Jetty XML file</a> to configure the JTA manager.</p>
+<p>Use the <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/plus/jndi/Transaction.html">org.eclipse.jetty.plus.jndi.Transaction</a> object in a <a href="#og-jndi-xml">Jetty XML file</a> to configure the JTA manager.</p>
 </div>
 <div class="paragraph">
 <p>The following example configures the <a href="http://www.atomikos.com/">Atomikos</a> transaction manager:</p>
@@ -10080,16 +10267,16 @@ Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/a
 <div class="ulist">
 <ul>
 <li>
-<p><a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/jaas/spi/JDBCLoginModule.html"><code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/jaas/spi/JDBCLoginModule.html"><code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/jaas/spi/PropertyFileLoginModule.html"><code>org.eclipse.jetty.jaas.spi.PropertyFileLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/jaas/spi/PropertyFileLoginModule.html"><code>org.eclipse.jetty.jaas.spi.PropertyFileLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/jaas/spi/DataSourceLoginModule.html"><code>org.eclipse.jetty.jaas.spi.DataSourceLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/jaas/spi/DataSourceLoginModule.html"><code>org.eclipse.jetty.jaas.spi.DataSourceLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/jaas/spi/LdapLoginModule.html"><code>org.eclipse.jetty.jaas.ldap.LdapLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/jaas/spi/LdapLoginModule.html"><code>org.eclipse.jetty.jaas.ldap.LdapLoginModule</code></a></p>
 </li>
 </ul>
 </div>
@@ -10103,7 +10290,7 @@ Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/a
 </td>
 <td class="content">
 Passwords can be stored in clear text, obfuscated or checksummed.
-The class <a href="http://www.eclipse.org/jetty/javadoc/10.0.2/org/eclipse/jetty/util/security/Password.html"><code>org.eclipse.jetty.util.security.Password</code></a> should be used to generate all varieties of passwords,the output from which can be put in to property files or entered into database tables.
+The class <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/util/security/Password.html"><code>org.eclipse.jetty.util.security.Password</code></a> should be used to generate all varieties of passwords,the output from which can be put in to property files or entered into database tables.
 </td>
 </tr>
 </table>
@@ -11300,27 +11487,27 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Server@193f604a{STARTING}[10.0.2,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
-+= QueuedThreadPool[qtp1905485420]@7193666c{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@19e4653c{s=0/16,p=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
-|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@795509d9
-|  += ReservedThreadExecutor@19e4653c{s=0/16,p=0} - STARTED
+<pre class="CodeRay highlight nowrap"><code>Server@3514a4c0{STARTING}[10.0.3,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp116237769]@6eda5c9{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@548d708a{s=0/16,p=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@4b013c76
+|  += ReservedThreadExecutor@548d708a{s=0/16,p=0} - STARTED
 |  +&gt; threads size=4
-|     +&gt; qtp1905485420-22 TIMED_WAITING tid=22 prio=5 IDLE
-|     +&gt; qtp1905485420-20 RUNNABLE tid=20 prio=5 SELECTING
-|     +&gt; qtp1905485420-21-acceptor-0@7a9f86f0-ServerConnector@13e344d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=21 prio=3 ACCEPTING <i class="conum" data-value="3"></i><b>(3)</b>
-|     +&gt; qtp1905485420-23 TIMED_WAITING tid=23 prio=5 IDLE
-+- org.eclipse.jetty.io.ArrayByteBufferPool@196a42c3
-+= ScheduledExecutorScheduler@4e08711f{STARTED} - STARTED
-+= HandlerList@4c60d6e9{STARTED} - STARTED
-|  += ContextHandlerCollection@15043a2f{STARTED} - STARTED
-|  += DefaultHandler@4a83a74a{STARTED} - STARTED
-+= ServerConnector@13e344d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  +~ QueuedThreadPool[qtp1905485420]@7193666c{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@19e4653c{s=0/16,p=0}] - STARTED
-|  +~ ScheduledExecutorScheduler@4e08711f{STARTED} - STARTED
-|  +- org.eclipse.jetty.io.ArrayByteBufferPool@196a42c3
-|  +- org.eclipse.jetty.server.AbstractConnector$1@1349883
-|  += HttpConnectionFactory@29647f75[HTTP/1.1] - STARTED
-|  |  +- HttpConfiguration@18271936{32768/8192,8192/8192,https://:0,[]}
+|     +&gt; qtp116237769-23 TIMED_WAITING tid=23 prio=5 IDLE
+|     +&gt; qtp116237769-20 RUNNABLE tid=20 prio=5 SELECTING
+|     +&gt; qtp116237769-21-acceptor-0@7d71b5f8-ServerConnector@368247b9{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=21 prio=3 ACCEPTING <i class="conum" data-value="3"></i><b>(3)</b>
+|     +&gt; qtp116237769-22 TIMED_WAITING tid=22 prio=5 IDLE
++- org.eclipse.jetty.io.ArrayByteBufferPool@28261e8e
++= ScheduledExecutorScheduler@49438269{STARTED} - STARTED
++= HandlerList@d737b89{STARTED} - STARTED
+|  += ContextHandlerCollection@8519cb4{STARTED} - STARTED
+|  += DefaultHandler@35dab4eb{STARTED} - STARTED
++= ServerConnector@368247b9{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  +~ QueuedThreadPool[qtp116237769]@6eda5c9{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@548d708a{s=0/16,p=0}] - STARTED
+|  +~ ScheduledExecutorScheduler@49438269{STARTED} - STARTED
+|  +- org.eclipse.jetty.io.ArrayByteBufferPool@28261e8e
+|  +- org.eclipse.jetty.server.AbstractConnector$1@2d901eb0
+|  += HttpConnectionFactory@1649b0e6[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@2cb4893b{32768/8192,8192/8192,https://:0,[]}
 |  |     +&gt; customizers size=0
 |  |     +&gt; formEncodedMethods size=2
 |  |     |  +&gt; POST
@@ -11341,39 +11528,39 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 |  |     +&gt; maxErrorDispatches=10
 |  |     +&gt; minRequestDataRate=0
 |  |     +&gt; minResponseDataRate=0
-|  |     +&gt; requestCookieCompliance=org.eclipse.jetty.http.CookieCompliance@909217e
-|  |     +&gt; responseCookieCompliance=org.eclipse.jetty.http.CookieCompliance@909217e
+|  |     +&gt; requestCookieCompliance=org.eclipse.jetty.http.CookieCompliance@5e2c3d18
+|  |     +&gt; responseCookieCompliance=org.eclipse.jetty.http.CookieCompliance@5e2c3d18
 |  |     +&gt; notifyRemoteAsyncErrors=true
 |  |     +&gt; relativeRedirectAllowed=false
-|  += SelectorManager@ServerConnector@13e344d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  |  += ManagedSelector@5524cca1{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
-|  |     += EatWhatYouKill@5032714f/SelectorProducer@268f106e/PRODUCING/p=false/QueuedThreadPool[qtp1905485420]@7193666c{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@19e4653c{s=0/16,p=0}][pc=0,pic=0,pec=0,epc=0]@2021-03-26T06:28:00.511193Z - STARTED
-|  |     |  +- SelectorProducer@268f106e
-|  |     |  +~ QueuedThreadPool[qtp1905485420]@7193666c{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@19e4653c{s=0/16,p=0}] - STARTED
-|  |     +&gt; updates @ 2021-03-26T06:28:00.506234Z size=0
-|  |     +&gt; keys @ 2021-03-26T06:28:00.508344Z size=0
+|  += SelectorManager@ServerConnector@368247b9{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += ManagedSelector@6fa51cd4{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
+|  |     += EatWhatYouKill@2767e23c/SelectorProducer@231f98ef/PRODUCING/p=false/QueuedThreadPool[qtp116237769]@6eda5c9{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@548d708a{s=0/16,p=0}][pc=0,pic=0,pec=0,epc=0]@2021-05-20T21:26:46.192146Z - STARTED
+|  |     |  +- SelectorProducer@231f98ef
+|  |     |  +~ QueuedThreadPool[qtp116237769]@6eda5c9{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@548d708a{s=0/16,p=0}] - STARTED
+|  |     +&gt; updates @ 2021-05-20T21:26:46.187425Z size=0
+|  |     +&gt; keys @ 2021-05-20T21:26:46.189527Z size=0
 |  +- sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
-|  +- qtp1905485420-21-acceptor-0@7a9f86f0-ServerConnector@13e344d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-+- org.eclipse.jetty.util.component.HaltLifeCycleListener@6e9a5ed8
-+= ErrorHandler@7e057f43{STARTED} - STARTED
-+&gt; startJarLoader@11438d26
+|  +- qtp116237769-21-acceptor-0@7d71b5f8-ServerConnector@368247b9{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@7c137fd5
++= ErrorHandler@183ec003{STARTED} - STARTED
++&gt; startJarLoader@4b553d26
    +&gt; URLs size=9
    |  +&gt; file:/path/to/jetty.base/resources/
    |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha1.jar
-   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.2.jar
+   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.3.jar
    |  +&gt; file:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-10.0.2.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-10.0.2.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-10.0.2.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-10.0.2.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-10.0.2.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-10.0.3.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-10.0.3.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-10.0.3.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-10.0.3.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-10.0.3.jar
    +&gt; jdk.internal.loader.ClassLoaders$AppClassLoader@277050dc
       +&gt; packages size=4
       |  +&gt; package org.eclipse.jetty.start.config
       |  +&gt; package org.eclipse.jetty.start.builders
       |  +&gt; package org.eclipse.jetty.start.shaded.util
       |  +&gt; package org.eclipse.jetty.start
-      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@7c37508a
+      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@17fc391b
          +&gt; packages size=2
             +&gt; package sun.util.resources.provider
             +&gt; package sun.util.resources.cldr.provider
@@ -12045,8 +12232,8 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 10.0.2<br>
-Last updated 2021-03-25 03:42:46 UTC
+Version 10.0.3<br>
+Last updated 2021-05-20 20:06:42 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">

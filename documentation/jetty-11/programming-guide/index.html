@@ -15,12 +15,12 @@
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Eclipse Jetty: Programming Guide</h1>
+<h1><a href="https://eclipse.org/jetty">Eclipse Jetty</a>: Programming Guide</h1>
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.2,</span>
-<span id="revdate">2021-03-26</span>
+<span id="revnumber">version 11.0.3,</span>
+<span id="revdate">2021-05-20</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -97,7 +97,49 @@
 <li><a href="#pg-client-http2-push">Receiving HTTP/2 Pushes</a></li>
 </ul>
 </li>
-<li><a href="#pg-client-websocket">WebSocket Client</a></li>
+<li><a href="#pg-client-websocket">WebSocket Client</a>
+<ul class="sectlevel3">
+<li><a href="#pg-client-websocket-start">Starting WebSocketClient</a></li>
+<li><a href="#pg-client-websocket-stop">Stopping WebSocketClient</a></li>
+<li><a href="#pg-client-websocket-connect">Connecting to a Remote Host</a>
+<ul class="sectlevel4">
+<li><a href="#pg-client-websocket-connect-http11">Using HTTP/1.1</a></li>
+<li><a href="#pg-client-websocket-connect-http2">Using HTTP/2</a></li>
+<li><a href="#pg-client-websocket-connect-custom-http-request">Customizing the Initial HTTP Request</a></li>
+<li><a href="#pg-client-websocket-connect-inspect-http-response">Inspecting the Initial HTTP Response</a></li>
+</ul>
+</li>
+<li><a href="#pg-websocket-architecture">WebSocket Architecture</a></li>
+<li><a href="#pg-websocket-endpoints">WebSocket Endpoints</a>
+<ul class="sectlevel4">
+<li><a href="#pg-websocket-endpoints-listener">Listener Endpoints</a>
+<ul class="sectlevel5">
+<li><a href="#pg-message-streaming-reads">Message Streaming Reads</a></li>
+</ul>
+</li>
+<li><a href="#pg-websocket-endpoints-annotated">Annotated Endpoints</a>
+<ul class="sectlevel5">
+<li><a href="#pg-message-streaming-reads-2">Message Streaming Reads</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#pg-websocket-session">WebSocket Session</a>
+<ul class="sectlevel4">
+<li><a href="#pg-websocket-session-configure">Configuring the Session</a></li>
+<li><a href="#pg-websocket-session-send">Sending Data</a>
+<ul class="sectlevel5">
+<li><a href="#pg-websocket-session-send-blocking">Blocking APIs</a></li>
+<li><a href="#pg-websocket-session-send-non-blocking">Non-Blocking APIs</a></li>
+<li><a href="#pg-websocket-session-send-stream">Streaming Send APIs</a></li>
+</ul>
+</li>
+<li><a href="#pg-websocket-session-ping">Sending Ping/Pong</a></li>
+<li><a href="#pg-websocket-session-close">Closing the Session</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#pg-server">Server Libraries</a>
@@ -392,6 +434,22 @@
 <li><a href="#pg-troubleshooting-debugging">Debugging</a></li>
 </ul>
 </li>
+<li><a href="#pg-migration">Appendix C: Migration Guides</a>
+<ul class="sectlevel2">
+<li><a href="#pg-migration-94-to-10">Migrating from Jetty 9.4.x to Jetty 10.0.x</a>
+<ul class="sectlevel3">
+<li><a href="#pg-migration-94-to-10-java-version">Required Java Version Changes</a></li>
+<li><a href="#pg-migration-94-to-10-websocket">WebSocket Migration Guide</a>
+<ul class="sectlevel4">
+<li><a href="#pg-migration-94-to-10-websocket-maven-artifact-changes">Maven Artifacts Changes</a></li>
+<li><a href="#pg-migration-94-to-10-websocket-class-name-changes">Class Names Changes</a></li>
+<li><a href="#pg-migration-94-to-10-websocket-example-code">Example Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -472,10 +530,10 @@ Yet another example is a client application that needs to receive events from a 
 <h4 id="pg-client-io-arch-network"><a class="anchor" href="#pg-client-io-arch-network"></a><a class="link" href="#pg-client-io-arch-network">Client Libraries Network Layer</a></h4>
 <div class="paragraph">
 <p>The Jetty client libraries use the common I/O design described in <a href="#pg-arch-io">this section</a>.
-The main client-side component is the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
+The main client-side component is the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ClientConnector</code> primarily wraps the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a> and aggregates other four components:</p>
+<p>The <code>ClientConnector</code> primarily wraps the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a> and aggregates other four components:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -597,7 +655,7 @@ This time includes the DNS lookup time <em>and</em> the TCP connect time.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>ClientConnector</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/ClientConnector.html">javadocs</a> for the complete list of configurable parameters.</p>
+<p>Please refer to the <code>ClientConnector</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 </div>
 <div class="sect3">
@@ -615,7 +673,7 @@ This time includes the DNS lookup time <em>and</em> the TCP connect time.</p>
 <p>Applications use <code>ClientConnector.connect(SocketAddress, Map&lt;String, Object&gt;)</code> to establish a TCP connection to the server, and must tell <code>ClientConnector</code> how to create the <code>Connection</code> for that particular TCP connection, and how to notify back the application when the connection creation succeeds or fails.</p>
 </div>
 <div class="paragraph">
-<p>This is done by passing a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a> (that creates <code>Connection</code> instances) and a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/util/Promise.html"><code>Promise</code></a> (that is notified of connection creation success or failure) in the context <code>Map</code> as follows:</p>
+<p>This is done by passing a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a> (that creates <code>Connection</code> instances) and a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/Promise.html"><code>Promise</code></a> (that is notified of connection creation success or failure) in the context <code>Map</code> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1027,7 +1085,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1088,6 +1146,28 @@ httpClient.stop();</code></pre>
 </div>
 <div class="paragraph">
 <p>Stopping <code>HttpClient</code> makes sure that the memory it holds (for example, authentication credentials, cookies, etc.) is released, and that the thread pool and scheduler are properly stopped allowing all threads used by <code>HttpClient</code> to exit.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You cannot call <code>HttpClient.stop()</code> from one of its own threads, as it would cause a deadlock.
+It is recommended that you stop <code>HttpClient</code> from an unrelated thread, or from a newly allocated thread, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Stop HttpClient from a new thread.</span>
+<span class="comment">// Use LifeCycle.stop(...) to rethrow checked exceptions as unchecked.</span>
+<span class="keyword">new</span> <span class="predefined-type">Thread</span>(() -&gt; LifeCycle.stop(httpClient)).start();</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -1460,7 +1540,7 @@ When such an event is fired, a (possibly different) thread taken from the <code>
 <p>This makes Jetty HTTP client suitable for HTTP load testing because, for example, you can accurately time every step of the request/response conversation (thus knowing where the request/response time is really spent).</p>
 </div>
 <div class="paragraph">
-<p>Have a look at the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/client/api/Request.Listener.html"><code>Request.Listener</code></a> class to know about request events, and to the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/client/api/Response.Listener.html"><code>Response.Listener</code></a> class to know about response events.</p>
+<p>Have a look at the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Request.Listener.html"><code>Request.Listener</code></a> class to know about request events, and to the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Response.Listener.html"><code>Response.Listener</code></a> class to know about response events.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1766,7 +1846,7 @@ request1.send(result -&gt; <span class="predefined-type">System</span>.getLogger
 <h4 id="pg-client-http-configuration"><a class="anchor" href="#pg-client-http-configuration"></a><a class="link" href="#pg-client-http-configuration">HttpClient Configuration</a></h4>
 <div class="paragraph">
 <p><code>HttpClient</code> has a quite large number of configuration parameters.
-Please refer to the <code>HttpClient</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/client/HttpClient.html">javadocs</a> for the complete list of configurable parameters.</p>
+Please refer to the <code>HttpClient</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClient.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 <div class="paragraph">
 <p>The most common parameters are:</p>
@@ -1844,7 +1924,7 @@ sslContextFactory.setHostnameVerifier((hostName, session) -&gt; hostName.endsWit
 </div>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>SslContextFactory.Client</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
+<p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-client-http-configuration-tls-truststore"><a class="anchor" href="#pg-client-http-configuration-tls-truststore"></a><a class="link" href="#pg-client-http-configuration-tls-truststore">HttpClient TLS TrustStore Configuration</a></h6>
@@ -2427,7 +2507,7 @@ If the server does not support ALPN, the client will try to use the first protoc
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2588,7 +2668,7 @@ http2Client.connect(serverAddress, <span class="keyword">new</span> Session.List
 </div>
 <div class="paragraph">
 <p>The <code>Session.Listener</code> is notified of session events originated by the server such as receiving a <code>SETTINGS</code> frame from the server, or the server closing the connection, or the client timing out the connection due to idleness.
-Please refer to the <code>Session.Listener</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/http2/api/Session.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Session.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Session.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>Once a <code>Session</code> has been established, the communication with the server happens by exchanging <em>frames</em>, as specified in the <a href="https://tools.ietf.org/html/rfc7540#section-4">HTTP/2 specification</a>.</p>
@@ -2612,7 +2692,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.2</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.3</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -2628,7 +2708,7 @@ session.newStream(headersFrame, <span class="keyword">new</span> Stream.Listener
 <div class="paragraph">
 <p>Note how <code>Session.newStream(&#8230;&#8203;)</code> takes a <code>Stream.Listener</code> parameter.
 This listener is notified of stream events originated by the server such as receiving <code>HEADERS</code> or <code>DATA</code> frames that are part of the response, discussed in more details in the <a href="#pg-client-http2-response">section below</a>.
-Please refer to the <code>Stream.Listener</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/http2/api/Stream.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Stream.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Stream.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>HTTP requests may have content, which is sent using the <code>Stream</code> APIs:</p>
@@ -2943,7 +3023,1103 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <div class="sect2">
 <h3 id="pg-client-websocket"><a class="anchor" href="#pg-client-websocket"></a><a class="link" href="#pg-client-websocket">WebSocket Client</a></h3>
 <div class="paragraph">
-<p>TODO</p>
+<p>Jetty&#8217;s <code>WebSocketClient</code> is a more powerful alternative to the WebSocket client provided by the standard JSR 356 <code>javax.websocket</code> APIs.</p>
+</div>
+<div class="paragraph">
+<p>Similarly to Jetty&#8217;s <a href="#pg-client-http"><code>HttpClient</code></a>, the <code>WebSocketClient</code> is non-blocking and asynchronous, making it very efficient in resource utilization.
+A synchronous, blocking, API is also offered for simpler cases.</p>
+</div>
+<div class="paragraph">
+<p>Since the first step of establishing a WebSocket communication is an HTTP request, <code>WebSocketClient</code> makes use of <code>HttpClient</code> and therefore depends on it.</p>
+</div>
+<div class="paragraph">
+<p>The Maven artifact coordinates are the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-websocket-start"><a class="anchor" href="#pg-client-websocket-start"></a><a class="link" href="#pg-client-websocket-start">Starting WebSocketClient</a></h4>
+<div class="paragraph">
+<p>The main class is <code>org.eclipse.jetty.websocket.client.WebSocketClient</code>; you instantiate it, configure it, and then start it like may other Jetty components.
+This is a minimal example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Instantiate WebSocketClient.</span>
+WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient();
+
+<span class="comment">// Configure WebSocketClient, for example:</span>
+webSocketClient.setMaxTextMessageSize(<span class="integer">8</span> * <span class="integer">1024</span>);
+
+<span class="comment">// Start WebSocketClient.</span>
+webSocketClient.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, it is recommended that you explicitly pass an <code>HttpClient</code> instance to <code>WebSocketClient</code> so that you can have control over the HTTP configuration as well:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Instantiate and configure HttpClient.</span>
+HttpClient httpClient = <span class="keyword">new</span> HttpClient();
+<span class="comment">// For example, configure a proxy.</span>
+httpClient.getProxyConfiguration().getProxies().add(<span class="keyword">new</span> HttpProxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8888</span>));
+
+<span class="comment">// Instantiate WebSocketClient, passing HttpClient to the constructor.</span>
+WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
+<span class="comment">// Configure WebSocketClient, for example:</span>
+webSocketClient.setMaxTextMessageSize(<span class="integer">8</span> * <span class="integer">1024</span>);
+
+<span class="comment">// Start WebSocketClient; this implicitly starts also HttpClient.</span>
+webSocketClient.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may create multiple instances of <code>WebSocketClient</code>, but typically one instance is enough for most applications.
+Creating multiple instances may be necessary for example when you need to specify different configuration parameters for different instances.
+For example, you may need different instances when you need to configure the <code>HttpClient</code> differently: different transports, different proxies, different cookie stores, different authentications, etc.</p>
+</div>
+<div class="paragraph">
+<p>WebSocket specific configuration may be typically be given a default value in <code>WebSocketClient</code> and then overridden more specifically, see for example <a href="#pg-websocket-session-configure">this section</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-websocket-stop"><a class="anchor" href="#pg-client-websocket-stop"></a><a class="link" href="#pg-client-websocket-stop">Stopping WebSocketClient</a></h4>
+<div class="paragraph">
+<p>It is recommended that when your application stops, you also stop the <code>WebSocketClient</code> instance (or instances) that you are using.</p>
+</div>
+<div class="paragraph">
+<p>Similarly to <a href="#pg-client-http-stop">stopping <code>HttpClient</code></a>, you want to stop <code>WebSocketClient</code> from a thread that is not owned by <code>WebSocketClient</code> itself, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Stop WebSocketClient.</span>
+<span class="comment">// Use LifeCycle.stop(...) to rethrow checked exceptions as unchecked.</span>
+<span class="keyword">new</span> <span class="predefined-type">Thread</span>(() -&gt; LifeCycle.stop(webSocketClient)).start();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-websocket-connect"><a class="anchor" href="#pg-client-websocket-connect"></a><a class="link" href="#pg-client-websocket-connect">Connecting to a Remote Host</a></h4>
+<div class="paragraph">
+<p>A WebSocket client may initiate the communication with the server either <a href="#pg-client-websocket-connect-http11">using HTTP/1.1</a> or <a href="#pg-client-websocket-connect-http2">using HTTP/2</a>.
+The two mechanism are quite different and detailed in the following sections.</p>
+</div>
+<div class="sect4">
+<h5 id="pg-client-websocket-connect-http11"><a class="anchor" href="#pg-client-websocket-connect-http11"></a><a class="link" href="#pg-client-websocket-connect-http11">Using HTTP/1.1</a></h5>
+<div class="paragraph">
+<p>Initiating a WebSocket communication with a server using HTTP/1.1 is detailed in <a href="https://tools.ietf.org/html/rfc6455#section-1.8">RFC 6455</a>.</p>
+</div>
+<div class="paragraph">
+<p>A WebSocket client first establishes a TCP connection to the server, then sends an HTTP/1.1 <em>upgrade</em> request.</p>
+</div>
+<div class="paragraph">
+<p>If the server supports upgrading to WebSocket, it responds with HTTP status code <code>101</code>, and then switches the communication over that connection, either incoming or outgoing, to happen using the WebSocket protocol.</p>
+</div>
+<div class="paragraph">
+<p>When the client receives the HTTP status code <code>101</code>, it switches the communication over that connection, either incoming or outgoing, to happen using the WebSocket protocol.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="712" height="511">
+</div>
+</div>
+<div class="paragraph">
+<p>In code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Use a standard, HTTP/1.1, HttpClient.</span>
+HttpClient httpClient = <span class="keyword">new</span> HttpClient();
+
+<span class="comment">// Create and start WebSocketClient.</span>
+WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
+webSocketClient.start();
+
+<span class="comment">// The client-side WebSocket EndPoint that</span>
+<span class="comment">// receives WebSocket messages from the server.</span>
+ClientEndPoint clientEndPoint = <span class="keyword">new</span> ClientEndPoint();
+<span class="comment">// The server URI to connect to.</span>
+<span class="predefined-type">URI</span> serverURI = <span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">ws://domain.com/path</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Connect the client EndPoint to the server.</span>
+CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(clientEndPoint, serverURI);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>WebSocketClient.connect()</code> links the client-side WebSocket <em>endpoint</em> to a specific server URI, and returns a <code>CompletableFuture</code> of an <code>org.eclipse.jetty.websocket.api.Session</code>.</p>
+</div>
+<div class="paragraph">
+<p>The endpoint offers APIs to <em>receive</em> WebSocket data (or errors) from the server, while the session offers APIs to <em>send</em> WebSocket data to the server.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-client-websocket-connect-http2"><a class="anchor" href="#pg-client-websocket-connect-http2"></a><a class="link" href="#pg-client-websocket-connect-http2">Using HTTP/2</a></h5>
+<div class="paragraph">
+<p>Initiating a WebSocket communication with a server using HTTP/1.1 is detailed in <a href="https://tools.ietf.org/html/rfc8441">RFC 8441</a>.</p>
+</div>
+<div class="paragraph">
+<p>A WebSocket client establishes a TCP connection to the server or reuses an existing one currently used for HTTP/2, then sends an HTTP/2 <em>connect</em> request over an HTTP/2 stream.</p>
+</div>
+<div class="paragraph">
+<p>If the server supports upgrading to WebSocket, it responds with HTTP status code <code>200</code>, then switches the communication over that stream, either incoming or outgoing, to happen using HTTP/2 <code>DATA</code> frames wrapping WebSocket frames.</p>
+</div>
+<div class="paragraph">
+<p>When the client receives the HTTP status code <code>200</code>, it switches the communication over that stream, either incoming or outgoing, to happen using HTTP/2 <code>DATA</code> frames wrapping WebSocket frames.</p>
+</div>
+<div class="paragraph">
+<p>From an external point of view, it will look like client is sending chunks of an infinite HTTP/2 request upload, and the server is sending chunks of an infinite HTTP/2 response download, as they will exchange HTTP/2 <code>DATA</code> frames; but the HTTP/2 <code>DATA</code> frames will contain each one or more WebSocket frames that both client and server know how to deliver to the respective WebSocket endpoints.</p>
+</div>
+<div class="paragraph">
+<p>When either WebSocket endpoint decides to terminate the communication, the HTTP/2 stream will be closed as well.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="694" height="572">
+</div>
+</div>
+<div class="paragraph">
+<p>In code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Use the HTTP/2 transport for HttpClient.</span>
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client();
+HttpClient httpClient = <span class="keyword">new</span> HttpClient(<span class="keyword">new</span> HttpClientTransportOverHTTP2(http2Client));
+
+<span class="comment">// Create and start WebSocketClient.</span>
+WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
+webSocketClient.start();
+
+<span class="comment">// The client-side WebSocket EndPoint that</span>
+<span class="comment">// receives WebSocket messages from the server.</span>
+ClientEndPoint clientEndPoint = <span class="keyword">new</span> ClientEndPoint();
+<span class="comment">// The server URI to connect to.</span>
+<span class="predefined-type">URI</span> serverURI = <span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">wss://domain.com/path</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Connect the client EndPoint to the server.</span>
+CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(clientEndPoint, serverURI);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can use the <a href="#pg-client-http-transport-dynamic">dynamic <code>HttpClient</code> transport</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Use the dynamic HTTP/2 transport for HttpClient.</span>
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client();
+HttpClient httpClient = <span class="keyword">new</span> HttpClient(<span class="keyword">new</span> HttpClientTransportDynamic(<span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client)));
+
+<span class="comment">// Create and start WebSocketClient.</span>
+WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
+webSocketClient.start();
+
+ClientEndPoint clientEndPoint = <span class="keyword">new</span> ClientEndPoint();
+<span class="predefined-type">URI</span> serverURI = <span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">wss://domain.com/path</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Connect the client EndPoint to the server.</span>
+CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(clientEndPoint, serverURI);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-client-websocket-connect-custom-http-request"><a class="anchor" href="#pg-client-websocket-connect-custom-http-request"></a><a class="link" href="#pg-client-websocket-connect-custom-http-request">Customizing the Initial HTTP Request</a></h5>
+<div class="paragraph">
+<p>Sometimes you need to add custom cookies, or other HTTP headers, or specify a WebSocket sub-protocol to the HTTP request that initiates the WebSocket communication.</p>
+</div>
+<div class="paragraph">
+<p>You can do this by using overloaded versions of the <code>WebSocketClient.connect(&#8230;&#8203;)</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">ClientEndPoint clientEndPoint = <span class="keyword">new</span> ClientEndPoint();
+<span class="predefined-type">URI</span> serverURI = <span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">ws://domain.com/path</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Create a custom HTTP request.</span>
+ClientUpgradeRequest customRequest = <span class="keyword">new</span> ClientUpgradeRequest();
+<span class="comment">// Specify a cookie.</span>
+customRequest.getCookies().add(<span class="keyword">new</span> HttpCookie(<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">value</span><span class="delimiter">&quot;</span></span>));
+<span class="comment">// Specify a custom header.</span>
+customRequest.setHeader(<span class="string"><span class="delimiter">&quot;</span><span class="content">X-Token</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">0123456789ABCDEF</span><span class="delimiter">&quot;</span></span>);
+<span class="comment">// Specify a custom sub-protocol.</span>
+customRequest.setSubProtocols(<span class="string"><span class="delimiter">&quot;</span><span class="content">chat</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Connect the client EndPoint to the server with a custom HTTP request.</span>
+CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(clientEndPoint, serverURI, customRequest);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-client-websocket-connect-inspect-http-response"><a class="anchor" href="#pg-client-websocket-connect-inspect-http-response"></a><a class="link" href="#pg-client-websocket-connect-inspect-http-response">Inspecting the Initial HTTP Response</a></h5>
+<div class="paragraph">
+<p>If you want to inspect the HTTP response returned by the server as a reply to the  HTTP request that initiates the WebSocket communication, you may provide a <code>JettyUpgradeListener</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">ClientEndPoint clientEndPoint = <span class="keyword">new</span> ClientEndPoint();
+<span class="predefined-type">URI</span> serverURI = <span class="predefined-type">URI</span>.create(<span class="string"><span class="delimiter">&quot;</span><span class="content">ws://domain.com/path</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// The listener to inspect the HTTP response.</span>
+JettyUpgradeListener listener = <span class="keyword">new</span> JettyUpgradeListener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onHandshakeResponse(HttpRequest request, HttpResponse response)
+    {
+        <span class="comment">// Inspect the HTTP response here.</span>
+    }
+};
+
+<span class="comment">// Connect the client EndPoint to the server with a custom HTTP request.</span>
+CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(clientEndPoint, serverURI, <span class="predefined-constant">null</span>, listener);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-websocket-architecture"><a class="anchor" href="#pg-websocket-architecture"></a><a class="link" href="#pg-websocket-architecture">WebSocket Architecture</a></h4>
+<div class="paragraph">
+<p>The Jetty WebSocket architecture is organized around the concept of a logical <em>connection</em> between the client and the server.</p>
+</div>
+<div class="paragraph">
+<p>The connection may be physical, when connecting to the server using HTTP/1.1, as the WebSocket bytes are carried directly by the TCP connection.</p>
+</div>
+<div class="paragraph">
+<p>The connection may be virtual, when connecting to the server using HTTP/2, as the WebSocket bytes are wrapped into HTTP/2 <code>DATA</code> frames of an HTTP/2 stream.
+In this case, a single TCP connection may carry several WebSocket virtual connections, each wrapped in its own HTTP/2 stream.</p>
+</div>
+<div class="paragraph">
+<p>Each side of a WebSocket connection, either client or server, is made of two entities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <a href="#pg-websocket-endpoints">WebSocket <em>endpoint</em></a>, the entity that <em>receives</em> WebSocket events.</p>
+</li>
+<li>
+<p>A <a href="#pg-websocket-session">WebSocket <em>session</em></a>, the entity that offers an API to <em>send</em> WebSocket data (and to close the WebSocket connection), as well as to configure WebSocket connection parameters.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-websocket-endpoints"><a class="anchor" href="#pg-websocket-endpoints"></a><a class="link" href="#pg-websocket-endpoints">WebSocket Endpoints</a></h4>
+<div class="paragraph">
+<p>A WebSocket endpoint is the entity that receives WebSocket events.</p>
+</div>
+<div class="paragraph">
+<p>The WebSocket events are the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>connect</em> event.
+This event is emitted when the WebSocket communication has been successfully established.
+Applications interested in the connect event receive the WebSocket <em>session</em> so that they can use it to send data to the remote peer.</p>
+</li>
+<li>
+<p>The <em>close</em> event.
+This event is emitted when the WebSocket communication has been closed.
+Applications interested in the close event receive a WebSocket status code and an optional close reason message.</p>
+</li>
+<li>
+<p>The <em>error</em> event.
+This event is emitted when the WebSocket communication encounters a fatal error, such as an I/O error (for example, the network connection has been broken), or a protocol error (for example, the remote peer sends an invalid WebSocket frame).
+Applications interested in the error event receive a <code>Throwable</code> that represent the error.</p>
+</li>
+<li>
+<p>The <em>message</em> event.
+The message event is emitted when a WebSocket message is received.
+The message event can be of two types:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Textual message event.
+Applications interested in this type of messages receive a <code>String</code> representing the UTF-8 bytes received.</p>
+</li>
+<li>
+<p>Binary message event.
+Applications interested in this type of messages receive a <code>byte[]</code> representing the raw bytes received.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-endpoints-listener"><a class="anchor" href="#pg-websocket-endpoints-listener"></a><a class="link" href="#pg-websocket-endpoints-listener">Listener Endpoints</a></h5>
+<div class="paragraph">
+<p>A WebSocket endpoint may implement the <code>org.eclipse.jetty.websocket.api.WebSocketListener</code> interface to receive WebSocket events:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ListenerEndPoint</span> <span class="directive">implements</span> WebSocketListener <i class="conum" data-value="1"></i><b>(1)</b>
+{
+    <span class="directive">private</span> Session session;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    {
+        <span class="comment">// The WebSocket connection is established.</span>
+
+        <span class="comment">// Store the session to be able to send data to the remote peer.</span>
+        <span class="local-variable">this</span>.session = session;
+
+        <span class="comment">// You may configure the session.</span>
+        session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
+
+        <span class="comment">// You may immediately send a message to the remote peer.</span>
+        session.getRemote().sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, WriteCallback.NOOP);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketClose(<span class="type">int</span> statusCode, <span class="predefined-type">String</span> reason)
+    {
+        <span class="comment">// The WebSocket connection is closed.</span>
+
+        <span class="comment">// You may dispose resources.</span>
+        disposeResources();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketError(<span class="predefined-type">Throwable</span> cause)
+    {
+        <span class="comment">// The WebSocket connection failed.</span>
+
+        <span class="comment">// You may log the error.</span>
+        cause.printStackTrace();
+
+        <span class="comment">// You may dispose resources.</span>
+        disposeResources();
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketText(<span class="predefined-type">String</span> message)
+    {
+        <span class="comment">// A WebSocket textual message is received.</span>
+
+        <span class="comment">// You may echo it back if it matches certain criteria.</span>
+        <span class="keyword">if</span> (message.startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>))
+            session.getRemote().sendString(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), WriteCallback.NOOP);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketBinary(<span class="type">byte</span><span class="type">[]</span> payload, <span class="type">int</span> offset, <span class="type">int</span> length)
+    {
+        <span class="comment">// A WebSocket binary message is received.</span>
+
+        <span class="comment">// Save only PNG images.</span>
+        <span class="type">byte</span><span class="type">[]</span> pngBytes = <span class="keyword">new</span> <span class="type">byte</span><span class="type">[]</span>{(<span class="type">byte</span>)<span class="hex">0x89</span>, <span class="string"><span class="delimiter">'</span><span class="content">P</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">N</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">G</span><span class="delimiter">'</span></span>};
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; pngBytes.length; ++i)
+        {
+            <span class="keyword">if</span> (pngBytes[i] != payload[offset + i])
+                <span class="keyword">return</span>;
+        }
+        savePNGImage(payload, offset, length);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Your listener class implements <code>WebSocketListener</code>.</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="pg-message-streaming-reads"><a class="anchor" href="#pg-message-streaming-reads"></a><a class="link" href="#pg-message-streaming-reads">Message Streaming Reads</a></h6>
+<div class="paragraph">
+<p>If you need to deal with large WebSocket messages, you may reduce the memory usage by streaming the message content.
+For large WebSocket messages, the memory usage may be large due to the fact that the text or the bytes must be accumulated until the message is complete before delivering the message event.</p>
+</div>
+<div class="paragraph">
+<p>To stream textual or binary messages, you must implement interface <code>org.eclipse.jetty.websocket.api.WebSocketPartialListener</code> instead of <code>WebSocketListener</code>.</p>
+</div>
+<div class="paragraph">
+<p>Interface <code>WebSocketPartialListener</code> exposes one method for textual messages, and one method to binary messages that receive <em>chunks</em> of, respectively, text and bytes that form the whole WebSocket message.</p>
+</div>
+<div class="paragraph">
+<p>You may accumulate the chunks yourself, or process each chunk as it arrives, or stream the chunks elsewhere, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">StreamingListenerEndpoint</span> <span class="directive">implements</span> WebSocketPartialListener
+{
+    <span class="directive">private</span> Path textPath;
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketPartialText(<span class="predefined-type">String</span> payload, <span class="type">boolean</span> fin)
+    {
+        <span class="comment">// Forward chunks to external REST service.</span>
+        forwardToREST(payload, fin);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketPartialBinary(<span class="predefined-type">ByteBuffer</span> payload, <span class="type">boolean</span> fin)
+    {
+        <span class="comment">// Save chunks to file.</span>
+        appendToFile(payload, fin);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-endpoints-annotated"><a class="anchor" href="#pg-websocket-endpoints-annotated"></a><a class="link" href="#pg-websocket-endpoints-annotated">Annotated Endpoints</a></h5>
+<div class="paragraph">
+<p>A WebSocket endpoint may annotate methods with <code>org.eclipse.jetty.websocket.api.annotations.*</code> annotations to receive WebSocket events.
+Each annotated method may take an optional <code>Session</code> argument as its first parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">AnnotatedEndPoint</span>
+{
+    <span class="directive">private</span> Session session;
+
+    <span class="annotation">@OnWebSocketConnect</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> <span class="type">void</span> onConnect(Session session)
+    {
+        <span class="comment">// The WebSocket connection is established.</span>
+
+        <span class="comment">// Store the session to be able to send data to the remote peer.</span>
+        <span class="local-variable">this</span>.session = session;
+
+        <span class="comment">// You may configure the session.</span>
+        session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
+
+        <span class="comment">// You may immediately send a message to the remote peer.</span>
+        session.getRemote().sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, WriteCallback.NOOP);
+    }
+
+    <span class="annotation">@OnWebSocketClose</span> <i class="conum" data-value="3"></i><b>(3)</b>
+    <span class="directive">public</span> <span class="type">void</span> onClose(<span class="type">int</span> statusCode, <span class="predefined-type">String</span> reason)
+    {
+        <span class="comment">// The WebSocket connection is closed.</span>
+
+        <span class="comment">// You may dispose resources.</span>
+        disposeResources();
+    }
+
+    <span class="annotation">@OnWebSocketError</span> <i class="conum" data-value="4"></i><b>(4)</b>
+    <span class="directive">public</span> <span class="type">void</span> onError(<span class="predefined-type">Throwable</span> cause)
+    {
+        <span class="comment">// The WebSocket connection failed.</span>
+
+        <span class="comment">// You may log the error.</span>
+        cause.printStackTrace();
+
+        <span class="comment">// You may dispose resources.</span>
+        disposeResources();
+    }
+
+    <span class="annotation">@OnWebSocketMessage</span> <i class="conum" data-value="5"></i><b>(5)</b>
+    <span class="directive">public</span> <span class="type">void</span> onTextMessage(Session session, <span class="predefined-type">String</span> message) <i class="conum" data-value="3"></i><b>(3)</b>
+    {
+        <span class="comment">// A WebSocket textual message is received.</span>
+
+        <span class="comment">// You may echo it back if it matches certain criteria.</span>
+        <span class="keyword">if</span> (message.startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>))
+            session.getRemote().sendString(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), WriteCallback.NOOP);
+    }
+
+    <span class="annotation">@OnWebSocketMessage</span> <i class="conum" data-value="5"></i><b>(5)</b>
+    <span class="directive">public</span> <span class="type">void</span> onBinaryMessage(<span class="type">byte</span><span class="type">[]</span> payload, <span class="type">int</span> offset, <span class="type">int</span> length)
+    {
+        <span class="comment">// A WebSocket binary message is received.</span>
+
+        <span class="comment">// Save only PNG images.</span>
+        <span class="type">byte</span><span class="type">[]</span> pngBytes = <span class="keyword">new</span> <span class="type">byte</span><span class="type">[]</span>{(<span class="type">byte</span>)<span class="hex">0x89</span>, <span class="string"><span class="delimiter">'</span><span class="content">P</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">N</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">G</span><span class="delimiter">'</span></span>};
+        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; pngBytes.length; ++i)
+        {
+            <span class="keyword">if</span> (pngBytes[i] != payload[offset + i])
+                <span class="keyword">return</span>;
+        }
+        savePNGImage(payload, offset, length);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Use the <code>@WebSocket</code> annotation at the class level to make it a WebSocket endpoint.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Use the <code>@OnWebSocketConnect</code> annotation for the <em>connect</em> event.
+As this is the first event notified to the endpoint, you can configure the <code>Session</code> object.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Use the <code>@OnWebSocketClose</code> annotation for the <em>close</em> event.
+The method may take an optional <code>Session</code> as first parameter.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Use the <code>@OnWebSocketError</code> annotation for the <em>error</em> event.
+The method may take an optional <code>Session</code> as first parameter.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Use the <code>@OnWebSocketMessage</code> annotation for the <em>message</em> event, both for textual and binary messages.
+The method may take an optional <code>Session</code> as first parameter.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For binary messages, you may declare the annotated method with either or these two signatures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@OnWebSocketMessage</span>
+<span class="directive">public</span> <span class="type">void</span> methodName(<span class="type">byte</span><span class="type">[]</span> bytes, <span class="type">int</span> offset, <span class="type">int</span> length) { ... }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@OnWebSocketMessage</span>
+<span class="directive">public</span> <span class="type">void</span> methodName(<span class="predefined-type">ByteBuffer</span> buffer) { ... }</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="pg-message-streaming-reads-2"><a class="anchor" href="#pg-message-streaming-reads-2"></a><a class="link" href="#pg-message-streaming-reads-2">Message Streaming Reads</a></h6>
+<div class="paragraph">
+<p>If you need to deal with large WebSocket messages, you may reduce the memory usage by streaming the message content.</p>
+</div>
+<div class="paragraph">
+<p>To stream textual or binary messages, you still use the <code>@OnWebSocketMessage</code> annotation, but you change the signature of the method to take, respectively a <code>Reader</code> and an <code>InputStream</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">StreamingAnnotatedEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onTextMessage(<span class="predefined-type">Reader</span> reader)
+    {
+        <span class="comment">// Read chunks and forward.</span>
+        forwardToREST(reader);
+    }
+
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onBinaryMessage(<span class="predefined-type">InputStream</span> stream)
+    {
+        <span class="comment">// Save chunks to file.</span>
+        appendToFile(stream);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>Reader</code> or <code>InputStream</code> only offer blocking APIs, so if the remote peers are slow in sending the large WebSocket messages, reading threads may be blocked in <code>Reader.read(char[])</code> or <code>InputStream.read(byte[])</code>, possibly exhausting the thread pool.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-websocket-session"><a class="anchor" href="#pg-websocket-session"></a><a class="link" href="#pg-websocket-session">WebSocket Session</a></h4>
+<div class="paragraph">
+<p>A WebSocket session is the entity that offers an API to send data to the remote peer, to close the WebSocket connection, and to configure WebSocket connection parameters.</p>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-session-configure"><a class="anchor" href="#pg-websocket-session-configure"></a><a class="link" href="#pg-websocket-session-configure">Configuring the Session</a></h5>
+<div class="paragraph">
+<p>You may configure the WebSocket session behavior using the <code>org.eclipse.jetty.websocket.api.Session</code> APIs.
+You want to do this as soon as you have access to the <code>Session</code> object, typically from the <a href="#pg-websocket-endpoints"><em>connect</em> event</a> handler:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigureEndpoint</span> <span class="directive">implements</span> WebSocketListener
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    {
+        <span class="comment">// Configure the max length of incoming messages.</span>
+        session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
+
+        <span class="comment">// Configure the idle timeout.</span>
+        session.setIdleTimeout(<span class="predefined-type">Duration</span>.ofSeconds(<span class="integer">30</span>));
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please refer to the <code>Session</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/api/Session.html">javadocs</a> for the complete list of configuration APIs.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-session-send"><a class="anchor" href="#pg-websocket-session-send"></a><a class="link" href="#pg-websocket-session-send">Sending Data</a></h5>
+<div class="paragraph">
+<p>To send data to the remote peer, you need to obtain the <code>RemoteEndpoint</code> object from the <code>Session</code>, and then use its API to send data.</p>
+</div>
+<div class="paragraph">
+<p><code>RemoteEndpoint</code> offers two styles of APIs to send data:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Blocking APIs, where the call returns when the data has been sent, or throws an <code>IOException</code> if the data cannot be sent.</p>
+</li>
+<li>
+<p>Non-blocking APIs, where a callback object is notified when the data has been sent, or when there was a failure sending the data.</p>
+</li>
+</ul>
+</div>
+<div class="sect5">
+<h6 id="pg-websocket-session-send-blocking"><a class="anchor" href="#pg-websocket-session-send-blocking"></a><a class="link" href="#pg-websocket-session-send-blocking">Blocking APIs</a></h6>
+<div class="paragraph">
+<p><code>RemoteEndpoint</code> blocking APIs throw <code>IOException</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">BlockingSendEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
+    {
+        <span class="comment">// Obtain the RemoteEndpoint APIs.</span>
+        RemoteEndpoint remote = session.getRemote();
+
+        <span class="keyword">try</span>
+        {
+            <span class="comment">// Send textual data to the remote peer.</span>
+            remote.sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>);
+
+            <span class="comment">// Send binary data to the remote peer.</span>
+            <span class="predefined-type">ByteBuffer</span> bytes = readImageFromFile();
+            remote.sendBytes(bytes);
+
+            <span class="comment">// Send a PING frame to the remote peer.</span>
+            remote.sendPing(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">8</span>).putLong(<span class="predefined-type">System</span>.nanoTime()).flip());
+        }
+        <span class="keyword">catch</span> (<span class="exception">IOException</span> x)
+        {
+            <span class="comment">// No need to rethrow or close the session.</span>
+            <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send data</span><span class="delimiter">&quot;</span></span>, x);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Blocking APIs are simpler to use since they can be invoked one after the other sequentially.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Sending large messages to the remote peer may cause the sending thread to block, possibly exhausting the thread pool.
+Consider using non-blocking APIs for large messages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-websocket-session-send-non-blocking"><a class="anchor" href="#pg-websocket-session-send-non-blocking"></a><a class="link" href="#pg-websocket-session-send-non-blocking">Non-Blocking APIs</a></h6>
+<div class="paragraph">
+<p><code>RemoteEndpoint</code> non-blocking APIs have an additional callback parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NonBlockingSendEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
+    {
+        <span class="comment">// Obtain the RemoteEndpoint APIs.</span>
+        RemoteEndpoint remote = session.getRemote();
+
+        <span class="comment">// Send textual data to the remote peer.</span>
+        remote.sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> WriteCallback() <i class="conum" data-value="1"></i><b>(1)</b>
+        {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+            {
+                <span class="comment">// Send binary data to the remote peer.</span>
+                <span class="predefined-type">ByteBuffer</span> bytes = readImageFromFile();
+                remote.sendBytes(bytes, <span class="keyword">new</span> WriteCallback() <i class="conum" data-value="2"></i><b>(2)</b>
+                {
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+                    {
+                        <span class="comment">// Both sends succeeded.</span>
+                    }
+
+                    <span class="annotation">@Override</span>
+                    <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+                    {
+                        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send binary data</span><span class="delimiter">&quot;</span></span>, x);
+                    }
+                });
+            }
+
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+            {
+                <span class="comment">// No need to rethrow or close the session.</span>
+                <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send textual data</span><span class="delimiter">&quot;</span></span>, x);
+            }
+        });
+
+        <span class="comment">// remote.sendString(&quot;wrong&quot;, WriteCallback.NOOP); // May throw WritePendingException! </span><i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Non-blocking APIs require a <code>WriteCallback</code> parameter.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Note how the second send must be performed from inside the callback.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Sequential sends may throw <code>WritePendingException</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Non-blocking APIs are more difficult to use since you are required to meet the following condition:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You cannot initiate another send of any kind until the previous send is completed.</p>
+</div>
+<div class="paragraph">
+<p>For example, if you have initiated a text send, you cannot initiate a binary send, until the previous send has completed.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, if you have initiated a non-blocking send, you cannot initiate a blocking send, until the previous send has completed.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This requirement is necessary to avoid unbounded buffering that could lead to <code>OutOfMemoryError</code>s.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We strongly recommend that you follow the condition above.</p>
+</div>
+<div class="paragraph">
+<p>However, there may be cases where you want to explicitly control the number of outgoing buffered messages using <code>RemoteEndpoint.setMaxOutgoingFrames(int)</code>.</p>
+</div>
+<div class="paragraph">
+<p>Remember that trying to control the number of outgoing buffered messages is very difficult and tricky; you may set <code>maxOutgoingFrames=4</code> and have a situation where 6 threads try to concurrently send messages: threads 1 to 4 will be able to successfully buffer their messages, thread 5 may fail, but thread 6 may succeed because one of the previous threads completed its send.
+At this point you have an out-of-order message delivery that could be unexpected and very difficult to troubleshoot because it will happen non-deterministically.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>While non-blocking APIs are more difficult to use, they don&#8217;t block the sender thread and therefore use less resources, which in turn typically allows for greater scalability under load: with respect to blocking APIs, non-blocking APIs need less resources to cope with the same load.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-websocket-session-send-stream"><a class="anchor" href="#pg-websocket-session-send-stream"></a><a class="link" href="#pg-websocket-session-send-stream">Streaming Send APIs</a></h6>
+<div class="paragraph">
+<p>If you need to send large WebSocket messages, you may reduce the memory usage by streaming the message content.</p>
+</div>
+<div class="paragraph">
+<p>Both blocking and non-blocking APIs offer <code>sendPartial*(&#8230;&#8203;)</code> methods that allow you to send a chunk of the whole message at a time, therefore reducing the memory usage since it is not necessary to have the whole message <code>String</code> or <code>byte[]</code> in memory to send it.</p>
+</div>
+<div class="paragraph">
+<p>Streaming sends using blocking APIs is quite simple:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">StreamSendBlockingEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
+    {
+        <span class="keyword">try</span>
+        {
+            RemoteEndpoint remote = session.getRemote();
+            <span class="keyword">while</span> (<span class="predefined-constant">true</span>)
+            {
+                <span class="predefined-type">ByteBuffer</span> chunk = readChunkToSend();
+                <span class="keyword">if</span> (chunk == <span class="predefined-constant">null</span>)
+                {
+                    <span class="comment">// No more bytes, finish the WebSocket message.</span>
+                    remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">true</span>);
+                    <span class="keyword">break</span>;
+                }
+                <span class="keyword">else</span>
+                {
+                    <span class="comment">// Send the chunk.</span>
+                    remote.sendPartialBytes(chunk, <span class="predefined-constant">false</span>);
+                }
+            }
+        }
+        <span class="keyword">catch</span> (<span class="exception">IOException</span> x)
+        {
+            x.printStackTrace();
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Streaming sends using non-blocking APIs is more complicated, as you should wait (without blocking!) for the callbacks to complete.</p>
+</div>
+<div class="paragraph">
+<p>Fortunately, Jetty provides you with the <code>IteratingCallback</code> utility class (described in more details <a href="#pg-arch-io-echo">in this section</a>) which greatly simplify the use of non-blocking APIs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">StreamSendNonBlockingEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
+    {
+        RemoteEndpoint remote = session.getRemote();
+        <span class="keyword">new</span> Sender(remote).iterate();
+    }
+
+    <span class="directive">private</span> <span class="type">class</span> <span class="class">Sender</span> <span class="directive">extends</span> IteratingCallback <span class="directive">implements</span> WriteCallback <i class="conum" data-value="1"></i><b>(1)</b>
+    {
+        <span class="directive">private</span> <span class="directive">final</span> RemoteEndpoint remote;
+        <span class="directive">private</span> <span class="type">boolean</span> finished;
+
+        <span class="directive">private</span> Sender(RemoteEndpoint remote)
+        {
+            <span class="local-variable">this</span>.remote = remote;
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">protected</span> <span class="predefined-type">Action</span> process() <span class="directive">throws</span> <span class="predefined-type">Throwable</span> <i class="conum" data-value="2"></i><b>(2)</b>
+        {
+            <span class="keyword">if</span> (finished)
+                <span class="keyword">return</span> <span class="predefined-type">Action</span>.SUCCEEDED;
+
+            <span class="predefined-type">ByteBuffer</span> chunk = readChunkToSend();
+            <span class="keyword">if</span> (chunk == <span class="predefined-constant">null</span>)
+            {
+                <span class="comment">// No more bytes, finish the WebSocket message.</span>
+                remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">true</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+                finished = <span class="predefined-constant">true</span>;
+                <span class="keyword">return</span> <span class="predefined-type">Action</span>.SCHEDULED;
+            }
+            <span class="keyword">else</span>
+            {
+                <span class="comment">// Send the chunk.</span>
+                remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">false</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="keyword">return</span> <span class="predefined-type">Action</span>.SCHEDULED;
+            }
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+        {
+            <span class="comment">// When the send succeeds, succeed this IteratingCallback.</span>
+            succeeded();
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+        {
+            <span class="comment">// When the send fails, fail this IteratingCallback.</span>
+            failed(x);
+        }
+
+        <span class="annotation">@Override</span>
+        <span class="directive">protected</span> <span class="type">void</span> onCompleteFailure(<span class="predefined-type">Throwable</span> x)
+        {
+            x.printStackTrace();
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Implementing <code>WriteCallback</code> allows to pass <code>this</code> to <code>sendPartialBytes(&#8230;&#8203;)</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>process()</code> method is called iteratively when each <code>sendPartialBytes(&#8230;&#8203;)</code> is completed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Send the message chunks.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-session-ping"><a class="anchor" href="#pg-websocket-session-ping"></a><a class="link" href="#pg-websocket-session-ping">Sending Ping/Pong</a></h5>
+<div class="paragraph">
+<p>The WebSocket protocol defines two special frame, named <code>Ping</code> and <code>Pong</code> that may be interesting to applications for these use cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Calculate the round-trip time with the remote peer.</p>
+</li>
+<li>
+<p>Keep the connection from being closed due to idle timeout&#8201;&#8212;&#8201;a heartbeat-like mechanism.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To handle <code>Ping</code>/<code>Pong</code> events, you may implement interface <code>org.eclipse.jetty.websocket.api.WebSocketPingPongListener</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>Ping</code>/<code>Pong</code> events are not supported when using annotations.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>Ping</code> frames may contain opaque application bytes, and the WebSocket implementation replies to them with a <code>Pong</code> frame containing the same bytes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RoundTripListenerEndpoint</span> <span class="directive">implements</span> WebSocketPingPongListener <i class="conum" data-value="1"></i><b>(1)</b>
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    {
+        <span class="comment">// Send to the remote peer the local nanoTime.</span>
+        <span class="predefined-type">ByteBuffer</span> buffer = <span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">8</span>).putLong(<span class="predefined-type">System</span>.nanoTime()).flip();
+        session.getRemote().sendPing(buffer, WriteCallback.NOOP);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketPong(<span class="predefined-type">ByteBuffer</span> payload)
+    {
+        <span class="comment">// The remote peer echoed back the local nanoTime.</span>
+        <span class="type">long</span> start = payload.getLong();
+
+        <span class="comment">// Calculate the round-trip time.</span>
+        <span class="type">long</span> roundTrip = <span class="predefined-type">System</span>.nanoTime() - start;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The WebSocket endpoint class must implement <code>WebSocketPingPongListener</code></td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-websocket-session-close"><a class="anchor" href="#pg-websocket-session-close"></a><a class="link" href="#pg-websocket-session-close">Closing the Session</a></h5>
+<div class="paragraph">
+<p>When you want to terminate the communication with the remote peer, you close the <code>Session</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">CloseEndpoint</span>
+{
+    <span class="annotation">@OnWebSocketMessage</span>
+    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
+    {
+        <span class="keyword">if</span> (<span class="string"><span class="delimiter">&quot;</span><span class="content">close</span><span class="delimiter">&quot;</span></span>.equalsIgnoreCase(text))
+            session.close(StatusCode.NORMAL, <span class="string"><span class="delimiter">&quot;</span><span class="content">bye</span><span class="delimiter">&quot;</span></span>);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Closing a WebSocket <code>Session</code> carries a status code and a reason message that the remote peer can inspect in the <em>close</em> event handler (see <a href="#pg-websocket-endpoints">this section</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The reason message is optional, and may be truncated to fit into the WebSocket frame sent to the client.
+It is best to use short tokens such as <code>"shutdown"</code>, or <code>"idle_timeout"</code>, etc. or even application specific codes such as <code>"0001"</code> or <code>"00AF"</code> that can be converted by the application into more meaningful messages.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2994,7 +4170,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3162,7 +4338,7 @@ Currently, the following events are available:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>HttpChannel.Listener</code> <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/HttpChannel.Listener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the <code>HttpChannel.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpChannel.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>Server applications can register <code>HttpChannel.Listener</code> by adding them as <a href="#pg-arch-bean">beans</a> to the <code>Connector</code>:</p>
@@ -3980,7 +5156,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3991,7 +5167,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <p>The Jetty Server Libraries provide rules for the most common usages, but you can write your own rules by extending the <code>org.eclipse.jetty.rewrite.handler.Rule</code> class.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>jetty-rewrite</code> module <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/rewrite/handler/package-summary.html">javadocs</a> for the complete list of available rules.</p>
+<p>Please refer to the <code>jetty-rewrite</code> module <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/rewrite/handler/package-summary.html">javadocs</a> for the complete list of available rules.</p>
 </div>
 <div class="paragraph">
 <p>You typically want to configure <code>RewriteHandler</code> at the server level, although it is possible to configure it on a per-context basis.</p>
@@ -4257,7 +5433,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4640,7 +5816,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4726,7 +5902,7 @@ server.start();</code></pre>
 <p>The <code>ServerSessionListener</code> interface defines a number of methods that are invoked by the implementation upon the occurrence of HTTP/2 events, and that server applications can override to react to those events.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the `ServerSessionListener`<a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the `ServerSessionListener`<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>The first event is the <em>accept</em> event and happens when a client opens a new TCP connection to the server and the server accepts the connection.
@@ -5157,7 +6333,7 @@ Its purpose is to generate fresh, unique session ids and to coordinate the re-us
 <p>The <code>SessionIdManager</code> is agnostic with respect to the type of clustering technology chosen.</p>
 </div>
 <div class="paragraph">
-<p>Jetty provides a default implementation - the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionIdManager.html">DefaultSessionIdManager</a>  - which should meet the needs of most users.</p>
+<p>Jetty provides a default implementation - the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionIdManager.html">DefaultSessionIdManager</a>  - which should meet the needs of most users.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -5234,8 +6410,8 @@ This restriction is important to support cross-context dispatch.</p>
 <div class="sect4">
 <h5 id="pg-server-session-housekeeper"><a class="anchor" href="#pg-server-session-housekeeper"></a><a class="link" href="#pg-server-session-housekeeper">The HouseKeeper</a></h5>
 <div class="paragraph">
-<p>There is a maximum of one <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/HouseKeeper.html">HouseKeeper</a> per <code>SessionIdManager</code>.
-Its purpose is to periodically poll the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandlers</a> to clean out expired sessions.
+<p>There is a maximum of one <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/HouseKeeper.html">HouseKeeper</a> per <code>SessionIdManager</code>.
+Its purpose is to periodically poll the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandlers</a> to clean out expired sessions.
 This operation is usually referred to as "scavenging" expired sessions.
 The scavenging interval is configured by the <code>setIntervalSec(long)</code> method.
 The default value is <code>600</code>sec, ie <code>10</code>mins.</p>
@@ -5284,7 +6460,7 @@ It also calls the context-level session listeners at appropriate points in the s
 <div class="sect4">
 <h5 id="pg-configuration"><a class="anchor" href="#pg-configuration"></a><a class="link" href="#pg-configuration">Configuration</a></h5>
 <div class="paragraph">
-<p>The majority of configuration for the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandler</a> can be done via <code>web.xml</code> <code>&lt;session-config&gt;</code> declarations, or the <code>javax.servlet.SessionCookieConfig</code> api.
+<p>The majority of configuration for the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandler</a> can be done via <code>web.xml</code> <code>&lt;session-config&gt;</code> declarations, or the <code>javax.servlet.SessionCookieConfig</code> api.
 There are also a few jetty-specific configuration options that we will cover here:</p>
 </div>
 <div class="dlist">
@@ -5555,7 +6731,7 @@ You are responsible for configuring both the <code>SessionCache</code> instance 
 <p>More on <code>SessionDataStore</code>s <a href="#pg-server-session-datastore">later</a>, in this section we will concentrate on the <code>SessionCache</code> and <code>SessionCacheFactory</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a> provides most of the behaviour of <code>SessionCache</code>s.
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a> provides most of the behaviour of <code>SessionCache</code>s.
 If you are implementing a custom <code>SessionCache</code> we strongly recommend you extend this base class, as the Servlet Specification has many subtleties and extending the base class ensures that your implementation will take account of them.</p>
 </div>
 <div class="paragraph">
@@ -5610,7 +6786,7 @@ To prevent his, enable this feature and the <code>SessionCache</code> will ensur
 <dd>
 <p>Some applications want to ensure that all cached sessions are removed when the server shuts down.
 This option will ensure that all cached sessions are invalidated.
-The <code>AbstractSessionCache</code> does not implement this behaviour, a subclass must implement the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
+The <code>AbstractSessionCache</code> does not implement this behaviour, a subclass must implement the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
 </dd>
 <dt class="hdlist1">flushOnResponseCommit</dt>
 <dd>
@@ -5621,17 +6797,17 @@ Using this option ensures that all subsequent requests - either to the same or a
 </dl>
 </div>
 <div class="paragraph">
-<p>Jetty provides two <code>SessionCache</code> implementations: the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> and the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a>.</p>
+<p>Jetty provides two <code>SessionCache</code> implementations: the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> and the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-server-session-hash"><a class="anchor" href="#pg-server-session-hash"></a><a class="link" href="#pg-server-session-hash">The DefaultSessionCache</a></h5>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> retains <code>Session</code> objects in memory in a <code>ConcurrentHashMap</code>.
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> retains <code>Session</code> objects in memory in a <code>ConcurrentHashMap</code>.
 It is suitable for non-clustered and clustered deployments.
 For clustered deployments, a sticky load balancer is <strong>strongly</strong> recommended, otherwise you risk indeterminate session state as the session bounces around multiple nodes.</p>
 </div>
 <div class="paragraph">
-<p>It implements the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
+<p>It implements the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
 </div>
 <div class="paragraph">
 <p>It also provides some statistics on sessions, which are convenient to access either directly in code or remotely via jmx:</p>
@@ -5640,24 +6816,24 @@ For clustered deployments, a sticky load balancer is <strong>strongly</strong> r
 <dl>
 <dt class="hdlist1">current sessions</dt>
 <dd>
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsCurrent()</a> reports the number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsCurrent()</a> reports the number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">max sessions</dt>
 <dd>
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsMax()</a> reports the highest number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsMax()</a> reports the highest number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">total sessions</dt>
 <dd>
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsTotal()">DefaultSessionCache.getSessionsTotal()</a> reports the cumulative total of the number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsTotal()">DefaultSessionCache.getSessionsTotal()</a> reports the cumulative total of the number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">reset</dt>
 <dd>
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCache.html#resetStats()">DefaultSessionCache.resetStats()</a> zeros out the statistics counters.</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#resetStats()">DefaultSessionCache.resetStats()</a> zeros out the statistics counters.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>If you create a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/DefaultSessionCacheFactory.html">DefaultSessionFactory</a> and register it as <code>Server</code> bean, a <code>SessionHandler</code> will be able to lazily create a <code>DefaultSessionCache</code>.
+<p>If you create a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCacheFactory.html">DefaultSessionFactory</a> and register it as <code>Server</code> bean, a <code>SessionHandler</code> will be able to lazily create a <code>DefaultSessionCache</code>.
 The <code>DefaultSessionCacheFactory</code> has all of the same configuration setters as a <code>DefaultSessionCache</code>.
 Alternatively, if you only have a single <code>SessionHandler</code>, or you need to configure a <code>DefaultSessionCache</code> differently for every <code>SessionHandler</code>, then you could dispense with the <code>DefaultSessionCacheFactory</code> and simply instantiate, configure and pass in the <code>DefaultSessionCache</code> yourself.</p>
 </div>
@@ -5696,14 +6872,14 @@ If you don&#8217;t configure any <code>SessionCache</code> or <code>SessionCache
 <div class="sect4">
 <h5 id="pg-server-session-null"><a class="anchor" href="#pg-server-session-null"></a><a class="link" href="#pg-server-session-null">The NullSessionCache</a></h5>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a> does not actually cache any objects: each request uses a fresh <code>Session</code> object.
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a> does not actually cache any objects: each request uses a fresh <code>Session</code> object.
 It is suitable for clustered deployments without a sticky load balancer and non-clustered deployments when purely minimal support for sessions is needed.</p>
 </div>
 <div class="paragraph">
 <p>As no sessions are actually cached, of course functions like <code>invalidateOnShutdown</code> and all of the eviction strategies have no meaning for the <code>NullSessionCache</code>.</p>
 </div>
 <div class="paragraph">
-<p>There is a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/NullSessionCacheFactory.html">NullSessionCacheFactory</a> which you can instantiate, configure and set as a <code>Server</code> bean to enable the <code>SessionHandler</code> to automatically create new <code>NullCache</code>s as needed.
+<p>There is a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCacheFactory.html">NullSessionCacheFactory</a> which you can instantiate, configure and set as a <code>Server</code> bean to enable the <code>SessionHandler</code> to automatically create new <code>NullCache</code>s as needed.
 All of the same configuration options are available on the <code>NullSessionCacheFactory</code> as the <code>NullSessionCache</code> itself.
 Alternatively, if you only have a single <code>SessionHandler</code>, or you need to configure a <code>NullSessionCache</code> differently for every <code>SessionHandler</code>, then you could dispense with the <code>NullSessionCacheFactory</code> and simply instantiate, configure and pass in the <code>NullSessionCache</code> yourself.</p>
 </div>
@@ -5724,7 +6900,7 @@ server.addBean(cacheFactory);</code></pre>
 <div class="sect4">
 <h5 id="pg-server-session-customcache"><a class="anchor" href="#pg-server-session-customcache"></a><a class="link" href="#pg-server-session-customcache">Implementing a Custom SessionCache</a></h5>
 <div class="paragraph">
-<p>As previously mentioned, we highly recommend that you extend the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a>.</p>
+<p>As previously mentioned, we highly recommend that you extend the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5780,7 +6956,7 @@ app2.getSessionHandler().setSessionCache(nullSessionCache);</code></pre>
 <div class="sect3">
 <h4 id="pg-server-session-datastore"><a class="anchor" href="#pg-server-session-datastore"></a><a class="link" href="#pg-server-session-datastore">The SessionDataStore</a></h4>
 <div class="paragraph">
-<p>A <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionDataStore.html">SessionDataStore</a> mediates the storage, retrieval and deletion of <code>SessionData</code>.
+<p>A <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataStore.html">SessionDataStore</a> mediates the storage, retrieval and deletion of <code>SessionData</code>.
 There is one <code>SessionDataStore</code> per <code>SessionCache</code>.
 The server libraries provide a number of alternative <code>SessionDataStore</code> implementations.</p>
 </div>
@@ -5790,7 +6966,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 </div>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/AbstractSessionDataStore.html">AbstractSessionDataStore</a> provides most of the behaviour common to <code>SessionDataStore</code>s:</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionDataStore.html">AbstractSessionDataStore</a> provides most of the behaviour common to <code>SessionDataStore</code>s:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -5838,7 +7014,7 @@ Thus, we use the <code>gracePeriod</code> to provide a bit of leeway around the 
 </dd>
 <dt class="hdlist1">NOTE</dt>
 <dd>
-<p>The trivial <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/NullSessionDataStore.html">NullSessionDataStore</a> - which does not persist sessions - is the default used by the <code>SessionHandler</code>.</p>
+<p>The trivial <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionDataStore.html">NullSessionDataStore</a> - which does not persist sessions - is the default used by the <code>SessionHandler</code>.</p>
 </dd>
 </dl>
 </div>
@@ -5905,7 +7081,7 @@ If there are no virtual hosts associated with a context, then <code>0.0.0.0</cod
 <div class="sect5">
 <h6 id="pg-configuration-2"><a class="anchor" href="#pg-configuration-2"></a><a class="link" href="#pg-configuration-2">Configuration</a></h6>
 <div class="paragraph">
-<p>You can configure either a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/FileSessionDataStore.html">FileSessionDataStore</a> individually, or a <code>FileSessionDataStoreFactory</code> if you want multiple <code>SessionHandler</code>s to use <code>FileSessionDataStore</code>s that are identically configured.
+<p>You can configure either a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/FileSessionDataStore.html">FileSessionDataStore</a> individually, or a <code>FileSessionDataStoreFactory</code> if you want multiple <code>SessionHandler</code>s to use <code>FileSessionDataStore</code>s that are identically configured.
 The configuration methods are:</p>
 </div>
 <div class="dlist">
@@ -6091,7 +7267,7 @@ Many databases use different keywords for the <code>long</code>, <code>blob</cod
 <div class="sect5">
 <h6 id="pg-configuration-3"><a class="anchor" href="#pg-configuration-3"></a><a class="link" href="#pg-configuration-3">Configuration</a></h6>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/JDBCSessionDataStore.html">JDBCSessionDataStore</a> and corresponding <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/JDBCSessionDataStoreFactory.html">JDBCSessionDataStoreFactory</a> supports the following configuration:</p>
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStore.html">JDBCSessionDataStore</a> and corresponding <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStoreFactory.html">JDBCSessionDataStoreFactory</a> supports the following configuration:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -6265,7 +7441,7 @@ This is the name of the column that stores the serialized attributes of a sessio
 <p>The <code>MongoSessionDataStore</code> supports persistence of <code>SessionData</code> in a nosql database.</p>
 </div>
 <div class="paragraph">
-<p>The best description for the document model for session information is found in the javadoc for the <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a>.
+<p>The best description for the document model for session information is found in the javadoc for the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a>.
 In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
@@ -6339,7 +7515,7 @@ As the expiry time can be different for <code>Session</code>s from different con
 <div class="sect5">
 <h6 id="pg-configuration-4"><a class="anchor" href="#pg-configuration-4"></a><a class="link" href="#pg-configuration-4">Configuration</a></h6>
 <div class="paragraph">
-<p>You can configure either a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a> individually, or a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStoreFactory</a> if you want multiple <code>SessionHandler</code>s to use <code>MongoSessionDataStore</code>s that are identically configured.
+<p>You can configure either a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a> individually, or a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStoreFactory</a> if you want multiple <code>SessionHandler</code>s to use <code>MongoSessionDataStore</code>s that are identically configured.
 The configuration methods for the <code>MongoSessionDataStoreFactory</code> are:</p>
 </div>
 <div class="dlist">
@@ -6430,12 +7606,12 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 </div>
 </div>
 <div class="paragraph">
-<p>The <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/CachingSessionDataStore.html">CachingSessionDataStore</a> is a special type of <code>SessionDataStore</code> that checks an L2 cache for <code>SessionData</code> before checking a delegate <code>SessionDataStore</code>.
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/CachingSessionDataStore.html">CachingSessionDataStore</a> is a special type of <code>SessionDataStore</code> that checks an L2 cache for <code>SessionData</code> before checking a delegate <code>SessionDataStore</code>.
 This can improve the performance of slow stores.</p>
 </div>
 <div class="paragraph">
-<p>The L2 cache is an instance of a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/session/SessionDataMap.html">SessionDataMap</a>.
-Jetty provides one implementation of this L2 cache based on <code>memcached</code>, <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/memcached/session/MemcachedSessionDataMap.html">MemcachedSessionDataMap</a>.</p>
+<p>The L2 cache is an instance of a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataMap.html">SessionDataMap</a>.
+Jetty provides one implementation of this L2 cache based on <code>memcached</code>, <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/memcached/session/MemcachedSessionDataMap.html">MemcachedSessionDataMap</a>.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-configuration-5"><a class="anchor" href="#pg-configuration-5"></a><a class="link" href="#pg-configuration-5">Configuration</a></h6>
@@ -7411,7 +8587,7 @@ This is the <em>default</em> mode.</p>
 <p>Optional.
 NOTE to configure a https connector, you will need to use xml configuration files instead, setting the <code>jettyXmls</code> parameter.
 This parameter can only be used to configure a standard http connector.
-If not specified, Jetty will create a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/ServerConnector.html">ServerConnector</a> instance listening on port 8080.
+If not specified, Jetty will create a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html">ServerConnector</a> instance listening on port 8080.
 You can change this default port number by using the system property <code>jetty.http.port</code> on the command line, for example, <code>mvn -Djetty.http.port=9999 jetty:run</code>.
 Alternatively, you can use this configuration element to set up the information for the ServerConnector.
 The following are the valid configuration sub-elements:</p>
@@ -7506,7 +8682,7 @@ Map of key/value pairs to pass as environment to the forked JVM.</p>
 <dt class="hdlist1">jvmArgs</dt>
 <dd>
 <p>Optional.
-A string representing arbitrary arguments to pass to the forked JVM.</p>
+A space separated string representing arbitrary arguments to pass to the forked JVM.</p>
 </dd>
 <dt class="hdlist1">forkWebXml</dt>
 <dd>
@@ -7549,10 +8725,16 @@ If there is no existing jetty base, a fresh one will be made in <code>target/jet
 The location of an existing unpacked jetty distribution.
 If one does not exist, a fresh jetty distribution will be downloaded from maven and installed to the <code>target</code> directory.</p>
 </dd>
+<dt class="hdlist1">jettyOptions</dt>
+<dd>
+<p>Optional.
+A space separated string representing extra arguments to the synthesized jetty command line.
+Values for these arguments can be found in the section titled "Options" in the output of <code>java -jar $jetty.home/start.jar --help</code>.</p>
+</dd>
 <dt class="hdlist1">jvmArgs</dt>
 <dd>
 <p>Optional.
-A string representing arguments that should be passed to the jvm of the child process running the distro.</p>
+A space separated string representing arguments that should be passed to the jvm of the child process running the distro.</p>
 </dd>
 <dt class="hdlist1">modules</dt>
 <dd>
@@ -7712,7 +8894,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -8032,7 +9214,7 @@ Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -8947,6 +10129,22 @@ The merged file will go into the same directory as the webXmlFragment.</p>
 <p>If true, the generated .java files are not deleted at the end of processing.</p>
 </div>
 </dd>
+<dt class="hdlist1">scanAllDirectories</dt>
+<dd>
+<p>Default value: true</p>
+<div class="paragraph">
+<p>Determines if dirs on the classpath should be scanned as well as jars.
+If true, this allows scanning for tlds of dependent projects that
+are in the reactor as unassembled jars.</p>
+</div>
+</dd>
+<dt class="hdlist1">scanManifest</dt>
+<dd>
+<p>Default value: true</p>
+<div class="paragraph">
+<p>Determines if the manifest of JAR files found on the classpath should be scanned.</p>
+</div>
+</dd>
 <dt class="hdlist1">sourceVersion</dt>
 <dd>
 <p>Introduced in Jetty 9.3.6.
@@ -9551,10 +10749,10 @@ parent.addBean(younger);</code></pre>
 <div class="sect3">
 <h4 id="pg-arch-io-selector-manager"><a class="anchor" href="#pg-arch-io-selector-manager"></a><a class="link" href="#pg-arch-io-selector-manager">Jetty I/O: <code>SelectorManager</code></a></h4>
 <div class="paragraph">
-<p>The core class of Jetty I/O is <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a>.</p>
+<p>The core class of Jetty I/O is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a>.</p>
 </div>
 <div class="paragraph">
-<p><code>SelectorManager</code> manages internally a configurable number of <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/ManagedSelector.html"><code>ManagedSelector</code></a>s.
+<p><code>SelectorManager</code> manages internally a configurable number of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ManagedSelector.html"><code>ManagedSelector</code></a>s.
 Each <code>ManagedSelector</code> wraps an instance of <code>java.nio.channels.Selector</code> that in turn manages a number of <code>java.nio.channels.SocketChannel</code> instances.</p>
 </div>
 <div class="admonitionblock note">
@@ -9619,7 +10817,7 @@ In both cases the <code>SocketChannel</code> instance is passed to <code>Selecto
 <div class="sect3">
 <h4 id="pg-arch-io-endpoint-connection"><a class="anchor" href="#pg-arch-io-endpoint-connection"></a><a class="link" href="#pg-arch-io-endpoint-connection">Jetty I/O: <code>EndPoint</code> and <code>Connection</code></a></h4>
 <div class="paragraph">
-<p><code>SocketChannel</code>s that are passed to <code>SelectorManager</code> are wrapped into two related components: an <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/EndPoint.html"><code>EndPoint</code></a> and a <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/Connection.html"><code>Connection</code></a>.</p>
+<p><code>SocketChannel</code>s that are passed to <code>SelectorManager</code> are wrapped into two related components: an <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/EndPoint.html"><code>EndPoint</code></a> and a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/Connection.html"><code>Connection</code></a>.</p>
 </div>
 <div class="paragraph">
 <p><code>EndPoint</code> is the Jetty abstraction for a <code>SocketChannel</code>: you can read bytes from an <code>EndPoint</code> via <code>EndPoint.fill(ByteBuffer)</code>, you can write bytes to an <code>EndPoint</code> via <code>EndPoint.flush(ByteBuffer&#8230;&#8203;)</code> and <code>EndPoint.write(Callback, ByteBuffer&#8230;&#8203;)</code>, you can close an <code>EndPoint</code> via <code>EndPoint.close()</code>, etc.</p>
@@ -9636,7 +10834,7 @@ Conversely, an HTTP/1.1 client-side <code>Connection</code> implementation is re
 <p>The writing side for a specific protocol <em>may</em> be implemented in the <code>Connection</code> but may also be implemented in other components, although eventually the bytes to be written will be written through the <code>EndPoint</code>.</p>
 </div>
 <div class="paragraph">
-<p>While there is primarily just one implementation of <code>EndPoint</code>,<a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
+<p>While there is primarily just one implementation of <code>EndPoint</code>,<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
 </div>
 <div class="paragraph">
 <p>The <code>EndPoint</code> and <code>Connection</code> pairs can be chained, for example in case of encrypted communication using the TLS protocol.
@@ -9663,13 +10861,13 @@ TODO: add a section on <code>UpgradeFrom</code> and <code>UpgradeTo</code>?
 <p><code>SelectorManager</code> is an abstract class because while it knows how to create concrete <code>EndPoint</code> instances, it does not know how to create protocol specific <code>Connection</code> instances.</p>
 </div>
 <div class="paragraph">
-<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s</p>
+<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s</p>
 </div>
 <div class="paragraph">
-<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a>s, see <a href="#pg-server-io-arch">Server Libraries I/O Architecture</a>.</p>
+<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a>s, see <a href="#pg-server-io-arch">Server Libraries I/O Architecture</a>.</p>
 </div>
 <div class="paragraph">
-<p>On the client-side, the components that aggregates a <code>SelectorManager</code> with a set of <code>ClientConnectionFactory</code>s are <a href="http://www.eclipse.org/jetty/javadoc/11.0.2/org/eclipse/jetty/client/HttpClientTransport.html"><code>HttpClientTransport</code></a> subclasses, see <a href="#pg-client-io-arch">Client Libraries I/O Architecture</a>.</p>
+<p>On the client-side, the components that aggregates a <code>SelectorManager</code> with a set of <code>ClientConnectionFactory</code>s are <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClientTransport.html"><code>HttpClientTransport</code></a> subclasses, see <a href="#pg-client-io-arch">Client Libraries I/O Architecture</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -10096,7 +11294,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -10763,11 +11961,233 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="pg-migration"><a class="anchor" href="#pg-migration"></a><a class="link" href="#pg-migration">Appendix C: Migration Guides</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="pg-migration-94-to-10"><a class="anchor" href="#pg-migration-94-to-10"></a><a class="link" href="#pg-migration-94-to-10">Migrating from Jetty 9.4.x to Jetty 10.0.x</a></h3>
+<div class="sect3">
+<h4 id="pg-migration-94-to-10-java-version"><a class="anchor" href="#pg-migration-94-to-10-java-version"></a><a class="link" href="#pg-migration-94-to-10-java-version">Required Java Version Changes</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Jetty 9.4.x</th>
+<th class="tableblock halign-left valign-top">Jetty 10.0.x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 11</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="pg-migration-94-to-10-websocket"><a class="anchor" href="#pg-migration-94-to-10-websocket"></a><a class="link" href="#pg-migration-94-to-10-websocket">WebSocket Migration Guide</a></h4>
+<div class="paragraph">
+<p>Migrating from Jetty 9.4.x to Jetty 10.0.x requires changes in the coordinates of the Maven artifact dependencies for WebSocket. Some of these classes have also changed name and package. This is not a comprehensive list of changes but should cover the most common changes encountered during migration.</p>
+</div>
+<div class="sect4">
+<h5 id="pg-migration-94-to-10-websocket-maven-artifact-changes"><a class="anchor" href="#pg-migration-94-to-10-websocket-maven-artifact-changes"></a><a class="link" href="#pg-migration-94-to-10-websocket-maven-artifact-changes">Maven Artifacts Changes</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Jetty 9.4.x</th>
+<th class="tableblock halign-left valign-top">Jetty 10.0.x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-api</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-jetty-api</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-server</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-jetty-server</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-client</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-jetty-client</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>javax-websocket-server-impl</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-javax-server</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>javax-websocket-client-impl</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket:<strong>websocket-javax-client</strong></code></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="pg-migration-94-to-10-websocket-class-name-changes"><a class="anchor" href="#pg-migration-94-to-10-websocket-class-name-changes"></a><a class="link" href="#pg-migration-94-to-10-websocket-class-name-changes">Class Names Changes</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Jetty 9.4.x</th>
+<th class="tableblock halign-left valign-top">Jetty 10.0.x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.NativeWebSocketServletContainerInitializer</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.config.JettyWebSocketServletContainerInitializer</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>jsr356.server.deploy.WebSocketServerContainerInitializer</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>javax.server.config.JavaxWebSocketServletContainerInitializer</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>servlet.WebSocketCreator</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.JettyWebSocketCreator</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>servlet.ServletUpgradeRequest</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.JettyServerUpgradeRequest</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>servlet.ServletUpgradeResponse</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.JettyServerUpgradeResponse</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>servlet.WebSocketServlet</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.JettyWebSocketServlet</strong></code></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>servlet.WebSocketServletFactory</strong></code></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><code>org.eclipse.jetty.websocket.<strong>server.JettyWebSocketServletFactory</strong></code></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="pg-migration-94-to-10-websocket-example-code"><a class="anchor" href="#pg-migration-94-to-10-websocket-example-code"></a><a class="link" href="#pg-migration-94-to-10-websocket-example-code">Example Code</a></h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Jetty 9.4.x</th>
+<th class="tableblock halign-left valign-top">Jetty 10.0.x</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleWebSocketServlet</span> <span class="directive">extends</span> WebSocketServlet
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> configure(WebSocketServletFactory factory)
+    {
+        factory.setCreator(<span class="keyword">new</span> WebSocketCreator()
+        {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="predefined-type">Object</span> createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp)
+            {
+                <span class="keyword">return</span> <span class="keyword">new</span> ExampleEndpoint();
+            }
+        });
+    }
+}</code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ExampleWebSocketServlet</span> <span class="directive">extends</span> JettyWebSocketServlet
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> configure(JettyWebSocketServletFactory factory)
+    {
+        factory.setCreator(<span class="keyword">new</span> JettyWebSocketCreator()
+        {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="predefined-type">Object</span> createWebSocket(JettyServerUpgradeRequest req, JettyServerUpgradeResponse resp)
+            {
+                <span class="keyword">return</span> <span class="keyword">new</span> ExampleEndpoint();
+            }
+        });
+    }
+}</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.2<br>
-Last updated 2021-03-25 03:42:46 UTC
+Version 11.0.3<br>
+Last updated 2021-05-20 20:06:42 UTC
 </div>
 </div>
 <link rel="stylesheet" href="./coderay-asciidoctor.css">
