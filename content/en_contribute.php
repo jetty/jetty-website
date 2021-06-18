@@ -22,8 +22,9 @@
         <h3 id="cg-patches"><a class="anchor" href="#cg-patches"></a><a class="link" href="#cg-patches">Contributing Patches</a></h3>
         <div class="paragraph">
             <p>We love seeing people contribute patches to the Jetty project and the process is relatively simple.
-                The requirements to commit are modest but very important to the Eclipse Foundation and the intellectual property of the open source project.
-                The following is the general process by which we operate.</p>
+		The requirements to commit are modest but very important to the Eclipse Foundation and the intellectual property of the open source project.</p>
+<p>Visit the <a href="/jetty/documentation/contribution-guide/index.html">Contribution Guide</a> for a more complete view of how to contribute along with details on code and formatting standards within the Jetty project.</p>
+<p>The following is the general process by which we operate.</p>
         </div>
         <div class="ulist">
             <ul>
