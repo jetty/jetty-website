@@ -353,6 +353,23 @@ function process_documentation() {
   delete_temp_directory;
 }
 
+function process_contribution_guide {
+  local version=$jetty_10_0;
+
+  echo " - phase: position contribution guide";
+
+  create_temp_directory;
+
+  {
+    local temp_ver_dir="$TEMP_DIR/$version";
+    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
+
+    rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$(pwd)/documentation";
+  } &>>"$LOG_FILE";
+
+  delete_temp_directory;
+}
+
 function process_javadoc() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
@@ -458,6 +475,7 @@ function main() {
     download_missing_files;
     generate_version_php;
     process_documentation;
+    process_contribution_guide;
     process_javadoc;
     exit 0;
   fi
