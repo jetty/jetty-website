@@ -19,8 +19,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.5,</span>
-<span id="revdate">2021-06-11</span>
+<span id="revnumber">version 11.0.6,</span>
+<span id="revdate">2021-06-29</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -144,6 +144,13 @@
 </li>
 <li><a href="#pg-server">Server Libraries</a>
 <ul class="sectlevel2">
+<li><a href="#pg-server-compliance">Server Compliance Modes</a>
+<ul class="sectlevel3">
+<li><a href="#pg-server-compliance-http">HTTP Compliance Modes</a></li>
+<li><a href="#pg-server-compliance-uri">URI Compliance Modes</a></li>
+<li><a href="#pg-server-compliance-cookie">Cookie Compliance Modes</a></li>
+</ul>
+</li>
 <li><a href="#pg-server-http">HTTP Server Libraries</a>
 <ul class="sectlevel3">
 <li><a href="#pg-server-http-request-processing">Server Request Processing</a>
@@ -1085,7 +1092,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2507,7 +2514,7 @@ If the server does not support ALPN, the client will try to use the first protoc
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2692,7 +2699,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.5</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.6</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3040,7 +3047,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4150,7 +4157,196 @@ If you are interested in the low-level details of how the Eclipse Jetty server l
 <li>
 <p>WebSocket support, for applications that want to embed a WebSocket server, via the <a href="#pg-server-websocket">WebSocket libraries</a></p>
 </li>
+<li>
+<p>FCGI support, to delegate requests to python or similar scripting languages.</p>
+</li>
 </ul>
+</div>
+<div class="sect2">
+<h3 id="pg-server-compliance"><a class="anchor" href="#pg-server-compliance"></a><a class="link" href="#pg-server-compliance">Server Compliance Modes</a></h3>
+<div class="paragraph">
+<p>The Jetty server strives to keep up with the latest <a href="https://en.wikipedia.org/wiki/Request_for_Comments">IETF RFC</a>s for compliance with internet specifications, which are periodically updated.</p>
+</div>
+<div class="paragraph">
+<p>When possible, Jetty will support backwards compatibility by providing compliance modes that can be configured to allow violations of the current specifications that may have been allowed in obsoleted specifications.</p>
+</div>
+<div class="paragraph">
+<p>There are compliance modes provided for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#pg-server-compliance-http">HTTP Compliance</a></p>
+</li>
+<li>
+<p><a href="#pg-server-compliance-uri">URI Compliance</a></p>
+</li>
+<li>
+<p><a href="#pg-server-compliance-cookie">Cookie Compliance</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Compliance modes can be configured to allow violations from the RFC requirements, or in some cases to allow additional behaviors that Jetty has implemented in excess of the RFC (for example, to allow <a href="#pg-server-compliance-uri">ambiguous URIs</a>).</p>
+</div>
+<div class="paragraph">
+<p>For example, the HTTP RFCs require that request HTTP methods are <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1">case sensitive</a>, however Jetty can allow case-insensitive HTTP methods by including the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html#CASE_INSENSITIVE_METHOD"><code>HttpCompliance.Violation.CASE_INSENSITIVE_METHOD</code></a> in the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> set of allowed violations.</p>
+</div>
+<div class="sect3">
+<h4 id="pg-server-compliance-http"><a class="anchor" href="#pg-server-compliance-http"></a><a class="link" href="#pg-server-compliance-http">HTTP Compliance Modes</a></h4>
+<div class="paragraph">
+<p>In 1995, when Jetty was first implemented, there were no RFC specification of HTTP, only a W3C specification for <a href="https://www.w3.org/Protocols/HTTP/AsImplemented.html">HTTP/0.9</a>, which has since been obsoleted or augmented by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc1945">RFC 1945</a> for HTTP/1.0 in 1996</p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc2068">RFC 2068</a> for HTTP/1.1  in 1997</p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a> for HTTP/1.1 bis in 1999</p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc7230">RFC 7230</a>, <a href="https://datatracker.ietf.org/doc/html/rfc7231">RFC 7231</a>, <a href="https://datatracker.ietf.org/doc/html/rfc7232">RFC 7232</a>, <a href="https://datatracker.ietf.org/doc/html/rfc7233">RFC 7233</a>, <a href="https://datatracker.ietf.org/doc/html/rfc7234">RFC 7234</a>, <a href="https://datatracker.ietf.org/doc/html/rfc7235">RFC 7235</a> again for HTTP/1.1 in 2014</p>
+</li>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc7540">RFC 7540</a> for HTTP/2.0 in 2015</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to these evolving requirements, some earlier version of Jetty did not completely or strictly implement the RFC at the time (for example, case-insensitive HTTP methods).
+Therefore, upgrading to a newer Jetty version may cause runtime behavior differences that may break your applications.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html"><code>HttpCompliance.Violation</code></a> enumeration defines the RFC requirements that may be optionally enforced by Jetty, to support legacy deployments. These possible violations are grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations (with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#RFC7230"><code>HttpCompliance.RFC7230</code></a>).</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+httpConfiguration.setHttpCompliance(HttpCompliance.RFC7230);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#from(java.lang.String)"><code>HttpCompliance.from(String)</code></a> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+
+<span class="comment">// RFC7230 compliance, but allow Violation.MULTIPLE_CONTENT_LENGTHS.</span>
+HttpCompliance customHttpCompliance = HttpCompliance.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">RFC7230,MULTIPLE_CONTENT_LENGTHS</span><span class="delimiter">&quot;</span></span>);
+
+httpConfiguration.setHttpCompliance(customHttpCompliance);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-compliance-uri"><a class="anchor" href="#pg-server-compliance-uri"></a><a class="link" href="#pg-server-compliance-uri">URI Compliance Modes</a></h4>
+<div class="paragraph">
+<p>Universal Resource Locators (URLs) where initially formalized in 1994 in <a href="https://datatracker.ietf.org/doc/html/rfc1738">RFC 1738</a> and then refined in 1995 with relative URLs by <a href="https://datatracker.ietf.org/doc/html/rfc1808">RFC 1808</a>.</p>
+</div>
+<div class="paragraph">
+<p>In 1998, URLs were generalized to Universal Resource Identifiers (URIs) by <a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>, which also introduced features such a <a href="https://datatracker.ietf.org/doc/html/rfc2396#section-3.3">path parameter</a>s.</p>
+</div>
+<div class="paragraph">
+<p>This was then obsoleted in 2005 by <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a> which removed the definition for path parameters.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately by this stage the existence and use of such parameters had already been codified in the Servlet specification.
+For example, the relative URI <code>/foo/bar;JSESSIONID=a8b38cd02b1c</code> would define the path parameter <code>JSESSIONID</code> for the path segment <code>bar</code>, but the most recent RFC does not specify a formal definition of what this relative URI actually means.</p>
+</div>
+<div class="paragraph">
+<p>The current situation is that there may be URIs that are entirely valid for <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a>, but are ambiguous when handled by the Servlet APIs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A URI with <code>..</code> <em>and</em> path parameters such as <code>/some/..;/path</code> is not <a href="https://datatracker.ietf.org/doc/html/rfc3986#section-5.2"><em>resolved</em></a> by RFC 3986, since the resolution process only applies to the exact segment <code>..</code>, not to <code>..;</code>.
+However, once the path parameters are removed by the Servlet APIs, the resulting <code>/some/../path</code> can easily be resolved to <code>/path</code>, rather than be treated as a path that has <code>..;</code> as a segment.</p>
+</li>
+<li>
+<p>A URI such as <code>/some/%2e%2e/path</code> is not resolved by RFC 3986, yet when URL-decoded by the Servlet APIs will result in <code>/some/../path</code> which can easily be resolved to <code>/path</code>, rather than be treated as a path that has <code>..</code> as a segment.</p>
+</li>
+<li>
+<p>A URI with empty segments like <code>/some//../path</code> may be correctly resolved to <code>/some/path</code> (the <code>..</code> removes the previous empty segment) by the Servlet APIs.
+However, if the URI raw path is passed to some other APIs (for example, file system APIs) it can be interpreted as <code>/path</code> because the empty segment <code>//</code> is discarded and treated as <code>/</code>, and the <code>..</code> thus removes the <code>/some</code> segment.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In order to avoid ambiguous URIs, Jetty imposes additional URI requirements in excess of what is required by <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a> compliance.</p>
+</div>
+<div class="paragraph">
+<p>These additional requirements may optionally be violated and are defined by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.Violation.html"><code>UriCompliance.Violation</code></a> enumeration.</p>
+</div>
+<div class="paragraph">
+<p>These violations are then grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html"><code>UriCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#DEFAULT"><code>UriCompliance.DEFAULT</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+httpConfiguration.setUriCompliance(UriCompliance.RFC3986);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#from(java.lang.String)"><code>UriCompliance.from(String)</code></a> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+
+<span class="comment">// RFC3986 compliance, but enforce Violation.AMBIGUOUS_PATH_SEPARATOR.</span>
+UriCompliance customUriCompliance = UriCompliance.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">RFC3986,-AMBIGUOUS_PATH_SEPARATOR</span><span class="delimiter">&quot;</span></span>);
+
+httpConfiguration.setUriCompliance(customUriCompliance);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-compliance-cookie"><a class="anchor" href="#pg-server-compliance-cookie"></a><a class="link" href="#pg-server-compliance-cookie">Cookie Compliance Modes</a></h4>
+<div class="paragraph">
+<p>The standards for Cookies have varied greatly over time from a non-specified but de-facto standard (implemented by the first browsers), through <a href="https://tools.ietf.org/html/rfc2965">RFC 2965</a> and currently to <a href="https://tools.ietf.org/html/rfc6265">RFC 6265</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.Violation.html">CookieCompliance.Violation</a> enumeration defines the RFC requirements that may be optionally enforced by Jetty when parsing the <code>Cookie</code> HTTP header in requests and when generating the <code>Set-Cookie</code> HTTP header in responses.</p>
+</div>
+<div class="paragraph">
+<p>These violations are then grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html"><code>CookieCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#RFC6265"><code>CookieCompliance.RFC6265</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+httpConfiguration.setRequestCookieCompliance(CookieCompliance.RFC6265);
+httpConfiguration.setResponseCookieCompliance(CookieCompliance.RFC6265);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#from(java.lang.String)"><code>CookieCompliance.from(String)</code></a> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpConfiguration httpConfiguration = <span class="keyword">new</span> HttpConfiguration();
+
+<span class="comment">// RFC6265 compliance, but enforce Violation.RESERVED_NAMES_NOT_DOLLAR_PREFIXED.</span>
+CookieCompliance customUriCompliance = CookieCompliance.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">RFC6265,-RESERVED_NAMES_NOT_DOLLAR_PREFIXED</span><span class="delimiter">&quot;</span></span>);
+httpConfiguration.setRequestCookieCompliance(customUriCompliance);
+
+httpConfiguration.setResponseCookieCompliance(CookieCompliance.RFC6265);</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="pg-server-http"><a class="anchor" href="#pg-server-http"></a><a class="link" href="#pg-server-http">HTTP Server Libraries</a></h3>
@@ -4170,7 +4366,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5156,7 +5352,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5433,7 +5629,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5816,7 +6012,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5915,7 +6111,7 @@ This is the first occasion where server applications have access to the HTTP/2 <
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onAccept(Session session)
     {
-        <span class="predefined-type">InetSocketAddress</span> remoteAddress = session.getRemoteAddress();
+        <span class="predefined-type">SocketAddress</span> remoteAddress = session.getRemoteSocketAddress();
         <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http2</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Connection from {0}</span><span class="delimiter">&quot;</span></span>, remoteAddress);
     }
 };</code></pre>
@@ -11294,7 +11490,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -12186,7 +12382,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.5<br>
+Version 11.0.6<br>
 Last updated 2021-05-12 15:27:28 -0500
 </div>
 </div>
