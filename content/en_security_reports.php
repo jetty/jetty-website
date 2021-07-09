@@ -68,6 +68,22 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/06/22</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34428" title="If an exception is thrown from the SessionListener#sessionDestroyed() method, then the session ID is not invalidated in the session ID manager.">CVE-2021-34428</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><= 9.4.40, <= 10.0.2, <= 11.0.2</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.41, 10.0.3, 11.0.3</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/06/08</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28169" title="Requests to the ConcatServlet and WelcomeFilter are able to access protected resources within the WEB-INF directory.">CVE-2021-28169</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><= 9.4.40, <= 10.0.2, <= 11.0.2</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.41, 10.0.3, 11.0.3</p></td>
+                </tr>
+                <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2021/04/01</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28165" title="When using SSL/TLS with Jetty, either with HTTP/1.1, HTTP/2, or WebSocket, the server may receive an invalid large (greater than 17408) TLS frame that is incorrectly handled, causing CPU resources to eventually reach 100% usage.">CVE-2021-28165</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
