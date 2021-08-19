@@ -87,7 +87,7 @@
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2021/04/01</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-28165" title="When using SSL/TLS with Jetty, either with HTTP/1.1, HTTP/2, or WebSocket, the server may receive an invalid large (greater than 17408) TLS frame that is incorrectly handled, causing CPU resources to eventually reach 100% usage.">CVE-2021-28165</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
-                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">7.2.2 - 9.4.38, 10.0.0.alpha0 - 10.0.1, 11.0.0.alpha0 - 11.0.1</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.39, 10.0.2, 11.0.2</p></td>
                 </tr>
