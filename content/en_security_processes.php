@@ -72,6 +72,7 @@
 - [ ] Edit VERSION.txt and so that the CVE number is now recorded against merged PR.
 - [ ] Edit the <a href="https://github.com/eclipse/jetty.project/releases">release(s)</a> on Github to identify CVE number that was addressed/resolved.
 - [ ] Update downstream images (Docker, etc.).
+- [ ] Update project website with new security entry.
 - [ ] Review security processes & completion.
                 </pre>
             </div>

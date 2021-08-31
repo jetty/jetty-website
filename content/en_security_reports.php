@@ -68,6 +68,14 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2021/07/15</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34429" title="URIs can be crafted using some encoded characters to access the content of the WEB-INF directory and/or bypass some security constraints.">CVE-2021-34429</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.37 - 9.4.42, 10.0.1 - 10.0.5, 11.0.1 - 11.0.5</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.43, 10.0.6, 11.0.6</p></td>
+                </tr>
+                <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2021/06/22</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34428" title="If an exception is thrown from the SessionListener#sessionDestroyed() method, then the session ID is not invalidated in the session ID manager.">CVE-2021-34428</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
