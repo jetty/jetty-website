@@ -27,11 +27,11 @@ $jetty = array (
     'tgz.sha1' => '1f61ece21ad87c9835be9d9440725698b6928baa',
   ),
  'jetty_9.4' => array (
-    'version' => '9.4.43.v20210629',
-    'zip.md5' => '7f3e4c28e4a8e9d89631c625127989a6',
-    'zip.sha1' => 'fa716656b5aedee65dbd380538ed00395a601d07',
-    'tgz.md5' => '610cf67f75cd3f6263dc46f4373d60eb',
-    'tgz.sha1' => 'a909e2966522c6b7bd5a8632a8086dfd3d0d277d',
+    'version' => '9.4.44.v20210927',
+    'zip.md5' => '5406e501325ddedc41b90b9fbb3f6016',
+    'zip.sha1' => '50840fbd559e447445041106bdc7e1c4202b5939',
+    'tgz.md5' => '17b28653aa4cda125b6b90d0376d1a2e',
+    'tgz.sha1' => 'fbbe459c6c686ae1e4b4db00bc93a854ecd243ec',
   ),
  'jetty_10.0' => array (
     'version' => '10.0.6',
