@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="generator" content="Asciidoctor 2.0.15">
 <title>Eclipse Jetty: Old Documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -16,8 +17,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.6,</span>
-<span id="revdate">2021-06-29</span>
+<span id="revnumber">version 11.0.7,</span>
+<span id="revdate">2021-10-06</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Old Jetty Documentation</div>
@@ -987,6 +988,7 @@
 </ul>
 </li>
 <li><a href="#_authentication-and-authorization-with-embedded-jetty">Authentication and Authorization with Embedded Jetty</a></li>
+<li><a href="#_jakarta-authentication-jaspi">Jakarta Authentication (JASPI)</a></li>
 </ul>
 </li>
 <li><a href="#configuring-form-size">Limiting Form Content</a>
@@ -1423,7 +1425,7 @@ You will also need to include the <code>org.eclipse.jetty.annotations.Annotation
 </div>
 <div class="paragraph">
 <p>Below is an example application that sets up the standard <code>test-spec.war</code> webapp from the distribution in embedded fashion.
-It can also be found in the Jetty GitHub repository on the examples/embedded page as <a href="https://github.com/eclipse/jetty.project/tree/master/examples/embedded/src/main/java/org/eclipse/jetty/embedded"><code>ServerWithAnnotations.java</code>.</a>
+It can also be found in the Jetty GitHub repository on the examples/embedded page as <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded"><code>ServerWithAnnotations.java</code>.</a>
 Note that the <code>test-spec.war</code> uses not only annotations, but also <a href="#jndi">JNDI</a>, so this example also enables their processing (via the <a href="#jndi-configuration-classes">org.eclipse.jetty.plus.webapp.EnvConfiguration</a>, <a href="#jndi-configuration-classes">org.eclipse.jetty.plus.webapp.PlusConfiguration</a> and their related jars).</p>
 </div>
 <div class="listingblock">
@@ -1451,7 +1453,7 @@ jetty-annotations.jar</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You will also need the <a href="http://asm.ow2.org/">asm</a> jar, which you can obtain from <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/org.objectweb.asm/3.3.1.v201105211655/org.objectweb.asm-3.3.1.v201105211655.jar">this link.</a></p>
+<p>You will also need the <a href="http://asm.ow2.org/">asm</a> jar, which you can obtain from <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/org.objectweb.asm/3.3.1.v201105211655/org.objectweb.asm-3.3.1.v201105211655.jar">this link.</a></p>
 </div>
 </div>
 <div class="sect3">
@@ -2828,7 +2830,7 @@ INFO  : Base directory was modified
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">[mybase] java -jar $JETTY_HOME/start.jar
 2017-08-31 10:19:58.855:INFO::main: Logging initialized @372ms to org.eclipse.jetty.util.log.StdErrLog
-2017-08-31 10:19:59.076:INFO:oejs.Server:main: jetty-11.0.6
+2017-08-31 10:19:59.076:INFO:oejs.Server:main: jetty-11.0.7
 2017-08-31 10:19:59.125:INFO:oejs.AbstractConnector:main: Started ServerConnector@421e98e0{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 2017-08-31 10:19:59.150:INFO:oejus.SslContextFactory:main: x509=X509@5315b42e(jetty,h=[jetty.eclipse.org],w=[]) for SslContextFactory@2ef9b8bc(file:///var/my-jetty-base/etc/keystore,file:///var/my-jetty-base/etc/keystore)
 2017-08-31 10:19:59.151:INFO:oejus.SslContextFactory:main: x509=X509@5d624da6(mykey,h=[],w=[]) for SslContextFactory@2ef9b8bc(file:///var/my-jetty-base/etc/keystore,file:///var/my-jetty-base/etc/keystore)
@@ -2897,7 +2899,7 @@ jetty.http.port=5231
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">[my-base]$ java -jar /path/to/jetty-home/start.jar
 2017-08-31 10:31:32.955:INFO::main: Logging initialized @366ms to org.eclipse.jetty.util.log.StdErrLog
-2017-08-31 10:31:33.109:INFO:oejs.Server:main: jetty-11.0.6
+2017-08-31 10:31:33.109:INFO:oejs.Server:main: jetty-11.0.7
 2017-08-31 10:31:33.146:INFO:oejs.AbstractConnector:main: Started ServerConnector@2ef9b8bc{HTTP/1.1,[http/1.1]}{0.0.0.0:5231}
 ...
 2017-08-31 10:31:33.263:INFO:oejs.Server:main: Started @675ms</code></pre>
@@ -2964,28 +2966,28 @@ Jetty 9 has a single selector-based non-blocking I/O connector, and a collection
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a></dt>
 <dd>
 <p>Instantiates a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> that accepts HTTP connections (that may be upgraded to WebSocket connections).</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-ssl.xml"><code>jetty-ssl.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-ssl.xml"><code>jetty-ssl.xml</code></a></dt>
 <dd>
 <p>Instantiates a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> that accepts SSL/TLS connections.
 On it&#8217;s own, this connector is not functional and requires one or more of the following files to also be configured to add  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactories</code></a> to make the connector functional.</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a></dt>
 <dd>
 <p>Adds a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpConnectionFactory.html"><code>HttpConnectionFactory</code></a> to the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a>  configured by <code>jetty-ssl.xml</code> which combine to provide support for HTTPS.</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-http-forwarded.xml"><code>jetty-http-forwarded.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-http-forwarded.xml"><code>jetty-http-forwarded.xml</code></a></dt>
 <dd>
 <p>Adds a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ForwardedRequestCustomizer.html"><code>ForwardedRequestCustomizer</code></a>to the HTTP Connector to process forwarded-for style headers from a proxy.</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-http2/http2-server/src/main/config/etc/jetty-http2.xml"><code>jetty-http2.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-http2/http2-server/src/main/config/etc/jetty-http2.xml"><code>jetty-http2.xml</code></a></dt>
 <dd>
 <p>Adds a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/server/HTTP2ServerConnectionFactory.html"><code>Http2ServerConnectionFactory</code></a> to the  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> configured by <code>jetty-ssl.xml</code> to support the http2 protocol.</p>
 </dd>
-<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-alpn/jetty-alpn-server/src/main/config/etc/jetty-alpn.xml"><code>jetty-alpn.xml</code></a></dt>
+<dt class="hdlist1"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-alpn/jetty-alpn-server/src/main/config/etc/jetty-alpn.xml"><code>jetty-alpn.xml</code></a></dt>
 <dd>
 <p>Adds an <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/alpn/server/ALPNServerConnectionFactory.html"><code>ALPNServerConnectionFactory</code></a> to the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> configured by <code>jetty-ssl.xml</code> which allows the one SSL connector to support multiple protocols with the ALPN extension used to select the protocol to be used for each connection.</p>
 </dd>
@@ -2996,7 +2998,7 @@ On it&#8217;s own, this connector is not functional and requires one or more of 
 <h4 id="_constructing-a-serverconnector"><a class="anchor" href="#_constructing-a-serverconnector"></a><a class="link" href="#_constructing-a-serverconnector">Constructing a ServerConnector</a></h4>
 <div class="paragraph">
 <p>The services a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> instance uses are set by constructor injection and once instantiated cannot be changed.
-Many of the services may be defaulted with null or 0 values so that a reasonable default is used, thus for most purposes only the Server and the connection factories need to be passed to the connector constructor. In Jetty XML (that is, in <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a>) you can do this by:</p>
+Many of the services may be defaulted with null or 0 values so that a reasonable default is used, thus for most purposes only the Server and the connection factories need to be passed to the connector constructor. In Jetty XML (that is, in <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a>) you can do this by:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3103,7 +3105,7 @@ For servers it is typically OK to leave this as the default true.</p></td>
 <div class="paragraph">
 <p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpConfiguration.html"><code>HttpConfiguration</code></a> class holds the configuration for <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpChannel.html"><code>HttpChannel</code></a>s, which you can create 1:1 with each HTTP connection or 1:n on a multiplexed HTTP/2 connection.
 Thus a <code>HttpConfiguration</code> object is injected into both the HTTP and HTTP/2 connection factories.
-To avoid duplicate configuration, the standard Jetty distribution creates the common <code>HttpConfiguration</code> instance in <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty.xml"><code>jetty.xml</code></a>, which is a <code>Ref</code> element then used in <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a>, <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a> and in <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-http2/http2-server/src/main/config/etc/jetty-http2.xml"><code>jetty-http2.xml</code></a>.</p>
+To avoid duplicate configuration, the standard Jetty distribution creates the common <code>HttpConfiguration</code> instance in <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty.xml"><code>jetty.xml</code></a>, which is a <code>Ref</code> element then used in <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-http.xml"><code>jetty-http.xml</code></a>, <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a> and in <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-http2/http2-server/src/main/config/etc/jetty-http2.xml"><code>jetty-http2.xml</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>A typical configuration of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpConfiguration.html">HttpConfiguration</a> is:</p>
@@ -3169,7 +3171,7 @@ Please note that if your <code>httpConfig</code> does not include a <code>secure
 <div class="paragraph">
 <p>The SSL/TLS connectors for HTTPS and HTTP/2 require a certificate to establish a secure connection.
 Jetty holds certificates in standard JVM keystores and are configured as keystore and truststores on a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/ssl/SslContextFactory.Server.html"><code>SslContextFactory.Server</code></a> instance that is injected into an <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/SslConnectionFactory.html"><code>SslConnectionFactory</code></a> instance.
-An example using the keystore distributed with Jetty (containing a self signed test certificate) is in <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a>.
+An example using the keystore distributed with Jetty (containing a self signed test certificate) is in <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-https.xml"><code>jetty-https.xml</code></a>.
 Read more about SSL keystores in <a href="#configuring-ssl">Configuring SSL</a>.</p>
 </div>
 </div>
@@ -5004,7 +5006,7 @@ Tests have shown that webapps that took many seconds to scan and deploy can now 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
     <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
     <span class="tag">&lt;artifactId&gt;</span>jetty-quickstart<span class="tag">&lt;/artifactId&gt;</span>
-    <span class="tag">&lt;version&gt;</span>11.0.6<span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5173,7 +5175,7 @@ If so, then a copy of the temporary properties file should be taken and the comm
 <div class="paragraph">
 <p>Jetty is decomposed into many jars and dependencies to achieve a minimal footprint by selecting the minimal set of jars.
 Typically it is best to use something like <a href="#jetty-maven-helloworld">Maven</a> to manage jars, however this tutorial uses an aggregate Jar that contains all of the required Jetty classes in one Jar.
-You can manually download the aggregate <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/11.0.6/jetty-all-11.0.6-uber.jar"><code>jetty-all.jar</code></a> using <code>curl</code> or a browser.</p>
+You can manually download the aggregate <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/11.0.7/jetty-all-11.0.7-uber.jar"><code>jetty-all.jar</code></a> using <code>curl</code> or a browser.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -5216,7 +5218,7 @@ Please consider using <a href="#jetty-maven-helloworld">Maven</a> to manage your
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">&gt; mkdir Demo
 &gt; cd Demo
-&gt; curl -o jetty-all-uber.jar https://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/11.0.6/jetty-all-11.0.6-uber.jar</code></pre>
+&gt; curl -o jetty-all-uber.jar https://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/11.0.7/jetty-all-11.0.7-uber.jar</code></pre>
 </div>
 </div>
 </div>
@@ -5225,7 +5227,7 @@ Please consider using <a href="#jetty-maven-helloworld">Maven</a> to manage your
 <div class="paragraph">
 <p>The <a href="#embedding">Embedding Jetty</a> section contains many examples of writing against the Jetty API.
 This tutorial uses a simple HelloWorld handler with a main method to run the server.
-You can either <a href="https://github.com/eclipse/jetty.project/tree/master/examples/embedded/src/main/java/org/eclipse/jetty/embedded/HelloWorld.java">download</a> or create in an editor the file <code>HelloWorld.java</code> with the following content:</p>
+You can either <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/HelloWorld.java">download</a> or create in an editor the file <code>HelloWorld.java</code> with the following content:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5597,36 +5599,36 @@ Web applications can use resources the container provides, and in this case a <c
 <div class="paragraph">
 <p>The typical way to configure an instance of the Jetty server is via <code>jetty.xml</code> and associated configuration files.
 However the Jetty XML configuration format is just a simple rendering of what you can do in code; it is very simple to write embedded code that does precisely what the jetty.xml configuration does.
-The <a href="https://github.com/eclipse/jetty.project/tree/master/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java">LikeJettyXml example</a> following renders in code the behavior obtained from the configuration files:</p>
+The <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/examples/embedded/src/main/java/org/eclipse/jetty/embedded/LikeJettyXml.java">LikeJettyXml example</a> following renders in code the behavior obtained from the configuration files:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty.xml">jetty.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty.xml">jetty.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-jmx/src/main/config/etc/jetty-jmx.xml">jetty-jmx.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-jmx/src/main/config/etc/jetty-jmx.xml">jetty-jmx.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-http.xml">jetty-http.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-http.xml">jetty-http.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-https.xml">jetty-https.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-https.xml">jetty-https.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-deploy/src/main/config/etc/jetty-deploy.xml">jetty-deploy.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-deploy/src/main/config/etc/jetty-deploy.xml">jetty-deploy.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-stats.xml">jetty-stats.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-stats.xml">jetty-stats.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-requestlog.xml">jetty-requestlog.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-requestlog.xml">jetty-requestlog.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/jetty-server/src/main/config/etc/jetty-lowresources.xml">jetty-lowresources.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-server/src/main/config/etc/jetty-lowresources.xml">jetty-lowresources.xml</a></p>
 </li>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/tests/test-webapps/test-jetty-webapp/src/main/config/demo-base/etc/test-realm.xml">test-realm.xml</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jetty-webapp/src/main/config/demo-base/etc/test-realm.xml">test-realm.xml</a></p>
 </li>
 </ul>
 </div>
@@ -9816,7 +9818,7 @@ The Metro distribution you downloaded should also contain several example web ap
 <pre class="CodeRay highlight"><code data-lang="screen">[2093] java -jar start.jar
 
 2013-07-26 15:47:53.480:INFO:oejs.Server:main: jetty-9.0.4.v20130625
-2013-07-26 15:47:53.549:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/user/jetty-home-11.0.6/webapps/] at interval 1
+2013-07-26 15:47:53.549:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:/home/user/jetty-home-11.0.7/webapps/] at interval 1
 Jul 26, 2013 3:47:53 PM com.sun.xml.ws.transport.http.servlet.WSServletContextListener contextInitialized
 INFO: WSSERVLET12: JAX-WS context listener initializing
 Jul 26, 2013 3:47:56 PM com.sun.xml.ws.server.MonitorBase createRoot
@@ -9850,7 +9852,7 @@ It provides information about what Jetty is and where you can download it, and w
 It also provides a Quick Start guide on how to get Jetty up and running as well as an overview of how and what to configure in Jetty.</p>
 </li>
 <li>
-<p>The <a href="../operations-guide/index.html">Operations Guide</a> details configuring Jetty as a distributed package at a more granular level.
+<p>The <a href="{OPGUIDE}">Operations Guide</a> details configuring Jetty as a distributed package at a more granular level.
 From server startup to session management, logging, HTTP/2 support and Jetty optimization, these chapters will help administrators get the most out of their distributed Jetty server instances.
 This section also covers configuring many of the most common servlet container features such as JNDI and JMX.</p>
 </li>
@@ -9861,7 +9863,7 @@ It contains several examples and how-to guides for making the most out of the Je
 This section also includes a guide on using the Jetty Maven plugin as well as information on debugging Jetty.</p>
 </li>
 <li>
-<p>The <a href="#../contribution-guide/index.html">Contribution Guide</a> is aimed at those who want to contribute to the Jetty open source project.
+<p>The <a href="#{CONTRIBGUIDE}">Contribution Guide</a> is aimed at those who want to contribute to the Jetty open source project.
 It includes instructions on interacting with the community, how to raise bugs, and how to report security issues.
 In addition, it also details source control and build information for the project.</p>
 </li>
@@ -10600,7 +10602,7 @@ To start Jetty on the default port of 8080, run the following command:</p>
 <pre class="CodeRay highlight"><code data-lang="screen">$ java -jar start.jar
 2017-09-20 15:45:11.986:INFO::main: Logging initialized @683ms to org.eclipse.jetty.util.log.StdErrLog
 2017-09-20 15:45:12.197:WARN:oejs.HomeBaseWarning:main: This instance of Jetty is not running from a separate {jetty.base} directory, this is not recommended.  See documentation at https://www.eclipse.org/jetty/documentation/current/startup.html
-2017-09-20 15:45:12.243:INFO:oejs.Server:main: 11.0.6
+2017-09-20 15:45:12.243:INFO:oejs.Server:main: 11.0.7
 2017-09-20 15:45:12.266:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///installs/repository/jetty/webapps/] at interval 1
 2017-09-20 15:45:12.298:INFO:oejs.AbstractConnector:main: Started ServerConnector@39c0f4a{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 2017-09-20 15:45:12.298:INFO:oejs.Server:main: Started @995ms</code></pre>
@@ -10647,14 +10649,14 @@ Additionally, the <code>demo-base</code> demonstrates the recommended way to run
 [my-base]$ java -jar /path/to/jetty-home/start.jar
 2017-09-20 16:23:03.563:INFO::main: Logging initialized @429ms to org.eclipse.jetty.util.log.StdErrLog
 2017-09-20 16:23:03.802:WARN::main: demo test-realm is deployed. DO NOT USE IN PRODUCTION!
-2017-09-20 16:23:03.804:INFO:oejs.Server:main: 11.0.6
+2017-09-20 16:23:03.804:INFO:oejs.Server:main: 11.0.7
 2017-09-20 16:23:03.819:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///installs/repository/jetty/demo-base/webapps/] at interval 1
 2017-09-20 16:23:04.098:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=102ms
 2017-09-20 16:23:04.103:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
 2017-09-20 16:23:04.267:INFO:oejs.session:main: DefaultSessionIdManager workerName=node0
 2017-09-20 16:23:04.267:INFO:oejs.session:main: No SessionScavenger set, using defaults
 2017-09-20 16:23:04.268:INFO:oejs.session:main: Scavenging every 660000ms
-2017-09-20 16:23:04.306:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@371a67ec{/async-rest,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/WEB-INF/lib/example-async-rest-jar-11.0.6.jar!/META-INF/resources],AVAILABLE}{/async-rest.war}
+2017-09-20 16:23:04.306:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@371a67ec{/async-rest,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-async-rest.war-_async-rest-any-5319296087878801290.dir/webapp/WEB-INF/lib/example-async-rest-jar-11.0.7.jar!/META-INF/resources],AVAILABLE}{/async-rest.war}
 2017-09-20 16:23:04.429:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=53ms
 2017-09-20 16:23:04.432:WARN::main: test webapp is deployed. DO NOT USE IN PRODUCTION!
 2017-09-20 16:23:04.511:INFO:oejsh.ManagedAttributeListener:main: update PushFilter null-&gt;org.eclipse.jetty.servlets.PushCacheFilter@2362f559 on o.e.j.w.WebAppContext@35e2d654{/test,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test.war-_test-any-6279588879522983394.dir/webapp/,STARTING}{/test.war}
@@ -10671,7 +10673,7 @@ Additionally, the <code>demo-base</code> demonstrates the recommended way to run
 2017-09-20 16:23:05.098:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@506ae4d4{/test-jaas,file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-jaas.war-_test-jaas-any-8067423971450448377.dir/webapp/,AVAILABLE}{/test-jaas.war}
 2017-09-20 16:23:05.182:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=37ms
 2017-09-20 16:23:05.184:WARN::main: test-spec webapp is deployed. DO NOT USE IN PRODUCTION!
-2017-09-20 16:23:05.243:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@45099dd3{/test-spec,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/WEB-INF/lib/test-web-fragment-11.0.6.jar!/META-INF/resources],AVAILABLE}{/test-spec.war}
+2017-09-20 16:23:05.243:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@45099dd3{/test-spec,[file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/, jar:file:///private/var/folders/h6/yb_lbnnn11g0y1jjlvqg631h0000gn/T/jetty-0.0.0.0-8080-test-spec.war-_test-spec-any-1205866915335004234.dir/webapp/WEB-INF/lib/test-web-fragment-11.0.7.jar!/META-INF/resources],AVAILABLE}{/test-spec.war}
 2017-09-20 16:23:05.247:INFO:oejsh.ContextHandler:main: Started o.e.j.s.h.MovedContextHandler@3e08ff24{/oldContextPath,null,AVAILABLE}
 2017-09-20 16:23:05.274:INFO:oeja.AnnotationConfiguration:main: Scanning elapsed time=18ms
 2017-09-20 16:23:05.296:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@5ddeb7cb{/,file:///installs/repository/jetty/demo-base/webapps/ROOT/,AVAILABLE}{/ROOT}
@@ -10808,7 +10810,7 @@ INFO: Base directory was modified
 2015-06-04 11:10:16.460:INFO:oejdp.ScanningAppProvider:main: Deployment monitor [file:///tmp/mybase/webapps/] at interval 1
 2015-06-04 11:10:16.581:WARN::main: async-rest webapp is deployed. DO NOT USE IN PRODUCTION!
 2015-06-04 11:10:16.589:INFO:oejw.StandardDescriptorProcessor:main: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
-2015-06-04 11:10:16.628:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1a407d53{/,[file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/, jar:file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/WEB-INF/lib/example-async-rest-jar-11.0.6.jar!/META-INF/resources],AVAILABLE}{/ROOT.war}
+2015-06-04 11:10:16.628:INFO:oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1a407d53{/,[file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/, jar:file:///tmp/jetty-0.0.0.0-8080-ROOT.war-_-any-4510228025526425427.dir/webapp/WEB-INF/lib/example-async-rest-jar-11.0.7.jar!/META-INF/resources],AVAILABLE}{/ROOT.war}
 2015-06-04 11:10:16.645:INFO:oejs.ServerConnector:main: Started ServerConnector@3abbfa04{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 2015-06-04 11:10:16.646:INFO:oejs.Server:main: Started @634ms</code></pre>
 </div>
@@ -12880,7 +12882,7 @@ The result is that an application can look up <code>java:comp/env/mail/Session</
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-As of Jetty 10, the <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.mail.glassfish/1.4.1.v201005082020/javax.mail.glassfish-1.4.1.v201005082020.jar"><code>javax.mail</code></a> and  <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.activation/1.1.0.v201105071233/javax.activation-1.1.0.v201105071233.jar"><code>javax.activation</code></a> jar files are not included in the Jetty Distribution and will need to be downloaded separately from Maven Central.
+As of Jetty 10, the <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/javax.mail.glassfish/1.4.1.v201005082020/javax.mail.glassfish-1.4.1.v201005082020.jar"><code>javax.mail</code></a> and  <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/javax.activation/1.1.0.v201105071233/javax.activation-1.1.0.v201105071233.jar"><code>javax.activation</code></a> jar files are not included in the Jetty Distribution and will need to be downloaded separately from Maven Central.
 </td>
 </tr>
 </table>
@@ -13036,11 +13038,11 @@ jetty-plus.jar</pre>
 </div>
 <div class="paragraph">
 <p>If you are using transactions, you will also need the <code>javax.transaction</code> api.
-You can obtain this jar <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.transaction/1.1.1.v201105210645/javax.transaction-1.1.1.v201105210645.jar">here.</a></p>
+You can obtain this jar <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/javax.transaction/1.1.1.v201105210645/javax.transaction-1.1.1.v201105210645.jar">here.</a></p>
 </div>
 <div class="paragraph">
-<p>If you wish to use mail, you will also need the <code>javax.mail</code> api and implementation which <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.mail.glassfish/1.4.1.v201005082020/javax.mail.glassfish-1.4.1.v201005082020.jar">you can download here.</a>
-Note that this jar also requires the <code>javax.activation</code> classes, which is available <a href="https://repo1.maven.org/maven2/org/eclipse/jetty/orbit/javax.activation/1.1.0.v201105071233/javax.activation-1.1.0.v201105071233.jar">at this link.</a></p>
+<p>If you wish to use mail, you will also need the <code>javax.mail</code> api and implementation which <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/javax.mail.glassfish/1.4.1.v201005082020/javax.mail.glassfish-1.4.1.v201005082020.jar">you can download here.</a>
+Note that this jar also requires the <code>javax.activation</code> classes, which is available <a href="http://central.maven.org/maven2/org/eclipse/jetty/orbit/javax.activation/1.1.0.v201105071233/javax.activation-1.1.0.v201105071233.jar">at this link.</a></p>
 </div>
 </div>
 <div class="sect3">
@@ -14168,7 +14170,7 @@ Jetty logging produces no FATAL or SEVERE events.
 <div class="sect3">
 <h4 id="selecting-log-framework"><a class="anchor" href="#selecting-log-framework"></a><a class="link" href="#selecting-log-framework">Selecting the Log Framework</a></h4>
 <div class="paragraph">
-<p>Configure the Jetty logging layer via the <code>org.eclipse.jetty.util.log.Log</code> class, following <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-util/src/main/java/org/eclipse/jetty/util/log/Log.java">these rules</a>.</p>
+<p>Configure the Jetty logging layer via the <code>org.eclipse.jetty.util.log.Log</code> class, following <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-util/src/main/java/org/eclipse/jetty/util/log/Log.java">these rules</a>.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -14213,7 +14215,7 @@ Jetty logging produces no FATAL or SEVERE events.
 </td>
 <td class="content">
 You can create your own custom logging by providing an implementation of the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11org/eclipse/jetty/util/log/Logger.html">Jetty Logger API</a>.
-For an example of a custom logger, see <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-util/src/main/java/org/eclipse/jetty/util/log/JavaUtilLog.java">JavaUtilLog.java</a>.
+For an example of a custom logger, see <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-util/src/main/java/org/eclipse/jetty/util/log/JavaUtilLog.java">JavaUtilLog.java</a>.
 </td>
 </tr>
 </table>
@@ -14394,7 +14396,7 @@ Default is false.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">2016-10-21 15:31:01.248:INFO::main: Logging initialized @332ms to org.eclipse.jetty.util.log.StdErrLog
-2016-10-21 15:31:01.370:INFO:oejs.Server:main: jetty-11.0.6
+2016-10-21 15:31:01.370:INFO:oejs.Server:main: jetty-11.0.7
 2016-10-21 15:31:01.400:INFO:oejs.AbstractConnector:main: Started ServerConnector@2c330fbc{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 2016-10-21 15:31:01.400:INFO:oejs.Server:main: Started @485ms</code></pre>
 </div>
@@ -14405,7 +14407,7 @@ Default is false.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">2016-10-21 15:31:35.020:INFO::main: Logging initialized @340ms to org.eclipse.jetty.util.log.StdErrLog
-2016-10-21 15:31:35.144:INFO:org.eclipse.jetty.server.Server:main: jetty-11.0.6
+2016-10-21 15:31:35.144:INFO:org.eclipse.jetty.server.Server:main: jetty-11.0.7
 2016-10-21 15:31:35.174:INFO:org.eclipse.jetty.server.AbstractConnector:main: Started ServerConnector@edf4efb{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 2016-10-21 15:31:35.175:INFO:org.eclipse.jetty.server.Server:main: Started @495ms</code></pre>
 </div>
@@ -15138,7 +15140,7 @@ INFO  : Base directory was modified
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">[my-base]$ java -jar /path/to/jetty-home/start.jar
 419  [main] INFO  org.eclipse.jetty.util.log - Logging initialized @508ms to org.eclipse.jetty.util.log.Slf4jLog
-540  [main] INFO  org.eclipse.jetty.server.Server - jetty-11.0.6
+540  [main] INFO  org.eclipse.jetty.server.Server - jetty-11.0.7
 575  [main] INFO  o.e.jetty.server.AbstractConnector - Started ServerConnector@3c0ecd4b{HTTP/1.1,[http/1.1]}{0.0.0.0:8080}
 575  [main] INFO  org.eclipse.jetty.server.Server - Started @668ms</code></pre>
 </div>
@@ -15575,8 +15577,8 @@ Installing jetty-buildpack.git.
 Downloading JDK...
 Copying openjdk-1.7.0_21.tar.gz from the buildpack cache ...
 Unpacking JDK to .jdk
-Downloading Jetty: jetty-home-11.0.6.tar.gz
-Downloading jetty-home-11.0.6.tar.gz from http://repo2.maven.org/maven2/org/eclipse/jetty/jetty-home/10.0.0.v202012xx/ ...
+Downloading Jetty: jetty-home-11.0.7.tar.gz
+Downloading jetty-home-11.0.7.tar.gz from http://repo2.maven.org/maven2/org/eclipse/jetty/jetty-home/10.0.0.v202012xx/ ...
 Unpacking Jetty to .jetty
 -&gt; Uploading staged droplet (36M)
 -&gt; Uploaded droplet
@@ -16240,13 +16242,13 @@ This is configured by a mix of standard declarations and jetty specific mechanis
 <div class="sect3">
 <h4 id="_configuring-an-authentication-mechanism"><a class="anchor" href="#_configuring-an-authentication-mechanism"></a><a class="link" href="#_configuring-an-authentication-mechanism">Configuring an Authentication mechanism</a></h4>
 <div class="paragraph">
-<p>Jetty server supports several standard authentication mechanisms: <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">BASIC</a>; <a href="http://en.wikipedia.org/wiki/Digest_authentication">DIGEST</a>; <a href="http://en.wikipedia.org/wiki/Form-based_authentication">FORM</a>; CLIENT-CERT; and other mechanisms can be plugged in using the extensible <a href="http://docs.oracle.com/cd/E19462-01/819-6717/gcszc/index.html">JASPI</a> or <a href="http://en.wikipedia.org/wiki/SPNEGO">SPNEGO</a> mechanisms.</p>
+<p>Jetty server supports several standard authentication mechanisms: <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">BASIC</a>; <a href="http://en.wikipedia.org/wiki/Digest_authentication">DIGEST</a>; <a href="http://en.wikipedia.org/wiki/Form-based_authentication">FORM</a>; CLIENT-CERT; and other mechanisms can be plugged in using the extensible <a href="https://jakarta.ee/specifications/authentication/2.0/jakarta-authentication-spec-2.0.pdf">JakartaAuthentication</a> or <a href="http://en.wikipedia.org/wiki/SPNEGO">SPNEGO</a> mechanisms.</p>
 </div>
 <div class="paragraph">
 <p>Internally, configuring an authentication mechanism is done by setting an instance of a the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/Authenticator.html">Authenticator</a> interface onto the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/SecurityHandler.html">SecurityHandler</a> of the context, but in most cases it is done by declaring a <code>&lt;login-config&gt;</code> element in the standard web.xml descriptor or via annotations.</p>
 </div>
 <div class="paragraph">
-<p>Below is an example taken from the <a href="https://github.com/eclipse/jetty.project/tree/master/tests/test-webapps/test-jetty-webapp/src/main/webapp/WEB-INF/web.xml?h=release-9">jetty-test-webapp web.xml</a> that configures BASIC authentication:</p>
+<p>Below is an example taken from the <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jetty-webapp/src/main/webapp/WEB-INF/web.xml?h=release-9">jetty-test-webapp web.xml</a> that configures BASIC authentication:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -16257,7 +16259,7 @@ This is configured by a mix of standard declarations and jetty specific mechanis
 </div>
 </div>
 <div class="paragraph">
-<p>The <a href="https://github.com/eclipse/jetty.project/tree/master/tests/test-webapps/test-jetty-webapp/src/main/webapp/WEB-INF/web.xml?h=release-9">jetty-test-webapp web.xml</a> also includes commented out examples of other DIGEST and FORM configuration:</p>
+<p>The <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jetty-webapp/src/main/webapp/WEB-INF/web.xml?h=release-9">jetty-test-webapp web.xml</a> also includes commented out examples of other DIGEST and FORM configuration:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -16273,7 +16275,7 @@ This is configured by a mix of standard declarations and jetty specific mechanis
 </div>
 <div class="paragraph">
 <p>With FORM Authentication, you must also configure URLs of pages to generate a login form and handle errors.
-Below is a simple HTML form from the <a href="https://github.com/eclipse/jetty.project/tree/master/tests/test-webapps/test-jetty-webapp/src/main/webapp/logon.html?h=release-9">test webapp logon.html</a>:</p>
+Below is a simple HTML form from the <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jetty-webapp/src/main/webapp/logon.html?h=release-9">test webapp logon.html</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -16839,6 +16841,26 @@ Below is an example which, like the one above, sets up a server with a <code>Has
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_jakarta-authentication-jaspi"><a class="anchor" href="#_jakarta-authentication-jaspi"></a><a class="link" href="#_jakarta-authentication-jaspi">Jakarta Authentication (JASPI)</a></h4>
+<div class="paragraph">
+<p>Jetty can utilize portable authentication modules that implements the Jakara Authentication specification. This requires the jetty-jaspi module.</p>
+</div>
+<div class="paragraph">
+<p>Only modules conforming to the ServerAuthModule interface in the <a href="https://jakarta.ee/specifications/authentication/2.0/jakarta-authentication-spec-2.0.pdf">JakartaAuthentication</a> are supported. These modules must be configured before start-up.</p>
+</div>
+<div class="paragraph">
+<p>The following illustrates a jetty module setting up HTTP Basic Authentication using a Jakarta Authentication module that comes packaged with the jetty-jaspi module: <code>org.eclipse.jetty.security.jaspi.modules.BasicAuthenticationAuthModule</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">Unresolved directive in security/authentication.adoc - include::/Users/joakim/Code/Jetty/jetty.project-11.0.x/documentation/jetty-documentation/../jetty-jaspi/src/main/config/etc/jaspi/jaspi-demo.xml[tags=documentation]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Given the portability goal of Jakarta Authentication, custom or 3rd party <code>ServerAuthModule</code> implementations may be configured instead here.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="configuring-form-size"><a class="anchor" href="#configuring-form-size"></a><a class="link" href="#configuring-form-size">Limiting Form Content</a></h3>
@@ -17040,7 +17062,7 @@ The drawback of the obfuscation algorithm is that it protects passwords <strong>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp lib/jetty-util-11.0.6.jar org.eclipse.jetty.util.security.Password
+<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp lib/jetty-util-11.0.7.jar org.eclipse.jetty.util.security.Password
 
 Usage - java org.eclipse.jetty.util.security.Password [&lt;user&gt;] &lt;password&gt;
 If the password is ?, the user will be prompted for the password</code></pre>
@@ -17051,7 +17073,7 @@ If the password is ?, the user will be prompted for the password</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp ../lib/jetty-util-11.0.6.jar org.eclipse.jetty.util.security.Password username password
+<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp ../lib/jetty-util-11.0.7.jar org.eclipse.jetty.util.security.Password username password
 2017-12-13 11:19:27.928:INFO::main: Logging initialized @95ms to org.eclipse.jetty.util.log.StdErrLog
 password
 OBF:1v2j1uum1xtv1zej1zer1xtn1uvk1v1v
@@ -17092,7 +17114,7 @@ When using the <code>DIGEST</code> method in tandem with an MD5 hash, you must h
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp ../lib/jetty-util-11.0.6.jar org.eclipse.jetty.util.security.Password username username:realm:password
+<pre class="CodeRay highlight"><code data-lang="screen">$ java -cp ../lib/jetty-util-11.0.7.jar org.eclipse.jetty.util.security.Password username username:realm:password
 2017-12-13 11:34:33.263:INFO::main: Logging initialized @97ms to org.eclipse.jetty.util.log.StdErrLog
 username:realm:password
 OBF:1w281yf41v1x1z7e1xmi1v1p1tvv1v901c3j1x8k1ugo1ri71uh21x8a1c3j1v9m1tv71v2p1xms1z7o1v2h1yf21w1a
@@ -17864,7 +17886,7 @@ Here is an example:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/eclipse/jetty.project/tree/master/tests/test-webapps/test-jaas-webapp">https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jaas-webapp</a></p>
+<p><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jaas-webapp">https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/tests/test-webapps/test-jaas-webapp</a></p>
 </li>
 </ul>
 </div>
@@ -18235,24 +18257,24 @@ This setting is configured through the property <code>jetty.openid.authenticateN
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen">[/opt/jetty]# tar -zxf /home/user/downloads/jetty-home-11.0.6.tar.gz
-[/opt/jetty]# cd jetty-home-11.0.6/
-[/opt/jetty/jetty-home-11.0.6]# ls
+<pre class="CodeRay highlight"><code data-lang="screen">[/opt/jetty]# tar -zxf /home/user/downloads/jetty-home-11.0.7.tar.gz
+[/opt/jetty]# cd jetty-home-11.0.7/
+[/opt/jetty/jetty-home-11.0.7]# ls
 bin        lib                         modules      resources  start.jar
 demo-base  license-eplv10-aslv20.html  notice.html  start.d    VERSION.txt
 etc        logs                        README.TXT   start.ini  webapps
 
-[/opt/jetty/jetty-home-11.0.6]# cp bin/jetty.sh /etc/init.d/jetty
-[/opt/jetty/jetty-home-11.0.6]# echo JETTY_HOME=`pwd` &gt; /etc/default/jetty
-[/opt/jetty/jetty-home-11.0.6]# cat /etc/default/jetty
-JETTY_HOME=/opt/jetty/jetty-home-11.0.6
+[/opt/jetty/jetty-home-11.0.7]# cp bin/jetty.sh /etc/init.d/jetty
+[/opt/jetty/jetty-home-11.0.7]# echo JETTY_HOME=`pwd` &gt; /etc/default/jetty
+[/opt/jetty/jetty-home-11.0.7]# cat /etc/default/jetty
+JETTY_HOME=/opt/jetty/jetty-home-11.0.7
 
-[/opt/jetty/jetty-home-11.0.6]# service jetty start
+[/opt/jetty/jetty-home-11.0.7]# service jetty start
 Starting Jetty: OK Wed Nov 20 10:26:53 MST 2013</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>From this demonstration we can see that Jetty started successfully as a Unix Service from the <code>/opt/jetty/jetty-home-11.0.6</code> directory.</p>
+<p>From this demonstration we can see that Jetty started successfully as a Unix Service from the <code>/opt/jetty/jetty-home-11.0.7</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>This configuration works well but it is running Jetty as the root user.</p>
@@ -18360,9 +18382,9 @@ This user should have the minimum set of privileges needed to run Jetty.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen">[/opt/jetty]# tar -zxf /home/user/Downloads/jetty-home-11.0.6.tar.gz
+<pre class="CodeRay highlight"><code data-lang="screen">[/opt/jetty]# tar -zxf /home/user/Downloads/jetty-home-11.0.7.tar.gz
 [/opt/jetty]# ls -F
-jetty-home-11.0.6/
+jetty-home-11.0.7/
 [/opt/jetty]# mkdir /opt/jetty/temp</code></pre>
 </div>
 </div>
@@ -18398,7 +18420,7 @@ While this is still supported, we encourage you to setup a proper <code>${jetty.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen"># cd /opt/web/mybase/
 [/opt/web/mybase]# ls
-[/opt/web/mybase]# java -jar /opt/jetty/jetty-home-11.0.6/start.jar \
+[/opt/web/mybase]# java -jar /opt/jetty/jetty-home-11.0.7/start.jar \
    --add-to-start=deploy,http,console-capture
    INFO  : webapp          transitively enabled, ini template available with --add-to-start=webapp
    INFO  : server          transitively enabled, ini template available with --add-to-start=server
@@ -18477,8 +18499,8 @@ jetty.port=80</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="screen"># cp /opt/jetty/jetty-home-11.0.6/bin/jetty.sh /etc/init.d/jetty
-# echo &quot;JETTY_HOME=/opt/jetty/jetty-home-11.0.6&quot; &gt; /etc/default/jetty
+<pre class="CodeRay highlight"><code data-lang="screen"># cp /opt/jetty/jetty-home-11.0.7/bin/jetty.sh /etc/init.d/jetty
+# echo &quot;JETTY_HOME=/opt/jetty/jetty-home-11.0.7&quot; &gt; /etc/default/jetty
 # echo &quot;JETTY_BASE=/opt/web/mybase&quot; &gt;&gt; /etc/default/jetty
 # echo &quot;TMPDIR=/opt/jetty/temp&quot; &gt;&gt; /etc/default/jetty</code></pre>
 </div>
@@ -18491,32 +18513,32 @@ jetty.port=80</code></pre>
 <pre class="CodeRay highlight"><code data-lang="screen"># service jetty status
 Checking arguments to Jetty:
 START_INI      =  /opt/web/mybase/start.ini
-JETTY_HOME     =  /opt/jetty/jetty-home-11.0.6
+JETTY_HOME     =  /opt/jetty/jetty-home-11.0.7
 JETTY_BASE     =  /opt/web/mybase
-JETTY_CONF     =  /opt/jetty/jetty-home-11.0.6/etc/jetty.conf
+JETTY_CONF     =  /opt/jetty/jetty-home-11.0.7/etc/jetty.conf
 JETTY_PID      =  /var/run/jetty.pid
-JETTY_START    =  /opt/jetty/jetty-home-11.0.6/start.jar
+JETTY_START    =  /opt/jetty/jetty-home-11.0.7/start.jar
 CLASSPATH      =
 JAVA           =  /usr/bin/java
 JAVA_OPTIONS   =  -Djetty.state=/opt/web/mybase/jetty.state
        -Djetty.logs=/opt/web/mybase/logs
-       -Djetty.home=/opt/jetty/jetty-home-11.0.6
+       -Djetty.home=/opt/jetty/jetty-home-11.0.7
        -Djetty.base=/opt/web/mybase
        -Djava.io.tmpdir=/opt/jetty/temp
 JETTY_ARGS     =  console-capture.xml jetty-started.xml
 RUN_CMD        =  /usr/bin/java
        -Djetty.state=/opt/web/mybase/jetty.state
        -Djetty.logs=/opt/web/mybase/logs
-       -Djetty.home=/opt/jetty/jetty-home-11.0.6
+       -Djetty.home=/opt/jetty/jetty-home-11.0.7
        -Djetty.base=/opt/web/mybase
        -Djava.io.tmpdir=/opt/jetty/temp
-       -jar /opt/jetty/jetty-home-11.0.6/start.jar
+       -jar /opt/jetty/jetty-home-11.0.7/start.jar
        console-capture.xml
        jetty-started.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You now have a configured <code>${jetty.base}</code> in <code>/opt/web/mybase</code> and a <code>${jetty.home}</code> in <code>/opt/jetty/jetty-home-11.0.6</code>, along with the service level files necessary to start the service.</p>
+<p>You now have a configured <code>${jetty.base}</code> in <code>/opt/web/mybase</code> and a <code>${jetty.home}</code> in <code>/opt/jetty/jetty-home-11.0.7</code>, along with the service level files necessary to start the service.</p>
 </div>
 <div class="paragraph">
 <p>Test the service to make sure it starts up and runs successfully.</p>
@@ -18625,7 +18647,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 24.45-b08, mixed mode)</code></pre>
 <p>Download a copy of the ZIP distribution from the <a href="#jetty-downloading">Official Eclipse Download Site</a></p>
 </div>
 <div class="paragraph">
-<p>Extract the contents of the <code>jetty-home-11.0.6</code> directory to <code>C:\opt\jetty</code></p>
+<p>Extract the contents of the <code>jetty-home-11.0.7</code> directory to <code>C:\opt\jetty</code></p>
 </div>
 <div class="paragraph">
 <p>Once complete, the contents of the <code>C:\opt\jetty</code> directory should look like this:</p>
@@ -19331,7 +19353,7 @@ At the core this is a limitation of the JVM&#8217;s FileSystem-specific implemen
 <div class="sect3">
 <h4 id="_remedy-2"><a class="anchor" href="#_remedy-2"></a><a class="link" href="#_remedy-2">Remedy</a></h4>
 <div class="paragraph">
-<p>To help offset the delay in systems like OSX, Jetty defaults the value for non-native implementations to a <a href="https://github.com/eclipse/jetty.project/tree/master/jetty-util/src/main/java/org/eclipse/jetty/util/PathWatcher.java#L1431">time of 5000ms.</a>
+<p>To help offset the delay in systems like OSX, Jetty defaults the value for non-native implementations to a <a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x/jetty-util/src/main/java/org/eclipse/jetty/util/PathWatcher.java#L1431">time of 5000ms.</a>
 Using values lower than 5000ms is not recommended and has shown to frequently fail.</p>
 </div>
 </div>
@@ -19755,10 +19777,9 @@ their respective sections yet.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.6<br>
+Version 11.0.7<br>
 Last updated 2021-05-12 15:27:21 -0500
 </div>
 </div>
-<link rel="stylesheet" href="./coderay-asciidoctor.css">
 </body>
 </html>
