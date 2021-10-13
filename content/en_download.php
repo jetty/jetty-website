@@ -67,7 +67,7 @@
         </tr>
         <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_11.0']['version']; ?></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"></p><a
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
                             href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.zip">.zip</a></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
                             href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.tar.gz">.tgz</a></p></td>
