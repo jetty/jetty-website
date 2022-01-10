@@ -65,6 +65,7 @@ function gather_current_versions() {
     fi
 
   done <"$version_file"
+
 }
 
 #
