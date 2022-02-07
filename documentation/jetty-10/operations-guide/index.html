@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Operations Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
@@ -20,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 10.0.7,</span>
-<span id="revdate">2021-10-06</span>
+<span id="revnumber">version 10.0.8,</span>
+<span id="revdate">2022-02-07</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -59,6 +60,7 @@
 <li><a href="#og-start-configure-enable">Enabling Modules</a></li>
 <li><a href="#og-start-configure-disable">Disabling Modules</a></li>
 <li><a href="#og-start-configure-edit-ini">Editing <code>*.ini</code> Files</a></li>
+<li><a href="#og-start-configure-enable-command-line">Enabling Modules on Command Line</a></li>
 <li><a href="#og-start-configure-custom-module">Adding Your Own Modules</a></li>
 <li><a href="#og-start-configure-custom-module-exec">Custom Module with JVM Options</a></li>
 <li><a href="#og-start-configure-display">Displaying the Configuration</a></li>
@@ -115,10 +117,11 @@
 <li><a href="#og-modules-custom-create">Creating a New Module</a></li>
 </ul>
 </li>
-<li><a href="#og-modules-standard">Standard Modules</a></li>
-<li><a href="#og-module-alpn">Module <code>alpn</code></a>
+<li><a href="#og-modules-standard">Standard Modules</a>
 <ul class="sectlevel4">
+<li><a href="#og-module-alpn">Module <code>alpn</code></a></li>
 <li><a href="#og-module-bytebufferpool">Module <code>bytebufferpool</code></a></li>
+<li><a href="#og-module-console-capture">Module <code>console-capture</code></a></li>
 <li><a href="#og-module-deploy">Module <code>deploy</code></a></li>
 <li><a href="#og-module-http">Module <code>http</code></a>
 <ul class="sectlevel5">
@@ -128,9 +131,11 @@
 </li>
 <li><a href="#og-module-http2">Module <code>http2</code></a></li>
 <li><a href="#og-module-http2c">Module <code>http2c</code></a></li>
+<li><a href="#og-module-http3">Module <code>http3</code></a></li>
 <li><a href="#og-module-http-forwarded">Module <code>http-forwarded</code></a></li>
 <li><a href="#og-module-https">Module <code>https</code></a></li>
 <li><a href="#og-module-jmx-remote">Module <code>jmx-remote</code></a></li>
+<li><a href="#og-module-requestlog">Module <code>requestlog</code></a></li>
 <li><a href="#og-module-server">Module <code>server</code></a>
 <ul class="sectlevel5">
 <li><a href="#og-module-server-http-config">HTTP Configuration Properties</a></li>
@@ -148,7 +153,7 @@
 <li><a href="#og-module-ssl-reload">Module <code>ssl-reload</code></a></li>
 <li><a href="#og-module-test-keystore">Module <code>test-keystore</code></a></li>
 <li><a href="#og-module-threadpool">Module <code>threadpool</code></a></li>
-<li><a href="#og-module-console-capture">Module <code>console-capture</code></a></li>
+<li><a href="#og-module-well-known">Module <code>well-known</code></a></li>
 </ul>
 </li>
 </ul>
@@ -180,6 +185,7 @@
 <li><a href="#og-secure-vs-clear-text-http2">Secure vs Clear-Text HTTP/2</a></li>
 <li><a href="#og-protocols-http2s">Secure HTTP/2</a></li>
 <li><a href="#og-protocols-http2c">Clear-Text HTTP/2</a></li>
+<li><a href="#og-protocols-http3">HTTP/3</a></li>
 <li><a href="#og-protocols-ssl">Configuring Secure Protocols</a>
 <ul class="sectlevel4">
 <li><a href="#og-protocols-ssl-customize">Customizing KeyStore and SSL/TLS Configuration</a>
@@ -438,7 +444,7 @@
 <li><a href="#og-logging-server-custom">Custom Configuration</a>
 <ul class="sectlevel5">
 <li><a href="#og-logging-server-custom-logback">Logging with LogBack</a></li>
-<li><a href="#og-logging-server-custom-log4j2">Logging with Log4J2</a></li>
+<li><a href="#og-logging-server-custom-log4j2">Logging with Log4j2</a></li>
 </ul>
 </li>
 <li><a href="#og-logging-server-bridges">Bridging Logging to SLF4J</a>
@@ -467,6 +473,7 @@
 <li><a href="#og-troubleshooting-logging-subpackages">Enabling DEBUG Logging for SubPackages</a></li>
 </ul>
 </li>
+<li><a href="#og-troubleshooting-debugging">Remote Debugging</a></li>
 </ul>
 </li>
 <li><a href="#og-xml">Jetty XML</a>
@@ -573,7 +580,7 @@ $ java -jar $JETTY_HOME/start.jar --add-module=server,http,deploy</pre>
 <div class="sect3">
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
-<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.7</code>, so that the directory is called <code>jetty-home-10.0.7</code>.</p>
+<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.8</code>, so that the directory is called <code>jetty-home-10.0.8</code>.</p>
 </div>
 <div class="paragraph">
 <p>Unpack Eclipse Jetty compressed file in a convenient location, for example under <code>/opt</code>.</p>
@@ -694,9 +701,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:47:58.474:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:47:58.526:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2fd05ff<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2021-10-06 14:47:58.542:</strong>INFO :oejs.Server:main: Started Server@48524010{STARTING}[10.0.7,sto=5000] @800ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:03.859:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:03.886:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@470734c3<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2022-02-07 11:50:03.892:</strong>INFO :oejs.Server:main: Started Server@28f3b248{STARTING}[10.0.8,sto=5000] @462ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -782,9 +789,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:47:59.768:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:47:59.820:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@65d07359<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
-<strong>2021-10-06 14:47:59.835:</strong>INFO :oejs.Server:main: Started Server@48524010{STARTING}[10.0.7,sto=5000] @795ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:04.661:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:04.688:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@470734c3<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2022-02-07 11:50:04.694:</strong>INFO :oejs.Server:main: Started Server@28f3b248{STARTING}[10.0.8,sto=5000] @455ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -797,7 +804,7 @@ jetty.http.port=9999
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you want to enable support for different protocols such as secure HTTP/1.1 or HTTP/2, or configured Jetty behind a load balancer, read <a href="#og-protocols">this section</a>.
+If you want to enable support for different protocols such as secure HTTP/1.1 or HTTP/2 or HTTP/3, or configure Jetty behind a load balancer, read <a href="#og-protocols">this section</a>.
 </td>
 </tr>
 </table>
@@ -912,7 +919,7 @@ INFO  : Base directory was modified</code></pre>
 <p>The <code>deploy</code> module only provides the feature of deploying web applications.</p>
 </div>
 <div class="paragraph">
-<p>Whether these web applications are served via clear-text HTTP/1.1, or secure HTTP/1.1, or secure HTTP/2 (or even all of these protocols) depends on whether the correspondent Jetty modules have been enabled.
+<p>Whether these web applications are served via clear-text HTTP/1.1, or secure HTTP/1.1, or secure HTTP/2, or HTTP/3 (or even all of these protocols) depends on whether the correspondent Jetty modules have been enabled.
 Refer to the <a href="#og-protocols">section about protocols</a> for further information.</p>
 </div>
 </td>
@@ -952,13 +959,13 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:02.593:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:02.647:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
-<strong>2021-10-06 14:48:02.774:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
-<strong>2021-10-06 14:48:02.785:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
-<mark><strong>2021-10-06 14:48:02.818:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@610f7aa{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
-<strong>2021-10-06 14:48:02.831:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@72aa181d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2021-10-06 14:48:02.849:</strong>INFO :oejs.Server:main: Started Server@10e31a9a{STARTING}[10.0.7,sto=5000] @1099ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:06.324:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:06.346:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
+<strong>2022-02-07 11:50:06.399:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
+<strong>2022-02-07 11:50:06.404:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
+<mark><strong>2022-02-07 11:50:06.418:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@1f81aa00{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
+<strong>2022-02-07 11:50:06.427:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2e733b38{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2022-02-07 11:50:06.433:</strong>INFO :oejs.Server:main: Started Server@480d3575{STARTING}[10.0.8,sto=5000] @553ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -994,7 +1001,7 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="445" height="430">
+<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="445" height="429">
 </div>
 </div>
 <div class="paragraph">
@@ -1037,7 +1044,7 @@ What you can do in Java code to assemble Jetty components can be done using Jett
 </div>
 <div class="paragraph">
 <p>For example, if you enable only the <code>http</code> Jetty module, then your Jetty standalone server will only be able to listen to a network port for clear-text HTTP requests.
-It will not be able to process secure HTTP (i.e. <code>https</code>) requests, it will not be able to process WebSocket, or HTTP/2 or any other protocol because the correspondent modules have not been enabled.</p>
+It will not be able to process secure HTTP (i.e. <code>https</code>) requests, it will not be able to process WebSocket, or HTTP/2, or HTTP/3 or any other protocol because the correspondent modules have not been enabled.</p>
 </div>
 <div class="paragraph">
 <p>You can even start a Jetty server <em>without</em> listening on a network port&#8201;&#8212;&#8201;for example because you have enabled a custom module you wrote that provides the features you need.</p>
@@ -1186,6 +1193,9 @@ $ java -jar $JETTY_HOME/start.jar --list-modules=demo</pre>
 <p><a href="#og-protocols-http2">HTTP/2 Support</a></p>
 </li>
 <li>
+<p><a href="#og-protocols-http3">HTTP/3 Support</a></p>
+</li>
+<li>
 <p><a href="#og-protocols-websocket">WebSocket Support</a></p>
 </li>
 </ul>
@@ -1269,6 +1279,9 @@ $ java -jar $JETTY_HOME/start.jar --list-modules=demo</pre>
 <p><a href="#og-protocols-http2s">Configure Secure HTTP/2</a></p>
 </li>
 <li>
+<p><a href="#og-protocols-http3">Configure HTTP/3</a></p>
+</li>
+<li>
 <p><a href="#og-protocols-proxy">Configure Jetty Behind a Load Balancer or Reverse Proxy</a></p>
 </li>
 <li>
@@ -1348,7 +1361,7 @@ In this mode, the JVM started with <code>java -jar $JETTY_HOME/start.jar</code> 
 <div class="sect4">
 <h5 id="og-start-configure-enable"><a class="anchor" href="#og-start-configure-enable"></a><a class="link" href="#og-start-configure-enable">Enabling Modules</a></h5>
 <div class="paragraph">
-<p>You can enable Jetty modules with the <code>--add-modules</code> command:</p>
+<p>You can enable Jetty modules persistently across restarts with the <code>--add-modules</code> command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1458,6 +1471,46 @@ You can easily generate the configuration file by explicitly enabling the module
 </div>
 <div class="paragraph">
 <p>When Jetty is started (or re-started) this configuration is applied and Jetty will listen for clear-text HTTP/1.1 on port <code>9876</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-start-configure-enable-command-line"><a class="anchor" href="#og-start-configure-enable-command-line"></a><a class="link" href="#og-start-configure-enable-command-line">Enabling Modules on Command Line</a></h5>
+<div class="paragraph">
+<p>You can also enable a module transiently, only for the current execution of the <code>java -jar $JETTY_HOME/start.jar</code> command.</p>
+</div>
+<div class="paragraph">
+<p>If you have an empty <code>$JETTY_BASE</code>, the following command enables the <code>server</code> and <code>http</code> modules, but does not create any <code>$JETTY_BASE/start.d/*.ini</code> files.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --module=server,http</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since there are no <code>$JETTY_BASE/start.d/*.ini</code> files, you can only customize the properties via the command line, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --module=server,http jetty.http.port=9876</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Enabling modules on the command line is useful to verify that the modules work as expected, or to try different configurations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is possible to enable some module persistently via <code>--add-modules</code> and some other module transiently via <code>--module</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Remember that once the current execution terminates, the modules enabled transiently on the command line via <code>--module</code> and their configuration are not saved and will not be enabled on the next execution (unless you specify them again on the command line).</p>
 </div>
 </div>
 <div class="sect4">
@@ -1608,40 +1661,39 @@ JVM Options Module
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>Enabled Modules:
 ----------------
-    0) resources       transitive provider of resources for logging-jetty
-    1) logging/slf4j   transitive provider of logging/slf4j for logging-jetty
-                       dynamic dependency of logging-jetty
-    2) logging-jetty   transitive provider of logging for threadpool
-                       transitive provider of logging for bytebufferpool
-                       transitive provider of logging for server
-    3) bytebufferpool  transitive provider of bytebufferpool for server
-                       init template available with --add-module=bytebufferpool
-    4) threadpool      transitive provider of threadpool for server
-                       init template available with --add-module=threadpool
-    5) jvm             ${jetty.base}/start.d/jvm.ini
-    6) server          ${jetty.base}/start.d/server.ini
-    7) http            ${jetty.base}/start.d/http.ini
-    8) postgresql      ${jetty.base}/start.d/postgresql.ini
+  0) bytebufferpool            transitive provider of bytebufferpool for server
+                               ini template available with --add-module=bytebufferpool
+  1) resources                 transitive provider of resources for logging-jetty
+  2) logging/slf4j             transitive provider of logging/slf4j for logging-jetty
+                               dynamic dependency of logging-jetty
+  3) logging-jetty             transitive provider of logging for threadpool
+                               transitive provider of logging for server
+  4) threadpool                transitive provider of threadpool for server
+                               ini template available with --add-module=threadpool
+  5) jvm                       ${jetty.base}/start.d/jvm.ini
+  6) server                    ${jetty.base}/start.d/server.ini
+  7) http                      ${jetty.base}/start.d/http.ini
+  8) postgresql                ${jetty.base}/start.d/postgresql.ini
 
 Java Environment:
 -----------------
- java.home = /path/to/java.home (null)
- java.vm.vendor = Eclipse Adoptium (null)
- java.vm.version = 17+35 (null)
- java.vm.name = OpenJDK 64-Bit Server VM (null)
- java.vm.info = mixed mode, sharing (null)
- java.runtime.name = OpenJDK Runtime Environment (null)
- java.runtime.version = 17+35 (null)
- java.io.tmpdir = /path/to/jetty.base/work (null)
- user.dir = /path/to/jetty.base (null)
- user.language = en (null)
- user.country = US (null)
+ java.home = /path/to/java.home
+ java.vm.vendor = Eclipse Adoptium
+ java.vm.version = 11.0.14+9
+ java.vm.name = OpenJDK 64-Bit Server VM
+ java.vm.info = mixed mode
+ java.runtime.name = OpenJDK Runtime Environment
+ java.runtime.version = 11.0.14+9
+ java.io.tmpdir = /path/to/jetty.base/work
+ user.dir = /path/to/jetty.base
+ user.language = en
+ user.country = US
 
 Jetty Environment:
 ------------------
- jetty.version = 10.0.7
- jetty.tag.version = jetty-10.0.7
- jetty.build = da8a4553af9dd84080931fa0f8c678cd2d60f3d9
+ jetty.version = 10.0.8
+ jetty.tag.version = jetty-10.0.8
+ jetty.build = 716c7afd8e40d8f645b32aff06945a249d6eb511
  jetty.home = /path/to/jetty.home
  jetty.base = /path/to/jetty.base
 
@@ -1662,11 +1714,11 @@ System Properties:
 
 Properties:
 -----------
- java.version = 17
- java.version.major = 17
- java.version.micro = 0
+ java.version = 11.0.14
+ java.version.major = 11
+ java.version.micro = 14
  java.version.minor = 0
- java.version.platform = 17
+ java.version.platform = 11
  jetty.base = /path/to/jetty.base
  jetty.base.uri = file:///path/to/jetty.base
  jetty.home = /path/to/jetty.home
@@ -1683,13 +1735,13 @@ Note: order presented here is how they would appear on the classpath.
       changes to the --module=name command line options will be reflected here.
  0:                    (dir) | ${jetty.base}/resources
  1:             2.0.0-alpha5 | ${jetty.home}/lib/logging/slf4j-api-2.0.0-alpha5.jar
- 2:                   10.0.7 | ${jetty.home}/lib/logging/jetty-slf4j-impl-10.0.7.jar
+ 2:                   10.0.8 | ${jetty.home}/lib/logging/jetty-slf4j-impl-10.0.8.jar
  3:                    4.0.6 | ${jetty.home}/lib/jetty-servlet-api-4.0.6.jar
- 4:                   10.0.7 | ${jetty.home}/lib/jetty-http-10.0.7.jar
- 5:                   10.0.7 | ${jetty.home}/lib/jetty-server-10.0.7.jar
- 6:                   10.0.7 | ${jetty.home}/lib/jetty-xml-10.0.7.jar
- 7:                   10.0.7 | ${jetty.home}/lib/jetty-util-10.0.7.jar
- 8:                   10.0.7 | ${jetty.home}/lib/jetty-io-10.0.7.jar
+ 4:                   10.0.8 | ${jetty.home}/lib/jetty-http-10.0.8.jar
+ 5:                   10.0.8 | ${jetty.home}/lib/jetty-server-10.0.8.jar
+ 6:                   10.0.8 | ${jetty.home}/lib/jetty-xml-10.0.8.jar
+ 7:                   10.0.8 | ${jetty.home}/lib/jetty-util-10.0.8.jar
+ 8:                   10.0.8 | ${jetty.home}/lib/jetty-io-10.0.8.jar
  9:                  42.2.18 | ${jetty.base}/lib/postgresql-42.2.18.jar
 
 Jetty Active XMLs:
@@ -1766,13 +1818,13 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 -Xmx1g \
 -Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags \
 --class-path \
-/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha5.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.7.jar:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:/path/to/jetty.home/lib/jetty-http-10.0.7.jar:/path/to/jetty.home/lib/jetty-server-10.0.7.jar:/path/to/jetty.home/lib/jetty-xml-10.0.7.jar:/path/to/jetty.home/lib/jetty-util-10.0.7.jar:/path/to/jetty.home/lib/jetty-io-10.0.7.jar \
+/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha5.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.8.jar:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:/path/to/jetty.home/lib/jetty-http-10.0.8.jar:/path/to/jetty.home/lib/jetty-server-10.0.8.jar:/path/to/jetty.home/lib/jetty-xml-10.0.8.jar:/path/to/jetty.home/lib/jetty-util-10.0.8.jar:/path/to/jetty.home/lib/jetty-io-10.0.8.jar \
 org.eclipse.jetty.xml.XmlConfiguration \
-java.version=17 \
-java.version.major=17 \
-java.version.micro=0 \
+java.version=11.0.14 \
+java.version.major=11 \
+java.version.micro=14 \
 java.version.minor=0 \
-java.version.platform=17 \
+java.version.platform=11 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -1843,13 +1895,13 @@ slf4j.version=2.0.0-alpha5 \
 <pre class="CodeRay highlight nowrap"><code>--class-path \
 /path/to/jetty.base/resources:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha5.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.7.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.8.jar:\
 /path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
-/path/to/jetty.home/lib/jetty-http-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-server-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-xml-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-util-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-io-10.0.7.jar</code></pre>
+/path/to/jetty.home/lib/jetty-http-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.8.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1864,13 +1916,13 @@ slf4j.version=2.0.0-alpha5 \
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>--module-path \
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha5.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.7.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.8.jar:\
 /path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
-/path/to/jetty.home/lib/jetty-http-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-server-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-xml-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-util-10.0.7.jar:\
-/path/to/jetty.home/lib/jetty-io-10.0.7.jar \
+/path/to/jetty.home/lib/jetty-http-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.8.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.8.jar \
 --class-path \
 /path/to/jetty.base/resources \
 --add-modules \
@@ -1917,11 +1969,11 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.version=17 \
-java.version.major=17 \
-java.version.micro=0 \
+<pre class="CodeRay highlight nowrap"><code>java.version=11.0.14 \
+java.version.major=11 \
+java.version.micro=14 \
 java.version.minor=0 \
-java.version.platform=17 \
+java.version.platform=11 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -2004,7 +2056,7 @@ This step produces a list of <em>enabled</em> modules; for each enabled module a
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="351" height="245">
+<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="367" height="260">
 </div>
 </div>
 <div class="paragraph">
@@ -2017,7 +2069,7 @@ In the forked JVM, the System ClassLoader has the server class-path and/or modul
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="374" height="267">
+<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="393" height="348">
 </div>
 </div>
 <div class="paragraph">
@@ -2259,10 +2311,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=2wb4vri7f2o0</mark>
-<strong>2021-10-06 14:48:18.126:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:18.168:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@bef2d72{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2021-10-06 14:48:18.180:</strong>INFO :oejs.Server:main: Started Server@6295d394{STARTING}[10.0.7,sto=5000] @823ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=ecm9v5ukfxmo</mark>
+<strong>2022-02-07 11:50:13.631:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:13.654:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1ca3b418{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2022-02-07 11:50:13.661:</strong>INFO :oejs.Server:main: Started Server@5fbdfdcf{STARTING}[10.0.8,sto=5000] @431ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3643,10 +3695,8 @@ etc/acme-audit.xml
 </div>
 <div class="sect3">
 <h4 id="og-modules-standard"><a class="anchor" href="#og-modules-standard"></a><a class="link" href="#og-modules-standard">Standard Modules</a></h4>
-
-</div>
-<div class="sect3">
-<h4 id="og-module-alpn"><a class="anchor" href="#og-module-alpn"></a><a class="link" href="#og-module-alpn">Module <code>alpn</code></a></h4>
+<div class="sect4">
+<h5 id="og-module-alpn"><a class="anchor" href="#og-module-alpn"></a><a class="link" href="#og-module-alpn">Module <code>alpn</code></a></h5>
 <div class="paragraph">
 <p>The <code>alpn</code> module enables support for the ALPN negotiation mechanism of the TLS protocol.</p>
 </div>
@@ -3665,6 +3715,7 @@ etc/acme-audit.xml
 
 ## Specifies the protocol to use when the ALPN negotiation fails.
 # jetty.alpn.defaultProtocol=http/1.1</pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3692,8 +3743,8 @@ Excess buffers will not be pooled and will be eventually garbage collected.</p>
 <pre>[description]
 Configures the ByteBufferPool used by ServerConnectors.
 
-[depends]
-logging
+[tags]
+bytebufferpool
 
 [xml]
 etc/jetty-bytebufferpool.xml
@@ -3715,11 +3766,11 @@ etc/jetty-bytebufferpool.xml
 ## Maximum queue length for each bucket (-1 for unbounded).
 #jetty.byteBufferPool.maxQueueLength=-1
 
-## Maximum heap memory retainable by the pool (-1 for unlimited).
-#jetty.byteBufferPool.maxHeapMemory=-1
+## Maximum heap memory retainable by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxHeapMemory=0
 
-## Maximum direct memory retainable by the pool (-1 for unlimited).
-#jetty.byteBufferPool.maxDirectMemory=-1</pre>
+## Maximum direct memory retainable by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxDirectMemory=0</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3736,6 +3787,34 @@ etc/jetty-bytebufferpool.xml
 <p>This property allows you to cap the max direct memory retained by the pool.</p>
 </dd>
 </dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-module-console-capture"><a class="anchor" href="#og-module-console-capture"></a><a class="link" href="#og-module-console-capture">Module <code>console-capture</code></a></h5>
+<div class="paragraph">
+<p>The <code>console-capture</code> module captures <code>System.out</code> and <code>System.err</code> output and appends it to a rolling file.</p>
+</div>
+<div class="paragraph">
+<p>The file is rolled every day at the midnight of the configured timezone.
+Old, rolled files are kept for the number of days specified by the <code>jetty.console-capture.retainDays</code> property.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>## Logging directory (relative to $JETTY_BASE).
+# jetty.console-capture.dir=./logs
+
+## Whether to append to existing file.
+# jetty.console-capture.append=true
+
+## How many days to retain old log files.
+# jetty.console-capture.retainDays=90
+
+## Timezone ID of the log timestamps, as specified by java.time.ZoneId.
+# jetty.console-capture.timezone=GMT</pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3910,7 +3989,7 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 <p>For a single NIO selector, the ratio between the average number of selected connections over the total number of connections for every <code>select()</code> call depends heavily on the protocol but also on the application.</p>
 </div>
 <div class="paragraph">
-<p>Multiplexed protocols such as HTTP/2 tend to be busier than duplex protocols such as HTTP/1.1, leading to a higher ratio.</p>
+<p>Multiplexed TCP protocols such as HTTP/2 tend to be busier than duplex protocols such as HTTP/1.1, leading to a higher ratio.</p>
 </div>
 <div class="paragraph">
 <p>REST applications that exchange many little JSON messages tend to be busier than file server applications, leading to a higher ratio.</p>
@@ -3994,6 +4073,39 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="paragraph">
 <p>The same attack may be performed with <code>PRIORITY</code> frames, empty <code>DATA</code> frames, <code>PING</code> frames, etc.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-module-http3"><a class="anchor" href="#og-module-http3"></a><a class="link" href="#og-module-http3">Module <code>http3</code></a></h5>
+<div class="paragraph">
+<p>The <code>http3</code> module enables support for the HTTP/3 protocol.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>## The host/address to bind the connector to.
+# jetty.quic.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.quic.port=8444
+
+## The connector idle timeout, in milliseconds.
+# jetty.quic.idleTimeout=30000
+
+## Specifies the maximum number of concurrent requests per session.
+# jetty.quic.maxBidirectionalRemoteStreams=128
+
+## Specifies the session receive window (client to server) in bytes.
+# jetty.quic.sessionRecvWindow=4194304
+
+## Specifies the stream receive window (client to server) in bytes.
+# jetty.quic.bidirectionalStreamRecvWindow=2097152
+
+## Specifies the stream idle timeout, in milliseconds.
+# jetty.http3.streamIdleTimeout=30000</pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -4133,6 +4245,332 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 </div>
 </div>
 <div class="sect4">
+<h5 id="og-module-requestlog"><a class="anchor" href="#og-module-requestlog"></a><a class="link" href="#og-module-requestlog">Module <code>requestlog</code></a></h5>
+<div class="paragraph">
+<p>The <code>requestlog</code> module provides HTTP request/response logging in the standard <a href="https://en.wikipedia.org/wiki/Common_Log_Format">NCSA format</a>, or in a custom format of your choice.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>## Request log line format string.
+# jetty.requestlog.formatString=%a - %u %{dd/MMM/yyyy:HH:mm:ss ZZZ|GMT}t "%r" %s %B "%{Referer}i" "%{User-Agent}i" "%C"
+
+## The logging directory (relative to $JETTY_BASE).
+# jetty.requestlog.dir=logs
+
+## The request log file path (may be absolute and/or outside $JETTY_BASE).
+# jetty.requestlog.filePath=${jetty.requestlog.dir}/yyyy_MM_dd.request.log
+
+## Date format for the files that are rolled over (uses SimpleDateFormat syntax).
+# jetty.requestlog.filenameDateFormat=yyyy_MM_dd
+
+## How many days to retain old log files.
+# jetty.requestlog.retainDays=90
+
+## Whether to append to existing file or create a new one.
+# jetty.requestlog.append=false
+
+## The timezone of the log file name.
+# jetty.requestlog.timezone=GMT</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The property <code>jetty.requestlog.formatString</code> can be customized using format codes.</p>
+</div>
+<div class="paragraph">
+<p>Format codes are specified with the syntax <code>%MODIFIERS{PARAM}CODE</code> as follows:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>MODIFIERS</code></dt>
+<dd>
+<p>Optional list of comma separated HTTP status codes which may be preceded by a single "!" to indicate
+negation. If the status code is not in the list the literal string "-" will be logged instead of
+the resulting value from the percent code.</p>
+</dd>
+<dt class="hdlist1"><code>{PARAM}</code></dt>
+<dd>
+<p>Parameter string which may be optional depending on the percent code used.</p>
+</dd>
+<dt class="hdlist1"><code>CODE</code></dt>
+<dd>
+<p>A one or two character code specified by the table of format codes below.</p>
+</dd>
+</dl>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Format Codes</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Format String</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The X character.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%%</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The percent character.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{format}a</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The address or host name.</p>
+</div>
+<div class="paragraph">
+<p>Valid format values are: "server", "client", "local", "remote".
+The format parameter is optional and defaults to "server".</p>
+</div>
+<div class="paragraph">
+<p>Values "server" and "client" are the logical addresses which can be modified in the request headers,
+while "local" and "remote" are the physical addresses so may be the addresses of a proxy between
+the end-user and the server.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{format}p</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The port.</p>
+</div>
+<div class="paragraph">
+<p>Valid format values are: "server", "client", "local", "remote".
+The format parameter is optional and defaults to "server".</p>
+</div>
+<div class="paragraph">
+<p>Values "server" and "client" are the logical ports which can be modified in the request headers,
+while "local" and "remote" are the physical ports so may be the ports of a proxy between
+the end-user and the server.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{CLF}I</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The size of request in bytes, excluding HTTP headers.</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional.
+When the parameter value is "CLF" the Common Log Format is used, i.e. a <code>-</code> rather than a <code>0</code>
+when no bytes are present.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{CLF}O</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The size of response in bytes, excluding HTTP headers.</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional.
+When the parameter value is "CLF" the Common Log Format is used, i.e. a <code>-</code> rather than a <code>0</code>
+when no bytes are present.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{CLF}S</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The bytes transferred (received and sent). This is the combination of <code>%I</code> and <code>%O</code>.</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional.
+When the parameter value is "CLF" the Common Log Format is used, i.e. a <code>-</code> rather than a <code>0</code>
+when no bytes are present.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}C</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the request cookie VARNAME.</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional.
+Only version 0 cookies are fully supported.
+When the parameter is missing, all request cookies will be logged.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%D</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The time taken to serve the request, in microseconds.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}e</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the environment variable VARNAME.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%f</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The file system path of the requested resource.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%H</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The name and version of the request protocol, such as "HTTP/1.1".</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}i</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the VARNAME request header.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%k</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The number of requests handled on a connection.</p>
+</div>
+<div class="paragraph">
+<p>The initial request on a connection yields a value 0, the first request after the initial on the same connection
+yields the value 1, the second request on the same connection yields the value 2, etc.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%m</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The HTTP request method.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}o</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the VARNAME response header.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%q</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The query string, prepended with a ? if a query string exists, otherwise an empty string.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%r</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>First line of an HTTP/1.1 request (or equivalent information for HTTP/2 or later).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%R</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The name of the Handler or Servlet generating the response (if any).</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%s</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The HTTP response status code.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{format|timeZone|locale}t</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The time at which the request was received.</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional and may have the following values: {format}, {format|timeZone} or {format|timeZone|locale}.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>format</code></dt>
+<dd>
+<p>Default is e.g. [18/Sep/2011:19:18:28 -0400] where the last number indicates the timezone offset from GMT.
+Must be in a format supported by the <code>java.time</code> package.</p>
+</dd>
+<dt class="hdlist1"><code>timeZone</code></dt>
+<dd>
+<p>Default is GMT.
+Must be in a format supported by the <code>java.time</code> package.</p>
+</dd>
+<dt class="hdlist1"><code>locale</code></dt>
+<dd>
+<p>Default is the JVM default locale.
+Must be in a format supported by <code>java.util.Locale.forLanguageTag()</code>.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{UNIT}T</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The time taken to serve the request.</p>
+</div>
+<div class="paragraph">
+<p>The parameter UNIT is optional and defaults to "s".
+The parameter UNIT indicates the unit of time: "s" for seconds, "ms" for milliseconds, "us" for microseconds.
+<code>%{us}T</code> is identical to <code>%D</code>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{d}u</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The remote user if the request was authenticated with servlet authentication.</p>
+</div>
+<div class="paragraph">
+<p>May be an invalid value if response status code (<code>%s</code>) is 401 (unauthorized).</p>
+</div>
+<div class="paragraph">
+<p>The parameter is optional.
+When the parameter value is "d", deferred authentication will also be checked.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%U</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The URL path requested, not including any query string.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%X</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The connection status when response is completed:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>X</code></dt>
+<dd>
+<p>The connection is aborted before the response completed.</p>
+</dd>
+<dt class="hdlist1"><code>+</code></dt>
+<dd>
+<p>The connection may be kept alive after the response is sent.</p>
+</dd>
+<dt class="hdlist1"><code>-</code></dt>
+<dd>
+<p>The connection will be closed after the response is sent.</p>
+</dd>
+</dl>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}ti</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the VARNAME request trailer.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%{VARNAME}to</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>The value of the VARNAME response trailer.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
 <h5 id="og-module-server"><a class="anchor" href="#og-module-server"></a><a class="link" href="#og-module-server">Module <code>server</code></a></h5>
 <div class="paragraph">
 <p>The <code>server</code> module provides generic server support, and configures generic HTTP properties that apply to all HTTP protocols, the scheduler properties and the server specific properties.</p>
@@ -4148,7 +4586,7 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The <code>server</code> module configures the shared parameters for generic HTTP handline, but does not enable any specific network protocol.  You have to explicitly enable the protocols you want to support by enabling, for example, the <a href="#og-module-http"><code>http</code> module</a> for clear-text HTTP/1.1 support, or the <a href="#og-module-http2"><code>http2</code> module</a> for secure HTTP/2 support, etc.</p>
+<p>The <code>server</code> module configures the shared parameters for generic HTTP handling, but does not enable any specific network protocol.  You have to explicitly enable the protocols you want to support by enabling, for example, the <a href="#og-module-http"><code>http</code> module</a> for clear-text HTTP/1.1 support, or the <a href="#og-module-http2"><code>http2</code> module</a> for secure HTTP/2 support, etc.</p>
 </div>
 <div class="paragraph">
 <p>See also the <a href="#og-protocols">protocols section</a> for more information about the supported protocols.</p>
@@ -4160,7 +4598,7 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 <div class="sect5">
 <h6 id="og-module-server-http-config"><a class="anchor" href="#og-module-server-http-config"></a><a class="link" href="#og-module-server-http-config">HTTP Configuration Properties</a></h6>
 <div class="paragraph">
-<p>The module properties to configure generic HTTP properties are listed below. Mostly they frequently apply to both HTTP/1 and HTTP/2, but some parameters are version specific:</p>
+<p>The module properties to configure generic HTTP properties are listed below. Mostly they frequently apply to HTTP/1, HTTP/2 and HTTP/3, but some parameters are version specific:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4226,7 +4664,7 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">HTTP/1.1 200 OK
 Content-Length: 0
-Server: Jetty(10.0.7)</code></pre>
+Server: Jetty(10.0.8)</code></pre>
 </div>
 </div>
 </dd>
@@ -4632,17 +5070,19 @@ ssl
 [files]
 maven://org.bouncycastle/bcpkix-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
 maven://org.bouncycastle/bcprov-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcutil-jdk15to18/${bouncycastle.version}|lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
 
 [lib]
 lib/jetty-keystore-${jetty.version}.jar
 lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
 lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
 
 [xml]
 etc/jetty-test-keystore.xml
 
 [ini]
-bouncycastle.version?=1.62
+bouncycastle.version?=1.70
 jetty.webapp.addServerClasses+=,${jetty.base.uri}/lib/bouncycastle/
 jetty.sslContext.keyStorePath?=etc/test-keystore.p12
 jetty.sslContext.keyStoreType?=PKCS12
@@ -4718,30 +5158,24 @@ etc/jetty-threadpool.xml
 </div>
 </div>
 <div class="sect4">
-<h5 id="og-module-console-capture"><a class="anchor" href="#og-module-console-capture"></a><a class="link" href="#og-module-console-capture">Module <code>console-capture</code></a></h5>
+<h5 id="og-module-well-known"><a class="anchor" href="#og-module-well-known"></a><a class="link" href="#og-module-well-known">Module <code>well-known</code></a></h5>
 <div class="paragraph">
-<p>The <code>console-capture</code> module captures <code>System.out</code> and <code>System.err</code> output and appends it to a rolling file.</p>
+<p>The <code>well-known</code> Jetty module creates a <code>ResourceHandler</code> deployed at the <code>/.well-known</code> context path which serves files from a directory.
+By default, the directory created at <code>$JETTY_BASE/.well-known</code> is used, but it can be configured from <code>well-known.ini</code> to anywhere in the filesystem.
+Note that the <code>.well-known</code> directory may be seen as a hidden directory by the filesystem.</p>
 </div>
 <div class="paragraph">
-<p>The file is rolled every day at the midnight of the configured timezone.
-Old, rolled files are kept for the number of days specified by the <code>jetty.console-capture.retainDays</code> property.</p>
+<p>The concept of well-known URIs has been defined in <a href="https://datatracker.ietf.org/doc/html/rfc5785">RFC5785</a>.
+This module can be used for things like the automatic renewal of <a href="https://letsencrypt.org/">Let&#8217;s Encrypt</a> certificates.
+See <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml">IANA Well-Known URIs</a> for more possible examples of how this can be used.</p>
 </div>
 <div class="paragraph">
 <p>The module properties are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>## Logging directory (relative to $JETTY_BASE).
-# jetty.console-capture.dir=./logs
-
-## Whether to append to existing file.
-# jetty.console-capture.append=true
-
-## How many days to retain old log files.
-# jetty.console-capture.retainDays=90
-
-## Timezone ID of the log timestamps, as specified by java.time.ZoneId.
-# jetty.console-capture.timezone=GMT</pre>
+<pre>## Well Known Directory (relative to $JETTY_BASE if relative path, otherwise it is an absolute path).
+# jetty.wellknown.dir=.well-known</pre>
 </div>
 </div>
 </div>
@@ -5401,7 +5835,7 @@ INFO  : Base directory was modified</pre>
 <p>Note that the <code>http</code> Jetty module depends on the <code>server</code> Jetty module.</p>
 </div>
 <div class="paragraph">
-<p>Some parameters that you may want to configure are in fact common HTTP parameters that are applied not only for clear-text HTTP/1.1, but also for secure HTTP/1.1 or for clear-text HTTP/2 or for encrypted HTTP/2, and these configuration parameters may be present in the <code>server</code> module configuration file.</p>
+<p>Some parameters that you may want to configure are in fact common HTTP parameters that are applied not only for clear-text HTTP/1.1, but also for secure HTTP/1.1 or for clear-text HTTP/2 or for encrypted HTTP/2, or for HTTP/3, and these configuration parameters may be present in the <code>server</code> module configuration file.</p>
 </div>
 <div class="paragraph">
 <p>You can force the creation of the <code>server.ini</code> file via:</p>
@@ -5498,8 +5932,9 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>INFO  : test-keystore   initialized in ${jetty.base}/start.d/test-keystore.ini
 INFO  : mkdir ${jetty.base}/lib/bouncycastle
-INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15on/1.62/bcpkix-jdk15on-1.62.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15on-1.62.jar
-INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15on/1.62/bcprov-jdk15on-1.62.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15on-1.62.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15on-1.70.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15on/1.70/bcprov-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15on-1.70.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcutil-jdk15to18/1.70/bcutil-jdk15to18-1.70.jar to ${jetty.base}/lib/bouncycastle/bcutil-jdk15on-1.70.jar
 INFO  : Base directory was modified</code></pre>
 </div>
 </div>
@@ -5528,11 +5963,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:22.408:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-10-06 14:48:23.051:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:23.160:</strong>INFO :oejus.SslContextFactory:main: x509=X509@7975d1d8(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@24105dc5[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-10-06 14:48:23.267:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5c45d770<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-10-06 14:48:23.282:</strong>INFO :oejs.Server:main: Started Server@72c8e7b{STARTING}[10.0.7,sto=5000] @1919ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:16.030:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2022-02-07 11:50:16.359:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:16.413:</strong>INFO :oejus.SslContextFactory:main: x509=X509@2f4205be(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@544820b7[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2022-02-07 11:50:16.467:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@41e350f1<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2022-02-07 11:50:16.477:</strong>INFO :oejs.Server:main: Started Server@10b9db7b{STARTING}[10.0.8,sto=5000] @1082ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5587,7 +6022,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="376" height="420">
+<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="372" height="417">
 </div>
 </div>
 <div class="paragraph">
@@ -5595,7 +6030,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="413" height="420">
+<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="407" height="417">
 </div>
 </div>
 <div class="paragraph">
@@ -5613,7 +6048,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="135" height="284">
+<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="133" height="284">
 </div>
 </div>
 <div class="paragraph">
@@ -5621,7 +6056,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="219" height="397">
+<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="216" height="397">
 </div>
 </div>
 <div class="paragraph">
@@ -5629,7 +6064,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="332" height="623">
+<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="328" height="623">
 </div>
 </div>
 </div>
@@ -5683,11 +6118,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:25.851:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-10-06 14:48:26.408:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:26.537:</strong>INFO :oejus.SslContextFactory:main: x509=X509@7bf3a5d8(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@39b43d60[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-10-06 14:48:26.664:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@414cb560<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-10-06 14:48:26.681:</strong>INFO :oejs.Server:main: Started Server@730d2164{STARTING}[10.0.7,sto=5000] @1930ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:17.934:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2022-02-07 11:50:18.304:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:18.364:</strong>INFO :oejus.SslContextFactory:main: x509=X509@72ea6193(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@2a2c13a8[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2022-02-07 11:50:18.407:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@485a3466<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2022-02-07 11:50:18.415:</strong>INFO :oejs.Server:main: Started Server@3d97a632{STARTING}[10.0.8,sto=5000] @1158ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5739,9 +6174,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:28.384:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:28.443:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@40e233c3<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
-<strong>2021-10-06 14:48:28.458:</strong>INFO :oejs.Server:main: Started Server@45b9a632{STARTING}[10.0.7,sto=5000] @874ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:19.479:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:19.508:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@305ffe9e<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2022-02-07 11:50:19.515:</strong>INFO :oejs.Server:main: Started Server@4659191b{STARTING}[10.0.8,sto=5000] @505ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5801,13 +6236,76 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 </div>
 <div class="sect3">
+<h4 id="og-protocols-http3"><a class="anchor" href="#og-protocols-http3"></a><a class="link" href="#og-protocols-http3">HTTP/3</a></h4>
+<div class="paragraph">
+<p>When you enable support for the HTTP/3 protocol, by default the secure HTTP/2 protocol is also enabled, so that browsers or clients that do not support HTTP/3 will be able to connect to your server.</p>
+</div>
+<div class="paragraph">
+<p>You need to enable:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the <code>ssl</code> Jetty module, which provides the KeyStore and TLS configuration</p>
+</li>
+<li>
+<p>the <code>http3</code> Jetty module, which adds the HTTP/3 protocol on the HTTP/3 connector</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=ssl,http3</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Enabling any module Jetty module that supports secure network communication requires a valid KeyStore (read <a href="#og-keystore">this section</a> to create your own KeyStore), that, as a quick example, you can enable with the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that creates on-the-fly a KeyStore containing a self-signed certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=test-keystore</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Starting Jetty yields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:20.759:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2022-02-07 11:50:21.085:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:21.143:</strong>INFO :oejus.SslContextFactory:main: x509=X509@26425897(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@56a4479a[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2022-02-07 11:50:21.182:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@71984c3{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
+<strong>2022-02-07 11:50:21.183:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
+<strong>2022-02-07 11:50:21.183:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@2364305a<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
+<strong>2022-02-07 11:50:21.223:</strong>INFO :oejs.Server:main: Started Server@23d1e5d0{STARTING}[10.0.8,sto=5000] @1077ms</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how Jetty is listening on port <code>8443</code> for HTTP/2 and on port <code>8444</code> for HTTP/3.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP/3 protocol parameters can be configured by editing the <a href="#og-module-http3"><code>http3</code> module</a> properties.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="og-protocols-ssl"><a class="anchor" href="#og-protocols-ssl"></a><a class="link" href="#og-protocols-ssl">Configuring Secure Protocols</a></h4>
 <div class="paragraph">
 <p>Secure protocols are normal protocols such as HTTP/1.1, HTTP/2 or WebSocket that are wrapped by the <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">TLS protocol</a>.
-Any network protocol can be wrapped with TLS.</p>
+Any network protocol based on TCP can be wrapped with TLS.</p>
 </div>
 <div class="paragraph">
-<p>The <code>https</code> scheme used in URIs really means <code>tls+http/1.1</code> (or <code>tls+http/2</code>) and similarly the <code>wss</code> scheme used in URIs really means <code>tls+websocket</code>, etc.
+<p>QUIC, the protocol based on UDP that transports HTTP/3, uses TLS messages but not the TLS protocol framing.</p>
+</div>
+<div class="paragraph">
+<p>The <code>https</code> scheme used in URIs really means <code>tls+http/1.1</code> (or <code>tls+http/2</code>, or <code>quic+http/3</code>) and similarly the <code>wss</code> scheme used in URIs really means <code>tls+websocket</code>, etc.
 Senders wrap the underlying protocol bytes (e.g. HTTP bytes or WebSocket bytes) with the TLS protocol, while receivers first interpret the TLS protocol to obtain the underlying protocol bytes, and then interpret the wrapped bytes.</p>
 </div>
 <div class="paragraph">
@@ -6073,7 +6571,7 @@ The KeyStore contains two certificates, one for <code>one.com</code> and one for
 <p>Whether SNI is required at the TLS level, defaults to <code>false</code>.
 Its behavior is explained by the following table:</p>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Behavior of the <code>jetty.sslContext.sniRequired</code> property</caption>
+<caption class="title">Table 2. Behavior of the <code>jetty.sslContext.sniRequired</code> property</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6158,7 +6656,7 @@ The details of this failure may not be reported and could be difficult to figure
 <p>Whether SNI is required at the HTTP level, defaults to <code>false</code>.
 Its behavior is similar to the <code>jetty.sslContext.sniRequired</code> property above, and is explained by the following table:</p>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Behavior of the <code>jetty.ssl.sniRequired</code> property</caption>
+<caption class="title">Table 3. Behavior of the <code>jetty.ssl.sniRequired</code> property</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6225,7 +6723,7 @@ Its behavior is similar to the <code>jetty.sslContext.sniRequired</code> propert
 <p>Whether the certificate sent to the client matches the <code>Host</code> header, defaults to <code>true</code>.
 Its behavior is explained by the following table:</p>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Behavior of the <code>jetty.ssl.sniHostCheck</code> property</caption>
+<caption class="title">Table 4. Behavior of the <code>jetty.ssl.sniHostCheck</code> property</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -6444,9 +6942,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:31.734:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:31.784:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@bef2d72<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2021-10-06 14:48:31.797:</strong>INFO :oejs.Server:main: Started Server@b62fe6d{STARTING}[10.0.7,sto=5000] @815ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:23.070:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:23.096:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1cf6d1be<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2022-02-07 11:50:23.102:</strong>INFO :oejs.Server:main: Started Server@3232a28a{STARTING}[10.0.8,sto=5000] @446ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6488,11 +6986,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2021-10-06 14:48:34.697:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2021-10-06 14:48:35.293:</strong>INFO :oejs.Server:main: jetty-10.0.7; built: 2021-10-06T19:34:02.766Z; git: da8a4553af9dd84080931fa0f8c678cd2d60f3d9; jvm 17+35
-<strong>2021-10-06 14:48:35.409:</strong>INFO :oejus.SslContextFactory:main: x509=X509@7d7758be(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@5f9edf14[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2021-10-06 14:48:35.520:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@332729ad<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2021-10-06 14:48:35.535:</strong>INFO :oejs.Server:main: Started Server@4d14b6c2{STARTING}[10.0.7,sto=5000] @1882ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2022-02-07 11:50:24.813:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2022-02-07 11:50:25.179:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:25.237:</strong>INFO :oejus.SslContextFactory:main: x509=X509@6955cb39(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@5f7b97da[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2022-02-07 11:50:25.279:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1ef3efa8<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2022-02-07 11:50:25.287:</strong>INFO :oejs.Server:main: Started Server@4a194c39{STARTING}[10.0.8,sto=5000] @1052ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9477,7 +9975,7 @@ Notice that Jetty identifies the jsp servlet by the presence of the <code>id="js
 <p>There are many configuration parameters for the Apache Jasper JSP Servlet, here are some of them:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. JSP Servlet Parameters</caption>
+<caption class="title">Table 5. JSP Servlet Parameters</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -11147,7 +11645,7 @@ etc/jaspi/jaspi-default.xml</pre>
 <p>This configuration is useful when you develop and test your Jetty server locally.</p>
 </div>
 <div class="paragraph">
-<p>JMX compliant tools such as <a href="https://adoptopenjdk.net/jmc.html">Java Mission Control (JMC)</a> can be started locally on your machine and can attach to other JVMs running on your machine, showing you the registered MBeans among which you will find the Jetty MBeans.</p>
+<p>JMX compliant tools such as <a href="https://adoptium.net/jmc.html">Java Mission Control (JMC)</a> can be started locally on your machine and can attach to other JVMs running on your machine, showing you the registered MBeans among which you will find the Jetty MBeans.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -11507,7 +12005,7 @@ This is where having certificates signed by a Certification Authority simplifies
 <p>JMX compliant tools that offer a graphical user interface also must be started specifying the TrustStore path and password.</p>
 </div>
 <div class="paragraph">
-<p>For example, to launch <a href="https://adoptopenjdk.net/jmc.html">Java Mission Control (JMC)</a>:</p>
+<p>For example, to launch <a href="https://adoptium.net/jmc.html">Java Mission Control (JMC)</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11662,7 +12160,7 @@ See the <a href="#og-module-console-capture"><code>console-capture</code> module
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The <code>console-capture</code> Jetty module should be used only in conjunction with the <code>logging-jetty</code> module, as other SLF4J bindings such as LogBack or Log4J2 have their own, more sophisticated, rolling file appenders.</p>
+<p>The <code>console-capture</code> Jetty module should be used only in conjunction with the <code>logging-jetty</code> module, as other SLF4J bindings such as LogBack or Log4j2 have their own, more sophisticated, rolling file appenders.</p>
 </div>
 </td>
 </tr>
@@ -11682,10 +12180,10 @@ There are a number of out-of-the-box Jetty modules that you can use:</p>
 <p><code>logging-logback</code>, to use the <a href="http://logback.qos.ch/">LogBack</a> binding</p>
 </li>
 <li>
-<p><code>logging-log4j2</code>, to use the <a href="https://logging.apache.org/log4j/2.x/">Log4J2</a> binding</p>
+<p><code>logging-log4j2</code>, to use the <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a> binding</p>
 </li>
 <li>
-<p><code>logging-log4j1</code>, to use the <a href="https://logging.apache.org/log4j/1.2/">Log4J1</a> binding (note that Log4J 1.x is end-of-life)</p>
+<p><code>logging-log4j1</code>, to use the <a href="https://logging.apache.org/log4j/1.2/">Log4j1</a> binding (note that Log4j 1.x is end-of-life)</p>
 </li>
 <li>
 <p><code>logging-jul</code>, to use the <code>java.util.logging</code> binding</p>
@@ -11729,7 +12227,7 @@ Please refer to the <a href="http://logback.qos.ch/manual/configuration.html">Lo
 </div>
 </div>
 <div class="sect5">
-<h6 id="og-logging-server-custom-log4j2"><a class="anchor" href="#og-logging-server-custom-log4j2"></a><a class="link" href="#og-logging-server-custom-log4j2">Logging with Log4J2</a></h6>
+<h6 id="og-logging-server-custom-log4j2"><a class="anchor" href="#og-logging-server-custom-log4j2"></a><a class="link" href="#og-logging-server-custom-log4j2">Logging with Log4j2</a></h6>
 <div class="paragraph">
 <p>Similarly to <a href="#og-logging-server-custom-logback">logging with LogBack</a>, you can enable the <code>logging-log4j2</code> Jetty module in this way (from the <code>$JETTY_BASE</code> directory):</p>
 </div>
@@ -11739,7 +12237,7 @@ Please refer to the <a href="http://logback.qos.ch/manual/configuration.html">Lo
 </div>
 </div>
 <div class="paragraph">
-<p>After accepting the Log4J2 license, you will have the following directory structure:</p>
+<p>After accepting the Log4j2 license, you will have the following directory structure:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -11757,7 +12255,7 @@ Please refer to the <a href="http://logback.qos.ch/manual/configuration.html">Lo
 </div>
 </div>
 <div class="paragraph">
-<p>The Jetty module system downloaded the required Log4J2 <code>*.jar</code> files, and created a <code>$JETTY_BASE/resources/log4j2.xml</code> file that you can configure to customize your Log4J2 logging.</p>
+<p>The Jetty module system downloaded the required Log4j2 <code>*.jar</code> files, and created a <code>$JETTY_BASE/resources/log4j2.xml</code> file that you can configure to customize your Log4j2 logging.</p>
 </div>
 </div>
 </div>
@@ -11792,7 +12290,7 @@ With the <code>logging-jul-capture</code> Jetty module, the logging follows this
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="686" height="174">
+<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="685" height="174">
 </div>
 </div>
 <div class="paragraph">
@@ -11805,7 +12303,70 @@ They both arrive to the SLF4J binding, in this case the Jetty SLF4J binding (but
 <div class="sect3">
 <h4 id="og-logging-request"><a class="anchor" href="#og-logging-request"></a><a class="link" href="#og-logging-request">Request Logging</a></h4>
 <div class="paragraph">
-<p>TODO</p>
+<p>HTTP requests and responses can be logged to provide data that can be later analyzed with other tools, that can provide information such as the most frequently accessed request URIs, the response status codes, the request/response content lengths, geographical information about the clients, etc.</p>
+</div>
+<div class="paragraph">
+<p>Request logging is enabled by enabling the <code>requestlog</code> Jetty module.
+In the example below, both the <code>http</code> Jetty module and the <code>requestlog</code> module are enabled, so that you can make HTTP requests to the server and have them logged:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cd $JETTY_BASE
+$ java -jar $JETTY_HOME/start.jar --add-modules=http,requestlog</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>$JETTY_BASE</code> directory looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$JETTY_BASE
+├── logs
+├── resources
+│   └── jetty-logging.properties
+└── start.d
+    ├── http.ini
+    └── requestlog.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>$JETTY_BASE/start.d/requestlog.ini</code> file is the Jetty module configuration file that allows you to configure the <code>requestlog</code> module, see <a href="#og-module-requestlog">this section</a> for more details.</p>
+</div>
+<div class="paragraph">
+<p>By default the <code>requestlog</code> Jetty module produces the <code>$JETTY_BASE/logs/yyyy_MM_dd.request.log</code>, where the pattern <code>yyyy_MM_dd</code> is replaced with the current date, for example <code>2020_01_31</code>.</p>
+</div>
+<div class="paragraph">
+<p>The format of the request log lines is the result of a <em>format string</em> that uses formatting symbols to log relevant request/response data.</p>
+</div>
+<div class="paragraph">
+<p>The default format is the <a href="https://en.wikipedia.org/wiki/Common_Log_Format">NCSA Format</a> extended with referrer data and user-agent data.
+A typical log line looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>192.168.0.100 - - [31/Jan/2020:20:30:40 +0000] &quot;GET / HTTP/1.1&quot; 200 6789 &quot;-&quot; &quot;Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The line above (that uses fake values) shows <code>192.168.0.100</code> for the client IP address, a hard-coded <code>-</code> for the identity, <code>-</code> for the authenticated user name, <code>[31/Jan/2020:20:30:40 +0000]</code> for the date and time with timezone, <code>"GET / HTTP/1.1"</code> for the HTTP request line, <code>200</code> for the HTTP response status code, <code>6789</code> for the HTTP response content length, <code>"-"</code> for the referrer and <code>"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"</code> for the user-agent.</p>
+</div>
+<div class="paragraph">
+<p>The format string can be customized as described in <a href="#og-module-requestlog">this section</a>.
+Request log files are rolled every day, and retained for customizable number of days, by default 90 days.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When Jetty is behind a load balancer, you want to log the remote client IP address, not the load balancer IP address. Refer to <a href="#og-protocols-proxy">this section</a> to configure the load balancer and Jetty to retain the remote client IP address information.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -11953,287 +12514,298 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Server@6295d394{STARTING}[10.0.7,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
-+= QueuedThreadPool[qtp143110009]@887af79{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@57c758ac{reserved=0/8,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
-|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@a9cd3b1
-|  += ReservedThreadExecutor@57c758ac{reserved=0/8,pending=0} - STARTED
+<pre class="CodeRay highlight nowrap"><code>Server@5fbdfdcf{STARTING}[10.0.8,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp350068407]@14dd9eb7{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@6fa51cd4{reserved=0/16,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@2767e23c
+|  += ReservedThreadExecutor@6fa51cd4{reserved=0/16,pending=0} - STARTED
 |  |  +&gt; threads size=0
 |  +&gt; threads size=4
-|     +&gt; qtp143110009-18 TIMED_WAITING tid=18 prio=5 IDLE
-|     +&gt; qtp143110009-15 RUNNABLE tid=15 prio=5 SELECTING
-|     +&gt; qtp143110009-16 TIMED_WAITING tid=16 prio=5 IDLE
-|     +&gt; qtp143110009-17-acceptor-0@6a61babe-ServerConnector@1184ab05{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=17 prio=3 ACCEPTING
-+- org.eclipse.jetty.io.ArrayByteBufferPool@21de60b4
-+= ScheduledExecutorScheduler@47db50c5{STARTED} - STARTED
-+= HandlerList@c267ef4{STARTED} - STARTED <i class="conum" data-value="3"></i><b>(3)</b>
-|  += ContextHandlerCollection@30ee2816{STARTED} - STARTED
-|  += DefaultHandler@31d7b7bf{STARTED} - STARTED
-+= ServerConnector@1184ab05{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED <i class="conum" data-value="4"></i><b>(4)</b>
-|  +~ QueuedThreadPool[qtp143110009]@887af79{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@57c758ac{reserved=0/8,pending=0}] - STARTED
-|  +~ ScheduledExecutorScheduler@47db50c5{STARTED} - STARTED
-|  +- org.eclipse.jetty.io.ArrayByteBufferPool@21de60b4
-|  +- org.eclipse.jetty.io.ArrayRetainableByteBufferPool@635eaaf1{min=0,max=65536,buckets=64,heap=0/-1,direct=0/-1}
+|     +&gt; qtp350068407-23 TIMED_WAITING tid=23 prio=5 IDLE
+|     +&gt; qtp350068407-21 RUNNABLE tid=21 prio=5 SELECTING
+|     +&gt; qtp350068407-24-acceptor-0@3f719643-ServerConnector@248e319b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=24 prio=3 ACCEPTING
+|     +&gt; qtp350068407-22 TIMED_WAITING tid=22 prio=5 IDLE
++= AttributeContainerMap@3e08ff24{size=0} - STARTED
++- ArrayByteBufferPool@24569dba{minBufferCapacity=0, maxBufferCapacity=65536, maxQueueLength=-1, factor=1024}
+|  +&gt; java.util.ArrayList@83b907e3(size=4)
+|     +: HeapMemory: 0/2089811968
+|     +: DirectMemory: 0/2089811968
+|     +: Indirect Buckets size=0
+|     +: Direct Buckets size=0
++= ScheduledExecutorScheduler@2362f559{STARTED} - STARTED
++= HandlerList@5ddeb7cb{STARTED} - STARTED <i class="conum" data-value="3"></i><b>(3)</b>
+|  += ContextHandlerCollection@70ed52de{STARTED} - STARTED
+|  += DefaultHandler@496bc455{STARTED} - STARTED
++= ServerConnector@248e319b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED <i class="conum" data-value="4"></i><b>(4)</b>
+|  +~ QueuedThreadPool[qtp350068407]@14dd9eb7{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@6fa51cd4{reserved=0/16,pending=0}] - STARTED
+|  +~ ScheduledExecutorScheduler@2362f559{STARTED} - STARTED
+|  +- ArrayByteBufferPool@24569dba{minBufferCapacity=0, maxBufferCapacity=65536, maxQueueLength=-1, factor=1024}
+|  |  +&gt; java.util.ArrayList@83b907e3(size=4)
+|  |     +: HeapMemory: 0/2089811968
+|  |     +: DirectMemory: 0/2089811968
+|  |     +: Indirect Buckets size=0
+|  |     +: Direct Buckets size=0
+|  +- org.eclipse.jetty.io.ArrayRetainableByteBufferPool@59402b8f{min=0,max=65536,buckets=64,heap=0/-1,direct=0/-1}
 |  |  +&gt; direct size=64
-|  |  |  +&gt; Bucket@5c30a9b0[inUse=0,size=0,max=2147483647,closed=false]{capacity=1024,inuse=0(0%)}
+|  |  |  +&gt; Bucket@7188af83[inUse=0,size=0,max=2147483647,closed=false]{capacity=1024,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3f197a46[inUse=0,size=0,max=2147483647,closed=false]{capacity=2048,inuse=0(0%)}
+|  |  |  +&gt; Bucket@303cf2ba[inUse=0,size=0,max=2147483647,closed=false]{capacity=2048,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@636be97c[inUse=0,size=0,max=2147483647,closed=false]{capacity=3072,inuse=0(0%)}
+|  |  |  +&gt; Bucket@76494737[inUse=0,size=0,max=2147483647,closed=false]{capacity=3072,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@50a638b5[inUse=0,size=0,max=2147483647,closed=false]{capacity=4096,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4a003cbe[inUse=0,size=0,max=2147483647,closed=false]{capacity=4096,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@1817d444[inUse=0,size=0,max=2147483647,closed=false]{capacity=5120,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4082ba93[inUse=0,size=0,max=2147483647,closed=false]{capacity=5120,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@6ca8564a[inUse=0,size=0,max=2147483647,closed=false]{capacity=6144,inuse=0(0%)}
+|  |  |  +&gt; Bucket@17fc391b[inUse=0,size=0,max=2147483647,closed=false]{capacity=6144,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@50b472aa[inUse=0,size=0,max=2147483647,closed=false]{capacity=7168,inuse=0(0%)}
+|  |  |  +&gt; Bucket@2b30a42c[inUse=0,size=0,max=2147483647,closed=false]{capacity=7168,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@31368b99[inUse=0,size=0,max=2147483647,closed=false]{capacity=8192,inuse=0(0%)}
+|  |  |  +&gt; Bucket@609e8838[inUse=0,size=0,max=2147483647,closed=false]{capacity=8192,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@1725dc0f[inUse=0,size=0,max=2147483647,closed=false]{capacity=9216,inuse=0(0%)}
+|  |  |  +&gt; Bucket@359df09a[inUse=0,size=0,max=2147483647,closed=false]{capacity=9216,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3911c2a7[inUse=0,size=0,max=2147483647,closed=false]{capacity=10240,inuse=0(0%)}
+|  |  |  +&gt; Bucket@43df23d3[inUse=0,size=0,max=2147483647,closed=false]{capacity=10240,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@4ac3c60d[inUse=0,size=0,max=2147483647,closed=false]{capacity=11264,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6d60fe40[inUse=0,size=0,max=2147483647,closed=false]{capacity=11264,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@4facf68f[inUse=0,size=0,max=2147483647,closed=false]{capacity=12288,inuse=0(0%)}
+|  |  |  +&gt; Bucket@792b749c[inUse=0,size=0,max=2147483647,closed=false]{capacity=12288,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@76508ed1[inUse=0,size=0,max=2147483647,closed=false]{capacity=13312,inuse=0(0%)}
+|  |  |  +&gt; Bucket@23e84203[inUse=0,size=0,max=2147483647,closed=false]{capacity=13312,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@41e36e46[inUse=0,size=0,max=2147483647,closed=false]{capacity=14336,inuse=0(0%)}
+|  |  |  +&gt; Bucket@19932c16[inUse=0,size=0,max=2147483647,closed=false]{capacity=14336,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@15c43bd9[inUse=0,size=0,max=2147483647,closed=false]{capacity=15360,inuse=0(0%)}
+|  |  |  +&gt; Bucket@73eb439a[inUse=0,size=0,max=2147483647,closed=false]{capacity=15360,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3d74bf60[inUse=0,size=0,max=2147483647,closed=false]{capacity=16384,inuse=0(0%)}
+|  |  |  +&gt; Bucket@514646ef[inUse=0,size=0,max=2147483647,closed=false]{capacity=16384,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@4f209819[inUse=0,size=0,max=2147483647,closed=false]{capacity=17408,inuse=0(0%)}
+|  |  |  +&gt; Bucket@305ffe9e[inUse=0,size=0,max=2147483647,closed=false]{capacity=17408,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@15eb5ee5[inUse=0,size=0,max=2147483647,closed=false]{capacity=18432,inuse=0(0%)}
+|  |  |  +&gt; Bucket@302c971f[inUse=0,size=0,max=2147483647,closed=false]{capacity=18432,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@2145b572[inUse=0,size=0,max=2147483647,closed=false]{capacity=19456,inuse=0(0%)}
+|  |  |  +&gt; Bucket@1972e513[inUse=0,size=0,max=2147483647,closed=false]{capacity=19456,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@39529185[inUse=0,size=0,max=2147483647,closed=false]{capacity=20480,inuse=0(0%)}
+|  |  |  +&gt; Bucket@7ae0a9ec[inUse=0,size=0,max=2147483647,closed=false]{capacity=20480,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@72f926e6[inUse=0,size=0,max=2147483647,closed=false]{capacity=21504,inuse=0(0%)}
+|  |  |  +&gt; Bucket@35841320[inUse=0,size=0,max=2147483647,closed=false]{capacity=21504,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3daa422a[inUse=0,size=0,max=2147483647,closed=false]{capacity=22528,inuse=0(0%)}
+|  |  |  +&gt; Bucket@61c4eee0[inUse=0,size=0,max=2147483647,closed=false]{capacity=22528,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@31c88ec8[inUse=0,size=0,max=2147483647,closed=false]{capacity=23552,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6f10d5b6[inUse=0,size=0,max=2147483647,closed=false]{capacity=23552,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@1cbbffcd[inUse=0,size=0,max=2147483647,closed=false]{capacity=24576,inuse=0(0%)}
+|  |  |  +&gt; Bucket@1040be71[inUse=0,size=0,max=2147483647,closed=false]{capacity=24576,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@27ce24aa[inUse=0,size=0,max=2147483647,closed=false]{capacity=25600,inuse=0(0%)}
+|  |  |  +&gt; Bucket@548a24a[inUse=0,size=0,max=2147483647,closed=false]{capacity=25600,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@481a996b[inUse=0,size=0,max=2147483647,closed=false]{capacity=26624,inuse=0(0%)}
+|  |  |  +&gt; Bucket@433defed[inUse=0,size=0,max=2147483647,closed=false]{capacity=26624,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3d51f06e[inUse=0,size=0,max=2147483647,closed=false]{capacity=27648,inuse=0(0%)}
+|  |  |  +&gt; Bucket@2a693f59[inUse=0,size=0,max=2147483647,closed=false]{capacity=27648,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@7ed7259e[inUse=0,size=0,max=2147483647,closed=false]{capacity=28672,inuse=0(0%)}
+|  |  |  +&gt; Bucket@3f4faf53[inUse=0,size=0,max=2147483647,closed=false]{capacity=28672,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@28eaa59a[inUse=0,size=0,max=2147483647,closed=false]{capacity=29696,inuse=0(0%)}
+|  |  |  +&gt; Bucket@7fd50002[inUse=0,size=0,max=2147483647,closed=false]{capacity=29696,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3427b02d[inUse=0,size=0,max=2147483647,closed=false]{capacity=30720,inuse=0(0%)}
+|  |  |  +&gt; Bucket@533bda92[inUse=0,size=0,max=2147483647,closed=false]{capacity=30720,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@647e447[inUse=0,size=0,max=2147483647,closed=false]{capacity=31744,inuse=0(0%)}
+|  |  |  +&gt; Bucket@304bb45b[inUse=0,size=0,max=2147483647,closed=false]{capacity=31744,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@41fbdac4[inUse=0,size=0,max=2147483647,closed=false]{capacity=32768,inuse=0(0%)}
+|  |  |  +&gt; Bucket@723ca036[inUse=0,size=0,max=2147483647,closed=false]{capacity=32768,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3c407114[inUse=0,size=0,max=2147483647,closed=false]{capacity=33792,inuse=0(0%)}
+|  |  |  +&gt; Bucket@25be7b63[inUse=0,size=0,max=2147483647,closed=false]{capacity=33792,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@35ef1869[inUse=0,size=0,max=2147483647,closed=false]{capacity=34816,inuse=0(0%)}
+|  |  |  +&gt; Bucket@28dcca0c[inUse=0,size=0,max=2147483647,closed=false]{capacity=34816,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@c33b74f[inUse=0,size=0,max=2147483647,closed=false]{capacity=35840,inuse=0(0%)}
+|  |  |  +&gt; Bucket@45d84a20[inUse=0,size=0,max=2147483647,closed=false]{capacity=35840,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@130161f7[inUse=0,size=0,max=2147483647,closed=false]{capacity=36864,inuse=0(0%)}
+|  |  |  +&gt; Bucket@52f27fbd[inUse=0,size=0,max=2147483647,closed=false]{capacity=36864,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@2c767a52[inUse=0,size=0,max=2147483647,closed=false]{capacity=37888,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4c163e3[inUse=0,size=0,max=2147483647,closed=false]{capacity=37888,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@619713e5[inUse=0,size=0,max=2147483647,closed=false]{capacity=38912,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4a8355dd[inUse=0,size=0,max=2147483647,closed=false]{capacity=38912,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@708f5957[inUse=0,size=0,max=2147483647,closed=false]{capacity=39936,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4d0d9fe7[inUse=0,size=0,max=2147483647,closed=false]{capacity=39936,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@68999068[inUse=0,size=0,max=2147483647,closed=false]{capacity=40960,inuse=0(0%)}
+|  |  |  +&gt; Bucket@c430e6c[inUse=0,size=0,max=2147483647,closed=false]{capacity=40960,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@7722c3c3[inUse=0,size=0,max=2147483647,closed=false]{capacity=41984,inuse=0(0%)}
+|  |  |  +&gt; Bucket@312aa7c[inUse=0,size=0,max=2147483647,closed=false]{capacity=41984,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@2ef3eef9[inUse=0,size=0,max=2147483647,closed=false]{capacity=43008,inuse=0(0%)}
+|  |  |  +&gt; Bucket@536f2a7e[inUse=0,size=0,max=2147483647,closed=false]{capacity=43008,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@243c4f91[inUse=0,size=0,max=2147483647,closed=false]{capacity=44032,inuse=0(0%)}
+|  |  |  +&gt; Bucket@72bc6553[inUse=0,size=0,max=2147483647,closed=false]{capacity=44032,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@291ae[inUse=0,size=0,max=2147483647,closed=false]{capacity=45056,inuse=0(0%)}
+|  |  |  +&gt; Bucket@66982506[inUse=0,size=0,max=2147483647,closed=false]{capacity=45056,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@61df66b6[inUse=0,size=0,max=2147483647,closed=false]{capacity=46080,inuse=0(0%)}
+|  |  |  +&gt; Bucket@70cf32e3[inUse=0,size=0,max=2147483647,closed=false]{capacity=46080,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@50eac852[inUse=0,size=0,max=2147483647,closed=false]{capacity=47104,inuse=0(0%)}
+|  |  |  +&gt; Bucket@5a59ca5e[inUse=0,size=0,max=2147483647,closed=false]{capacity=47104,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@16ec5519[inUse=0,size=0,max=2147483647,closed=false]{capacity=48128,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4bdeaabb[inUse=0,size=0,max=2147483647,closed=false]{capacity=48128,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@2f7298b[inUse=0,size=0,max=2147483647,closed=false]{capacity=49152,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6c4906d3[inUse=0,size=0,max=2147483647,closed=false]{capacity=49152,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@188715b5[inUse=0,size=0,max=2147483647,closed=false]{capacity=50176,inuse=0(0%)}
+|  |  |  +&gt; Bucket@65987993[inUse=0,size=0,max=2147483647,closed=false]{capacity=50176,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@1ea9f6af[inUse=0,size=0,max=2147483647,closed=false]{capacity=51200,inuse=0(0%)}
+|  |  |  +&gt; Bucket@71075444[inUse=0,size=0,max=2147483647,closed=false]{capacity=51200,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@6a192cfe[inUse=0,size=0,max=2147483647,closed=false]{capacity=52224,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4f32a3ad[inUse=0,size=0,max=2147483647,closed=false]{capacity=52224,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@5119fb47[inUse=0,size=0,max=2147483647,closed=false]{capacity=53248,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6b695b06[inUse=0,size=0,max=2147483647,closed=false]{capacity=53248,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@7193666c[inUse=0,size=0,max=2147483647,closed=false]{capacity=54272,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4d1bf319[inUse=0,size=0,max=2147483647,closed=false]{capacity=54272,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@20deea7f[inUse=0,size=0,max=2147483647,closed=false]{capacity=55296,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6f53b8a[inUse=0,size=0,max=2147483647,closed=false]{capacity=55296,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@3835c46[inUse=0,size=0,max=2147483647,closed=false]{capacity=56320,inuse=0(0%)}
+|  |  |  +&gt; Bucket@5c80cf32[inUse=0,size=0,max=2147483647,closed=false]{capacity=56320,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@1dde4cb2[inUse=0,size=0,max=2147483647,closed=false]{capacity=57344,inuse=0(0%)}
+|  |  |  +&gt; Bucket@7d900ecf[inUse=0,size=0,max=2147483647,closed=false]{capacity=57344,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@7714e963[inUse=0,size=0,max=2147483647,closed=false]{capacity=58368,inuse=0(0%)}
+|  |  |  +&gt; Bucket@6f01b95f[inUse=0,size=0,max=2147483647,closed=false]{capacity=58368,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@20ce78ec[inUse=0,size=0,max=2147483647,closed=false]{capacity=59392,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4007f65e[inUse=0,size=0,max=2147483647,closed=false]{capacity=59392,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@393671df[inUse=0,size=0,max=2147483647,closed=false]{capacity=60416,inuse=0(0%)}
+|  |  |  +&gt; Bucket@1a245833[inUse=0,size=0,max=2147483647,closed=false]{capacity=60416,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@56620197[inUse=0,size=0,max=2147483647,closed=false]{capacity=61440,inuse=0(0%)}
+|  |  |  +&gt; Bucket@673fdbce[inUse=0,size=0,max=2147483647,closed=false]{capacity=61440,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@6eda5c9[inUse=0,size=0,max=2147483647,closed=false]{capacity=62464,inuse=0(0%)}
+|  |  |  +&gt; Bucket@5965d37[inUse=0,size=0,max=2147483647,closed=false]{capacity=62464,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@55b7a4e0[inUse=0,size=0,max=2147483647,closed=false]{capacity=63488,inuse=0(0%)}
+|  |  |  +&gt; Bucket@7a5ceedd[inUse=0,size=0,max=2147483647,closed=false]{capacity=63488,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@5f058f00[inUse=0,size=0,max=2147483647,closed=false]{capacity=64512,inuse=0(0%)}
+|  |  |  +&gt; Bucket@4201c465[inUse=0,size=0,max=2147483647,closed=false]{capacity=64512,inuse=0(0%)}
 |  |  |  |  +&gt; entries size=0
-|  |  |  +&gt; Bucket@192d43ce[inUse=0,size=0,max=2147483647,closed=false]{capacity=65536,inuse=0(0%)}
+|  |  |  +&gt; Bucket@5b799640[inUse=0,size=0,max=2147483647,closed=false]{capacity=65536,inuse=0(0%)}
 |  |  |     +&gt; entries size=0
 |  |  +&gt; indirect size=64
-|  |     +&gt; Bucket@72057ecf[inUse=0,size=0,max=2147483647,closed=false]{capacity=1024,inuse=0(0%)}
+|  |     +&gt; Bucket@6cb107fd[inUse=0,size=0,max=2147483647,closed=false]{capacity=1024,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@1afd44cb[inUse=0,size=0,max=2147483647,closed=false]{capacity=2048,inuse=0(0%)}
+|  |     +&gt; Bucket@710636b0[inUse=0,size=0,max=2147483647,closed=false]{capacity=2048,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6973b51b[inUse=0,size=0,max=2147483647,closed=false]{capacity=3072,inuse=0(0%)}
+|  |     +&gt; Bucket@3de8f619[inUse=0,size=0,max=2147483647,closed=false]{capacity=3072,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@1ab3a8c8[inUse=0,size=0,max=2147483647,closed=false]{capacity=4096,inuse=0(0%)}
+|  |     +&gt; Bucket@2ab4bc72[inUse=0,size=0,max=2147483647,closed=false]{capacity=4096,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@43195e57[inUse=0,size=0,max=2147483647,closed=false]{capacity=5120,inuse=0(0%)}
+|  |     +&gt; Bucket@4e5ed836[inUse=0,size=0,max=2147483647,closed=false]{capacity=5120,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@333291e3[inUse=0,size=0,max=2147483647,closed=false]{capacity=6144,inuse=0(0%)}
+|  |     +&gt; Bucket@eadd4fb[inUse=0,size=0,max=2147483647,closed=false]{capacity=6144,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@479d31f3[inUse=0,size=0,max=2147483647,closed=false]{capacity=7168,inuse=0(0%)}
+|  |     +&gt; Bucket@740fb309[inUse=0,size=0,max=2147483647,closed=false]{capacity=7168,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@40ef3420[inUse=0,size=0,max=2147483647,closed=false]{capacity=8192,inuse=0(0%)}
+|  |     +&gt; Bucket@7bd7d6d6[inUse=0,size=0,max=2147483647,closed=false]{capacity=8192,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@498d318c[inUse=0,size=0,max=2147483647,closed=false]{capacity=9216,inuse=0(0%)}
+|  |     +&gt; Bucket@43f02ef2[inUse=0,size=0,max=2147483647,closed=false]{capacity=9216,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6e171cd7[inUse=0,size=0,max=2147483647,closed=false]{capacity=10240,inuse=0(0%)}
+|  |     +&gt; Bucket@239a307b[inUse=0,size=0,max=2147483647,closed=false]{capacity=10240,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@402bba4f[inUse=0,size=0,max=2147483647,closed=false]{capacity=11264,inuse=0(0%)}
+|  |     +&gt; Bucket@2a8448fa[inUse=0,size=0,max=2147483647,closed=false]{capacity=11264,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@795cd85e[inUse=0,size=0,max=2147483647,closed=false]{capacity=12288,inuse=0(0%)}
+|  |     +&gt; Bucket@6f204a1a[inUse=0,size=0,max=2147483647,closed=false]{capacity=12288,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@59fd97a8[inUse=0,size=0,max=2147483647,closed=false]{capacity=13312,inuse=0(0%)}
+|  |     +&gt; Bucket@2de56eb2[inUse=0,size=0,max=2147483647,closed=false]{capacity=13312,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@f5ac9e4[inUse=0,size=0,max=2147483647,closed=false]{capacity=14336,inuse=0(0%)}
+|  |     +&gt; Bucket@5f8e8a9d[inUse=0,size=0,max=2147483647,closed=false]{capacity=14336,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@123ef382[inUse=0,size=0,max=2147483647,closed=false]{capacity=15360,inuse=0(0%)}
+|  |     +&gt; Bucket@5745ca0e[inUse=0,size=0,max=2147483647,closed=false]{capacity=15360,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@dbf57b3[inUse=0,size=0,max=2147483647,closed=false]{capacity=16384,inuse=0(0%)}
+|  |     +&gt; Bucket@3ad83a66[inUse=0,size=0,max=2147483647,closed=false]{capacity=16384,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@384ad17b[inUse=0,size=0,max=2147483647,closed=false]{capacity=17408,inuse=0(0%)}
+|  |     +&gt; Bucket@3cce5371[inUse=0,size=0,max=2147483647,closed=false]{capacity=17408,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@61862a7f[inUse=0,size=0,max=2147483647,closed=false]{capacity=18432,inuse=0(0%)}
+|  |     +&gt; Bucket@17bffc17[inUse=0,size=0,max=2147483647,closed=false]{capacity=18432,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@441772e[inUse=0,size=0,max=2147483647,closed=false]{capacity=19456,inuse=0(0%)}
+|  |     +&gt; Bucket@6e535154[inUse=0,size=0,max=2147483647,closed=false]{capacity=19456,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@7334aada[inUse=0,size=0,max=2147483647,closed=false]{capacity=20480,inuse=0(0%)}
+|  |     +&gt; Bucket@15a34df2[inUse=0,size=0,max=2147483647,closed=false]{capacity=20480,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@1d9b7cce[inUse=0,size=0,max=2147483647,closed=false]{capacity=21504,inuse=0(0%)}
+|  |     +&gt; Bucket@5b38c1ec[inUse=0,size=0,max=2147483647,closed=false]{capacity=21504,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4d9e68d0[inUse=0,size=0,max=2147483647,closed=false]{capacity=22528,inuse=0(0%)}
+|  |     +&gt; Bucket@338fc1d8[inUse=0,size=0,max=2147483647,closed=false]{capacity=22528,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@42e99e4a[inUse=0,size=0,max=2147483647,closed=false]{capacity=23552,inuse=0(0%)}
+|  |     +&gt; Bucket@4722ef0c[inUse=0,size=0,max=2147483647,closed=false]{capacity=23552,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@14dd9eb7[inUse=0,size=0,max=2147483647,closed=false]{capacity=24576,inuse=0(0%)}
+|  |     +&gt; Bucket@48e1f6c7[inUse=0,size=0,max=2147483647,closed=false]{capacity=24576,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@52e6fdee[inUse=0,size=0,max=2147483647,closed=false]{capacity=25600,inuse=0(0%)}
+|  |     +&gt; Bucket@55cb6996[inUse=0,size=0,max=2147483647,closed=false]{capacity=25600,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6c80d78a[inUse=0,size=0,max=2147483647,closed=false]{capacity=26624,inuse=0(0%)}
+|  |     +&gt; Bucket@1807e3f6[inUse=0,size=0,max=2147483647,closed=false]{capacity=26624,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@62150f9e[inUse=0,size=0,max=2147483647,closed=false]{capacity=27648,inuse=0(0%)}
+|  |     +&gt; Bucket@480d3575[inUse=0,size=0,max=2147483647,closed=false]{capacity=27648,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@1a451d4d[inUse=0,size=0,max=2147483647,closed=false]{capacity=28672,inuse=0(0%)}
+|  |     +&gt; Bucket@f1da57d[inUse=0,size=0,max=2147483647,closed=false]{capacity=28672,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@7fa98a66[inUse=0,size=0,max=2147483647,closed=false]{capacity=29696,inuse=0(0%)}
+|  |     +&gt; Bucket@194fad1[inUse=0,size=0,max=2147483647,closed=false]{capacity=29696,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@15ff3e9e[inUse=0,size=0,max=2147483647,closed=false]{capacity=30720,inuse=0(0%)}
+|  |     +&gt; Bucket@26abb146[inUse=0,size=0,max=2147483647,closed=false]{capacity=30720,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@5fdcaa40[inUse=0,size=0,max=2147483647,closed=false]{capacity=31744,inuse=0(0%)}
+|  |     +&gt; Bucket@72c8e7b[inUse=0,size=0,max=2147483647,closed=false]{capacity=31744,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6dc17b83[inUse=0,size=0,max=2147483647,closed=false]{capacity=32768,inuse=0(0%)}
+|  |     +&gt; Bucket@65f8f5ae[inUse=0,size=0,max=2147483647,closed=false]{capacity=32768,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@5e0826e7[inUse=0,size=0,max=2147483647,closed=false]{capacity=33792,inuse=0(0%)}
+|  |     +&gt; Bucket@431cd9b2[inUse=0,size=0,max=2147483647,closed=false]{capacity=33792,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@32eff876[inUse=0,size=0,max=2147483647,closed=false]{capacity=34816,inuse=0(0%)}
+|  |     +&gt; Bucket@38467116[inUse=0,size=0,max=2147483647,closed=false]{capacity=34816,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@8dbdac1[inUse=0,size=0,max=2147483647,closed=false]{capacity=35840,inuse=0(0%)}
+|  |     +&gt; Bucket@5b7a7f33[inUse=0,size=0,max=2147483647,closed=false]{capacity=35840,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6e20b53a[inUse=0,size=0,max=2147483647,closed=false]{capacity=36864,inuse=0(0%)}
+|  |     +&gt; Bucket@790da477[inUse=0,size=0,max=2147483647,closed=false]{capacity=36864,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@71809907[inUse=0,size=0,max=2147483647,closed=false]{capacity=37888,inuse=0(0%)}
+|  |     +&gt; Bucket@5c7933ad[inUse=0,size=0,max=2147483647,closed=false]{capacity=37888,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@3ce1e309[inUse=0,size=0,max=2147483647,closed=false]{capacity=38912,inuse=0(0%)}
+|  |     +&gt; Bucket@57bc27f5[inUse=0,size=0,max=2147483647,closed=false]{capacity=38912,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6aba2b86[inUse=0,size=0,max=2147483647,closed=false]{capacity=39936,inuse=0(0%)}
+|  |     +&gt; Bucket@5fb759d6[inUse=0,size=0,max=2147483647,closed=false]{capacity=39936,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@158da8e[inUse=0,size=0,max=2147483647,closed=false]{capacity=40960,inuse=0(0%)}
+|  |     +&gt; Bucket@4b8d604b[inUse=0,size=0,max=2147483647,closed=false]{capacity=40960,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@74e52303[inUse=0,size=0,max=2147483647,closed=false]{capacity=41984,inuse=0(0%)}
+|  |     +&gt; Bucket@5e7cd6cc[inUse=0,size=0,max=2147483647,closed=false]{capacity=41984,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@47af7f3d[inUse=0,size=0,max=2147483647,closed=false]{capacity=43008,inuse=0(0%)}
+|  |     +&gt; Bucket@68c9d179[inUse=0,size=0,max=2147483647,closed=false]{capacity=43008,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@7c729a55[inUse=0,size=0,max=2147483647,closed=false]{capacity=44032,inuse=0(0%)}
+|  |     +&gt; Bucket@d554c5f[inUse=0,size=0,max=2147483647,closed=false]{capacity=44032,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@3bb9a3ff[inUse=0,size=0,max=2147483647,closed=false]{capacity=45056,inuse=0(0%)}
+|  |     +&gt; Bucket@2dfaea86[inUse=0,size=0,max=2147483647,closed=false]{capacity=45056,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@661972b0[inUse=0,size=0,max=2147483647,closed=false]{capacity=46080,inuse=0(0%)}
+|  |     +&gt; Bucket@15888343[inUse=0,size=0,max=2147483647,closed=false]{capacity=46080,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@5af3afd9[inUse=0,size=0,max=2147483647,closed=false]{capacity=47104,inuse=0(0%)}
+|  |     +&gt; Bucket@33ecda92[inUse=0,size=0,max=2147483647,closed=false]{capacity=47104,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@323b36e0[inUse=0,size=0,max=2147483647,closed=false]{capacity=48128,inuse=0(0%)}
+|  |     +&gt; Bucket@14fc5f04[inUse=0,size=0,max=2147483647,closed=false]{capacity=48128,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@44ebcd03[inUse=0,size=0,max=2147483647,closed=false]{capacity=49152,inuse=0(0%)}
+|  |     +&gt; Bucket@6e2829c7[inUse=0,size=0,max=2147483647,closed=false]{capacity=49152,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@694abbdc[inUse=0,size=0,max=2147483647,closed=false]{capacity=50176,inuse=0(0%)}
+|  |     +&gt; Bucket@3feb2dda[inUse=0,size=0,max=2147483647,closed=false]{capacity=50176,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@2e005c4b[inUse=0,size=0,max=2147483647,closed=false]{capacity=51200,inuse=0(0%)}
+|  |     +&gt; Bucket@6a8658ff[inUse=0,size=0,max=2147483647,closed=false]{capacity=51200,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4567f35d[inUse=0,size=0,max=2147483647,closed=false]{capacity=52224,inuse=0(0%)}
+|  |     +&gt; Bucket@1c742ed4[inUse=0,size=0,max=2147483647,closed=false]{capacity=52224,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@5ffead27[inUse=0,size=0,max=2147483647,closed=false]{capacity=53248,inuse=0(0%)}
+|  |     +&gt; Bucket@333d4a8c[inUse=0,size=0,max=2147483647,closed=false]{capacity=53248,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6356695f[inUse=0,size=0,max=2147483647,closed=false]{capacity=54272,inuse=0(0%)}
+|  |     +&gt; Bucket@55de24cc[inUse=0,size=0,max=2147483647,closed=false]{capacity=54272,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4f18837a[inUse=0,size=0,max=2147483647,closed=false]{capacity=55296,inuse=0(0%)}
+|  |     +&gt; Bucket@dc7df28[inUse=0,size=0,max=2147483647,closed=false]{capacity=55296,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@359f7cdf[inUse=0,size=0,max=2147483647,closed=false]{capacity=56320,inuse=0(0%)}
+|  |     +&gt; Bucket@30f842ca[inUse=0,size=0,max=2147483647,closed=false]{capacity=56320,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@1fa268de[inUse=0,size=0,max=2147483647,closed=false]{capacity=57344,inuse=0(0%)}
+|  |     +&gt; Bucket@69c81773[inUse=0,size=0,max=2147483647,closed=false]{capacity=57344,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4f6ee6e4[inUse=0,size=0,max=2147483647,closed=false]{capacity=58368,inuse=0(0%)}
+|  |     +&gt; Bucket@4d14b6c2[inUse=0,size=0,max=2147483647,closed=false]{capacity=58368,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4466af20[inUse=0,size=0,max=2147483647,closed=false]{capacity=59392,inuse=0(0%)}
+|  |     +&gt; Bucket@7e990ed7[inUse=0,size=0,max=2147483647,closed=false]{capacity=59392,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@a514af7[inUse=0,size=0,max=2147483647,closed=false]{capacity=60416,inuse=0(0%)}
+|  |     +&gt; Bucket@c05fddc[inUse=0,size=0,max=2147483647,closed=false]{capacity=60416,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@6b927fb[inUse=0,size=0,max=2147483647,closed=false]{capacity=61440,inuse=0(0%)}
+|  |     +&gt; Bucket@25df00a0[inUse=0,size=0,max=2147483647,closed=false]{capacity=61440,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@3e58a80e[inUse=0,size=0,max=2147483647,closed=false]{capacity=62464,inuse=0(0%)}
+|  |     +&gt; Bucket@4d15107f[inUse=0,size=0,max=2147483647,closed=false]{capacity=62464,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4fb61f4a[inUse=0,size=0,max=2147483647,closed=false]{capacity=63488,inuse=0(0%)}
+|  |     +&gt; Bucket@7b4c50bc[inUse=0,size=0,max=2147483647,closed=false]{capacity=63488,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@4fb0f2b9[inUse=0,size=0,max=2147483647,closed=false]{capacity=64512,inuse=0(0%)}
+|  |     +&gt; Bucket@5884a914[inUse=0,size=0,max=2147483647,closed=false]{capacity=64512,inuse=0(0%)}
 |  |     |  +&gt; entries size=0
-|  |     +&gt; Bucket@79924b[inUse=0,size=0,max=2147483647,closed=false]{capacity=65536,inuse=0(0%)}
+|  |     +&gt; Bucket@50378a4[inUse=0,size=0,max=2147483647,closed=false]{capacity=65536,inuse=0(0%)}
 |  |        +&gt; entries size=0
-|  +- org.eclipse.jetty.server.AbstractConnector$1@7b9a4292
-|  += HttpConnectionFactory@62e136d3[HTTP/1.1] - STARTED
-|  |  +- HttpConfiguration@9f116cc{32768/8192,8192/8192,https://:0,[]}
+|  +- org.eclipse.jetty.server.AbstractConnector$1@60f00693
+|  += HttpConnectionFactory@69e1dd28[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@34bde49d{32768/8192,8192/8192,https://:0,[]}
 |  |     +&gt; customizers size=0
 |  |     +&gt; formEncodedMethods size=2
 |  |     |  +&gt; POST
@@ -12254,39 +12826,39 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 |  |     +&gt; maxErrorDispatches=10
 |  |     +&gt; minRequestDataRate=0
 |  |     +&gt; minResponseDataRate=0
-|  |     +&gt; requestCookieCompliance=org.eclipse.jetty.http.CookieCompliance@67d48005
-|  |     +&gt; responseCookieCompliance=org.eclipse.jetty.http.CookieCompliance@67d48005
+|  |     +&gt; requestCookieCompliance=org.eclipse.jetty.http.CookieCompliance@23f5b5dc
+|  |     +&gt; responseCookieCompliance=org.eclipse.jetty.http.CookieCompliance@23f5b5dc
 |  |     +&gt; notifyRemoteAsyncErrors=true
 |  |     +&gt; relativeRedirectAllowed=false
-|  += SelectorManager@ServerConnector@1184ab05{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  |  += ManagedSelector@5876a9af{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED <i class="conum" data-value="5"></i><b>(5)</b>
-|  |     += AdaptiveExecutionStrategy@7ec7ffd3/SelectorProducer@5b239d7d/PRODUCING/p=false/QueuedThreadPool[qtp143110009]@887af79{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@57c758ac{reserved=0/8,pending=0}][pc=0,pic=0,pec=0,epc=0]@2021-10-06T14:48:38.047619-05:00 - STARTED
-|  |     |  +- SelectorProducer@5b239d7d
-|  |     |  +~ QueuedThreadPool[qtp143110009]@887af79{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@57c758ac{reserved=0/8,pending=0}] - STARTED
-|  |     +&gt; updates @ 2021-10-06T14:48:38.044713-05:00 size=0
-|  |     +&gt; keys @ 2021-10-06T14:48:38.04669-05:00 size=0 <i class="conum" data-value="6"></i><b>(6)</b>
-|  +- sun.nio.ch.ServerSocketChannelImpl[/[0:0:0:0:0:0:0:0]:8080]
-|  +- qtp143110009-17-acceptor-0@6a61babe-ServerConnector@1184ab05{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-+- org.eclipse.jetty.util.component.HaltLifeCycleListener@6572421
-+= ErrorHandler@6b81ce95{STARTED} - STARTED
-+&gt; startJarLoader@28ba21f3 <i class="conum" data-value="7"></i><b>(7)</b>
+|  += SelectorManager@ServerConnector@248e319b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += ManagedSelector@7139992f{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED <i class="conum" data-value="5"></i><b>(5)</b>
+|  |     += AdaptiveExecutionStrategy@69504ae9/SelectorProducer@7dfd3c81/PRODUCING/p=false/QueuedThreadPool[qtp350068407]@14dd9eb7{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@6fa51cd4{reserved=0/16,pending=0}][pc=0,pic=0,pec=0,epc=0]@2022-02-07T11:50:26.637221+01:00 - STARTED
+|  |     |  +- SelectorProducer@7dfd3c81
+|  |     |  +~ QueuedThreadPool[qtp350068407]@14dd9eb7{STARTED,4&lt;=4&lt;=200,i=2,r=-1,q=0}[ReservedThreadExecutor@6fa51cd4{reserved=0/16,pending=0}] - STARTED
+|  |     +&gt; updates @ 2022-02-07T11:50:26.634638+01:00 size=0
+|  |     +&gt; keys @ 2022-02-07T11:50:26.635902+01:00 size=0 <i class="conum" data-value="6"></i><b>(6)</b>
+|  +- sun.nio.ch.ServerSocketChannelImpl[/0:0:0:0:0:0:0:0:8080]
+|  +- qtp350068407-24-acceptor-0@3f719643-ServerConnector@248e319b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@2584b82d
++= ErrorHandler@7bbc8656{STARTED} - STARTED
++&gt; startJarLoader@4b553d26 <i class="conum" data-value="7"></i><b>(7)</b>
    +&gt; URLs size=9
    |  +&gt; file:/path/to/jetty.base/resources/
    |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.0-alpha5.jar
-   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.7.jar
+   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.8.jar
    |  +&gt; file:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-10.0.7.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-10.0.7.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-10.0.7.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-10.0.7.jar
-   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-10.0.7.jar
-   +&gt; jdk.internal.loader.ClassLoaders$AppClassLoader@42110406
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-10.0.8.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-10.0.8.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-10.0.8.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-10.0.8.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-10.0.8.jar
+   +&gt; jdk.internal.loader.ClassLoaders$AppClassLoader@277050dc
       +&gt; packages size=4
       |  +&gt; package org.eclipse.jetty.start.config
       |  +&gt; package org.eclipse.jetty.start.builders
       |  +&gt; package org.eclipse.jetty.start.shaded.util
       |  +&gt; package org.eclipse.jetty.start
-      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@3f5f02d7
+      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@5a7fe64f
          +&gt; packages size=2
             +&gt; package sun.util.resources.provider
             +&gt; package sun.util.resources.cldr.provider
@@ -12410,6 +12982,106 @@ You can then use the string <code>INFO</code> or <code>WARN</code> (upper case) 
 <div class="paragraph">
 <p>In another case, you may need to troubleshoot only HTTP/2 requests, and therefore enabling only the <code>org.eclipse.jetty.http2</code> logger name could be enough.</p>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-troubleshooting-debugging"><a class="anchor" href="#og-troubleshooting-debugging"></a><a class="link" href="#og-troubleshooting-debugging">Remote Debugging</a></h4>
+<div class="paragraph">
+<p>The Java Virtual Machines allows remote processes on different hosts to connect for debugging purposes, by using specific command line options.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>While it is possible to enable remote debugging on a Jetty server, it is typically not recommended for security and performance reasons.
+Only enable remote debugging on a Jetty server as a last resort to troubleshoot issues that could not be troubleshot otherwise.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can easily create a custom Jetty module (see <a href="#og-modules-custom">this section</a>) with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">remote-debug.mod</div>
+<div class="content">
+<pre>[description]
+Enables remote debugging
+
+[exec]
+-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>[exec]</code> directive (documented <a href="#og-modules-directive-exec">here</a>) is necessary to pass the <code>-agentlib:jdwp</code> JVM option to the forked JVM that runs Jetty, so that you can attach with a debugger.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>address</code> parameter of the <code>-agentlib:jdwp</code> command line option specifies the network address and port the Jetty JVM listens on for remote debugging.</p>
+</div>
+<div class="paragraph">
+<p>Please refer to the <a href="https://docs.oracle.com/en/java/javase/17/docs/specs/jpda/conninv.html">Java Debug Wire Protocol documentation</a> for additional information about the <code>-agentlib:jdwp</code> command line option and its parameters.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can now enable the <code>remote-debug</code> Jetty module with the following command issued from the <code>$JETTY_BASE</code> directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=server,remote-debug</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command above minimally adds a Jetty server without connectors (via the <code>server</code> Jetty module) and the <code>remote-debug</code> Jetty module, and produces the following <code>$JETTY_BASE</code> directory structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>$JETTY_BASE
+├── modules
+│   └── remote-debug.mod
+├── resources
+│   └── jetty-logging.properties
+└── start.d
+    ├── <mark>remote-debug.ini</mark>
+    └── server.ini</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can easily disable the <code>remote-debug</code> Jetty module as explained in <a href="#og-start-configure-disable">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, you can enable the <code>remote-debug</code> module on the command line, as explained in <a href="#og-start-configure-enable-command-line">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>Starting the Jetty server with the <code>remote-debug</code> module enabled yields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [remote-debug]. Use --dry-run to generate the command line to avoid forking.
+<mark>Listening for transport dt_socket at address: 5005</mark>
+<strong>2022-02-07 11:50:27.744:</strong>INFO :oejs.Server:main: jetty-10.0.8; built: 2022-02-07T10:34:42.299Z; git: 716c7afd8e40d8f645b32aff06945a249d6eb511; jvm 11.0.14+9
+<strong>2022-02-07 11:50:27.771:</strong>INFO :oejs.Server:main: Started Server@4fb0f2b9{STARTING}[10.0.8,sto=5000] @270ms</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how the JVM is listening on port <code>5005</code> to allow remote debuggers to connect.</p>
+</div>
+<div class="paragraph">
+<p>If you want to avoid to fork a second JVM to pass the <code>-agentlib:jdwp</code> JVM option, please read <a href="#og-start-configure-dry-run">this section</a>.</p>
 </div>
 </div>
 </div>
@@ -12950,8 +13622,8 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 10.0.7<br>
-Last updated 2021-10-06 12:51:45 -0500
+Version 10.0.8<br>
+Last updated 2022-02-01 18:50:48 +0100
 </div>
 </div>
 </body>

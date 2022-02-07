@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.15">
+<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Programming Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <link rel="stylesheet" href="./asciidoctor.css">
@@ -20,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.7,</span>
-<span id="revdate">2021-10-06</span>
+<span id="revnumber">version 11.0.8,</span>
+<span id="revdate">2022-02-07</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -29,10 +30,14 @@
 <li><a href="#pg-eclipse-jetty-programming-guide">Eclipse Jetty Programming Guide</a></li>
 <li><a href="#pg-client">Client Libraries</a>
 <ul class="sectlevel2">
-<li><a href="#pg-client-io-arch">Client Libraries I/O Architecture</a>
+<li><a href="#pg-client-io-arch">I/O Architecture</a>
 <ul class="sectlevel3">
-<li><a href="#pg-client-io-arch-network">Client Libraries Network Layer</a></li>
-<li><a href="#pg-client-io-arch-protocol">Client Libraries Protocol Layer</a></li>
+<li><a href="#pg-client-io-arch-network">Network Layer</a>
+<ul class="sectlevel4">
+<li><a href="#pg-client-io-arch-unix-domain">Unix-Domain Support</a></li>
+</ul>
+</li>
+<li><a href="#pg-client-io-arch-protocol">Protocol Layer</a></li>
 </ul>
 </li>
 <li><a href="#pg-client-http">HTTP Client</a>
@@ -80,8 +85,10 @@
 <ul class="sectlevel4">
 <li><a href="#pg-client-http-transport-http11">HTTP/1.1 Transport</a></li>
 <li><a href="#pg-client-http-transport-http2">HTTP/2 Transport</a></li>
+<li><a href="#pg-client-http-transport-http3">HTTP/3 Transport</a></li>
 <li><a href="#pg-client-http-transport-fcgi">FastCGI Transport</a></li>
 <li><a href="#pg-client-http-transport-dynamic">Dynamic Transport</a></li>
+<li><a href="#pg-client-http-transport-unix-domain">Unix-Domain Configuration</a></li>
 </ul>
 </li>
 </ul>
@@ -96,6 +103,16 @@
 <li><a href="#pg-client-http2-response">Receiving a Response</a></li>
 <li><a href="#pg-client-http2-reset">Resetting a Request or Response</a></li>
 <li><a href="#pg-client-http2-push">Receiving HTTP/2 Pushes</a></li>
+</ul>
+</li>
+<li><a href="#pg-client-http3">HTTP/3 Client Library</a>
+<ul class="sectlevel3">
+<li><a href="#pg-client-http3-intro">Introducing HTTP3Client</a></li>
+<li><a href="#pg-client-http3-connect">Connecting to the Server</a></li>
+<li><a href="#pg-client-http3-configure">Configuring the Session</a></li>
+<li><a href="#pg-client-http3-request">Sending a Request</a></li>
+<li><a href="#pg-client-http3-response">Receiving a Response</a></li>
+<li><a href="#pg-client-http3-reset">Resetting a Request or Response</a></li>
 </ul>
 </li>
 <li><a href="#pg-client-websocket">WebSocket Client</a>
@@ -154,11 +171,12 @@
 </li>
 <li><a href="#pg-server-http">HTTP Server Libraries</a>
 <ul class="sectlevel3">
-<li><a href="#pg-server-http-request-processing">Server Request Processing</a>
+<li><a href="#pg-server-http-request-processing">Request Processing</a>
 <ul class="sectlevel4">
 <li><a href="#pg-server-http-channel-events">HttpChannel Events</a></li>
 </ul>
 </li>
+<li><a href="#pg-server-http-request-logging">Request Logging</a></li>
 <li><a href="#pg-server-http-connector">Server Connectors</a>
 <ul class="sectlevel4">
 <li><a href="#pg-server-http-connector-protocol">Configuring Protocols</a>
@@ -167,6 +185,7 @@
 <li><a href="#pg-server-http-connector-protocol-http11-tls">Encrypted HTTP/1.1 (https)</a></li>
 <li><a href="#pg-server-http-connector-protocol-http2">Clear-Text HTTP/2</a></li>
 <li><a href="#pg-server-http-connector-protocol-http2-tls">Encrypted HTTP/2</a></li>
+<li><a href="#pg-server-http-connector-protocol-http3">HTTP/3</a></li>
 <li><a href="#pg-server-http-connector-protocol-proxy-http11">Jetty Behind a Load Balancer</a></li>
 </ul>
 </li>
@@ -220,6 +239,15 @@
 <li><a href="#pg-server-http2-response">Sending a Response</a></li>
 <li><a href="#pg-server-http2-reset">Resetting a Request</a></li>
 <li><a href="#pg-server-http2-push">HTTP/2 Push of Resources</a></li>
+</ul>
+</li>
+<li><a href="#pg-server-http3">HTTP/3 Server Library</a>
+<ul class="sectlevel3">
+<li><a href="#pg-server-http3-intro">Introduction</a></li>
+<li><a href="#pg-server-http3-setup">Server Setup</a></li>
+<li><a href="#pg-server-http3-request">Receiving a Request</a></li>
+<li><a href="#pg-server-http3-response">Sending a Response</a></li>
+<li><a href="#pg-server-http3-reset">Resetting a Request</a></li>
 </ul>
 </li>
 <li><a href="#pg-server-session">HTTP Session Management</a>
@@ -429,7 +457,7 @@
 <li><a href="#pg-arch-io-connection-listener">Jetty I/O: <code>Connection.Listener</code></a></li>
 </ul>
 </li>
-<li><a href="#pg-arch-io-echo">Jetty I/O: Network Echo</a></li>
+<li><a href="#pg-arch-io-echo">Jetty I/O: TCP Network Echo</a></li>
 </ul>
 </li>
 <li><a href="#pg-arch-listener">Jetty Listeners</a></li>
@@ -494,7 +522,7 @@
 <p>The Eclipse Jetty Programming Guide targets developers who want to use the Eclipse Jetty libraries in their applications.</p>
 </div>
 <div class="paragraph">
-<p>The Eclipse Jetty libraries provide the client-side and server-side APIs to work with various web protocols such as HTTP/1.1, HTTP/2, WebSocket and FastCGI.</p>
+<p>The Eclipse Jetty libraries provide the client-side and server-side APIs to work with various web protocols such as HTTP/1.1, HTTP/2, HTTP/3, WebSocket and FastCGI.</p>
 </div>
 <div class="paragraph">
 <p>You may use the <a href="#pg-client">Eclipse Jetty client-side library</a> in your application to make calls to third party REST services, or to other REST microservices in your system.</p>
@@ -513,7 +541,7 @@
 <div class="paragraph">
 <p>The Eclipse Jetty Project provides client-side libraries that allow you to embed a client in your applications.
 A typical example is a client application that needs to contact a third party service via HTTP (for example a REST service).
-Another example is a proxy application that receives HTTP requests and forwards them as FCGI requests to a PHP application such as WordPress, or receives HTTP/1.1 requests and converts them to HTTP/2.
+Another example is a proxy application that receives HTTP requests and forwards them as FCGI requests to a PHP application such as WordPress, or receives HTTP/1.1 requests and converts them to HTTP/2 or HTTP/3.
 Yet another example is a client application that needs to receive events from a WebSocket server.</p>
 </div>
 <div class="paragraph">
@@ -531,6 +559,9 @@ Yet another example is a client application that needs to receive events from a 
 <p><a href="#pg-client-http2">The Low-Level HTTP/2 Client Library</a> for low-level HTTP/2</p>
 </li>
 <li>
+<p><a href="#pg-client-http3">The Low-Level HTTP/3 Client Library</a> for low-level HTTP/3</p>
+</li>
+<li>
 <p><a href="#pg-client-websocket">The WebSocket client library</a></p>
 </li>
 </ul>
@@ -539,7 +570,7 @@ Yet another example is a client application that needs to receive events from a 
 <p>If you are interested in the low-level details of how the Eclipse Jetty client libraries work, or are interested in writing a custom protocol, look at the <a href="#pg-client-io-arch">Client I/O Architecture</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="pg-client-io-arch"><a class="anchor" href="#pg-client-io-arch"></a><a class="link" href="#pg-client-io-arch">Client Libraries I/O Architecture</a></h3>
+<h3 id="pg-client-io-arch"><a class="anchor" href="#pg-client-io-arch"></a><a class="link" href="#pg-client-io-arch">I/O Architecture</a></h3>
 <div class="paragraph">
 <p>The Jetty client libraries provide the basic components and APIs to implement a network client.</p>
 </div>
@@ -560,7 +591,7 @@ Yet another example is a client application that needs to receive events from a 
 </ol>
 </div>
 <div class="sect3">
-<h4 id="pg-client-io-arch-network"><a class="anchor" href="#pg-client-io-arch-network"></a><a class="link" href="#pg-client-io-arch-network">Client Libraries Network Layer</a></h4>
+<h4 id="pg-client-io-arch-network"><a class="anchor" href="#pg-client-io-arch-network"></a><a class="link" href="#pg-client-io-arch-network">Network Layer</a></h4>
 <div class="paragraph">
 <p>The Jetty client libraries use the common I/O design described in <a href="#pg-arch-io">this section</a>.
 The main client-side component is the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
@@ -690,9 +721,43 @@ This time includes the DNS lookup time <em>and</em> the TCP connect time.</p>
 <div class="paragraph">
 <p>Please refer to the <code>ClientConnector</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
+<div class="sect4">
+<h5 id="pg-client-io-arch-unix-domain"><a class="anchor" href="#pg-client-io-arch-unix-domain"></a><a class="link" href="#pg-client-io-arch-unix-domain">Unix-Domain Support</a></h5>
+<div class="paragraph">
+<p><a href="https://openjdk.java.net/jeps/380">JEP 380</a> introduced Unix-Domain sockets support in Java 16, on all operative systems.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientConnector</code> can be configured to support Unix-Domain sockets in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// This is the path where the server &quot;listens&quot; on.</span>
+Path unixDomainPath = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/server.sock</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Creates a ClientConnector that uses Unix-Domain</span>
+<span class="comment">// sockets, not the network, to connect to the server.</span>
+ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+clientConnector.start();</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Unix-Domain sockets support only when you run your client application with Java 16 or later.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="pg-client-io-arch-protocol"><a class="anchor" href="#pg-client-io-arch-protocol"></a><a class="link" href="#pg-client-io-arch-protocol">Client Libraries Protocol Layer</a></h4>
+<h4 id="pg-client-io-arch-protocol"><a class="anchor" href="#pg-client-io-arch-protocol"></a><a class="link" href="#pg-client-io-arch-protocol">Protocol Layer</a></h4>
 <div class="paragraph">
 <p>The protocol layer builds on top of the network layer to generate the bytes to be written to the network and to parse the bytes read from the network.</p>
 </div>
@@ -1078,14 +1143,21 @@ It offers an asynchronous API that never blocks for I/O, making it very efficien
 <p>However, when all you need to do is to perform a <code>GET</code> request to a resource, Jetty&#8217;s HTTP client offers also a synchronous API; a programming interface where the thread that issued the request blocks until the request/response conversation is complete.</p>
 </div>
 <div class="paragraph">
-<p>Jetty&#8217;s HTTP client supports <a href="#pg-client-http-transport">different transports</a>: HTTP/1.1, FastCGI and HTTP/2. This means that the semantic of an HTTP request: " <code>GET</code> the resource <code>/index.html</code> " can be carried over the network in different formats.
-The most common and default format is HTTP/1.1. That said, Jetty&#8217;s HTTP client can carry the same request using the FastCGI format or the HTTP/2 format.</p>
+<p>Jetty&#8217;s HTTP client supports different <a href="#pg-client-http-transport">transports protocols</a>: HTTP/1.1, HTTP/2, HTTP/3 and FastCGI. This means that the semantic of an HTTP request such as: " <code>GET</code> the resource <code>/index.html</code> " can be carried over the network in different formats.
+The most common and default format is HTTP/1.1. That said, Jetty&#8217;s HTTP client can carry the same request using the HTTP/2 format, the HTTP/3 format, or the FastCGI format.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="#pg-client-http-transport-fcgi">FastCGI transport</a> is heavily used in Jetty&#8217;s <a href="#pg-server-fastcgi">FastCGI support</a> that allows Jetty to work as a reverse proxy to PHP (exactly like Apache or Nginx do) and therefore be able to serve, for example, WordPress websites.</p>
+<p>Furthermore, every transport protocol can be sent either over the network or via Unix-Domain sockets.
+Supports for Unix-Domain sockets requires Java 16 or later, since Unix-Domain sockets support has been introduced in OpenJDK with <a href="https://openjdk.java.net/jeps/380">JEP 380</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="#pg-client-http-transport-fcgi">FastCGI transport</a> is heavily used in Jetty&#8217;s <a href="#pg-server-fastcgi">FastCGI support</a> that allows Jetty to work as a reverse proxy to PHP (exactly like Apache or Nginx do) and therefore be able to serve, for example, WordPress websites, often in conjunction with Unix-Domain sockets (although it&#8217;s possible to use FastCGI via network too).</p>
 </div>
 <div class="paragraph">
 <p>The HTTP/2 transport allows Jetty&#8217;s HTTP client to perform requests using HTTP/2 to HTTP/2 enabled web sites, see also Jetty&#8217;s <a href="#pg-client-http2">HTTP/2 support</a>.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP/3 transport allows Jetty&#8217;s HTTP client to perform requests using HTTP/3 to HTTP/3 enabled web sites, see also Jetty&#8217;s <a href="#pg-client-http3">HTTP/3 support</a>.</p>
 </div>
 <div class="paragraph">
 <p>Out of the box features that you get with the Jetty HTTP client include:</p>
@@ -1118,7 +1190,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1335,7 +1407,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="671" height="517">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
 </div>
 </div>
 <div class="paragraph">
@@ -2109,7 +2181,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="369" height="208">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
 </div>
 </div>
 <div class="paragraph">
@@ -2216,7 +2288,7 @@ ContentResponse response = httpClient.GET(<span class="string"><span class="deli
 <p>Configured in this way, <code>HttpClient</code> makes requests to the HTTP proxy (for plain-text HTTP requests) or establishes a tunnel via HTTP <code>CONNECT</code> (for encrypted HTTPS requests).</p>
 </div>
 <div class="paragraph">
-<p>Proxying is supported for both HTTP/1.1 and HTTP/2.</p>
+<p>Proxying is supported for HTTP/1.1 and HTTP/2.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-client-http-proxy-authentication"><a class="anchor" href="#pg-client-http-proxy-authentication"></a><a class="link" href="#pg-client-http-proxy-authentication">Proxy Authentication Support</a></h5>
@@ -2251,7 +2323,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="711" height="413">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
 </div>
 </div>
 <div class="paragraph">
@@ -2265,13 +2337,13 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 <div class="sect3">
 <h4 id="pg-client-http-transport"><a class="anchor" href="#pg-client-http-transport"></a><a class="link" href="#pg-client-http-transport">HttpClient Pluggable Transports</a></h4>
 <div class="paragraph">
-<p>Jetty&#8217;s <code>HttpClient</code> can be configured to use different transports to carry the semantic of HTTP requests and responses.</p>
+<p>Jetty&#8217;s <code>HttpClient</code> can be configured to use different transport protocols to carry the semantic of HTTP requests and responses.</p>
 </div>
 <div class="paragraph">
 <p>This means that the intention of a client to request resource <code>/index.html</code> using the <code>GET</code> method can be carried over the network in different formats.</p>
 </div>
 <div class="paragraph">
-<p>A <code>HttpClient</code> transport is the component that is in charge of converting a high-level, semantic, HTTP requests such as &#8220;`GET<code> resource </code>/index.html`&#8221; into the specific format understood by the server (for example, HTTP/2), and to convert the server response from the specific format (HTTP/2) into high-level, semantic objects that can be used by applications.</p>
+<p>An <code>HttpClient</code> transport is the component that is in charge of converting a high-level, semantic, HTTP requests such as " <code>GET</code> resource <code>/index.html</code> " into the specific format understood by the server (for example, HTTP/2 or HTTP/3), and to convert the server response from the specific format (HTTP/2 or HTTP/3) into high-level, semantic objects that can be used by applications.</p>
 </div>
 <div class="paragraph">
 <p>The most common protocol format is HTTP/1.1, a textual protocol with lines separated by <code>\r\n</code>:</p>
@@ -2300,17 +2372,37 @@ x0C x0B  D   O   C   U   M   E
 </div>
 </div>
 <div class="paragraph">
-<p>Similarly, HTTP/2 is a binary protocol that transports the same information in a yet different format.</p>
+<p>Similarly, HTTP/2 is a binary protocol that transports the same information in a yet different format via TCP, while HTTP/3 is a binary protocol that transports the same information in yet another format via UDP.</p>
 </div>
 <div class="paragraph">
 <p>A protocol may be <em>negotiated</em> between client and server.
 A request for a resource may be sent using one protocol (for example, HTTP/1.1), but the response may arrive in a different protocol (for example, HTTP/2).</p>
 </div>
 <div class="paragraph">
-<p><code>HttpClient</code> supports 3 static transports, each speaking only one protocol: <a href="#pg-client-http-transport-http11">HTTP/1.1</a>, <a href="#pg-client-http-transport-http2">HTTP/2</a> and <a href="#pg-client-http-transport-fcgi">FastCGI</a>, all of them with 2 variants: clear-text and TLS encrypted.</p>
+<p><code>HttpClient</code> supports these static transports, each speaking only one protocol:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#pg-client-http-transport-http11">HTTP/1.1</a> (both clear-text and TLS encrypted)</p>
+</li>
+<li>
+<p><a href="#pg-client-http-transport-http2">HTTP/2</a> (both clear-text and TLS encrypted)</p>
+</li>
+<li>
+<p><a href="#pg-client-http-transport-http3">HTTP/3</a> (only encrypted via QUIC+TLS)</p>
+</li>
+<li>
+<p><a href="#pg-client-http-transport-fcgi">FastCGI</a> (both clear-text and TLS encrypted)</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p><code>HttpClient</code> also supports one <a href="#pg-client-http-transport-dynamic">dynamic transport</a>, that can speak different protocols and can select the right protocol by negotiating it with the server or by explicit indication from applications.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, every transport protocol can be sent either over the network or via Unix-Domain sockets.
+Supports for Unix-Domain sockets requires Java 16 or later, since Unix-Domain sockets support has been introduced in OpenJDK with <a href="https://openjdk.java.net/jeps/380">JEP 380</a>.</p>
 </div>
 <div class="paragraph">
 <p>Applications are typically not aware of the actual protocol being used.
@@ -2369,6 +2461,31 @@ client.start();</code></pre>
 </div>
 </div>
 <div class="sect4">
+<h5 id="pg-client-http-transport-http3"><a class="anchor" href="#pg-client-http-transport-http3"></a><a class="link" href="#pg-client-http-transport-http3">HTTP/3 Transport</a></h5>
+<div class="paragraph">
+<p>The HTTP/3 transport can be configured in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// The HTTP3Client powers the HTTP/3 transport.</span>
+HTTP3Client h3Client = <span class="keyword">new</span> HTTP3Client();
+h3Client.getQuicConfiguration().setSessionRecvWindow(<span class="integer">64</span> * <span class="integer">1024</span> * <span class="integer">1024</span>);
+
+<span class="comment">// Create and configure the HTTP/3 transport.</span>
+HttpClientTransportOverHTTP3 transport = <span class="keyword">new</span> HttpClientTransportOverHTTP3(h3Client);
+
+HttpClient client = <span class="keyword">new</span> HttpClient(transport);
+client.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>HTTP3Client</code> is the lower-level client that provides an API based on HTTP/3 concepts such as <em>sessions</em>, <em>streams</em> and <em>frames</em> that are specific to HTTP/3. See <a href="#pg-client-http3">the HTTP/3 client section</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p><code>HttpClientTransportOverHTTP3</code> uses <code>HTTP3Client</code> to format high-level semantic HTTP requests (like "GET resource /index.html") into the HTTP/3 specific format.</p>
+</div>
+</div>
+<div class="sect4">
 <h5 id="pg-client-http-transport-fcgi"><a class="anchor" href="#pg-client-http-transport-fcgi"></a><a class="link" href="#pg-client-http-transport-fcgi">FastCGI Transport</a></h5>
 <div class="paragraph">
 <p>The FastCGI transport can be configured in this way:</p>
@@ -2395,7 +2512,7 @@ client.start();</code></pre>
 <p>The static transports work well if you know in advance the protocol you want to speak with the server, or if the server only supports one protocol (such as FastCGI).</p>
 </div>
 <div class="paragraph">
-<p>With the advent of HTTP/2, however, servers are now able to support multiple protocols, at least both HTTP/1.1 and HTTP/2.</p>
+<p>With the advent of HTTP/2 and HTTP/3, however, servers are now able to support multiple protocols, at least both HTTP/1.1 and HTTP/2.</p>
 </div>
 <div class="paragraph">
 <p>The HTTP/2 protocol is typically negotiated between client and server.
@@ -2514,6 +2631,64 @@ If the server also supports ALPN, then the protocol will be negotiated via ALPN 
 If the server does not support ALPN, the client will try to use the first protocol configured in <code>HttpClientTransportDynamic</code>, and the communication may succeed or fail depending on whether the server supports the protocol chosen by the client.</p>
 </div>
 </div>
+<div class="sect4">
+<h5 id="pg-client-http-transport-unix-domain"><a class="anchor" href="#pg-client-http-transport-unix-domain"></a><a class="link" href="#pg-client-http-transport-unix-domain">Unix-Domain Configuration</a></h5>
+<div class="paragraph">
+<p>All the transports can be configured with a <code>ClientConnector</code>, the component that is responsible for the transmission of the bytes generated by the transport to the server.</p>
+</div>
+<div class="paragraph">
+<p>By default, <code>ClientConnector</code> uses TCP networking to send bytes to the server and receive bytes from the server.</p>
+</div>
+<div class="paragraph">
+<p>When you are using Java 16 or later, <code>ClientConnector</code> also support <a href="#pg-client-io-arch-unix-domain">Unix-Domain sockets</a>, and every transport can be configured to use Unix-Domain sockets instead of TCP networking.</p>
+</div>
+<div class="paragraph">
+<p>To configure Unix-Domain sockets, you can create a <code>ClientConnector</code> instance in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// This is the path where the server &quot;listens&quot; on.</span>
+Path unixDomainPath = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/server.sock</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Creates a ClientConnector that uses Unix-Domain</span>
+<span class="comment">// sockets, not the network, to connect to the server.</span>
+ClientConnector unixDomainClientConnector = ClientConnector.forUnixDomain(unixDomainPath);
+
+<span class="comment">// Use Unix-Domain for HTTP/1.1.</span>
+HttpClientTransportOverHTTP http1Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP(unixDomainClientConnector);
+
+<span class="comment">// You can use Unix-Domain also for HTTP/2.</span>
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(unixDomainClientConnector);
+HttpClientTransportOverHTTP2 http2Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP2(http2Client);
+
+<span class="comment">// You can also use UnixDomain for the dynamic transport.</span>
+ClientConnectionFactory.Info http1 = HttpClientConnectionFactory.HTTP11;
+ClientConnectionFactoryOverHTTP2.HTTP2 http2 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client);
+HttpClientTransportDynamic dynamicTransport = <span class="keyword">new</span> HttpClientTransportDynamic(unixDomainClientConnector, http1, http2);
+
+<span class="comment">// Choose the transport you prefer for HttpClient, for example the dynamic transport.</span>
+HttpClient httpClient = <span class="keyword">new</span> HttpClient(dynamicTransport);
+httpClient.start();</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Unix-Domain sockets support only when you run your client application with Java 16 or later.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can configure a Jetty server to use Unix-Domain sockets, as explained in <a href="#pg-server-http-connector">this section</a>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -2540,7 +2715,7 @@ If the server does not support ALPN, the client will try to use the first protoc
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2574,7 +2749,7 @@ A <em>session</em> represents a single TCP connection to an HTTP/2 server and is
 A <em>session</em> typically has a long life&#8201;&#8212;&#8201;once the TCP connection is established, it remains open until it is not used anymore (and therefore it is closed by the idle timeout mechanism), until a fatal error occurs (for example, a network failure), or if one of the peers decides unilaterally to close the TCP connection.</p>
 </div>
 <div class="paragraph">
-<p>HTTP/2 is a multiplexed protocol: it allows multiple HTTP/2 requests to be sent on the same TCP connection.
+<p>HTTP/2 is a multiplexed protocol: it allows multiple HTTP/2 requests to be sent on the same TCP connection, or <em>session</em>.
 Each request/response cycle is represented by a <em>stream</em>.
 Therefore, a single <em>session</em> manages multiple concurrent <em>streams</em>.
 A <em>stream</em> has typically a very short life compared to the <em>session</em>: a <em>stream</em> only exists for the duration of the request/response cycle and then disappears.</p>
@@ -2725,7 +2900,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.7</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.8</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3054,6 +3229,299 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 </div>
 </div>
 <div class="sect2">
+<h3 id="pg-client-http3"><a class="anchor" href="#pg-client-http3"></a><a class="link" href="#pg-client-http3">HTTP/3 Client Library</a></h3>
+<div class="paragraph">
+<p>In the vast majority of cases, client applications should use the generic, high-level, <a href="#pg-client-http">HTTP client library</a> that also provides HTTP/3 support via the pluggable <a href="#pg-client-http-transport-http3">HTTP/3 transport</a> or the <a href="#pg-client-http-transport-dynamic">dynamic transport</a>.</p>
+</div>
+<div class="paragraph">
+<p>The high-level HTTP library supports cookies, authentication, redirection, connection pooling and a number of other features that are absent in the low-level HTTP/3 library.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP/3 client library has been designed for those applications that need low-level access to HTTP/3 features such as <em>sessions</em>, <em>streams</em> and <em>frames</em>, and this is quite a rare use case.</p>
+</div>
+<div class="paragraph">
+<p>See also the correspondent <a href="#pg-server-http3">HTTP/3 server library</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-intro"><a class="anchor" href="#pg-client-http3-intro"></a><a class="link" href="#pg-client-http3-intro">Introducing HTTP3Client</a></h4>
+<div class="paragraph">
+<p>The Maven artifact coordinates for the HTTP/3 client library are the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The main class is named <code>org.eclipse.jetty.http3.client.HTTP3Client</code>, and must be created, configured and started before use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Instantiate HTTP3Client.</span>
+HTTP3Client http3Client = <span class="keyword">new</span> HTTP3Client();
+
+<span class="comment">// Configure HTTP3Client, for example:</span>
+http3Client.getHTTP3Configuration().setStreamIdleTimeout(<span class="integer">15000</span>);
+
+<span class="comment">// Start HTTP3Client.</span>
+http3Client.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When your application stops, or otherwise does not need <code>HTTP3Client</code> anymore, it should stop the <code>HTTP3Client</code> instance (or instances) that were started:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Stop HTTP3Client.</span>
+http3Client.stop();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>HTTP3Client</code> allows client applications to connect to an HTTP/3 server.
+A <em>session</em> represents a single connection to an HTTP/3 server and is defined by class <code>org.eclipse.jetty.http3.api.Session</code>.
+A <em>session</em> typically has a long life&#8201;&#8212;&#8201;once the connection is established, it remains active until it is not used anymore (and therefore it is closed by the idle timeout mechanism), until a fatal error occurs (for example, a network failure), or if one of the peers decides unilaterally to close the connection.</p>
+</div>
+<div class="paragraph">
+<p>HTTP/3 is a multiplexed protocol because it relies on the multiplexing capabilities of QUIC, the protocol based on UDP that transports HTTP/3 frames.
+Thanks to multiplexing, multiple HTTP/3 requests are sent on the same QUIC connection, or <em>session</em>.
+Each request/response cycle is represented by a <em>stream</em>.
+Therefore, a single <em>session</em> manages multiple concurrent <em>streams</em>.
+A <em>stream</em> has typically a very short life compared to the <em>session</em>: a <em>stream</em> only exists for the duration of the request/response cycle and then disappears.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-connect"><a class="anchor" href="#pg-client-http3-connect"></a><a class="link" href="#pg-client-http3-connect">Connecting to the Server</a></h4>
+<div class="paragraph">
+<p>The first thing an application should do is to connect to the server and obtain a <code>Session</code>.
+The following example connects to the server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Address of the server's port.</span>
+<span class="predefined-type">SocketAddress</span> serverAddress = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8444</span>);
+
+<span class="comment">// Connect to the server, the CompletableFuture will be</span>
+<span class="comment">// notified when the connection is succeeded (or failed).</span>
+CompletableFuture&lt;Session.Client&gt; sessionCF = http3Client.connect(serverAddress, <span class="keyword">new</span> Session.Client.Listener() {});
+
+<span class="comment">// Block to obtain the Session.</span>
+<span class="comment">// Alternatively you can use the CompletableFuture APIs to avoid blocking.</span>
+Session session = sessionCF.get();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-configure"><a class="anchor" href="#pg-client-http3-configure"></a><a class="link" href="#pg-client-http3-configure">Configuring the Session</a></h4>
+<div class="paragraph">
+<p>The <code>connect(&#8230;&#8203;)</code> method takes a <code>Session.Client.Listener</code> parameter.
+This listener&#8217;s <code>onPreface(&#8230;&#8203;)</code> method is invoked just before establishing the connection to the server to gather the client configuration to send to the server.
+Client applications can override this method to change the default configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">SocketAddress</span> serverAddress = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8444</span>);
+http3Client.connect(serverAddress, <span class="keyword">new</span> Session.Client.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>&gt; onPreface(Session session)
+    {
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>&gt; configuration = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+
+        <span class="comment">// Add here configuration settings.</span>
+
+        <span class="keyword">return</span> configuration;
+    }
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Session.Client.Listener</code> is notified of session events originated by the server such as receiving a <code>SETTINGS</code> frame from the server, or the server closing the connection, or the client timing out the connection due to idleness.
+Please refer to the <code>Session.Client.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Client.Listener.html">javadocs</a> for the complete list of events.</p>
+</div>
+<div class="paragraph">
+<p>Once a <code>Session</code> has been established, the communication with the server happens by exchanging <em>frames</em>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-request"><a class="anchor" href="#pg-client-http3-request"></a><a class="link" href="#pg-client-http3-request">Sending a Request</a></h4>
+<div class="paragraph">
+<p>Sending an HTTP request to the server, and receiving a response, creates a <em>stream</em> that encapsulates the exchange of HTTP/3 frames that compose the request and the response.</p>
+</div>
+<div class="paragraph">
+<p>In order to send an HTTP request to the server, the client must send a <code>HEADERS</code> frame.
+<code>HEADERS</code> frames carry the request method, the request URI and the request headers.
+Sending the <code>HEADERS</code> frame opens the <code>Stream</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">SocketAddress</span> serverAddress = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8444</span>);
+CompletableFuture&lt;Session.Client&gt; sessionCF = http3Client.connect(serverAddress, <span class="keyword">new</span> Session.Client.Listener() {});
+Session.Client session = sessionCF.get();
+
+<span class="comment">// Configure the request headers.</span>
+HttpFields requestHeaders = HttpFields.build()
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.8</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// The request metadata with method, URI and headers.</span>
+MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
+
+<span class="comment">// The HTTP/3 HEADERS frame, with endStream=true</span>
+<span class="comment">// to signal that this request has no content.</span>
+HeadersFrame headersFrame = <span class="keyword">new</span> HeadersFrame(request, <span class="predefined-constant">true</span>);
+
+<span class="comment">// Open a Stream by sending the HEADERS frame.</span>
+session.newRequest(headersFrame, <span class="keyword">new</span> Stream.Client.Listener() {});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how <code>Session.newRequest(&#8230;&#8203;)</code> takes a <code>Stream.Client.Listener</code> parameter.
+This listener is notified of stream events originated by the server such as receiving <code>HEADERS</code> or <code>DATA</code> frames that are part of the response, discussed in more details in the <a href="#pg-client-http3-response">section below</a>.
+Please refer to the <code>Stream.Client.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Stream.Client.Listener.html">javadocs</a> for the complete list of events.</p>
+</div>
+<div class="paragraph">
+<p>HTTP requests may have content, which is sent using the <code>Stream</code> APIs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="predefined-type">SocketAddress</span> serverAddress = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8444</span>);
+CompletableFuture&lt;Session.Client&gt; sessionCF = http3Client.connect(serverAddress, <span class="keyword">new</span> Session.Client.Listener() {});
+Session.Client session = sessionCF.get();
+
+<span class="comment">// Configure the request headers.</span>
+HttpFields requestHeaders = HttpFields.build()
+    .put(HttpHeader.CONTENT_TYPE, <span class="string"><span class="delimiter">&quot;</span><span class="content">application/json</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// The request metadata with method, URI and headers.</span>
+MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">POST</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
+
+<span class="comment">// The HTTP/3 HEADERS frame, with endStream=false to</span>
+<span class="comment">// signal that there will be more frames in this stream.</span>
+HeadersFrame headersFrame = <span class="keyword">new</span> HeadersFrame(request, <span class="predefined-constant">false</span>);
+
+<span class="comment">// Open a Stream by sending the HEADERS frame.</span>
+CompletableFuture&lt;Stream&gt; streamCF = session.newRequest(headersFrame, <span class="keyword">new</span> Stream.Client.Listener() {});
+
+<span class="comment">// Block to obtain the Stream.</span>
+<span class="comment">// Alternatively you can use the CompletableFuture APIs to avoid blocking.</span>
+Stream stream = streamCF.get();
+
+<span class="comment">// The request content, in two chunks.</span>
+<span class="predefined-type">String</span> content1 = <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">greet</span><span class="char">\&quot;</span><span class="content">: </span><span class="char">\&quot;</span><span class="content">hello world</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">ByteBuffer</span> buffer1 = StandardCharsets.UTF_8.encode(content1);
+<span class="predefined-type">String</span> content2 = <span class="string"><span class="delimiter">&quot;</span><span class="content">{</span><span class="char">\&quot;</span><span class="content">user</span><span class="char">\&quot;</span><span class="content">: </span><span class="char">\&quot;</span><span class="content">jetty</span><span class="char">\&quot;</span><span class="content">}</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">ByteBuffer</span> buffer2 = StandardCharsets.UTF_8.encode(content2);
+
+<span class="comment">// Send the first DATA frame on the stream, with endStream=false</span>
+<span class="comment">// to signal that there are more frames in this stream.</span>
+CompletableFuture&lt;Stream&gt; dataCF1 = stream.data(<span class="keyword">new</span> DataFrame(buffer1, <span class="predefined-constant">false</span>));
+
+<span class="comment">// Only when the first chunk has been sent we can send the second,</span>
+<span class="comment">// with endStream=true to signal that there are no more frames.</span>
+dataCF1.thenCompose(s -&gt; s.data(<span class="keyword">new</span> DataFrame(buffer2, <span class="predefined-constant">true</span>)));</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+When sending two <code>DATA</code> frames consecutively, the second call to <code>Stream.data(&#8230;&#8203;)</code> must be done only when the first is completed, or a <code>WritePendingException</code> will be thrown.
+Use the <code>CompletableFuture</code> APIs to ensure that the second <code>Stream.data(&#8230;&#8203;)</code> call is performed when the first completed successfully.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-response"><a class="anchor" href="#pg-client-http3-response"></a><a class="link" href="#pg-client-http3-response">Receiving a Response</a></h4>
+<div class="paragraph">
+<p>Response events are delivered to the <code>Stream.Client.Listener</code> passed to <code>Session.newRequest(&#8230;&#8203;)</code>.</p>
+</div>
+<div class="paragraph">
+<p>An HTTP response is typically composed of a <code>HEADERS</code> frame containing the HTTP status code and the response headers, and optionally one or more <code>DATA</code> frames containing the response content bytes.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP/3 protocol also supports response trailers (that is, headers that are sent after the response content) that also are sent using a <code>HEADERS</code> frame.</p>
+</div>
+<div class="paragraph">
+<p>A client application can therefore receive the HTTP/3 frames sent by the server by implementing the relevant methods in <code>Stream.Client.Listener</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Open a Stream by sending the HEADERS frame.</span>
+session.newRequest(headersFrame, <span class="keyword">new</span> Stream.Client.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onResponse(Stream.Client stream, HeadersFrame frame)
+    {
+        MetaData metaData = frame.getMetaData();
+        MetaData.Response response = (MetaData.Response)metaData;
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http3</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Received response {0}</span><span class="delimiter">&quot;</span></span>, response);
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onDataAvailable(Stream.Client stream)
+    {
+        <span class="comment">// Read a chunk of the content.</span>
+        Stream.Data data = stream.readData();
+        <span class="keyword">if</span> (data == <span class="predefined-constant">null</span>)
+        {
+            <span class="comment">// No data available now, demand to be called back.</span>
+            stream.demand();
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// Process the content.</span>
+            process(data.getByteBuffer());
+
+            <span class="comment">// Notify the implementation that the content has been consumed.</span>
+            data.complete();
+
+            <span class="keyword">if</span> (!data.isLast())
+            {
+                <span class="comment">// Demand to be called back.</span>
+                stream.demand();
+            }
+        }
+    }
+});</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-client-http3-reset"><a class="anchor" href="#pg-client-http3-reset"></a><a class="link" href="#pg-client-http3-reset">Resetting a Request or Response</a></h4>
+<div class="paragraph">
+<p>In HTTP/3, clients and servers have the ability to tell to the other peer that they are not interested anymore in either the request or the response, by resetting the stream.</p>
+</div>
+<div class="paragraph">
+<p>The <code>HTTP3Client</code> APIs allow client applications to send and receive this "reset" event:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Open a Stream by sending the HEADERS frame.</span>
+CompletableFuture&lt;Stream&gt; streamCF = session.newRequest(headersFrame, <span class="keyword">new</span> Stream.Client.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onFailure(Stream.Client stream, <span class="type">long</span> error, <span class="predefined-type">Throwable</span> failure)
+    {
+        <span class="comment">// The server reset this stream.</span>
+    }
+});
+Stream stream = streamCF.get();
+
+<span class="comment">// Reset this stream (for example, the user closed the application).</span>
+stream.reset(HTTP3ErrorCode.REQUEST_CANCELLED_ERROR.code(), <span class="keyword">new</span> <span class="exception">ClosedChannelException</span>());</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="pg-client-websocket"><a class="anchor" href="#pg-client-websocket"></a><a class="link" href="#pg-client-websocket">WebSocket Client</a></h3>
 <div class="paragraph">
 <p>Jetty&#8217;s <code>WebSocketClient</code> is a more powerful alternative to the WebSocket client provided by the standard JSR 356 <code>javax.websocket</code> APIs.</p>
@@ -3073,7 +3541,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3161,7 +3629,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="687" height="511">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
 </div>
 </div>
 <div class="paragraph">
@@ -3215,7 +3683,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="676" height="572">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
 </div>
 </div>
 <div class="paragraph">
@@ -3369,6 +3837,8 @@ Applications interested in the error event receive a <code>Throwable</code> that
 <li>
 <p>The <em>message</em> event.
 The message event is emitted when a WebSocket message is received.
+Only one thread at a time will be delivering a message event to the <code>onMessage</code> method; the next message event will not be delivered until the previous call to the <code>onMessage</code> method has exited.
+Endpoints will always be notified of message events in the same order they were received over the network.
 The message event can be of two types:</p>
 <div class="ulist">
 <ul>
@@ -4175,10 +4645,13 @@ If you are interested in the low-level details of how the Eclipse Jetty server l
 <div class="ulist">
 <ul>
 <li>
-<p>HTTP support for HTTP/1.0, HTTP/1.1, HTTP/2, clear-text or encrypted, for applications that want to embed Jetty as a generic HTTP server or proxy, via the <a href="#pg-server-http">HTTP libraries</a></p>
+<p>HTTP support for HTTP/1.0, HTTP/1.1, HTTP/2, clear-text or encrypted, HTTP/3, for applications that want to embed Jetty as a generic HTTP server or proxy, via the <a href="#pg-server-http">HTTP libraries</a></p>
 </li>
 <li>
 <p>HTTP/2 low-level support, for applications that want to explicitly handle low-level HTTP/2 <em>sessions</em>, <em>streams</em> and <em>frames</em>, via the <a href="#pg-server-http2">HTTP/2 libraries</a></p>
+</li>
+<li>
+<p>HTTP/3 low-level support, for applications that want to explicitly handle low-level HTTP/3 <em>sessions</em>, <em>streams</em> and <em>frames</em>, via the <a href="#pg-server-http3">HTTP/3 libraries</a></p>
 </li>
 <li>
 <p>WebSocket support, for applications that want to embed a WebSocket server, via the <a href="#pg-server-websocket">WebSocket libraries</a></p>
@@ -4392,7 +4865,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4401,14 +4874,14 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="445" height="210">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="471" height="209">
 </div>
 </div>
 <div class="paragraph">
 <p>The components that accept connections from clients are <code>org.eclipse.jetty.server.Connector</code> implementations.</p>
 </div>
 <div class="paragraph">
-<p>When a Jetty server interprets the HTTP protocol (both HTTP/1.1 and HTTP/2), it uses <code>org.eclipse.jetty.server.Handler</code> instances to process incoming requests and eventually produce responses.</p>
+<p>When a Jetty server interprets the HTTP protocol (HTTP/1.1, HTTP/2 or HTTP/3), it uses <code>org.eclipse.jetty.server.Handler</code> instances to process incoming requests and eventually produce responses.</p>
 </div>
 <div class="paragraph">
 <p>A <code>Server</code> must be created, configured and started:</p>
@@ -4458,7 +4931,7 @@ Read <a href="#pg-server-http-handler">this section</a> for further details abou
 <p>If you are interested in writing your server application based on the Servlet APIs, jump to <a href="#pg-server-http-handler-use-servlet">this section</a>.</p>
 </div>
 <div class="sect3">
-<h4 id="pg-server-http-request-processing"><a class="anchor" href="#pg-server-http-request-processing"></a><a class="link" href="#pg-server-http-request-processing">Server Request Processing</a></h4>
+<h4 id="pg-server-http-request-processing"><a class="anchor" href="#pg-server-http-request-processing"></a><a class="link" href="#pg-server-http-request-processing">Request Processing</a></h4>
 <div class="paragraph">
 <p>The Jetty HTTP request processing is outlined below in the diagram below.
 You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> for additional information about the classes mentioned below.</p>
@@ -4471,7 +4944,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="659" height="339">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
 </div>
 </div>
 <div class="paragraph">
@@ -4479,7 +4952,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 This event is converted to a call to <code>AbstractConnection.onFillable()</code>, where the <code>Connection</code> first reads from the <code>EndPoint</code> into a <code>ByteBuffer</code>, and then calls a protocol specific parser to parse the bytes in the <code>ByteBuffer</code>.</p>
 </div>
 <div class="paragraph">
-<p>The parser emit events that are protocol specific; the HTTP/2 parser, for example, emits events for each HTTP/2 frame that has been parsed.
+<p>The parser emit events that are protocol specific; the HTTP/2 parser, for example, emits events for each HTTP/2 frame that has been parsed, and similarly does the HTTP/3 parser.
 The parser events are then converted to protocol independent events such as <em>"request start"</em>, <em>"request headers"</em>, <em>"request content chunk"</em>, etc.
 that in turn are converted into method calls to <code>HttpChannel</code>.</p>
 </div>
@@ -4490,7 +4963,7 @@ that in turn are converted into method calls to <code>HttpChannel</code>.</p>
 <h5 id="pg-server-http-channel-events"><a class="anchor" href="#pg-server-http-channel-events"></a><a class="link" href="#pg-server-http-channel-events">HttpChannel Events</a></h5>
 <div class="paragraph">
 <p>The central component processing HTTP requests is <code>HttpChannel</code>.
-There is a 1-to-1 relationship between an HTTP request/response and an <code>HttpChannel</code>, no matter what is the specific protocol that carries the HTTP request over the network (HTTP/1.1, HTTP/2 or FastCGI).</p>
+There is a 1-to-1 relationship between an HTTP request/response and an <code>HttpChannel</code>, no matter what is the specific protocol that carries the HTTP request over the network (HTTP/1.1, HTTP/2, HTTP/3 or FastCGI).</p>
 </div>
 <div class="paragraph">
 <p>Advanced server applications may be interested in the progress of the processing of an HTTP request/response by <code>HttpChannel</code>.
@@ -4610,6 +5083,97 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="sect3">
+<h4 id="pg-server-http-request-logging"><a class="anchor" href="#pg-server-http-request-logging"></a><a class="link" href="#pg-server-http-request-logging">Request Logging</a></h4>
+<div class="paragraph">
+<p>HTTP requests and responses can be logged to provide data that can be later analyzed with other tools.
+These tools can provide information such as the most frequently accessed request URIs, the response status codes, the request/response content lengths, geographical information about the clients, etc.</p>
+</div>
+<div class="paragraph">
+<p>The default request/response log line format is the <a href="https://en.wikipedia.org/wiki/Common_Log_Format">NCSA Format</a> extended with referrer data and user-agent data.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Typically, the extended NCSA format is the is enough and it&#8217;s the standard used and understood by most log parsing tools and monitoring tools.</p>
+</div>
+<div class="paragraph">
+<p>To customize the request/response log line format see the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/CustomRequestLog.html"><code>CustomRequestLog</code> javadocs</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Request logging can be enabled at the server level, or at the web application context level.</p>
+</div>
+<div class="paragraph">
+<p>The request logging output can be directed to an SLF4J logger named <code>"org.eclipse.jetty.server.RequestLog"</code> at <code>INFO</code> level, and therefore to any logging library implementation of your choice (see also <a href="#pg-troubleshooting-logging">this section</a> about logging).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// Sets the RequestLog to log to an SLF4J logger named &quot;org.eclipse.jetty.server.RequestLog&quot; at INFO level.</span>
+server.setRequestLog(<span class="keyword">new</span> CustomRequestLog(<span class="keyword">new</span> Slf4jRequestLogWriter(), CustomRequestLog.EXTENDED_NCSA_FORMAT));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, the request logging output can be directed to a daily rolling file of your choice, and the file name must contain <code>yyyy_MM_dd</code> so that rolled over files retain their date:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// Use a file name with the pattern 'yyyy_MM_dd' so rolled over files retain their date.</span>
+RequestLogWriter logWriter = <span class="keyword">new</span> RequestLogWriter(<span class="string"><span class="delimiter">&quot;</span><span class="content">/var/log/yyyy_MM_dd.jetty.request.log</span><span class="delimiter">&quot;</span></span>);
+<span class="comment">// Retain rolled over files for 2 weeks.</span>
+logWriter.setRetainDays(<span class="integer">14</span>);
+<span class="comment">// Log times are in the current time zone.</span>
+logWriter.setTimeZone(<span class="predefined-type">TimeZone</span>.getDefault().getID());
+
+<span class="comment">// Set the RequestLog to log to the given file, rolling over at midnight.</span>
+server.setRequestLog(<span class="keyword">new</span> CustomRequestLog(logWriter, CustomRequestLog.EXTENDED_NCSA_FORMAT));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For maximum flexibility, you can log to multiple <code>RequestLog</code>s using class <code>RequestLog.Collection</code>, for example by logging with different formats or to different outputs.</p>
+</div>
+<div class="paragraph">
+<p>You can use <code>CustomRequestLog</code> with a custom <code>RequestLog.Writer</code> to direct the request logging output to your custom targets (for example, an RDBMS).
+You can implement your own <code>RequestLog</code> if you want to have functionalities that are not implemented by <code>CustomRequestLog</code>.</p>
+</div>
+<div class="paragraph">
+<p>Request logging can also be enabled at the web application context level, using <code>RequestLogHandler</code> (see <a href="#pg-server-http-handler">this section</a> about how to organize Jetty <code>Handler</code>s) to wrap a web application <code>Handler</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// Create a first ServletContextHandler for your main application.</span>
+ServletContextHandler mainContext = <span class="keyword">new</span> ServletContextHandler();
+mainContext.setContextPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/main</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Create a RequestLogHandler to log requests for your main application.</span>
+RequestLogHandler requestLogHandler = <span class="keyword">new</span> RequestLogHandler();
+requestLogHandler.setRequestLog(<span class="keyword">new</span> CustomRequestLog());
+<span class="comment">// Wrap the main application with the request log handler.</span>
+requestLogHandler.setHandler(mainContext);
+
+<span class="comment">// Create a second ServletContextHandler for your other application.</span>
+<span class="comment">// No request logging for this application.</span>
+ServletContextHandler otherContext = <span class="keyword">new</span> ServletContextHandler();
+mainContext.setContextPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/other</span><span class="delimiter">&quot;</span></span>);
+
+server.setHandler(<span class="keyword">new</span> HandlerList(requestLogHandler, otherContext));</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="pg-server-http-connector"><a class="anchor" href="#pg-server-http-connector"></a><a class="link" href="#pg-server-http-connector">Server Connectors</a></h4>
 <div class="paragraph">
 <p>A <code>Connector</code> is the component that handles incoming requests from clients, and works in conjunction with <code>ConnectionFactory</code> instances.</p>
@@ -4623,7 +5187,7 @@ server.start();</code></pre>
 <p><code>org.eclipse.jetty.server.ServerConnector</code>, for TCP/IP sockets.</p>
 </li>
 <li>
-<p><code>org.eclipse.jetty.unixdomain.server.UnixDomainServerConnector</code> for Unix-Domain sockets.</p>
+<p><code>org.eclipse.jetty.unixdomain.server.UnixDomainServerConnector</code> for Unix-Domain sockets (requires Java 16 or later).</p>
 </li>
 </ul>
 </div>
@@ -4687,6 +5251,20 @@ connector.setAcceptQueueSize(<span class="integer">128</span>);
 server.addConnector(connector);
 server.start();</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can use Unix-Domain sockets support only when you run your server with Java 16 or later.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The <em>acceptors</em> are threads (typically only one) that compete to accept socket connections.
@@ -4906,6 +5484,60 @@ With the ALPN extension information, Jetty can negotiate a protocol and pick, am
 </div>
 </div>
 <div class="sect5">
+<h6 id="pg-server-http-connector-protocol-http3"><a class="anchor" href="#pg-server-http-connector-protocol-http3"></a><a class="link" href="#pg-server-http-connector-protocol-http3">HTTP/3</a></h6>
+<div class="paragraph">
+<p>HTTP/3 is based on UDP, differently from HTTP/1 and HTTP/2 that are based on TCP.</p>
+</div>
+<div class="paragraph">
+<p>An HTTP/3 client may initiate a connection (using the QUIC protocol via UDP) on the canonical HTTP secure port <code>443</code>, but chances are that the connection may not succeed (for example, the server does not listen for UDP on port <code>443</code>, only listens for TCP).</p>
+</div>
+<div class="paragraph">
+<p>For this reason, HTTP servers typically listen on the canonical HTTP secure port <code>443</code> for HTTP/1 and HTTP/2, and advertise the availability HTTP/3 as an <a href="https://datatracker.ietf.org/doc/html/rfc7838"><em>HTTP alternate service</em></a> on a different port (and possibly a different host).</p>
+</div>
+<div class="paragraph">
+<p>For example, an HTTP/2 response may include the following header:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code>Alt-Svc: h3=&quot;:843&quot;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The presence of this header indicates that protocol <code>h3</code> is available on the same host (since no host is defined before the port), but on port <code>843</code>.
+The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> and make HTTP/3 requests.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
+</div>
+</div>
+<div class="paragraph">
+<p>The code necessary to configure HTTP/2 is described in <a href="#pg-server-http-connector-protocol-http2-tls">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>To setup HTTP/3, for example on port <code>843</code>, you need the following code (some of which could be shared with other connectors such as HTTP/2&#8217;s):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+
+HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
+httpConfig.addCustomizer(<span class="keyword">new</span> SecureRequestCustomizer());
+
+<span class="comment">// Create and configure the HTTP/3 connector.</span>
+HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, <span class="keyword">new</span> HTTP3ServerConnectionFactory(httpConfig));
+connector.setPort(<span class="integer">843</span>);
+server.addConnector(connector);
+
+server.start();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
 <h6 id="pg-server-http-connector-protocol-proxy-http11"><a class="anchor" href="#pg-server-http-connector-protocol-proxy-http11"></a><a class="link" href="#pg-server-http-connector-protocol-proxy-http11">Jetty Behind a Load Balancer</a></h6>
 <div class="paragraph">
 <p>It is often the case that Jetty receives connections from a load balancer configured to distribute the load among many Jetty backend servers.</p>
@@ -5028,7 +5660,7 @@ server.start();</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>HandlerCollection</code> behavior (invoking <em>all</em> handlers) is useful when for example the last <code>Handler</code> is a logging <code>Handler</code> that logs the request(that may have been modified by previous handlers).</p>
+<p>The <code>HandlerCollection</code> behavior (invoking <em>all</em> handlers) is useful when for example the last <code>Handler</code> is a logging <code>Handler</code> that logs the request (that may have been modified by previous handlers).</p>
 </div>
 <div class="paragraph">
 <p>The <code>HandlerList</code> behavior (invoking handlers up to the first that calls <code>Request.setHandled(true)</code>) is useful when each handler processes a different URIs or a different virtual hosts: <code>Handler</code>s are invoked one after the other until one matches the URI or virtual host.</p>
@@ -5449,7 +6081,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5726,7 +6358,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6109,12 +6741,12 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>HTTP/2 is a multiplexed protocol: it allows multiple HTTP/2 requests to be sent on the same TCP connection.
+<p>HTTP/2 is a multiplexed protocol: it allows multiple HTTP/2 requests to be sent on the same TCP connection, or <em>session</em>.
 Each request/response cycle is represented by a <em>stream</em>.
 Therefore, a single <em>session</em> manages multiple concurrent <em>streams</em>.
 A <em>stream</em> has typically a very short life compared to the <em>session</em>: a <em>stream</em> only exists for the duration of the request/response cycle and then disappears.</p>
@@ -6195,7 +6827,7 @@ server.start();</code></pre>
 <p>The <code>ServerSessionListener</code> interface defines a number of methods that are invoked by the implementation upon the occurrence of HTTP/2 events, and that server applications can override to react to those events.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the `ServerSessionListener`<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the <code>ServerSessionListener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>The first event is the <em>accept</em> event and happens when a client opens a new TCP connection to the server and the server accepts the connection.
@@ -6556,6 +7188,320 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 </div>
 </div>
 <div class="sect2">
+<h3 id="pg-server-http3"><a class="anchor" href="#pg-server-http3"></a><a class="link" href="#pg-server-http3">HTTP/3 Server Library</a></h3>
+<div class="paragraph">
+<p>In the vast majority of cases, server applications should use the generic, high-level, <a href="#pg-server-http">HTTP server library</a> that also provides HTTP/3 support via the HTTP/3 connector and <code>ConnectionFactory</code>s as described in details <a href="#pg-server-http-connector-protocol-http3">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The low-level HTTP/3 server library has been designed for those applications that need low-level access to HTTP/3 features such as <em>sessions</em>, <em>streams</em> and <em>frames</em>, and this is quite a rare use case.</p>
+</div>
+<div class="paragraph">
+<p>See also the correspondent <a href="#pg-client-http3">HTTP/3 client library</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http3-intro"><a class="anchor" href="#pg-server-http3-intro"></a><a class="link" href="#pg-server-http3-intro">Introduction</a></h4>
+<div class="paragraph">
+<p>The Maven artifact coordinates for the HTTP/3 client library are the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+<span class="tag">&lt;/dependency&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>HTTP/3 is a multiplexed protocol because it relies on the multiplexing capabilities of QUIC, the protocol based on UDP that transports HTTP/3 frames.
+Thanks to multiplexing, multiple HTTP/3 requests are sent on the same QUIC connection, or <em>session</em>.
+Each request/response cycle is represented by a <em>stream</em>.
+Therefore, a single <em>session</em> manages multiple concurrent <em>streams</em>.
+A <em>stream</em> has typically a very short life compared to the <em>session</em>: a <em>stream</em> only exists for the duration of the request/response cycle and then disappears.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http3-setup"><a class="anchor" href="#pg-server-http3-setup"></a><a class="link" href="#pg-server-http3-setup">Server Setup</a></h4>
+<div class="paragraph">
+<p>The low-level HTTP/3 support is provided by <code>org.eclipse.jetty.http3.server.RawHTTP3ServerConnectionFactory</code> and <code>org.eclipse.jetty.http3.api.Session.Server.Listener</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Create a Server instance.</span>
+Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// HTTP/3 is always secure, so it always need a SslContextFactory.</span>
+SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// The listener for session events.</span>
+Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener() {};
+
+<span class="comment">// Create and configure the RawHTTP3ServerConnectionFactory.</span>
+RawHTTP3ServerConnectionFactory http3 = <span class="keyword">new</span> RawHTTP3ServerConnectionFactory(sessionListener);
+http3.getHTTP3Configuration().setStreamIdleTimeout(<span class="integer">15000</span>);
+
+<span class="comment">// Create and configure the HTTP3ServerConnector.</span>
+HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, http3);
+<span class="comment">// Configure the max number of requests per QUIC connection.</span>
+connector.getQuicConfiguration().setMaxBidirectionalRemoteStreams(<span class="integer">1024</span>);
+
+<span class="comment">// Add the Connector to the Server.</span>
+server.addConnector(connector);
+
+<span class="comment">// Start the Server so it starts accepting connections from clients.</span>
+server.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where server applications using the <a href="#pg-server-http">high-level server library</a> deal with HTTP requests and responses in <code>Handler</code>s, server applications using the low-level HTTP/3 server library deal directly with HTTP/3 <em>session</em>s, <em>stream</em>s and <em>frame</em>s in a <code>Session.Server.Listener</code> implementation.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Session.Server.Listener</code> interface defines a number of methods that are invoked by the implementation upon the occurrence of HTTP/3 events, and that server applications can override to react to those events.</p>
+</div>
+<div class="paragraph">
+<p>Please refer to the <code>Session.Server.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Server.Listener.html">javadocs</a> for the complete list of events.</p>
+</div>
+<div class="paragraph">
+<p>The first event is the <em>accept</em> event and happens when a client opens a new QUIC connection to the server and the server accepts the connection.
+This is the first occasion where server applications have access to the HTTP/3 <code>Session</code> object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> onAccept(Session session)
+    {
+        <span class="predefined-type">SocketAddress</span> remoteAddress = session.getRemoteSocketAddress();
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http3</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Connection from {0}</span><span class="delimiter">&quot;</span></span>, remoteAddress);
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the QUIC connection has been established, both client and server send an HTTP/3 <code>SETTINGS</code> frame to exchange their HTTP/3 configuration.
+This generates the <em>preface</em> event, where applications can customize the HTTP/3 settings by returning a map of settings that the implementation will send to the other peer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="predefined-type">Map</span>&lt;<span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>&gt; onPreface(Session session)
+    {
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">Long</span>, <span class="predefined-type">Long</span>&gt; settings = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+
+        <span class="comment">// Customize the settings</span>
+
+        <span class="keyword">return</span> settings;
+    }
+};</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http3-request"><a class="anchor" href="#pg-server-http3-request"></a><a class="link" href="#pg-server-http3-request">Receiving a Request</a></h4>
+<div class="paragraph">
+<p>Receiving an HTTP request from the client, and sending a response, creates a <em>stream</em> that encapsulates the exchange of HTTP/3 frames that compose the request and the response.</p>
+</div>
+<div class="paragraph">
+<p>An HTTP request is made of a <code>HEADERS</code> frame, that carries the request method, the request URI and the request headers, and optional <code>DATA</code> frames that carry the request content.</p>
+</div>
+<div class="paragraph">
+<p>Receiving the <code>HEADERS</code> frame opens the <code>Stream</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Stream.Server.Listener onRequest(Stream.Server stream, HeadersFrame frame)
+    {
+        MetaData.Request request = (MetaData.Request)frame.getMetaData();
+
+        <span class="comment">// Return a Stream.Server.Listener to handle the request events,</span>
+        <span class="comment">// for example request content events or a request reset.</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> Stream.Server.Listener() {};
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Server applications should return a <code>Stream.Server.Listener</code> implementation from <code>onRequest(&#8230;&#8203;)</code> to be notified of events generated by the client, such as <code>DATA</code> frames carrying request content, or a reset event indicating that the client wants to <em>reset</em> the request, or an idle timeout event indicating that the client was supposed to send more frames but it did not.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows how to receive request content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Stream.Server.Listener onRequest(Stream.Server stream, HeadersFrame frame)
+    {
+        MetaData.Request request = (MetaData.Request)frame.getMetaData();
+
+        <span class="comment">// Demand to be called back when data is available.</span>
+        stream.demand();
+
+        <span class="comment">// Return a Stream.Server.Listener to handle the request content.</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> Stream.Server.Listener()
+        {
+            <span class="annotation">@Override</span>
+            <span class="directive">public</span> <span class="type">void</span> onDataAvailable(Stream.Server stream)
+            {
+                <span class="comment">// Read a chunk of the request content.</span>
+                Stream.Data data = stream.readData();
+
+                <span class="keyword">if</span> (data == <span class="predefined-constant">null</span>)
+                {
+                    <span class="comment">// No data available now, demand to be called back.</span>
+                    stream.demand();
+                }
+                <span class="keyword">else</span>
+                {
+                    <span class="comment">// Get the content buffer.</span>
+                    <span class="predefined-type">ByteBuffer</span> buffer = data.getByteBuffer();
+
+                    <span class="comment">// Consume the buffer, here - as an example - just log it.</span>
+                    <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http3</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Consuming buffer {0}</span><span class="delimiter">&quot;</span></span>, buffer);
+
+                    <span class="comment">// Tell the implementation that the buffer has been consumed.</span>
+                    data.complete();
+
+                    <span class="keyword">if</span> (!data.isLast())
+                    {
+                        <span class="comment">// Demand to be called back.</span>
+                        stream.demand();
+                    }
+                }
+            }
+        };
+    }
+};</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http3-response"><a class="anchor" href="#pg-server-http3-response"></a><a class="link" href="#pg-server-http3-response">Sending a Response</a></h4>
+<div class="paragraph">
+<p>After receiving an HTTP request, a server application must send an HTTP response.</p>
+</div>
+<div class="paragraph">
+<p>An HTTP response is typically composed of a <code>HEADERS</code> frame containing the HTTP status code and the response headers, and optionally one or more <code>DATA</code> frames containing the response content bytes.</p>
+</div>
+<div class="paragraph">
+<p>The HTTP/3 protocol also supports response trailers (that is, headers that are sent after the response content) that also are sent using a <code>HEADERS</code> frame.</p>
+</div>
+<div class="paragraph">
+<p>A server application can send a response in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Stream.Server.Listener onRequest(Stream.Server stream, HeadersFrame frame)
+    {
+        <span class="comment">// Send a response after reading the request.</span>
+        MetaData.Request request = (MetaData.Request)frame.getMetaData();
+        <span class="keyword">if</span> (frame.isLast())
+        {
+            respond(stream, request);
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// Demand to be called back when data is available.</span>
+            stream.demand();
+            <span class="keyword">return</span> <span class="keyword">new</span> Stream.Server.Listener()
+            {
+                <span class="annotation">@Override</span>
+                <span class="directive">public</span> <span class="type">void</span> onDataAvailable(Stream.Server stream)
+                {
+                    Stream.Data data = stream.readData();
+                    <span class="keyword">if</span> (data == <span class="predefined-constant">null</span>)
+                    {
+                        stream.demand();
+                    }
+                    <span class="keyword">else</span>
+                    {
+                        <span class="comment">// Consume the request content.</span>
+                        data.complete();
+                        <span class="keyword">if</span> (data.isLast())
+                            respond(stream, request);
+                    }
+                }
+            };
+        }
+    }
+
+    <span class="directive">private</span> <span class="type">void</span> respond(Stream.Server stream, MetaData.Request request)
+    {
+        <span class="comment">// Prepare the response HEADERS frame.</span>
+
+        <span class="comment">// The response HTTP status and HTTP headers.</span>
+        MetaData.Response response = <span class="keyword">new</span> MetaData.Response(HttpVersion.HTTP_3, HttpStatus.OK_200, HttpFields.EMPTY);
+
+        <span class="keyword">if</span> (HttpMethod.GET.is(request.getMethod()))
+        {
+            <span class="comment">// The response content.</span>
+            <span class="predefined-type">ByteBuffer</span> resourceBytes = getResourceBytes(request);
+
+            <span class="comment">// Send the HEADERS frame with the response status and headers,</span>
+            <span class="comment">// and a DATA frame with the response content bytes.</span>
+            stream.respond(<span class="keyword">new</span> HeadersFrame(response, <span class="predefined-constant">false</span>))
+                .thenCompose(s -&gt; s.data(<span class="keyword">new</span> DataFrame(resourceBytes, <span class="predefined-constant">true</span>)));
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// Send just the HEADERS frame with the response status and headers.</span>
+            stream.respond(<span class="keyword">new</span> HeadersFrame(response, <span class="predefined-constant">true</span>));
+        }
+    }
+};</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http3-reset"><a class="anchor" href="#pg-server-http3-reset"></a><a class="link" href="#pg-server-http3-reset">Resetting a Request</a></h4>
+<div class="paragraph">
+<p>A server application may decide that it does not want to accept the request.
+For example, it may throttle the client because it sent too many requests in a time window, or the request is invalid (and does not deserve a proper HTTP response), etc.</p>
+</div>
+<div class="paragraph">
+<p>A request can be reset in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> Stream.Server.Listener onRequest(Stream.Server stream, HeadersFrame frame)
+    {
+        <span class="type">float</span> requestRate = calculateRequestRate();
+
+        <span class="keyword">if</span> (requestRate &gt; maxRequestRate)
+        {
+            stream.reset(HTTP3ErrorCode.REQUEST_REJECTED_ERROR.code(), <span class="keyword">new</span> <span class="exception">RejectedExecutionException</span>());
+            <span class="keyword">return</span> <span class="predefined-constant">null</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// The request is accepted.</span>
+            MetaData.Request request = (MetaData.Request)frame.getMetaData();
+            <span class="comment">// Return a Stream.Listener to handle the request events.</span>
+            <span class="keyword">return</span> <span class="keyword">new</span> Stream.Server.Listener() {};
+        }
+    }
+};</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="pg-server-session"><a class="anchor" href="#pg-server-session"></a><a class="link" href="#pg-server-session">HTTP Session Management</a></h3>
 <div class="paragraph">
 <p>Sessions are a concept within the Servlet API which allow requests to store and retrieve information across the time a user spends in an application.
@@ -6612,7 +7558,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="515" height="541">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="549" height="540">
 </div>
 </div>
 </div>
@@ -7255,7 +8201,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1214" height="305">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1320" height="304">
 </div>
 </div>
 <div class="paragraph">
@@ -7499,7 +8445,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="340" height="176">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="363" height="176">
 </div>
 </div>
 <div class="paragraph">
@@ -7737,7 +8683,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="166" height="203">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="274" height="315">
 </div>
 </div>
 <div class="paragraph">
@@ -7889,7 +8835,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="345" height="284">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="374" height="284">
 </div>
 </div>
 <div class="paragraph">
@@ -8047,7 +8993,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8280,7 +9226,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8292,7 +9238,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8855,7 +9801,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="682" height="100">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="720" height="99">
 </div>
 </div>
 <div class="paragraph">
@@ -8899,7 +9845,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="900" height="241">
+<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="954" height="240">
 </div>
 </div>
 <div class="paragraph">
@@ -10950,9 +11896,11 @@ It&#8217;s a lot like the overlaid war situation, but without the war.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;configuration&gt;</span>
   <span class="tag">&lt;webApp&gt;</span>
     <span class="tag">&lt;contextPath&gt;</span>/${build.finalName}<span class="tag">&lt;/contextPath&gt;</span>
-    <span class="tag">&lt;baseResource</span> <span class="attribute-name">implementation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.util.resource.ResourceCollection</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-      <span class="tag">&lt;resourcesAsCSV&gt;</span>src/main/webapp,/home/johndoe/path/to/my/other/source,/yet/another/folder<span class="tag">&lt;/resourcesAsCSV&gt;</span>
-    <span class="tag">&lt;/baseResource&gt;</span>
+    <span class="tag">&lt;resourceBases&gt;</span>
+      <span class="tag">&lt;resourceBase&gt;</span>src/main/webapp<span class="tag">&lt;/resourceBase&gt;</span>
+      <span class="tag">&lt;resourceBase&gt;</span>/home/johndoe/path/to/my/other/source<span class="tag">&lt;/resourceBase&gt;</span>
+      <span class="tag">&lt;resourceBase&gt;</span>/yet/another/folder<span class="tag">&lt;/resourceBase&gt;</span>
+    <span class="tag">&lt;/resourceBases&gt;</span>
   <span class="tag">&lt;/webApp&gt;</span>
 <span class="tag">&lt;/configuration&gt;</span></code></pre>
 </div>
@@ -11974,7 +12922,7 @@ In both cases the <code>SocketChannel</code> instance is passed to <code>Selecto
 <p><code>SocketChannel</code>s that are passed to <code>SelectorManager</code> are wrapped into two related components: an <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/EndPoint.html"><code>EndPoint</code></a> and a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/Connection.html"><code>Connection</code></a>.</p>
 </div>
 <div class="paragraph">
-<p><code>EndPoint</code> is the Jetty abstraction for a <code>SocketChannel</code>: you can read bytes from an <code>EndPoint</code> via <code>EndPoint.fill(ByteBuffer)</code>, you can write bytes to an <code>EndPoint</code> via <code>EndPoint.flush(ByteBuffer...)</code> and <code>EndPoint.write(Callback, ByteBuffer...)</code>, you can close an <code>EndPoint</code> via <code>EndPoint.close()</code>, etc.</p>
+<p><code>EndPoint</code> is the Jetty abstraction for a <code>SocketChannel</code> or a <code>DatagramChannel</code>: you can read bytes from an <code>EndPoint</code>, you can write bytes to an <code>EndPoint</code> , you can close an <code>EndPoint</code>, etc.</p>
 </div>
 <div class="paragraph">
 <p><code>Connection</code> is the Jetty abstraction that is responsible to read bytes from the <code>EndPoint</code> and to deserialize the read bytes into objects.
@@ -11982,13 +12930,13 @@ For example, an HTTP/1.1 server-side <code>Connection</code> implementation is r
 Conversely, an HTTP/1.1 client-side <code>Connection</code> implementation is responsible to deserialize HTTP/1.1 response bytes into an HTTP response object.</p>
 </div>
 <div class="paragraph">
-<p><code>Connection</code> is the abstraction that implements the reading side of a specific protocol such as HTTP/1.1, or HTTP/2, or WebSocket: it is able to read incoming communication in that protocol.</p>
+<p><code>Connection</code> is the abstraction that implements the reading side of a specific protocol such as HTTP/1.1, or HTTP/2, or HTTP/3, or WebSocket: it is able to read incoming communication in that protocol.</p>
 </div>
 <div class="paragraph">
 <p>The writing side for a specific protocol <em>may</em> be implemented in the <code>Connection</code> but may also be implemented in other components, although eventually the bytes to be written will be written through the <code>EndPoint</code>.</p>
 </div>
 <div class="paragraph">
-<p>While there is primarily just one implementation of <code>EndPoint</code>,<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
+<p>While there are primarily only two implementations of <code>EndPoint</code>,<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> for TCP and <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/DatagramChannelEndPoint.html"><code>DatagramChannelEndPoint</code></a> for UDP (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
 </div>
 <div class="paragraph">
 <p>The <code>EndPoint</code> and <code>Connection</code> pairs can be chained, for example in case of encrypted communication using the TLS protocol.
@@ -11999,26 +12947,14 @@ There is an <code>EndPoint</code> and <code>Connection</code> TLS pair where the
 <code>EndPoint</code> supports changing the <code>Connection</code> object on-the-fly via <code>EndPoint.upgrade(Connection)</code>.
 This allows to use the HTTP/1.1 <code>Connection</code> during the initial communication and later to replace it with a WebSocket <code>Connection</code>.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-TODO: add a section on <code>UpgradeFrom</code> and <code>UpgradeTo</code>?
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p><code>SelectorManager</code> is an abstract class because while it knows how to create concrete <code>EndPoint</code> instances, it does not know how to create protocol specific <code>Connection</code> instances.</p>
 </div>
 <div class="paragraph">
-<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s</p>
+<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s.</p>
 </div>
 <div class="paragraph">
-<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a>s for TCP/IP sockets, and <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/unixdomain/server/UnixDomainServerConnector.html"><code>UnixDomainServerConnector</code></a> for Unix-Domain sockets (see the <a href="#pg-server-io-arch">server-side architecture section</a> for more information).</p>
+<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> for TCP sockets, <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/quic/server/QuicServerConnector.html"><code>QuicServerConnector</code></a> for QUIC sockets, and <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/unixdomain/server/UnixDomainServerConnector.html"><code>UnixDomainServerConnector</code></a> for Unix-Domain sockets (see the <a href="#pg-server-io-arch">server-side architecture section</a> for more information).</p>
 </div>
 <div class="paragraph">
 <p>On the client-side, the components that aggregates a <code>SelectorManager</code> with a set of <code>ClientConnectionFactory</code>s are <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClientTransport.html"><code>HttpClientTransport</code></a> subclasses (see the <a href="#pg-client-io-arch">client-side architecture section</a> for more information).</p>
@@ -12030,17 +12966,17 @@ TODO: add a section on <code>UpgradeFrom</code> and <code>UpgradeTo</code>?
 <p>The Jetty I/O library use Java NIO to handle I/O, so that I/O is non-blocking.</p>
 </div>
 <div class="paragraph">
-<p>At the Java NIO level, in order to be notified when a <code>SocketChannel</code> has data to be read, the <code>SelectionKey.OP_READ</code> flag must be set.</p>
+<p>At the Java NIO level, in order to be notified when a <code>SocketChannel</code> or <code>DatagramChannel</code> has data to be read, the <code>SelectionKey.OP_READ</code> flag must be set.</p>
 </div>
 <div class="paragraph">
 <p>In the Jetty I/O library, you can call <code>EndPoint.fillInterested(Callback)</code> to declare interest in the "read" (also called "fill") event, and the <code>Callback</code> parameter is the object that is notified when such an event occurs.</p>
 </div>
 <div class="paragraph">
-<p>At the Java NIO level, a <code>SocketChannel</code> is always writable, unless it becomes TCP congested.
-In order to be notified when a <code>SocketChannel</code> uncongests and it is therefore writable again, the <code>SelectionKey.OP_WRITE</code> flag must be set.</p>
+<p>At the Java NIO level, a <code>SocketChannel</code> or <code>DatagramChannel</code> is always writable, unless it becomes congested.
+In order to be notified when a channel uncongests and it is therefore writable again, the <code>SelectionKey.OP_WRITE</code> flag must be set.</p>
 </div>
 <div class="paragraph">
-<p>In the Jetty I/O library, you can call <code>EndPoint.write(Callback, ByteBuffer&#8230;&#8203;)</code> to write the <code>ByteBuffer</code>s and the <code>Callback</code> parameter is the object that is notified when the whole write is finished (i.e. <em>all</em> <code>ByteBuffer</code>s have been fully written, even if they are delayed by TCP congestion/uncongestion).</p>
+<p>In the Jetty I/O library, you can call <code>EndPoint.write(Callback, ByteBuffer&#8230;&#8203;)</code> to write the <code>ByteBuffer</code>s and the <code>Callback</code> parameter is the object that is notified when the whole write is finished (i.e. <em>all</em> <code>ByteBuffer</code>s have been fully written, even if they are delayed by congestion/uncongestion).</p>
 </div>
 <div class="paragraph">
 <p>The <code>EndPoint</code> APIs abstract out the Java NIO details by providing non-blocking APIs based on <code>Callback</code> objects for I/O operations.
@@ -12108,7 +13044,7 @@ The example below shows a typical implementation that extends <code>AbstractConn
 </div>
 </div>
 <div class="sect3">
-<h4 id="pg-arch-io-echo"><a class="anchor" href="#pg-arch-io-echo"></a><a class="link" href="#pg-arch-io-echo">Jetty I/O: Network Echo</a></h4>
+<h4 id="pg-arch-io-echo"><a class="anchor" href="#pg-arch-io-echo"></a><a class="link" href="#pg-arch-io-echo">Jetty I/O: TCP Network Echo</a></h4>
 <div class="paragraph">
 <p>With the concepts above it is now possible to write a simple, fully non-blocking, <code>Connection</code> implementation that simply echoes the bytes that it reads back to the other peer.</p>
 </div>
@@ -12448,7 +13384,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -13004,7 +13940,7 @@ This is helpful because by reading the DEBUG logs you get a better understanding
 </div>
 <div class="paragraph">
 <p>The Jetty SLF4J binding only provides an appender that writes to <code>System.err</code>.
-For more advanced configurations (for example, logging to a file), use <a href="http://logback.qos.ch">LogBack</a>, or <a href="https://logging.apache.org/log4j/2.x/">Log4J2</a>, or your preferred SLF4J binding.</p>
+For more advanced configurations (for example, logging to a file), use <a href="http://logback.qos.ch">LogBack</a>, or <a href="https://logging.apache.org/log4j/2.x/">Log4j2</a>, or your preferred SLF4J binding.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -13013,7 +13949,7 @@ For more advanced configurations (for example, logging to a file), use <a href="
 <i class="fa icon-caution" title="Caution"></i>
 </td>
 <td class="content">
-Only one binding can be present in the class-path or module-path. If you use the LogBack SLF4J binding or the Log4J2 SLF4J binding, remember to remove the Jetty SLF4J binding.
+Only one binding can be present in the class-path or module-path. If you use the LogBack SLF4J binding or the Log4j2 SLF4J binding, remember to remove the Jetty SLF4J binding.
 </td>
 </tr>
 </table>
@@ -13340,8 +14276,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.7<br>
-Last updated 2021-05-12 15:27:28 -0500
+Version 11.0.8<br>
+Last updated 2022-01-27 18:21:06 +0100
 </div>
 </div>
 </body>
