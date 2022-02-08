@@ -24,6 +24,7 @@ function set_global_variables() {
 }
 
 function print_global_variables() {
+  echo "Log File: $LOG_FILE"
   echo "Versions File (txt): $VERSIONS_TXT"
   echo "Versions File (php): $VERSIONS_PHP"
   echo "Archive Directory: $ARC_DIR"
@@ -465,6 +466,7 @@ function main() {
     gather_current_versions;
     print_global_variables;
     print_execution_variables;
+    echo "test" &>>"$LOG_FILE";
     exit 0;
   fi
 
