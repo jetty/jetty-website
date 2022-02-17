@@ -9,6 +9,7 @@ function usage() {
 }
 
 function set_global_variables() {
+  MIN_JAVA_VERSION=17
   VERSIONS_TXT=$(pwd)/_jettyVersions.txt
   VERSIONS_PHP=$(pwd)/_jettyVersions.php
   ARC_DIR=$(pwd)/_archive
@@ -48,15 +49,27 @@ function print_execution_variables() {
 function init() {
   echo ""
 
+  set_global_variables;
+  check_java_version;
+  reset_log;
+  create_archive_directory;
+}
+
+function check_java_version() {
+
   if [[ -z "${JAVA_HOME}" ]]; then
     echo "Error: JAVA_HOME environment variable not set, required for javadoc generation."
     exit 1
   fi
 
-  set_global_variables;
-  reset_log;
-  create_archive_directory;
+  local java_version=$(java -version 2>&1 | head -n1 | sed -r 's/.*version "([0-9]*).*$/\1/');
+
+  if (( $java_version < $MIN_JAVA_VERSION)); then
+    echo "Error: java version must be $MIN_JAVA_VERSION+";
+  fi
+
 }
+
 
 function gather_current_versions() {
 
@@ -466,7 +479,7 @@ function main() {
     gather_current_versions;
     print_global_variables;
     print_execution_variables;
-    echo "test" &>>"$LOG_FILE";
+    #echo "test" &>>"$LOG_FILE";
     exit 0;
   fi
 
