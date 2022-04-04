@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.8,</span>
-<span id="revdate">2022-02-07</span>
+<span id="revnumber">version 11.0.9,</span>
+<span id="revdate">2022-03-30</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -1190,7 +1190,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1407,7 +1407,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="671" height="517">
 </div>
 </div>
 <div class="paragraph">
@@ -2181,7 +2181,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="369" height="208">
 </div>
 </div>
 <div class="paragraph">
@@ -2323,7 +2323,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="711" height="413">
 </div>
 </div>
 <div class="paragraph">
@@ -2566,6 +2566,18 @@ HttpClient client = <span class="keyword">new</span> HttpClient(transport);
 client.start();</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The order in which the protocols are specified to <code>HttpClientTransportDynamic</code> indicates what is the client preference.
+</td>
+</tr>
+</table>
+</div>
 <div class="admonitionblock important">
 <table>
 <tr>
@@ -2573,12 +2585,14 @@ client.start();</code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-The order in which the protocols are specified to <code>HttpClientTransportDynamic</code> indicates what is the client preference.
-If the protocol is negotiated via ALPN, it is the server that decides what is the protocol to use for the communication, regardless of the client preference.
-If the protocol is not negotiated, the client preference is honored.
+When using TLS (i.e. URIs with the <code>https</code> scheme), the application protocol is <em>negotiated</em> between client and server via ALPN, and it is the server that decides what is the application protocol to use for the communication, regardless of the client preference.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>When clear-text communication is used (i.e. URIs with the <code>http</code> scheme) there is no application protocol negotiation, and therefore the application must know <em>a priori</em> whether the server supports the protocol or not.
+For example, if the server only supports clear-text HTTP/2, and <code>HttpClientTransportDynamic</code> is configured as in the example above, the client will send, by default, a clear-text HTTP/1.1 request to a clear-text HTTP/2 only server, which will result in a communication failure.</p>
 </div>
 <div class="paragraph">
 <p>Provided that the server supports both HTTP/1.1 and HTTP/2 clear-text, client applications can explicitly hint the version they want to use:</p>
@@ -2618,15 +2632,15 @@ ContentResponse upgradedResponse = client.newRequest(<span class="string"><span 
 </div>
 </div>
 <div class="paragraph">
-<p>In case of TLS encrypted communication using the HTTPS scheme, things are a little more complicated.</p>
+<p>In case of TLS encrypted communication using the <code>https</code> scheme, things are a little more complicated.</p>
 </div>
 <div class="paragraph">
-<p>If the client application explicitly specifies the HTTP version, then ALPN is not used on the client.
+<p>If the client application explicitly specifies the HTTP version, then ALPN is not used by the client.
 By specifying the HTTP version explicitly, the client application has prior-knowledge of what HTTP version the server supports, and therefore ALPN is not needed.
 If the server does not support the HTTP version chosen by the client, then the communication will fail.</p>
 </div>
 <div class="paragraph">
-<p>If the client application does not explicitly specify the HTTP version, then ALPN will be used on the client.
+<p>If the client application does not explicitly specify the HTTP version, then ALPN will be used by the client.
 If the server also supports ALPN, then the protocol will be negotiated via ALPN and the server will choose the protocol to use.
 If the server does not support ALPN, the client will try to use the first protocol configured in <code>HttpClientTransportDynamic</code>, and the communication may succeed or fail depending on whether the server supports the protocol chosen by the client.</p>
 </div>
@@ -2715,7 +2729,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2900,7 +2914,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.8</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.9</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3252,7 +3266,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3364,7 +3378,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.8</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.9</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3541,7 +3555,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3629,7 +3643,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="687" height="511">
 </div>
 </div>
 <div class="paragraph">
@@ -3683,7 +3697,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="676" height="572">
 </div>
 </div>
 <div class="paragraph">
@@ -4865,7 +4879,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4874,7 +4888,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="471" height="209">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="445" height="210">
 </div>
 </div>
 <div class="paragraph">
@@ -4944,7 +4958,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="659" height="339">
 </div>
 </div>
 <div class="paragraph">
@@ -5508,7 +5522,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="319" height="251">
 </div>
 </div>
 <div class="paragraph">
@@ -6081,7 +6095,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6358,7 +6372,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6741,7 +6755,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7208,7 +7222,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7558,7 +7572,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="549" height="540">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="515" height="541">
 </div>
 </div>
 </div>
@@ -8201,7 +8215,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1320" height="304">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1214" height="305">
 </div>
 </div>
 <div class="paragraph">
@@ -8445,7 +8459,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="363" height="176">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="340" height="176">
 </div>
 </div>
 <div class="paragraph">
@@ -8683,7 +8697,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="274" height="315">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="166" height="203">
 </div>
 </div>
 <div class="paragraph">
@@ -8835,7 +8849,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="374" height="284">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="345" height="284">
 </div>
 </div>
 <div class="paragraph">
@@ -8993,7 +9007,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9226,7 +9240,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9238,7 +9252,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9801,7 +9815,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="720" height="99">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="682" height="100">
 </div>
 </div>
 <div class="paragraph">
@@ -9845,7 +9859,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="954" height="240">
+<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="900" height="241">
 </div>
 </div>
 <div class="paragraph">
@@ -13384,7 +13398,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.9<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14276,8 +14290,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.8<br>
-Last updated 2022-01-27 18:21:06 +0100
+Version 11.0.9<br>
+Last updated 2022-03-30 10:14:08 -0500
 </div>
 </div>
 </body>
