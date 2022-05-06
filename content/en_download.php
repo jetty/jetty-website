@@ -39,44 +39,45 @@
         </tr>
         </thead>
         <tbody>
+         <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_11.0']['version']; ?></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.zip">.zip</a></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.tar.gz">.tgz</a></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
+                href="/jetty/download_info.php">info</a>)</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">Release Notes </a> / <a
+                href="http://www.eclipse.org/jetty/javadoc/jetty-11/index.html?overview-summary.html"> API Docs</a></p></td>
+         </tr>
+         <tr>
+             <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_10.0']['version']; ?></p></td>
+             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                 href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_10.0']['version']; ?>.zip">.zip</a></p></td>
+             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                 href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_10.0']['version']; ?>.tar.gz">.tgz</a></p></td>
+             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
+                 href="/jetty/download_info.php">info</a>)</p></td>
+             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                 href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">Release Notes </a> / <a
+                 href="http://www.eclipse.org/jetty/javadoc/jetty-10/index.html?overview-summary.html"> API Docs</a></p></td>
+         </tr>
         <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_9.4']['version']; ?></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4']['version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4']['version']; ?>.zip">.zip</a></p></td>
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4']['version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4']['version']; ?>.zip">.zip</a></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4']['version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4']['version']; ?>.tar.gz">.tgz</a></p>
-                </td>
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/<?php print $jetty['jetty_9.4']['version']; ?>/jetty-distribution-<?php print $jetty['jetty_9.4']['version']; ?>.tar.gz">.tgz</a></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
-                            href="/jetty/download_info.php">info</a>)</p></td>
+                href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">Release Notes </a> / <a
-                            href="http://www.eclipse.org/jetty/javadoc/jetty-9/index.html?overview-summary.html"> API Docs</a></p></td>
+                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">Release Notes </a> / <a
+                href="http://www.eclipse.org/jetty/javadoc/jetty-9/index.html?overview-summary.html"> API Docs</a></p></td>
             </td>
         </tr>
-        <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_10.0']['version']; ?></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_10.0']['version']; ?>.zip">.zip</a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_10.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_10.0']['version']; ?>.tar.gz">.tgz</a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
-                        href="/jetty/download_info.php">info</a>)</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">Release Notes </a> / <a
-                            href="http://www.eclipse.org/jetty/javadoc/jetty-10/index.html?overview-summary.html"> API Docs</a></p></td>
-        </tr>
-        <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_11.0']['version']; ?></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.zip">.zip</a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_11.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_11.0']['version']; ?>.tar.gz">.tgz</a></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
-                        href="/jetty/download_info.php">info</a>)</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                            href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">Release Notes </a> / <a
-                            href="http://www.eclipse.org/jetty/javadoc/jetty-11/index.html?overview-summary.html"> API Docs</a></p></td>
-        </tr>
+
+
         </tbody>
     </table>
     <br/>
@@ -90,8 +91,8 @@
     <div class="paragraph">
         <p>Jetty 10 and 11 are the most recent versions of Jetty and have a great many improvements over previous
             releases.</p>
-        <p>While many people continue to use older versions of Jetty like 9.4 for a variety of reasons, we generally recommend using Jetty 10 or 11 as
-            they represent the version of Jetty that we will actively maintain and improve over the next few years.  The decision to use Jetty 10 or 11 depends entirely on which flavor of servlet package name needs to be used.</p>
+        <p>While many people continue to use older versions of Jetty like 9.4 for a variety of reasons, we recommend using Jetty 10 or 11 as
+            they represent the version of Jetty that we will actively maintain and improve over the next few years.  The decision to use Jetty 10 or 11 depends entirely on which flavor of servlet package name needs to be used. June 1st, 2022 marks the end of community support for the Jetty 9.4.x release branch.</p>
     </div>
 
     <h3 id="version-table">Jetty Versions</h3>
@@ -150,7 +151,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p> <a href="https://github.com/eclipse/jetty.project/issues/7958">(Notice)</a></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
         </tr>
