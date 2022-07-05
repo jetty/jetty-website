@@ -68,6 +68,30 @@
                 </thead>
                 <tbody>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2022/07/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-2191" title="SslConnection does not release pooled ByteBuffers in case of errors.">CVE-2022-2191</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><= 10.0.9, <= 11.0.9</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">10.0.10, 11.0.10</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2022/07/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-2047" title="Invalid URI parsing may produce invalid HttpURI.authority.">CVE-2022-2047</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><= 9.4.46, <= 10.0.9, <= 11.0.9</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.47, 10.0.10, 11.0.10</p></td>
+                </tr>
+                <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2022/07/05</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-2048" title="Invalid HTTP/2 requests can lead to denial of service.">CVE-2022-2048</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><= 9.4.46, <= 10.0.9, <= 11.0.9</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.47, 10.0.10, 11.0.10</p></td>
+                </tr>
+                <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2021/07/15</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34429" title="URIs can be crafted using some encoded characters to access the content of the WEB-INF directory and/or bypass some security constraints.">CVE-2021-34429</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
