@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.12,</span>
-<span id="revdate">2022-09-14</span>
+<span id="revnumber">version 11.0.13,</span>
+<span id="revdate">2022-12-07</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -443,6 +443,23 @@
 <li><a href="#pg-arch-bean-listener-lifecycle">LifeCycle.Listener</a></li>
 <li><a href="#pg-arch-bean-listener-container">Container.Listener</a></li>
 <li><a href="#pg-arch-bean-listener-inherited">Container.InheritedListener</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#pg-arch-threads">Jetty Threading Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#pg-arch-threads-execution-strategy">Execution Strategies</a>
+<ul class="sectlevel4">
+<li><a href="#pg-arch-threads-execution-strategy-pc">Produce-Consume</a></li>
+<li><a href="#pg-arch-threads-execution-strategy-pec">Produce-Execute-Consume</a></li>
+<li><a href="#pg-arch-threads-execution-strategy-epc">Execute-Produce-Consume</a></li>
+<li><a href="#pg-arch-threads-execution-strategy-adaptive">Adaptive Execution Strategy</a></li>
+</ul>
+</li>
+<li><a href="#pg-arch-threads-thread-pool">Thread Pool</a>
+<ul class="sectlevel4">
+<li><a href="#pg-arch-threads-thread-pool-virtual-threads">Virtual Threads</a></li>
 </ul>
 </li>
 </ul>
@@ -1190,7 +1207,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1407,7 +1424,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
 </div>
 </div>
 <div class="paragraph">
@@ -2181,7 +2198,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
 </div>
 </div>
 <div class="paragraph">
@@ -2276,7 +2293,7 @@ proxy.getExcludedAddresses().add(<span class="string"><span class="delimiter">&q
 
 <span class="comment">// Add the new proxy to the list of proxies already registered.</span>
 ProxyConfiguration proxyConfig = httpClient.getProxyConfiguration();
-proxyConfig.getProxies().add(proxy);
+proxyConfig.addProxy(proxy);
 
 ContentResponse response = httpClient.GET(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain.com/path</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
@@ -2313,7 +2330,7 @@ auth.addAuthentication(<span class="keyword">new</span> DigestAuthentication(ser
 <span class="comment">// Proxy configuration.</span>
 ProxyConfiguration proxyConfig = httpClient.getProxyConfiguration();
 HttpProxy proxy = <span class="keyword">new</span> HttpProxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">proxy.net</span><span class="delimiter">&quot;</span></span>, <span class="integer">8080</span>);
-proxyConfig.getProxies().add(proxy);
+proxyConfig.addProxy(proxy);
 
 ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
@@ -2323,7 +2340,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -2729,7 +2746,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2914,7 +2931,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.12</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.13</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3266,7 +3283,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3378,7 +3395,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.12</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.13</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3555,7 +3572,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3585,7 +3602,7 @@ webSocketClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Instantiate and configure HttpClient.</span>
 HttpClient httpClient = <span class="keyword">new</span> HttpClient();
 <span class="comment">// For example, configure a proxy.</span>
-httpClient.getProxyConfiguration().getProxies().add(<span class="keyword">new</span> HttpProxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8888</span>));
+httpClient.getProxyConfiguration().addProxy(<span class="keyword">new</span> HttpProxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8888</span>));
 
 <span class="comment">// Instantiate WebSocketClient, passing HttpClient to the constructor.</span>
 WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
@@ -3643,7 +3660,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
 </div>
 </div>
 <div class="paragraph">
@@ -3697,7 +3714,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
 </div>
 </div>
 <div class="paragraph">
@@ -4879,7 +4896,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4888,7 +4905,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="504" height="216">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
 </div>
 </div>
 <div class="paragraph">
@@ -4958,7 +4975,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
 </div>
 </div>
 <div class="paragraph">
@@ -5522,7 +5539,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
 </div>
 </div>
 <div class="paragraph">
@@ -6095,7 +6112,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6372,7 +6389,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6755,7 +6772,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7222,7 +7239,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7572,7 +7589,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="577" height="550">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
 </div>
 </div>
 </div>
@@ -8215,7 +8232,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1412" height="314">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
 </div>
 </div>
 <div class="paragraph">
@@ -8459,7 +8476,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="381" height="169">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8697,7 +8714,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="325">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
 </div>
 </div>
 <div class="paragraph">
@@ -8849,7 +8866,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="391" height="277">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -9007,7 +9024,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9240,7 +9257,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9252,7 +9269,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9815,7 +9832,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="763" height="101">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
 </div>
 </div>
 <div class="paragraph">
@@ -9859,7 +9876,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="1015" height="245">
+<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="978" height="254">
 </div>
 </div>
 <div class="paragraph">
@@ -12858,6 +12875,253 @@ parent.addBean(younger);</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="pg-arch-threads"><a class="anchor" href="#pg-arch-threads"></a><a class="link" href="#pg-arch-threads">Jetty Threading Architecture</a></h3>
+<div class="paragraph">
+<p>Writing a performant client or server is difficult, because it should:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Scale well with the number of processors.</p>
+</li>
+<li>
+<p>Be efficient at using processor caches to avoid <a href="https://en.wikipedia.org/wiki/Parallel_slowdown">parallel slowdown</a>.</p>
+</li>
+<li>
+<p>Support multiple network protocols that may have very different requirements; for example, multiplexed protocols such as HTTP/2 introduce new challenges that are not present in non-multiplexed protocols such as HTTP/1.1.</p>
+</li>
+<li>
+<p>Support different application threading models; for example, if a Jetty server invokes server-side application code that is allowed to call blocking APIs, then the Jetty server should not be affected by how long the blocking API call takes, and should be able to process other connections or other requests in a timely fashion.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="pg-arch-threads-execution-strategy"><a class="anchor" href="#pg-arch-threads-execution-strategy"></a><a class="link" href="#pg-arch-threads-execution-strategy">Execution Strategies</a></h4>
+<div class="paragraph">
+<p>The Jetty threading architecture can be modeled with a producer/consumer pattern, where produced tasks needs to be consumed efficiently.</p>
+</div>
+<div class="paragraph">
+<p>For example, Jetty produces (among others) these tasks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A task that wraps a NIO selection event, see the <a href="#pg-arch-io">Jetty I/O architecture</a>.</p>
+</li>
+<li>
+<p>A task that wraps the invocation of application code that may block (for example, the invocation of a Servlet to handle an HTTP request).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A task is typically a <code>Runnable</code> object that may implement <code>org.eclipse.jetty.util.thread.Invocable</code> to indicate the behavior of the task (in particular, whether the task may block or not).</p>
+</div>
+<div class="paragraph">
+<p>Once a task has been produced, it may be consumed using these modes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#pg-arch-threads-execution-strategy-pc"><code>Produce-Consume</code></a></p>
+</li>
+<li>
+<p><a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code></a></p>
+</li>
+<li>
+<p><a href="#pg-arch-threads-execution-strategy-epc"><code>Execute-Produce-Consume</code></a></p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="pg-arch-threads-execution-strategy-pc"><a class="anchor" href="#pg-arch-threads-execution-strategy-pc"></a><a class="link" href="#pg-arch-threads-execution-strategy-pc">Produce-Consume</a></h5>
+<div class="paragraph">
+<p>In the <code>Produce-Consume</code> mode, the producer thread loops to produce a task that is run directly by the <code>Producer Thread</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
+</div>
+</div>
+<div class="paragraph">
+<p>If the task is a NIO selection event, then this mode is the thread-per-selector mode which is very CPU core cache efficient, but suffers from the <a href="http://en.wikipedia.org/wiki/Head-of-line_blocking">head-of-line blocking</a>: if one of the tasks blocks or runs slowly, then subsequent tasks cannot be produced (and therefore cannot be consumed either) and will pay in latency the cost of running previous, possibly unrelated, tasks.</p>
+</div>
+<div class="paragraph">
+<p>This mode should only be used if the produced task is known to never block, or if the system tolerates well (or does not care about) head-of-line blocking.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-arch-threads-execution-strategy-pec"><a class="anchor" href="#pg-arch-threads-execution-strategy-pec"></a><a class="link" href="#pg-arch-threads-execution-strategy-pec">Produce-Execute-Consume</a></h5>
+<div class="paragraph">
+<p>In the <code>Produce-Execute-Consume</code> mode, the <code>Producer Thread</code> loops to produce tasks that are submitted to a <code>java.util.concurrent.Executor</code> to be run by <code>Worker Thread</code>s different from the <code>Producer Thread</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Executor</code> implementation typically adds the task to a queue, and dequeues the task when there is a worker thread available to run it.</p>
+</div>
+<div class="paragraph">
+<p>This mode solves the head-of-line blocking discussed in the <a href="#pg-arch-threads-execution-strategy-pc"><code>Produce-Consume</code> section</a>, but suffers from other issues:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It is not CPU core cache efficient, as the data available to the producer thread will need to be accessed by another thread that likely is going to run on a CPU core that will not have that data in its caches.</p>
+</li>
+<li>
+<p>If the tasks take time to be run, the <code>Executor</code> queue may grow indefinitely.</p>
+</li>
+<li>
+<p>A small latency is added to every task: the time it waits in the <code>Executor</code> queue.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-arch-threads-execution-strategy-epc"><a class="anchor" href="#pg-arch-threads-execution-strategy-epc"></a><a class="link" href="#pg-arch-threads-execution-strategy-epc">Execute-Produce-Consume</a></h5>
+<div class="paragraph">
+<p>In the <code>Execute-Produce-Consume</code> mode, the producer thread <code>Thread 1</code> loops to produce a task, then submits one internal task to an <code>Executor</code> to take over production on thread <code>Thread 2</code>, and then runs the task in <code>Thread 1</code>, and so on.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
+</div>
+</div>
+<div class="paragraph">
+<p>This mode may operate like <a href="#pg-arch-threads-execution-strategy-pc"><code>Produce-Consume</code></a> when the take over production task run, for example, by thread <code>Thread 3</code> takes time to be executed (for example, in a busy server): then thread <code>Thread 2</code> will produce one task and run it, then produce another task and run it, etc.&#8201;&#8212;&#8201;<code>Thread 2</code> behaves exactly like the <code>Produce-Consume</code> mode.
+By the time thread <code>Thread 3</code> takes over task production from <code>Thread 2</code>, all the work might already be done.</p>
+</div>
+<div class="paragraph">
+<p>This mode may also operate similarly to <a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code></a> when the take over production task always finds a free CPU core immediately (for example, in a mostly idle server): thread <code>Thread 1</code> will produce a task, yield production to <code>Thread 2</code> while <code>Thread 1</code> is running the task; <code>Thread 2</code> will produce a task, yield production to <code>Thread 3</code> while <code>Thread 2</code> is running the task, etc.</p>
+</div>
+<div class="paragraph">
+<p>Differently from <code>Produce-Execute-Consume</code>, here production happens on different threads, but the advantage is that the task is run by the same thread that produced it (which is CPU core cache efficient).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-arch-threads-execution-strategy-adaptive"><a class="anchor" href="#pg-arch-threads-execution-strategy-adaptive"></a><a class="link" href="#pg-arch-threads-execution-strategy-adaptive">Adaptive Execution Strategy</a></h5>
+<div class="paragraph">
+<p>The modes of task consumption discussed above are captured by the <code>org.eclipse.jetty.util.thread.ExecutionStrategy</code> interface, with an additional implementation that also takes into account the behavior of the task when the task implements <code>Invocable</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example, a task that declares itself as non-blocking can be consumed using the <code>Produce-Consume</code> mode, since there is no risk to stop production because the task will not block.</p>
+</div>
+<div class="paragraph">
+<p>Conversely, a task that declares itself as blocking will stop production, and therefore must be consumed using either the <code>Produce-Execute-Consume</code> mode or the <code>Execute-Produce-Consume</code> mode.
+Deciding between these two modes depends on whether there is a free thread immediately available to take over production, and this is captured by the <code>org.eclipse.jetty.util.thread.TryExecutor</code> interface.</p>
+</div>
+<div class="paragraph">
+<p>An implementation of <code>TryExecutor</code> can be asked whether a thread can be immediately and exclusively allocated to run a task, as opposed to a normal <code>Executor</code> that can only queue the task in the expectation that there will be a thread available in the near future to run the task.</p>
+</div>
+<div class="paragraph">
+<p>The concept of task consumption modes, coupled with <code>Invocable</code> tasks that expose their own behavior, coupled with a <code>TryExecutor</code> that guarantees whether production can be immediately taken over are captured by the default Jetty execution strategy, named <code>org.eclipse.jetty.util.thread.AdaptiveExecutionStrategy</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>AdaptiveExecutionStrategy</code> was previously named <code>EatWhatYouKill</code>, named after a hunting proverb in the sense that one should produce (kill) only what it consumes (eats).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-arch-threads-thread-pool"><a class="anchor" href="#pg-arch-threads-thread-pool"></a><a class="link" href="#pg-arch-threads-thread-pool">Thread Pool</a></h4>
+<div class="paragraph">
+<p>Jetty&#8217;s <a href="#pg-arch-threads">threading architecture</a> requires a more sophisticated thread pool than what offered by Java&#8217;s <code>java.util.concurrent.ExecutorService</code>.</p>
+</div>
+<div class="paragraph">
+<p>Jetty&#8217;s default thread pool implementation is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/thread/QueuedThreadPool.html"><code>QueuedThreadPool</code></a>.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> integrates with the <a href="#pg-arch-bean">Jetty component model</a>, implements <code>Executor</code>, provides a <code>TryExecutor</code> implementation (discussed in the <a href="#pg-arch-threads-execution-strategy-adaptive">adaptive execution strategy section</a>), and supports <a href="#pg-arch-threads-thread-pool-virtual-threads">virtual threads</a> (introduced as a preview feature in Java 19).</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> can be configured with a <code>maxThreads</code> value.</p>
+</div>
+<div class="paragraph">
+<p>However, some of the Jetty components (such as the <a href="#pg-arch-io-selector-manager">selectors</a>) permanently steal threads for their internal use, or rather <code>QueuedThreadPool</code> leases some threads to these components.
+These threads are reported by <code>QueuedThreadPool.leasedThreads</code> and are not available to run application code.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> can be configured with a <code>reservedThreads</code> value.
+This value represents the maximum number of threads that can be reserved and used by the <code>TryExecutor</code> implementation.
+A negative value for <code>QueuedThreadPool.reservedThreads</code> means that the actual value will be heuristically derived from the number of CPU cores and <code>QueuedThreadPool.maxThreads</code>.
+A value of zero for <code>QueuedThreadPool.reservedThreads</code> means that reserved threads are disabled, and therefore the <a href="#pg-arch-threads-execution-strategy-epc"><code>Execute-Produce-Consume</code> mode</a> is never used&#8201;&#8212;&#8201;the <a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code> mode</a> is always used instead.</p>
+</div>
+<div class="sect4">
+<h5 id="pg-arch-threads-thread-pool-virtual-threads"><a class="anchor" href="#pg-arch-threads-thread-pool-virtual-threads"></a><a class="link" href="#pg-arch-threads-thread-pool-virtual-threads">Virtual Threads</a></h5>
+<div class="paragraph">
+<p>Virtual threads have been introduced in Java 19 as a preview feature.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In Java versions where virtual threads are a preview feature, remember to add <code>--enable-preview</code> to the command line options to use virtual threads.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> can be configured to use virtual threads by specifying the virtual threads <code>Executor</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">QueuedThreadPool threadPool = <span class="keyword">new</span> QueuedThreadPool();
+threadPool.setVirtualThreadsExecutor(<span class="predefined-type">Executors</span>.newVirtualThreadPerTaskExecutor());</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Jetty cannot enforce that the <code>Executor</code> passed to <code>setVirtualThreadsExecutor(Executor)</code> uses virtual threads, so make sure to specify a <em>virtual</em> threads <code>Executor</code> and not a normal <code>Executor</code> that uses platform threads.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>AdaptiveExecutionStrategy</code> makes use of this setting when it determines that a task should be run with the <a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code> mode</a>: rather than submitting the task to <code>QueuedThreadPool</code> to be run in a platform thread, it submits the task to the virtual threads <code>Executor</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Enabling virtual threads in <code>QueuedThreadPool</code> will default the number of reserved threads to zero, unless the number of reserved threads is explicitly configured to a positive value.</p>
+</div>
+<div class="paragraph">
+<p>Defaulting the number of reserved threads to zero ensures that the <a href="#pg-arch-threads-execution-strategy-pec">Produce-Execute-Consume mode</a> is always used, which means that virtual threads will always be used for blocking tasks.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="pg-arch-io"><a class="anchor" href="#pg-arch-io"></a><a class="link" href="#pg-arch-io">Jetty I/O Architecture</a></h3>
 <div class="paragraph">
 <p>Jetty libraries (both client and server) use Java NIO to handle I/O, so that at its core Jetty I/O is completely non-blocking.</p>
@@ -13398,7 +13662,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.12<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.13<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14290,8 +14554,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.12<br>
-Last updated 2022-09-14 01:34:38 UTC
+Version 11.0.13<br>
+Last updated 2022-06-16 15:13:14 -0500
 </div>
 </div>
 </body>

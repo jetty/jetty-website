@@ -34,17 +34,17 @@ $jetty = array (
     'tgz.sha1' => '2d01c4f09e7e236d321d954dff9190c4cc3efcf2',
   ),
  'jetty_10.0' => array (
-    'version' => '10.0.12',
-    'zip.md5' => '7166b09420c41105789d5cd565d97c22',
-    'zip.sha1' => '2bbbaa366ab67a3cdbf32b0b039b1544557db28f',
-    'tgz.md5' => 'b27f4371b78cb2ae409bad998008c80d',
-    'tgz.sha1' => 'aa2fa0cdb80af7e08e56482c532dcdd241b7fe81',
+    'version' => '10.0.13',
+    'zip.md5' => 'a213fe7d2664353c85a3fdad58c73fac',
+    'zip.sha1' => '2272a41f1748d71e0ed96974db15ae1a84c56e0a',
+    'tgz.md5' => '1b4782d2d51882befaec8155f0e862f5',
+    'tgz.sha1' => '7a8314c83e211b914fe95b158643eb66bf47e9f4',
   ),
  'jetty_11.0' => array (
-    'version' => '11.0.12',
-    'zip.md5' => 'f86c0de29c2f9a5035f2df5789c799f2',
-    'zip.sha1' => 'e1b63c3b20564d9e64ae8a8b570c213c18a0697f',
-    'tgz.md5' => 'c2e3161e515049ef34a24e0de1144cb5',
-    'tgz.sha1' => '46f53984f1deb7cc1fb803e41da30612d79a0838',
+    'version' => '11.0.13',
+    'zip.md5' => '62a4923b2adbd360f075be4adf1a59ab',
+    'zip.sha1' => 'eab2500447ea497556a78b0644026ca521ebe0c6',
+    'tgz.md5' => 'b4fe5929afd4f266a045356cf26978df',
+    'tgz.sha1' => '466b11f00d7206158d7297ef1b5cf5395ffa9a82',
   )
 );
