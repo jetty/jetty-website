@@ -222,6 +222,7 @@ function download_distribution_files() {
 
   if [[ "$version" == "1"* ]]; then
     local artifact="jetty-home"
+    maven_download "$artifact" "$version" "$artifact-$version-with-docs.zip";
   else
     local artifact="jetty-distribution"
   fi
@@ -387,7 +388,6 @@ function process_contribution_guide {
 function process_javadoc() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
-
   echo " - phase: javadoc"
 
   create_temp_directory
@@ -420,25 +420,19 @@ function build_javadoc() {
 
   echo "  - building javadoc for $version"
 
-  github_download "$filename";
-
   {
-    unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
-    cd "$temp_build_dir/jetty.project-jetty-$version" || exit 1
-
     if [[ $primary_version == "jetty-9" ]]; then
+      github_download "$filename";
+      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+      cd "$temp_build_dir/jetty.project-jetty-$version" || exit 1
       mvn clean install -DskipTests
       mvn javadoc:aggregate
     elif [[ $primary_version == "jetty-10" ]]; then
-      mvn clean install -DskipTests
-      cd javadoc || exit 1
-      mvn clean install
-      cd .. || exit 1
+      filename="jetty-home-$version-with-docs.zip"
+      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
     elif [[ $primary_version == "jetty-11" ]]; then
-      mvn clean install -DskipTests
-      cd javadoc || exit 1
-      mvn clean install
-      cd .. || exit 1
+      filename="jetty-home-$version-with-docs.zip"
+      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
     fi
 
     cd "$SCRIPT_DIR" || exit 1
@@ -457,9 +451,9 @@ function deploy_javadoc() {
   if [[ $primary_version == "jetty-9" ]]; then
     javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/target/site/apidocs/"
   elif [[ $primary_version == "jetty-10" ]]; then
-    javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/javadoc/target/site/apidocs/"
+    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
   elif [[ $primary_version == "jetty-11" ]]; then
-    javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/javadoc/target/site/apidocs/"
+    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
   fi
 
   rsync -avh "$javadoc_src_dir" "$JAVADOC_DIR/$primary_version" &>>"$LOG_FILE";
