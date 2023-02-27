@@ -32,7 +32,7 @@ function print_global_variables() {
   echo "Maven Root URL: $MAVEN_ROOT"
   echo "Maven Staging Root URL: $STAGING_ROOT"
   echo "Documentation Root 9 URL: $DOC_ROOT_9"
-  echo "Documentation Root 10 URL: $DOC_ROOT_10"
+  echo "Documentation Root 1x URL: $DOC_ROOT_1x"
   echo "Github Root URL: $GITHUB_ROOT"
 }
 
@@ -43,6 +43,7 @@ function print_execution_variables() {
   echo "Jetty 9.4 = $jetty_9_4"
   echo "Jetty 10.0 = $jetty_10_0"
   echo "Jetty 11.0 = $jetty_11_0"
+  echo "Jetty 12.0 = $jetty_12_0"
 }
 
 
@@ -98,6 +99,10 @@ function gather_current_versions() {
       jetty_11_0=$line
     fi
 
+    if [[ $line == *"12.0."* ]]; then
+      jetty_12_0=$line
+    fi
+
   done <"$version_file"
 
 }
@@ -151,6 +156,8 @@ function get_javadoc_version() {
     javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-10/index.html")
   elif [[ $primary_version == "jetty-11" ]]; then
     javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-11/index.html")
+  elif [[ $primary_version == "jetty-12" ]]; then
+    javadoc_version=$(sed -e ':a' -e 'N;$!ba' -e 's/.*Doc - v\([0-9.]*\)).*/\1/' "$JAVADOC_DIR/jetty-12/index.html")
   fi
 
   echo "$javadoc_version"
@@ -277,8 +284,9 @@ function download_missing_files() {
   # Jetty 9.3
   download_distribution_files "$jetty_9_3"
 
-  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
+  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0)
   for version in "${versions[@]}"; do
+    echo "checking $jetty_12_0" 
     download_distribution_files "$version"
     download_documentation_files "$version"
     download_github_files "$version"
@@ -297,7 +305,7 @@ function generate_version_php() {
 
   # shellcheck disable=SC2206
   # TODO make dynamic
-  local versions=($jetty_9_2 $jetty_9_3 $jetty_9_4 $jetty_10_0 $jetty_11_0)
+  local versions=($jetty_9_2 $jetty_9_3 $jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0)
 
     echo " - phase: version_php generation"
 
@@ -343,7 +351,7 @@ function generate_version_php() {
 
 function process_documentation() {
   # shellcheck disable=SC2206
-  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
+  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0);
 
   echo " - phase: documentation"
 
@@ -369,7 +377,7 @@ function process_documentation() {
 }
 
 function process_contribution_guide {
-  local version=$jetty_10_0;
+  local version=$jetty_12_0;
 
   echo " - phase: position contribution guide";
 
@@ -387,7 +395,8 @@ function process_contribution_guide {
 
 function process_javadoc() {
   # shellcheck disable=SC2206
-  local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0)
+  # local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0)
+  local versions=($jetty_10_0 $jetty_11_0 $jetty_12_0)
   echo " - phase: javadoc"
 
   create_temp_directory
@@ -433,6 +442,9 @@ function build_javadoc() {
     elif [[ $primary_version == "jetty-11" ]]; then
       filename="jetty-home-$version-with-docs.zip"
       unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+    elif [[ $primary_version == "jetty-12" ]]; then
+      filename="jetty-home-$version-with-docs.zip"
+      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
     fi
 
     cd "$SCRIPT_DIR" || exit 1
@@ -453,6 +465,8 @@ function deploy_javadoc() {
   elif [[ $primary_version == "jetty-10" ]]; then
     javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
   elif [[ $primary_version == "jetty-11" ]]; then
+    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
+  elif [[ $primary_version == "jetty-12" ]]; then
     javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
   fi
 
