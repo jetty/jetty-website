@@ -141,12 +141,10 @@
             </td>
             <td class="halign-left valign-top">
               <div class="content">
-                <ul>
-                  <li>JakartaEE 10/jakartaee.servlet.*</li>
-                  <li>JakartaEE 9/jakartaee.servlet.*</li>
-                  <li>JakartaEE 8/jakartaee.servlet.*</li>
-                  <li>JavaEE 8/javax.servlet.*</li>
-                </ul>
+                JakartaEE 10/jakartaee.servlet.*<br/>
+                JakartaEE 9/jakartaee.servlet.*<br/>
+                JakartaEE 8/jakartaee.servlet.*<br/>
+                JavaEE 8/javax.servlet.*<br/>
               </div>
             </td>
             <td class="halign-left valign-top">
