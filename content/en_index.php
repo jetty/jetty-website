@@ -132,18 +132,39 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
+            <tr>
             <td class="halign-left valign-top">
-                <div class="content"><p>Jetty 9.4.x</p></div>
+                <div class="content"><p>Jetty 12.0.x</p></div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">3.1</div>
+                <div class="content">6.0,5.0,4.0,3.1</div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">JavaEE 8/javax.servlet.*</div>
+              <div class="content">
+                <ul>
+                  <li>JakartaEE 10/jakartaee.servlet.*</li>
+                  <li>JakartaEE 9/jakartaee.servlet.*</li>
+                  <li>JakartaEE 8/jakartaee.servlet.*</li>
+                  <li>JavaEE 8/javax.servlet.*</li>
+                </ul>
+              </div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">Java 8</div>
+                <div class="content">Java 17+</div>
+            </td>
+        </tr>
+            <tr>
+            <td class="halign-left valign-top">
+                <div class="content"><p>Jetty 11.0.x</p></div>
+            </td>
+            <td class="halign-left valign-top">
+                <div class="content">5.0</div>
+            </td>
+            <td class="halign-left valign-top">
+                <div class="content">JakartaEE 9/jakartaee.servlet.*&nbsp;&nbsp;&nbsp;</div>
+            </td>
+            <td class="halign-left valign-top">
+                <div class="content">Java 11+</div>
             </td>
         </tr>
         <tr>
@@ -162,18 +183,20 @@
         </tr>
         <tr>
             <td class="halign-left valign-top">
-                <div class="content"><p>Jetty 11.0.x</p></div>
+                <div class="content"><p>Jetty 9.4.x</p></div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">5.0</div>
+                <div class="content">3.1</div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">JakartaEE 9/jakartaee.servlet.*&nbsp;&nbsp;&nbsp;</div>
+                <div class="content">JavaEE 8/javax.servlet.*</div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">Java 11+</div>
+                <div class="content">Java 8</div>
             </td>
         </tr>
+        
+        
         </tbody>
     </table>
 

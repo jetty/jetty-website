@@ -39,6 +39,18 @@
         </tr>
         </thead>
         <tbody>
+          <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_12.0']['version']; ?></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_12.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_12.0']['version']; ?>.zip">.zip</a></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-home/<?php print $jetty['jetty_12.0']['version']; ?>/jetty-home-<?php print $jetty['jetty_12.0']['version']; ?>.tar.gz">.tgz</a></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
+                href="/jetty/download_info.php">info</a>)</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><a
+                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">Release Notes </a> / <a
+                href="http://www.eclipse.org/jetty/javadoc/jetty-12/index.html?overview-summary.html"> API Docs</a></p></td>
+         </tr>
          <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><?php print $jetty['jetty_11.0']['version']; ?></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
