@@ -32,8 +32,8 @@
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 12</b></p></td>
         <td class="tableblock halign-left valign-top">
             <p class="tableblock">
-                <a href="/jetty/documentation/jetty-12/operations-guide/index.html">Operations Guide (missing, <a href="https://github.com/eclipse/jetty.project/issues/9442">#9442)</a></a><br/>
-                <a href="/jetty/documentation/jetty-12/programming-guide/index.html">Programming Guide (missing, <a href="https://github.com/eclipse/jetty.project/issues/9442">#9442)</a></a><br/>
+                <a href="/jetty/documentation/jetty-12/operations-guide/index.html">Operations Guide</a><br/>
+                <a href="/jetty/documentation/jetty-12/programming-guide/index.html">Programming Guide</a><br/>
             </p>
         </td>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-12/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">source</a></p></td>
