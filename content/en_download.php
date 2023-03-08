@@ -131,7 +131,19 @@
             <th class="tableblock halign-left valign-top">Protocols</th>
         </tr>
         </thead>
-        <tbody>
+	<tbody>
+        <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">2023-</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">17 <sup>(2)</sup></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">3.1 4.0 5.0 6.0</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">2.3 3.0 3.1</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Beta</strong></p>
+            </td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
+                    WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup>JavaEE Namespace<sup>(4)</sup></p></td>
+        </tr>
         <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2020-</p></td>
@@ -307,6 +319,9 @@
             <li>
                 <p>JDK9 and newer is not supported if using MultiRelease JAR Files, or Bytecode / Annotation
                     scanning.</p>
+	    </li>
+            <li>
+                <p>Only for Java EE 8 (Servlet 4.0, JSP 2.3) support, using the javax.* namespace.</p>
             </li>
         </ol>
     </div>

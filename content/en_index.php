@@ -137,14 +137,13 @@
                 <div class="content"><p>Jetty 12.0.x</p></div>
             </td>
             <td class="halign-left valign-top">
-                <div class="content">6.0,5.0,4.0,3.1</div>
+                <div class="content">6.0, 5.0, 4.0, 3.1</div>
             </td>
             <td class="halign-left valign-top">
               <div class="content">
                 JakartaEE 10/jakartaee.servlet.*<br/>
                 JakartaEE 9/jakartaee.servlet.*<br/>
-                JakartaEE 8/jakartaee.servlet.*<br/>
-                JavaEE 8/javax.servlet.*<br/>
+                JakartaEE 8/javax.servlet.*<br/>
               </div>
             </td>
             <td class="halign-left valign-top">
