@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Programming Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 10.0.14,</span>
-<span id="revdate">2023-02-22</span>
+<span id="revnumber">version 10.0.15,</span>
+<span id="revdate">2023-04-11</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -127,7 +127,7 @@
 <li><a href="#pg-client-websocket-connect-inspect-http-response">Inspecting the Initial HTTP Response</a></li>
 </ul>
 </li>
-<li><a href="#pg-websocket-architecture">WebSocket Architecture</a></li>
+<li><a href="#pg-websocket-architecture">Jetty WebSocket Architecture</a></li>
 <li><a href="#pg-websocket-endpoints">WebSocket Endpoints</a>
 <ul class="sectlevel4">
 <li><a href="#pg-websocket-endpoints-listener">Listener Endpoints</a>
@@ -322,6 +322,7 @@
 <ul class="sectlevel5">
 <li><a href="#pg-server-websocket-jetty-endpoints-container">Using <code>JettyWebSocketServerContainer</code></a></li>
 <li><a href="#pg-server-websocket-jetty-endpoints-servlet">Using <code>JettyWebSocketServlet</code></a></li>
+<li><a href="#pg-server-websocket-jetty-pathspec">Custom PathSpec Mappings</a></li>
 </ul>
 </li>
 </ul>
@@ -1207,7 +1208,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1424,7 +1425,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
 </div>
 </div>
 <div class="paragraph">
@@ -1998,7 +1999,7 @@ Please refer to the <code>HttpClient</code> <a href="https://www.eclipse.org/jet
 <p><code>HttpClient</code> supports HTTPS requests out-of-the-box like a browser does.</p>
 </div>
 <div class="paragraph">
-<p>The support for HTTPS request is provided by a <code>SslContextFactory.Client</code>, typically configured in the <code>ClientConnector</code>.
+<p>The support for HTTPS request is provided by a <code>SslContextFactory.Client</code> instance, typically configured in the <code>ClientConnector</code>.
 If not explicitly configured, the <code>ClientConnector</code> will allocate a default one when started.</p>
 </div>
 <div class="listingblock">
@@ -2013,37 +2014,44 @@ httpClient.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The default <code>SslContextFactory.Client</code> verifies the certificate sent by the server by verifying the certificate chain.
-This means that requests to public websites that have a valid certificate (such as <code><a href="https://google.com" class="bare">https://google.com</a></code>) will work out-of-the-box.</p>
+<p>The default <code>SslContextFactory.Client</code> verifies the certificate sent by the server by verifying the validity of the certificate with respect to the certificate chain, the expiration date, the server host name, etc.
+This means that requests to public websites that have a valid certificate (such as <code>https://google.com</code>) will work out-of-the-box, without the need to specify a KeyStore or a TrustStore.</p>
 </div>
 <div class="paragraph">
-<p>However, requests made to sites (typically <code>localhost</code>) that have an invalid (for example, expired or with a wrong host) or self-signed certificate will fail (like they will in a browser).</p>
+<p>However, requests made to sites that return an invalid or a self-signed certificate will fail (like they will in a browser).
+An invalid certificate may be expired or have the wrong server host name; a self-signed certificate has a certificate chain that cannot be verified.</p>
 </div>
 <div class="paragraph">
-<p>Certificate validation is performed at two levels: at the TLS implementation level (in the JDK) and, optionally, at the application level.</p>
+<p>The validation of the server host name present in the certificate is important, to guarantee that the client is connected indeed with the intended server.</p>
 </div>
 <div class="paragraph">
-<p>By default, certificate validation at the TLS level is enabled, while certificate validation at the application level is disabled.</p>
+<p>The validation of the server host name is performed at two levels: at the TLS level (in the JDK) and, optionally, at the application level.</p>
 </div>
 <div class="paragraph">
-<p>You can configure the <code>SslContextFactory.Client</code> to skip certificate validation at the TLS level:</p>
+<p>By default, the validation of the server host name at the TLS level is enabled, while it is disabled at the application level.</p>
+</div>
+<div class="paragraph">
+<p>You can configure the <code>SslContextFactory.Client</code> to skip the validation of the server host name at the TLS level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
-<span class="comment">// Disable certificate validation at the TLS level.</span>
+<span class="comment">// Disable the validation of the server host name at the TLS level.</span>
 sslContextFactory.setEndpointIdentificationAlgorithm(<span class="predefined-constant">null</span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can enable certificate validation at the application level:</p>
+<p>When you disable the validation of the server host name at the TLS level, you are strongly recommended to enable it at the application level, otherwise you may risk to connect to a server different from the one you intend to connect to:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
-<span class="comment">// Only allow subdomains of domain.com.</span>
+<span class="comment">// Only allow to connect to subdomains of domain.com.</span>
 sslContextFactory.setHostnameVerifier((hostName, session) -&gt; hostName.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">.domain.com</span><span class="delimiter">&quot;</span></span>));</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You may have the validation of the server host name enabled at both the TLS level and application level, typically when you want to further restrict the client to connect only to a smaller set of server hosts than those allowed in the certificate sent by the server.</p>
 </div>
 <div class="paragraph">
 <p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
@@ -2198,7 +2206,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
 </div>
 </div>
 <div class="paragraph">
@@ -2340,7 +2348,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -2746,7 +2754,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2931,7 +2939,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 10.0.14</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 10.0.15</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3283,7 +3291,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3395,7 +3403,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 10.0.14</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 10.0.15</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3572,7 +3580,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3619,7 +3627,14 @@ Creating multiple instances may be necessary for example when you need to specif
 For example, you may need different instances when you need to configure the <code>HttpClient</code> differently: different transports, different proxies, different cookie stores, different authentications, etc.</p>
 </div>
 <div class="paragraph">
-<p>WebSocket specific configuration may be typically be given a default value in <code>WebSocketClient</code> and then overridden more specifically, see for example <a href="#pg-websocket-session-configure">this section</a>.</p>
+<p>The configuration that is not WebSocket specific (such as idle timeout, etc.) should be directly configured on the associated <code>HttpClient</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>The WebSocket specific configuration can be configured directly on the <code>WebSocketClient</code> instance.
+Configuring the <code>WebSocketClient</code> allows to give default values to various parameters, whose values may be overridden more specifically, as described in <a href="#pg-websocket-session-configure">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the  <code>WebSocketClient</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/websocket/client/WebSocketClient.html">javadocs</a> for the setter methods available to customize the WebSocket specific configuration.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3660,7 +3675,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
 </div>
 </div>
 <div class="paragraph">
@@ -3714,7 +3729,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
 </div>
 </div>
 <div class="paragraph">
@@ -3815,7 +3830,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 </div>
 <div class="sect3">
-<h4 id="pg-websocket-architecture"><a class="anchor" href="#pg-websocket-architecture"></a><a class="link" href="#pg-websocket-architecture">WebSocket Architecture</a></h4>
+<h4 id="pg-websocket-architecture"><a class="anchor" href="#pg-websocket-architecture"></a><a class="link" href="#pg-websocket-architecture">Jetty WebSocket Architecture</a></h4>
 <div class="paragraph">
 <p>The Jetty WebSocket architecture is organized around the concept of a logical <em>connection</em> between the client and the server.</p>
 </div>
@@ -4212,6 +4227,41 @@ You want to do this as soon as you have access to the <code>Session</code> objec
     }
 }</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The settings that can be configured include:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">maxBinaryMessageSize</dt>
+<dd>
+<p>the maximum size in bytes of a binary message (which may be composed of multiple frames) that can be received.</p>
+</dd>
+<dt class="hdlist1">maxTextMessageSize</dt>
+<dd>
+<p>the maximum size in bytes of a text message (which may be composed of multiple frames) that can be received.</p>
+</dd>
+<dt class="hdlist1">maxFrameSize</dt>
+<dd>
+<p>the maximum payload size in bytes of any WebSocket frame that can be received.</p>
+</dd>
+<dt class="hdlist1">inputBufferSize</dt>
+<dd>
+<p>the input (read from network/transport layer) buffer size in bytes; it has no relationship with the WebSocket frame size or message size.</p>
+</dd>
+<dt class="hdlist1">outputBufferSize</dt>
+<dd>
+<p>the output (write to network/transport layer) buffer size in bytes; it has no relationship to the WebSocket frame size or message size.</p>
+</dd>
+<dt class="hdlist1">autoFragment</dt>
+<dd>
+<p>whether WebSocket frames are automatically fragmented to respect the maximum frame size.</p>
+</dd>
+<dt class="hdlist1">idleTimeout</dt>
+<dd>
+<p>the duration that a WebSocket connection may remain idle (that is, there is no network traffic, neither in read nor in write) before being closed by the implementation.</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p>Please refer to the <code>Session</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-10/org/eclipse/jetty/websocket/api/Session.html">javadocs</a> for the complete list of configuration APIs.</p>
@@ -4896,7 +4946,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4905,7 +4955,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="504" height="216">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
 </div>
 </div>
 <div class="paragraph">
@@ -4975,7 +5025,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
 </div>
 </div>
 <div class="paragraph">
@@ -5539,7 +5589,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
 </div>
 </div>
 <div class="paragraph">
@@ -6112,7 +6162,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6389,7 +6439,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6772,7 +6822,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7239,7 +7289,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7589,7 +7639,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="577" height="550">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
 </div>
 </div>
 </div>
@@ -8232,7 +8282,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1412" height="314">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
 </div>
 </div>
 <div class="paragraph">
@@ -8476,7 +8526,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="381" height="169">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8714,7 +8764,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="325">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
 </div>
 </div>
 <div class="paragraph">
@@ -8866,7 +8916,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="391" height="277">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -8934,23 +8984,17 @@ server.addBean(cachingSessionDataStoreFactory);</code></pre>
 <p>Using the standard <code>javax.websocket</code> APIs allows your applications to depend only on standard APIs, and your applications may be deployed in any compliant WebSocket Container that supports JSR 356.</p>
 </div>
 <div class="paragraph">
-<p>The standard APIs provide few features that are not present in the Jetty WebSocket APIs:</p>
+<p>The standard APIs provide these features that are not present in the Jetty WebSocket APIs:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>Encoders and Decoders for automatic conversion of text or binary messages to objects.</p>
 </li>
-<li>
-<p><code>Reader</code> and <code>InputStream</code> for simple, blocking, message streaming.</p>
-</li>
-<li>
-<p>Simple URI template matching.</p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>On the other hand, the Jetty WebSocket APIs are more efficient and offer greater and more fine-grained control, and provide features that are not present in the standard APIs:</p>
+<p>On the other hand, the Jetty WebSocket APIs are more efficient and offer greater and more fine-grained control, and provide these features that are not present in the standard APIs:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -8965,9 +9009,6 @@ server.addBean(cachingSessionDataStoreFactory);</code></pre>
 </li>
 <li>
 <p>Advanced URI matching with Servlet WebSocket upgrade.</p>
-</li>
-<li>
-<p>Control of the idle timeout.</p>
 </li>
 <li>
 <p>Configuration of the network buffer capacity.</p>
@@ -9024,7 +9065,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-javax-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9104,7 +9145,7 @@ server.start();</code></pre>
 <div class="sect4">
 <h5 id="pg-server-websocket-standard-endpoints"><a class="anchor" href="#pg-server-websocket-standard-endpoints"></a><a class="link" href="#pg-server-websocket-standard-endpoints">Configuring Endpoints</a></h5>
 <div class="paragraph">
-<p>Once you have <a href="#pg-server-websocket-standard-container">setup</a> the <code>ServerContainer</code>, you can configure your <a href="#pg-websocket-endpoints">WebSocket endpoints</a>.</p>
+<p>Once you have <a href="#pg-server-websocket-standard-container">setup</a> the <code>ServerContainer</code>, you can configure your WebSocket endpoints.</p>
 </div>
 <div class="paragraph">
 <p>The WebSocket endpoints classes may be either annotated with the standard <code>javax.websocket</code> annotations, extend the <code>javax.websocket.Endpoint</code> abstract class, or implement the <code>javax.websocket.server.ServerApplicationConfig</code> interface.</p>
@@ -9257,7 +9298,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9269,7 +9310,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9299,6 +9340,9 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <p>Use the <code>JettyWebSocketServerContainer</code> APIs in your applications to <a href="#pg-server-websocket-jetty-endpoints">register your WebSocket endpoints</a> that implement your application logic.</p>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>You can read more about the <a href="#pg-websocket-architecture">Jetty WebSocket architecture</a>, which is common to both client-side and server-side, to get familiar with the terminology used in the following sections.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-server-websocket-jetty-container"><a class="anchor" href="#pg-server-websocket-jetty-container"></a><a class="link" href="#pg-server-websocket-jetty-container">Setting up <code>JettyWebSocketServerContainer</code></a></h5>
@@ -9470,11 +9514,14 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>In the call to <code>JettyWebSocketServerContainer.addMapping(...)</code>, you can specify a <em>path spec</em> (the first parameter) that can be configured as specified in <a href="#pg-server-websocket-jetty-pathspec">this section</a>.</p>
+</div>
+<div class="paragraph">
 <p>When the <code>ServletContextHandler</code> is started, the <code>Configurator</code> lambda (the second parameter passed to <code>JettyWebSocketServletContainerInitializer.configure(...)</code>) is invoked and allows you to explicitly configure the WebSocket endpoints using the Jetty WebSocket APIs provided by <code>JettyWebSocketServerContainer</code>.</p>
 </div>
 <div class="paragraph">
 <p>Under the hood, the call to <code>JettyWebSocketServerContainer.addMapping(...)</code> installs the <code>org.eclipse.jetty.websocket.servlet.WebSocketUpgradeFilter</code>, which is the component that intercepts HTTP requests to upgrade to WebSocket, described in <a href="#pg-server-websocket-standard-upgrade">this section</a>.
-For more information about the <code>WebSocketUpgradeFilter</code> see also <a href="#pg-server-websocket-configure-filter">this section</a>.</p>
+For more information about the configuration of <code>WebSocketUpgradeFilter</code> see also <a href="#pg-server-websocket-configure-filter">this section</a>.</p>
 </div>
 <div class="paragraph">
 <p>One last alternative to register your WebSocket endpoints is to use a programmatic WebSocket upgrade via <code>JettyWebSocketServerContainer.upgrade(...)</code>, which allows you to use a standard <code>HttpServlet</code> subclass (rather than a <code>JettyWebSocketServlet</code> as explained in <a href="#pg-server-websocket-jetty-endpoints-servlet">this section</a>) to perform a direct WebSocket upgrade when your application logic demands so:</p>
@@ -9620,6 +9667,54 @@ If your <code>JettyWebSocketServlet</code> subclass did not override the <code>d
 <div class="paragraph">
 <p>Using <code>JettyWebSocketServerContainer.addMapping(...)</code> will install the <code>WebSocketUpgradeFilter</code> under the hood, which by default will intercepts all HTTP requests to upgrade to WebSocket.
 However, as explained in <a href="#pg-server-websocket-standard-upgrade">this section</a>, if <code>WebSocketUpgradeFilter</code> does not find a matching WebSocket endpoint for the request URI path, then the HTTP request is passed to the Filter chain of your web application and may arrive to your <code>JettyWebSocketServlet</code> subclass, where it would be processed and possibly result in a WebSocket upgrade.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-websocket-jetty-pathspec"><a class="anchor" href="#pg-server-websocket-jetty-pathspec"></a><a class="link" href="#pg-server-websocket-jetty-pathspec">Custom PathSpec Mappings</a></h6>
+<div class="paragraph">
+<p>The <code>JettyWebSocketServerContainer.addMapping(...)</code> API maps a <em>path spec</em> to a <code>JettyWebSocketCreator</code> instance (typically a lambda expression).
+The path spec is matched against the WebSocket upgrade request URI to select the correspondent <code>JettyWebSocketCreator</code> to invoke.</p>
+</div>
+<div class="paragraph">
+<p>The path spec can have these forms:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Servlet syntax, specified with <code>servlet|&lt;path spec&gt;</code>, where the <code>servlet|</code> prefix can be omitted if the path spec begins with <code>/</code> or <code>*.</code> (for example, <code>/ws</code>, <code>/ws/chat</code> or <code>*.ws</code>).</p>
+</li>
+<li>
+<p>Regex syntax, specified with <code>regex|&lt;path spec&gt;</code>, where the <code>regex|</code> prefix can be omitted if the path spec begins with <code>^</code> (for example, <code>^/ws/[0-9]+</code>).</p>
+</li>
+<li>
+<p>URI template syntax, specified with <code>uri-template|&lt;path spec&gt;</code> (for example <code>uri-template|/ws/chat/{room}</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Within the <code>JettyWebSocketCreator</code>, it is possible to access the path spec and, for example in case of URI templates, extract additional information in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Configure the JettyWebSocketServerContainer.</span>
+JettyWebSocketServletContainerInitializer.configure(handler, (servletContext, container) -&gt;
+{
+    container.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ws/chat/{room}</span><span class="delimiter">&quot;</span></span>, (upgradeRequest, upgradeResponse) -&gt;
+    {
+        <span class="comment">// Retrieve the URI template.</span>
+        UriTemplatePathSpec pathSpec = (UriTemplatePathSpec)upgradeRequest.getServletAttribute(PathSpec.class.getName());
+
+        <span class="comment">// Match the URI template.</span>
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; params = pathSpec.getPathParams(upgradeRequest.getRequestPath());
+        <span class="predefined-type">String</span> room = params.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">room</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="comment">// Create the new WebSocket endpoint with the URI template information.</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> MyWebSocketRoomEndPoint(room);
+    });
+});</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -9833,7 +9928,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="763" height="101">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
 </div>
 </div>
 <div class="paragraph">
@@ -9877,7 +9972,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="1015" height="245">
+<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="978" height="254">
 </div>
 </div>
 <div class="paragraph">
@@ -12940,7 +13035,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="825" height="61">
+<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -12957,7 +13052,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="625" height="181">
+<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -12987,7 +13082,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="662" height="181">
+<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13058,6 +13153,24 @@ These threads are reported by <code>QueuedThreadPool.leasedThreads</code> and ar
 This value represents the maximum number of threads that can be reserved and used by the <code>TryExecutor</code> implementation.
 A negative value for <code>QueuedThreadPool.reservedThreads</code> means that the actual value will be heuristically derived from the number of CPU cores and <code>QueuedThreadPool.maxThreads</code>.
 A value of zero for <code>QueuedThreadPool.reservedThreads</code> means that reserved threads are disabled, and therefore the <a href="#pg-arch-threads-execution-strategy-epc"><code>Execute-Produce-Consume</code> mode</a> is never used&#8201;&#8212;&#8201;the <a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code> mode</a> is always used instead.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> always maintains the number of threads between <code>QueuedThreadPool.minThreads</code> and <code>QueuedThreadPool.maxThreads</code>; during load spikes the number of thread grows to meet the load demand, and when the load on the system diminishes or the system goes idle, the number of threads shrinks.</p>
+</div>
+<div class="paragraph">
+<p>Shrinking <code>QueuedThreadPool</code> is important in particular in containerized environments, where typically you want to return the memory occupied by the threads to the operative system.
+The shrinking of the <code>QueuedThreadPool</code> is controlled by two parameters: <code>QueuedThreadPool.idleTimeout</code> and <code>QueuedThreadPool.maxEvictCount</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool.idleTimeout</code> indicates how long a thread should stay around when it is idle, waiting for tasks to execute.
+The longer the threads stay around, the more ready they are in case of new load spikes on the system; however, they consume resources: a Java platform thread typically allocates 1 MiB of native memory.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool.maxEvictCount</code> controls how many idle threads are evicted for one <code>QueuedThreadPool.idleTimeout</code> period.
+The larger this value is, the quicker the threads are evicted when the <code>QueuedThreadPool</code> is idle or has less load, and their resources returned to the operative system; however, large values may result in too much thread thrashing: the <code>QueuedThreadPool</code> shrinks too fast and must re-create a lot of threads in case of a new load spike on the system.</p>
+</div>
+<div class="paragraph">
+<p>A good balance between <code>QueuedThreadPool.idleTimeout</code> and <code>QueuedThreadPool.maxEvictCount</code> depends on the load profile of your system, and it is often tuned via trial and error.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-arch-threads-thread-pool-virtual-threads"><a class="anchor" href="#pg-arch-threads-thread-pool-virtual-threads"></a><a class="link" href="#pg-arch-threads-thread-pool-virtual-threads">Virtual Threads</a></h5>
@@ -13663,7 +13776,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.14<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.15<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14555,8 +14668,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 10.0.14<br>
-Last updated 2023-02-17 10:15:35 UTC
+Version 10.0.15<br>
+Last updated 2023-04-11 11:50:21 -0500
 </div>
 </div>
 </body>

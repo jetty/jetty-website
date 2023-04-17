@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Operations Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 10.0.14,</span>
-<span id="revdate">2023-02-22</span>
+<span id="revnumber">version 10.0.15,</span>
+<span id="revdate">2023-04-11</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -581,7 +581,7 @@ $ java -jar $JETTY_HOME/start.jar --add-module=server,http,deploy</pre>
 <div class="sect3">
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
-<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.14</code>, so that the directory is called <code>jetty-home-10.0.14</code>.</p>
+<p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version that you downloaded, for example <code>10.0.15</code>, so that the directory is called <code>jetty-home-10.0.15</code>.</p>
 </div>
 <div class="paragraph">
 <p>Unpack Eclipse Jetty compressed file in a convenient location, for example under <code>/opt</code>.</p>
@@ -646,7 +646,13 @@ $ cd $JETTY_BASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>ERROR : No enabled jetty modules found!
+INFO  : ${jetty.home} = /path/to/jetty.home
+INFO  : ${jetty.base} = /path/to/jetty.base
+ERROR : Please create and/or configure a ${jetty.base} directory.
+
+Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
+       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -673,7 +679,17 @@ $ cd $JETTY_BASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-module=server
+INFO  : logging-jetty   transitively enabled
+INFO  : http            initialized in ${jetty.base}/start.d/http.ini
+INFO  : resources       transitively enabled
+INFO  : threadpool      transitively enabled, ini template available with --add-module=threadpool
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-module=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -686,7 +702,9 @@ $ cd $JETTY_BASE</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:33:43.443:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:33:43.472:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6e171cd7<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-04-11 12:33:43.484:</strong>INFO :oejs.Server:main: Started Server@309e345f{STARTING}[10.0.15-SNAPSHOT,sto=5000] @488ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -772,7 +790,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:33:44.324:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:33:44.350:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6e171cd7<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2023-04-11 12:33:44.360:</strong>INFO :oejs.Server:main: Started Server@309e345f{STARTING}[10.0.15-SNAPSHOT,sto=5000] @532ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -878,7 +898,12 @@ Their deployment is described in <a href="#og-deploy">this section</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : webapp          transitively enabled, ini template available with --add-module=webapp
+INFO  : security        transitively enabled
+INFO  : servlet         transitively enabled
+INFO  : deploy          initialized in ${jetty.base}/start.d/deploy.ini
+INFO  : mkdir ${jetty.base}/webapps
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -935,7 +960,13 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:33:46.007:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:33:46.031:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor [file:///path/to/jetty.base/webapps/]
+<strong>2023-04-11 12:33:46.120:</strong>INFO :oejw.StandardDescriptorProcessor:main: NO JSP Support for /demo-simple, did not find org.eclipse.jetty.jsp.JettyJspServlet
+<strong>2023-04-11 12:33:46.128:</strong>INFO :oejss.DefaultSessionIdManager:main: Session workerName=node0
+<mark><strong>2023-04-11 12:33:46.145:</strong>INFO :oejsh.ContextHandler:main: Started o.e.j.w.WebAppContext@51dcb805{Simple Web Application,/demo-simple,file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-demo-simple_war-_demo-simple-any-/webapp/,AVAILABLE}{/path/to/jetty.base/webapps/demo-simple.war}</mark>
+<strong>2023-04-11 12:33:46.152:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@19932c16{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-04-11 12:33:46.165:</strong>INFO :oejs.Server:main: Started Server@4c12331b{STARTING}[10.0.15-SNAPSHOT,sto=5000] @690ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1079,7 +1110,7 @@ Refer to the <a href="#og-protocols">section about protocols</a> for further inf
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="445" height="429">
+<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="430" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -1622,7 +1653,97 @@ JVM Options Module
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>Enabled Modules:
+----------------
+  0) bytebufferpool            transitive provider of bytebufferpool for server
+                               ini template available with --add-module=bytebufferpool
+  1) resources                 transitive provider of resources for logging-jetty
+  2) logging/slf4j             transitive provider of logging/slf4j for logging-jetty
+                               dynamic dependency of logging-jetty
+  3) logging-jetty             transitive provider of logging for threadpool
+                               transitive provider of logging for server
+  4) threadpool                transitive provider of threadpool for server
+                               ini template available with --add-module=threadpool
+  5) jvm                       ${jetty.base}/start.d/jvm.ini
+  6) server                    ${jetty.base}/start.d/server.ini
+  7) http                      ${jetty.base}/start.d/http.ini
+  8) postgresql                ${jetty.base}/start.d/postgresql.ini
+
+Java Environment:
+-----------------
+ java.home = /path/to/java.home
+ java.vm.vendor = Eclipse Adoptium
+ java.vm.version = 19.0.1+10
+ java.vm.name = OpenJDK 64-Bit Server VM
+ java.vm.info = mixed mode, sharing
+ java.runtime.name = OpenJDK Runtime Environment
+ java.runtime.version = 19.0.1+10
+ java.io.tmpdir = /path/to/jetty.base/work
+ user.dir = /path/to/jetty.base
+ user.language = en
+ user.country = US
+
+Jetty Environment:
+------------------
+ jetty.version = 10.0.15-SNAPSHOT
+ jetty.tag.version = jetty-10.0.15-SNAPSHOT
+ jetty.build = 24b7d06fd5ce5468caa3eaa93688879fb2900fda
+ jetty.home = /path/to/jetty.home
+ jetty.base = /path/to/jetty.base
+
+Config Search Order:
+--------------------
+ &lt;command-line&gt;
+ ${jetty.base} -&gt; /path/to/jetty.base
+ ${jetty.home} -&gt; /path/to/jetty.home
+
+Forked JVM Arguments:
+---------------------
+ -Xmx1g 
+ -Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags 
+
+System Properties:
+------------------
+ (no system properties specified)
+
+Properties:
+-----------
+ java.version = 19.0.1
+ java.version.major = 19
+ java.version.micro = 1
+ java.version.minor = 0
+ java.version.platform = 19
+ jetty.base = /path/to/jetty.base
+ jetty.base.uri = file:///path/to/jetty.base
+ jetty.home = /path/to/jetty.home
+ jetty.home.uri = file:///path/to/jetty.home
+ jetty.webapp.addServerClasses = org.eclipse.jetty.logging.,${jetty.home.uri}/lib/logging/,org.slf4j.
+ postgresql-version = 42.2.18
+ runtime.feature.alpn = true
+ slf4j.version = 2.0.5
+
+Jetty Server Classpath:
+-----------------------
+Version Information on 10 entries in the classpath.
+Note: order presented here is how they would appear on the classpath.
+      changes to the --module=name command line options will be reflected here.
+ 0:                    (dir) | ${jetty.base}/resources
+ 1:                    2.0.5 | ${jetty.home}/lib/logging/slf4j-api-2.0.5.jar
+ 2:         10.0.15-SNAPSHOT | ${jetty.home}/lib/logging/jetty-slf4j-impl-10.0.15-SNAPSHOT.jar
+ 3:                    4.0.6 | ${jetty.home}/lib/jetty-servlet-api-4.0.6.jar
+ 4:         10.0.15-SNAPSHOT | ${jetty.home}/lib/jetty-http-10.0.15-SNAPSHOT.jar
+ 5:         10.0.15-SNAPSHOT | ${jetty.home}/lib/jetty-server-10.0.15-SNAPSHOT.jar
+ 6:         10.0.15-SNAPSHOT | ${jetty.home}/lib/jetty-xml-10.0.15-SNAPSHOT.jar
+ 7:         10.0.15-SNAPSHOT | ${jetty.home}/lib/jetty-util-10.0.15-SNAPSHOT.jar
+ 8:         10.0.15-SNAPSHOT | ${jetty.home}/lib/jetty-io-10.0.15-SNAPSHOT.jar
+ 9:                  42.2.18 | ${jetty.base}/lib/postgresql-42.2.18.jar
+
+Jetty Active XMLs:
+------------------
+ ${jetty.home}/etc/jetty-bytebufferpool.xml
+ ${jetty.home}/etc/jetty-threadpool.xml
+ ${jetty.home}/etc/jetty.xml
+ ${jetty.home}/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1684,12 +1805,31 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>/path/to/java.home/bin/java \
+-Djava.io.tmpdir=/path/to/jetty.base/work \
+-Djetty.home=/path/to/jetty.home \
+-Djetty.base=/path/to/jetty.base \
+-Xmx1g \
+-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags \
+--class-path \
+/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.5.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.15-SNAPSHOT.jar:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:/path/to/jetty.home/lib/jetty-http-10.0.15-SNAPSHOT.jar:/path/to/jetty.home/lib/jetty-server-10.0.15-SNAPSHOT.jar:/path/to/jetty.home/lib/jetty-xml-10.0.15-SNAPSHOT.jar:/path/to/jetty.home/lib/jetty-util-10.0.15-SNAPSHOT.jar:/path/to/jetty.home/lib/jetty-io-10.0.15-SNAPSHOT.jar \
+org.eclipse.jetty.xml.XmlConfiguration \
+'java.version'='19.0.1' \
+'java.version.major'='19' \
+'java.version.micro'='1' \
+'java.version.minor'='0' \
+'java.version.platform'='19' \
+'jetty.base'='/path/to/jetty.base' \
+'jetty.base.uri'='file:///path/to/jetty.base' \
+'jetty.home'='/path/to/jetty.home' \
+'jetty.home.uri'='file:///path/to/jetty.home' \
+'jetty.webapp.addServerClasses'='org.eclipse.jetty.logging.,file:///path/to/jetty.home/lib/logging/,org.slf4j.' \
+'runtime.feature.alpn'='true' \
+'slf4j.version'='2.0.5' \
+/path/to/jetty.home/etc/jetty-bytebufferpool.xml \
+/path/to/jetty.home/etc/jetty-threadpool.xml \
+/path/to/jetty.home/etc/jetty.xml \
+/path/to/jetty.home/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1716,7 +1856,7 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>/path/to/java.home/bin/java</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1729,12 +1869,11 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>-Djava.io.tmpdir=/path/to/jetty.base/work \
+-Djetty.home=/path/to/jetty.home \
+-Djetty.base=/path/to/jetty.base \
+-Xmx1g \
+-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1747,13 +1886,16 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error:\
- \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--class-path \
+/path/to/jetty.base/resources:\
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.5.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
+/path/to/jetty.home/lib/jetty-http-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.15-SNAPSHOT.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1766,13 +1908,19 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error:\
- \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module-path \
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.5.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar:\
+/path/to/jetty.home/lib/jetty-http-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-server-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-xml-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-util-10.0.15-SNAPSHOT.jar:\
+/path/to/jetty.home/lib/jetty-io-10.0.15-SNAPSHOT.jar \
+--class-path \
+/path/to/jetty.base/resources \
+--add-modules \
+ALL-MODULE-PATH</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1785,7 +1933,7 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1798,7 +1946,7 @@ jarfile \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module org.eclipse.jetty.xml/org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1815,12 +1963,22 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>'java.version'='19.0.1' \
+'java.version.major'='19' \
+'java.version.micro'='1' \
+'java.version.minor'='0' \
+'java.version.platform'='19' \
+'jetty.base'='/path/to/jetty.base' \
+'jetty.base.uri'='file:///path/to/jetty.base' \
+'jetty.home'='/path/to/jetty.home' \
+'jetty.home.uri'='file:///path/to/jetty.home' \
+'jetty.webapp.addServerClasses'='org.eclipse.jetty.logging.,file:///path/to/jetty.home/lib/logging/,org.slf4j.' \
+'runtime.feature.alpn'='true' \
+'slf4j.version'='2.0.5' \
+/path/to/jetty.home/etc/jetty-bytebufferpool.xml \
+/path/to/jetty.home/etc/jetty-threadpool.xml \
+/path/to/jetty.home/etc/jetty.xml \
+/path/to/jetty.home/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1892,7 +2050,7 @@ This step produces a list of <em>enabled</em> modules; for each enabled module a
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="367" height="260">
+<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="361" height="281">
 </div>
 </div>
 <div class="paragraph">
@@ -1905,7 +2063,7 @@ In the forked JVM, the System ClassLoader has the server class-path and/or modul
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="393" height="348">
+<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="383" height="374">
 </div>
 </div>
 <div class="paragraph">
@@ -2147,7 +2305,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=ris8wk4k6kn4</mark>
+<strong>2023-04-11 12:33:54.030:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:33:54.064:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5fdcaa40{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-04-11 12:33:54.076:</strong>INFO :oejs.Server:main: Started Server@6dbb137d{STARTING}[10.0.15-SNAPSHOT,sto=5000] @493ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2429,6 +2590,9 @@ Options:
                    output will be sent.  This is useful for capturing startup
                    issues when the Jetty logging module has not yet started
                    due to configuration errors.
+
+  --allow-insecure-http-downloads
+                   Allow the use of insecure `http://` scheme for content download.
 
   --approve-all-licenses
                    Approves all license questions from modules that have
@@ -3541,7 +3705,13 @@ etc/acme-audit.xml
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-alpn.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/alpn.mod[tags=documentation]</pre>
+<pre>## Specifies the ordered list of application protocols supported by the server.
+## The default list is specified by the list of the protocol modules that have
+## been enabled, and the order is specified by the module dependencies.
+# jetty.alpn.protocols=h2,http/1.1
+
+## Specifies the protocol to use when the ALPN negotiation fails.
+# jetty.alpn.defaultProtocol=http/1.1</pre>
 </div>
 </div>
 </div>
@@ -3567,7 +3737,44 @@ Excess buffers will not be pooled and will be eventually garbage collected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-bytebufferpool.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/bytebufferpool.mod[]</pre>
+<pre>[description]
+Configures the ByteBufferPool used by ServerConnectors.
+Use module "bytebufferpool-logarithmic" for a pool may hold less granulated sized buffers.
+
+[tags]
+bytebufferpool
+
+[xml]
+etc/jetty-bytebufferpool.xml
+
+[ini-template]
+## Minimum capacity of a single ByteBuffer.
+#jetty.byteBufferPool.minCapacity=0
+
+## Maximum capacity of a single ByteBuffer.
+## Requests for ByteBuffers larger than this value results
+## in the ByteBuffer being allocated but not pooled.
+#jetty.byteBufferPool.maxCapacity=65536
+
+## Bucket capacity factor.
+## ByteBuffers are allocated out of buckets that have
+## a capacity that is multiple of this factor.
+#jetty.byteBufferPool.factor=4096
+
+## Maximum size for each bucket (-1 for unbounded).
+#jetty.byteBufferPool.maxBucketSize=-1
+
+## Maximum heap memory held idle by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxHeapMemory=0
+
+## Maximum direct memory held idle by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxDirectMemory=0
+
+## Maximum heap memory retained whilst in use by the pool (0 for heuristic, -1 for unlimited, -2 for no retained).
+#jetty.byteBufferPool.retainedHeapMemory=0
+
+## Maximum direct memory retained whilst in use by the pool (0 for heuristic, -1 for unlimited, -2 for no retained).
+#jetty.byteBufferPool.retainedDirectMemory=0</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3600,7 +3807,17 @@ Old, rolled files are kept for the number of days specified by the <code>jetty.c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-console-capture.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/console-capture.mod[tags=documentation]</pre>
+<pre>## Logging directory (relative to $JETTY_BASE).
+# jetty.console-capture.dir=./logs
+
+## Whether to append to existing file.
+# jetty.console-capture.append=true
+
+## How many days to retain old log files.
+# jetty.console-capture.retainDays=90
+
+## Timezone ID of the log timestamps, as specified by java.time.ZoneId.
+# jetty.console-capture.timezone=GMT</pre>
 </div>
 </div>
 </div>
@@ -3617,7 +3834,36 @@ Old, rolled files are kept for the number of days specified by the <code>jetty.c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-deploy.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/deploy.mod[]</pre>
+<pre>[description]
+Enables web application deployment from the $JETTY_BASE/webapps/ directory.
+
+[depend]
+webapp
+
+[lib]
+lib/jetty-deploy-${jetty.version}.jar
+
+[files]
+webapps/
+
+[xml]
+etc/jetty-deploy.xml
+
+[ini-template]
+# Monitored directory name (relative to $jetty.base)
+# jetty.deploy.monitoredDir=webapps
+# - OR -
+# Monitored directory path (fully qualified)
+# jetty.deploy.monitoredPath=/var/www/webapps
+
+# Defaults Descriptor for all deployed webapps
+# jetty.deploy.defaultsDescriptorPath=${jetty.base}/etc/webdefault.xml
+
+# Monitored directory scan period (seconds)
+# jetty.deploy.scanInterval=1
+
+# Whether to extract *.war files
+# jetty.deploy.extractWars=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3647,7 +3893,45 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http.mod[tags=documentation]</pre>
+<pre>### Clear-Text HTTP Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.http.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.http.port=8080
+
+## The connector idle timeout, in milliseconds.
+# jetty.http.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.http.acceptors=1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.http.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.http.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.http.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.http.reuseAddress=true
+
+## Whether to enable the SO_REUSEPORT socket option.
+# jetty.http.reusePort=false
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.http.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedSendBufferSize=-1</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3729,7 +4013,21 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http2.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http2.mod[tags=documentation]</pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2.maxConcurrentStreams=128
+
+## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2.initialStreamRecvWindow=524288
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2.initialSessionRecvWindow=1048576
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2.rateControl.maxEventsPerSecond=50</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3753,7 +4051,21 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http2c.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http2c.mod[tags=documentation]</pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2c.maxConcurrentStreams=128
+
+## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2c.initialStreamRecvWindow=524288
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2c.initialSessionRecvWindow=1232896
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2c.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2c.rateControl.maxEventsPerSecond=50</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3777,7 +4089,26 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http3.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http3.mod[tags=documentation]</pre>
+<pre>## The host/address to bind the connector to.
+# jetty.quic.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.quic.port=8444
+
+## The connector idle timeout, in milliseconds.
+# jetty.quic.idleTimeout=30000
+
+## Specifies the maximum number of concurrent requests per session.
+# jetty.quic.maxBidirectionalRemoteStreams=128
+
+## Specifies the session receive window (client to server) in bytes.
+# jetty.quic.sessionRecvWindow=4194304
+
+## Specifies the stream receive window (client to server) in bytes.
+# jetty.quic.bidirectionalStreamRecvWindow=2097152
+
+## Specifies the stream idle timeout, in milliseconds.
+# jetty.http3.streamIdleTimeout=30000</pre>
 </div>
 </div>
 </div>
@@ -3791,7 +4122,46 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http-forwarded.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http-forwarded.mod[tags=documentation]</pre>
+<pre>### ForwardedRequestCustomizer Configuration
+
+## Whether to process only the RFC7239 "Forwarded" header.
+## "X-Forwarded-*" headers are not processed.
+# jetty.httpConfig.forwardedOnly=false
+
+## Whether the address obtained from "Forwarded: by=" or
+## "X-Forwarded-Server" is used in the request authority.
+# jetty.httpConfig.forwardedProxyAsAuthority=false
+
+## Whether the "X-Forwarded-Port" header is used in the request authority,
+## or else it is the remote client port.
+# jetty.httpConfig.forwardedPortAsAuthority=true
+
+## The name of the RFC 7239 HTTP header.
+# jetty.httpConfig.forwardedHeader=Forwarded
+
+## The name of the obsolete forwarded host HTTP header.
+# jetty.httpConfig.forwardedHostHeader=X-Forwarded-Host
+
+## The name of the obsolete forwarded server HTTP header.
+# jetty.httpConfig.forwardedServerHeader=X-Forwarded-Server
+
+## The name of the obsolete forwarded scheme HTTP header.
+# jetty.httpConfig.forwardedProtoHeader=X-Forwarded-Proto
+
+## The name of the obsolete forwarded for HTTP header.
+# jetty.httpConfig.forwardedForHeader=X-Forwarded-For
+
+## The name of the obsolete forwarded port HTTP header.
+# jetty.httpConfig.forwardedPortHeader=X-Forwarded-Port
+
+## The name of the obsolete forwarded https HTTP header.
+# jetty.httpConfig.forwardedHttpsHeader=X-Proxied-Https
+
+## The name of the obsolete forwarded SSL session ID HTTP header.
+# jetty.httpConfig.forwardedSslSessionIdHeader=Proxy-ssl-id
+
+## The name of the obsolete forwarded SSL cipher HTTP header.
+# jetty.httpConfig.forwardedCipherSuiteHeader=Proxy-auth-cert</pre>
 </div>
 </div>
 </div>
@@ -3805,7 +4175,27 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-https.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/https.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Adds HTTPS protocol support to the TLS(SSL) Connector.
+
+[tags]
+connector
+https
+http
+ssl
+
+[depend]
+ssl
+
+[after]
+alpn
+http2
+http-forwarded
+
+[xml]
+etc/jetty-https.xml</pre>
 </div>
 </div>
 </div>
@@ -3819,7 +4209,20 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-jmx-remote.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jmx-remote.mod[tags=documentation]</pre>
+<pre>## The host/address to bind the RMI server to.
+# jetty.jmxremote.rmiserverhost=localhost
+
+## The port the RMI server listens to (0 means a random port is chosen).
+# jetty.jmxremote.rmiserverport=1099
+
+## The host/address to bind the RMI registry to.
+# jetty.jmxremote.rmiregistryhost=localhost
+
+## The port the RMI registry listens to.
+# jetty.jmxremote.rmiregistryport=1099
+
+## The host name exported in the RMI stub.
+-Djava.rmi.server.hostname=localhost</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3855,7 +4258,26 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-requestlog.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/requestlog.mod[tags=documentation]</pre>
+<pre>## Request log line format string.
+#jetty.requestlog.formatString=%{client}a - %u %{dd/MMM/yyyy:HH:mm:ss ZZZ|GMT}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"
+
+## The logging directory (relative to $JETTY_BASE).
+# jetty.requestlog.dir=logs
+
+## The request log file path (may be absolute and/or outside $JETTY_BASE).
+# jetty.requestlog.filePath=${jetty.requestlog.dir}/yyyy_MM_dd.request.log
+
+## Date format for the files that are rolled over (uses SimpleDateFormat syntax).
+# jetty.requestlog.filenameDateFormat=yyyy_MM_dd
+
+## How many days to retain old log files.
+# jetty.requestlog.retainDays=90
+
+## Whether to append to existing file or create a new one.
+# jetty.requestlog.append=false
+
+## The timezone of the log file name.
+# jetty.requestlog.timezone=GMT</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4184,7 +4606,46 @@ When the parameter value is "d", deferred authentication will also be checked.</
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-http-config]</pre>
+<pre>### Common HTTP configuration
+## Scheme to use to build URIs for secure redirects
+# jetty.httpConfig.secureScheme=https
+
+## Port to use to build URIs for secure redirects
+# jetty.httpConfig.securePort=8443
+
+## Response content buffer size (in bytes)
+# jetty.httpConfig.outputBufferSize=32768
+
+## Max response content write length that is buffered (in bytes)
+# jetty.httpConfig.outputAggregationSize=8192
+
+## Max request headers size (in bytes)
+# jetty.httpConfig.requestHeaderSize=8192
+
+## Max response headers size (in bytes)
+# jetty.httpConfig.responseHeaderSize=8192
+
+## Whether to send the Server: header
+# jetty.httpConfig.sendServerVersion=true
+
+## Whether to send the Date: header
+# jetty.httpConfig.sendDateHeader=false
+
+## Max per-connection header cache size (in nodes)
+# jetty.httpConfig.headerCacheSize=1024
+
+## Whether, for requests with content, delay dispatch until some content has arrived
+# jetty.httpConfig.delayDispatchUntilContent=true
+
+## Maximum number of error dispatches to prevent looping
+# jetty.httpConfig.maxErrorDispatches=10
+
+## Relative Redirect Locations allowed
+# jetty.httpConfig.relativeRedirectAllowed=false
+
+## Whether to use direct ByteBuffers for reading or writing
+# jetty.httpConfig.useInputDirectByteBuffers=true
+# jetty.httpConfig.useOutputDirectByteBuffers=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4207,7 +4668,7 @@ When the parameter value is "d", deferred authentication will also be checked.</
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">HTTP/1.1 200 OK
 Content-Length: 0
-Server: Jetty(10.0.14)</code></pre>
+Server: Jetty(10.0.15)</code></pre>
 </div>
 </div>
 </dd>
@@ -4221,7 +4682,18 @@ Server: Jetty(10.0.14)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-server-config]</pre>
+<pre>### Server configuration
+## Whether ctrl+c on the console gracefully stops the Jetty server
+# jetty.server.stopAtShutdown=true
+
+## Timeout in ms to apply when stopping the server gracefully
+# jetty.server.stopTimeout=5000
+
+## Dump the state of the Jetty server, components, and webapps after startup
+# jetty.server.dumpAfterStart=false
+
+## Dump the state of the Jetty server, components, and webapps before shutdown
+# jetty.server.dumpBeforeStop=false</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4256,7 +4728,17 @@ The module properties to configure the Jetty server compliance are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-server-compliance]</pre>
+<pre>## HTTP Compliance: RFC7230, RFC7230_LEGACY, RFC2616, RFC2616_LEGACY, LEGACY
+# jetty.httpConfig.compliance=RFC7230
+
+## URI Compliance: DEFAULT, LEGACY, RFC3986, RFC3986_UNAMBIGUOUS, UNSAFE
+# jetty.httpConfig.uriCompliance=DEFAULT
+
+## Cookie compliance mode for parsing request Cookie headers: RFC6265_STRICT, RFC6265, RFC6265_LEGACY, RFC2965, RFC2965_LEGACY
+# jetty.httpConfig.requestCookieCompliance=RFC6265
+
+## Cookie compliance mode for generating response Set-Cookie: RFC2965, RFC6265
+# jetty.httpConfig.responseCookieCompliance=RFC6265</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4335,7 +4817,15 @@ For example, <code>jetty.httpConfig.requestCookieCompliance=RFC6265,-RESERVED_NA
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-scheduler-config]</pre>
+<pre>### Server Scheduler Configuration
+## The scheduler thread name, defaults to "Scheduler-{hashCode()}" if blank.
+# jetty.scheduler.name=
+
+## Whether the server scheduler threads are daemon.
+# jetty.scheduler.daemon=false
+
+## The number of server scheduler threads.
+# jetty.scheduler.threads=1</pre>
 </div>
 </div>
 </div>
@@ -4352,7 +4842,59 @@ For example, <code>jetty.httpConfig.requestCookieCompliance=RFC6265,-RESERVED_NA
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-connector]</pre>
+<pre>### TLS (SSL) Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.ssl.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.ssl.port=8443
+
+## The connector idle timeout, in milliseconds.
+# jetty.ssl.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.ssl.acceptors=1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.ssl.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.ssl.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.ssl.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.ssl.reuseAddress=true
+
+## Whether to enable the SO_REUSEPORT socket option.
+# jetty.ssl.reusePort=false
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.ssl.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedSendBufferSize=-1
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with an HTTP 400 response.
+# jetty.ssl.sniRequired=false
+
+## Whether client SNI data is checked to match CN and SAN in server certificates.
+## When SNI is checked, if the match fails the connection is rejected with an HTTP 400 response.
+# jetty.ssl.sniHostCheck=true
+
+## The max age, in seconds, for the Strict-Transport-Security response header.
+# jetty.ssl.stsMaxAgeSeconds=31536000
+
+## Whether to include the subdomain property in any Strict-Transport-Security header.
+# jetty.ssl.stsIncludeSubdomains=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4385,7 +4927,71 @@ Refer to <a href="#og-module-http-selectors">this section</a> for more informati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-ssl-context]</pre>
+<pre>### SslContextFactory Configuration
+## Note that OBF passwords are not secure, just protected from casual observation.
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with a TLS handshake error.
+# jetty.sslContext.sniRequired=false
+
+## The Endpoint Identification Algorithm.
+## Same as javax.net.ssl.SSLParameters#setEndpointIdentificationAlgorithm(String).
+# jetty.sslContext.endpointIdentificationAlgorithm=
+
+## The JSSE Provider.
+# jetty.sslContext.provider=
+
+## The KeyStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.keyStorePath=etc/keystore.p12
+## The KeyStore absolute file path.
+# jetty.sslContext.keyStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The TrustStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.trustStorePath=etc/keystore.p12
+## The TrustStore absolute file path.
+# jetty.sslContext.trustStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The KeyStore password.
+# jetty.sslContext.keyStorePassword=
+
+## The Keystore type.
+# jetty.sslContext.keyStoreType=PKCS12
+
+## The KeyStore provider.
+# jetty.sslContext.keyStoreProvider=
+
+## The KeyManager password.
+# jetty.sslContext.keyManagerPassword=
+
+## The TrustStore password.
+# jetty.sslContext.trustStorePassword=
+
+## The TrustStore type.
+# jetty.sslContext.trustStoreType=PKCS12
+
+## The TrustStore provider.
+# jetty.sslContext.trustStoreProvider=
+
+## Whether client certificate authentication is required.
+# jetty.sslContext.needClientAuth=false
+
+## Whether client certificate authentication is desired, but not required.
+# jetty.sslContext.wantClientAuth=false
+
+## Whether cipher order is significant.
+# jetty.sslContext.useCipherSuitesOrder=true
+
+## The SSLSession cache size.
+# jetty.sslContext.sslSessionCacheSize=-1
+
+## The SSLSession cache timeout (in seconds).
+# jetty.sslContext.sslSessionTimeout=-1
+
+## Whether TLS renegotiation is allowed.
+# jetty.sslContext.renegotiationAllowed=true
+
+## The max number of TLS renegotiations per connection.
+# jetty.sslContext.renegotiationLimit=5</pre>
 </div>
 </div>
 </div>
@@ -4438,7 +5044,8 @@ When the scanning detects a change to the KeyStore file, the correspondent <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl-reload.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl-reload.mod[tags=documentation]</pre>
+<pre># Monitored directory scan period, in seconds.
+# jetty.sslContext.reload.scanInterval=1</pre>
 </div>
 </div>
 </div>
@@ -4453,7 +5060,37 @@ The KeyStore file is automatically deleted when the JVM exits, and re-created wh
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-test-keystore.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/test-keystore.mod[]</pre>
+<pre>[description]
+Test keystore with self-signed SSL Certificate.
+DO NOT USE IN PRODUCTION!!!
+
+[tags]
+demo
+ssl
+
+[depend]
+ssl
+
+[files]
+maven://org.bouncycastle/bcpkix-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcprov-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcutil-jdk15to18/${bouncycastle.version}|lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
+
+[lib]
+lib/jetty-keystore-${jetty.version}.jar
+lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
+
+[xml]
+etc/jetty-test-keystore.xml
+
+[ini]
+bouncycastle.version?=1.70
+jetty.webapp.addServerClasses+=,${jetty.base.uri}/lib/bouncycastle/
+jetty.sslContext.keyStorePath?=etc/test-keystore.p12
+jetty.sslContext.keyStoreType?=PKCS12
+jetty.sslContext.keyStorePassword?=OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4478,7 +5115,30 @@ Start with the default value of <code>maxThreads</code>, and tune for larger val
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-threadpool.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/threadpool.mod[tags=documentation]</pre>
+<pre>## Thread name prefix.
+#jetty.threadPool.namePrefix=qtp&lt;hashCode&gt;
+
+## Minimum number of pooled threads.
+#jetty.threadPool.minThreads=10
+
+## Maximum number of pooled threads.
+#jetty.threadPool.maxThreads=200
+
+## Number of reserved threads (-1 for heuristic).
+#jetty.threadPool.reservedThreads=-1
+
+## Whether to use virtual threads, if the runtime supports them.
+## Deprecated, use Jetty module 'threadpool-virtual-preview' instead.
+#jetty.threadPool.useVirtualThreads=false
+
+## Thread idle timeout (in milliseconds).
+#jetty.threadPool.idleTimeout=60000
+
+## The max number of idle threads that are evicted in one idleTimeout period.
+#jetty.threadPool.maxEvictCount=1
+
+## Whether to output a detailed dump.
+#jetty.threadPool.detailedDump=false</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4533,7 +5193,35 @@ To enable preview features, this module needs to specify the <code>--enable-prev
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-threadpool-virtual-preview.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/threadpool-virtual-preview.mod[tags=documentation]</pre>
+<pre>## Platform threads name prefix.
+#jetty.threadPool.namePrefix=qtp&lt;hashCode&gt;
+
+## Minimum number of pooled threads.
+#jetty.threadPool.minThreads=10
+
+## Maximum number of pooled threads.
+#jetty.threadPool.maxThreads=200
+
+## Number of reserved threads (-1 for heuristic).
+#jetty.threadPool.reservedThreads=-1
+
+## Thread idle timeout (in milliseconds).
+#jetty.threadPool.idleTimeout=60000
+
+## The max number of idle threads that can be evicted in one idleTimeout period.
+#jetty.threadPool.maxEvictCount=1
+
+## Whether to output a detailed dump.
+#jetty.threadPool.detailedDump=false
+
+## Virtual threads name prefix.
+#jetty.threadPool.virtual.namePrefix=qtp&lt;hashCode&gt;-virtual-
+
+## Whether virtual threads are allowed to set thread locals.
+#jetty.threadPool.virtual.allowSetThreadLocals=true
+
+## Whether virtual threads inherits the values of inheritable thread locals.
+#jetty.threadPool.virtual.inheritInheritableThreadLocals=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4573,7 +5261,8 @@ See <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xh
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-well-known.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/well-known.mod[tags=documentation]</pre>
+<pre>## Well Known Directory (relative to $JETTY_BASE if relative path, otherwise it is an absolute path).
+# jetty.wellknown.dir=.well-known</pre>
 </div>
 </div>
 </div>
@@ -5451,7 +6140,7 @@ With the <code>logging-jul-capture</code> Jetty module, the logging follows this
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="685" height="174">
+<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="670" height="180">
 </div>
 </div>
 <div class="paragraph">
@@ -5607,7 +6296,11 @@ Request log files are rolled every day, and retained for customizable number of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [threadpool-virtual-preview]. Use --dry-run to generate the command line to avoid forking.
+<strong>2023-04-11 12:33:55.623:</strong>WARN :oe.jetty:main: Virtual threads are a Java Preview Feature, support may be limited.
+<strong>2023-04-11 12:33:55.699:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:33:55.728:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@d83da2e{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-04-11 12:33:55.742:</strong>INFO :oejs.Server:main: Started Server@646be2c3{STARTING}[10.0.15-SNAPSHOT,sto=5000] @294ms</code></pre>
 </div>
 </div>
 </div>
@@ -5731,7 +6424,19 @@ INFO  : Base directory was modified</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-module=server
+INFO  : logging-jetty   transitively enabled
+INFO  : resources       transitively enabled
+INFO  : https           initialized in ${jetty.base}/start.d/https.ini
+INFO  : ssl             initialized in ${jetty.base}/start.d/ssl.ini
+INFO  : threadpool      transitively enabled, ini template available with --add-module=threadpool
+INFO  : logging/slf4j   transitive provider of logging/slf4j for logging-jetty
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-module=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5775,7 +6480,12 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : test-keystore   initialized in ${jetty.base}/start.d/test-keystore.ini
+INFO  : mkdir ${jetty.base}/lib/bouncycastle
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15on-1.70.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15on/1.70/bcprov-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15on-1.70.jar
+INFO  : download https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk15to18/1.70/bcutil-jdk15to18-1.70.jar to ${jetty.base}/lib/bouncycastle/bcutil-jdk15on-1.70.jar
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5803,7 +6513,11 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:33:59.610:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-04-11 12:34:00.121:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:00.188:</strong>INFO :oejus.SslContextFactory:main: x509=X509@275bf9b3(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@1b8a29df[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-04-11 12:34:00.255:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@3cdf2c61<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-04-11 12:34:00.262:</strong>INFO :oejs.Server:main: Started Server@27912e3{STARTING}[10.0.15-SNAPSHOT,sto=5000] @1283ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5858,7 +6572,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="372" height="417">
+<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="347" height="454">
 </div>
 </div>
 <div class="paragraph">
@@ -5866,7 +6580,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="407" height="417">
+<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="382" height="454">
 </div>
 </div>
 <div class="paragraph">
@@ -5884,7 +6598,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="133" height="284">
+<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="132" height="297">
 </div>
 </div>
 <div class="paragraph">
@@ -5892,7 +6606,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="216" height="397">
+<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="215" height="415">
 </div>
 </div>
 <div class="paragraph">
@@ -5900,7 +6614,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="328" height="623">
+<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="314" height="651">
 </div>
 </div>
 </div>
@@ -5954,7 +6668,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:34:02.549:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-04-11 12:34:02.968:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:03.014:</strong>INFO :oejus.SslContextFactory:main: x509=X509@d278d2b(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@2d6c53fc[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-04-11 12:34:03.059:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@34f22f9d<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-04-11 12:34:03.066:</strong>INFO :oejs.Server:main: Started Server@6986852{STARTING}[10.0.15-SNAPSHOT,sto=5000] @1115ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6006,7 +6724,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:34:04.072:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:04.098:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2f9f7dcf<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2023-04-11 12:34:04.107:</strong>INFO :oejs.Server:main: Started Server@6e4784bc{STARTING}[10.0.15-SNAPSHOT,sto=5000] @463ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6109,7 +6829,13 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:34:06.118:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-04-11 12:34:06.547:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:06.614:</strong>INFO :oejus.SslContextFactory:main: x509=X509@1b75c2e3(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@1984b1f[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-04-11 12:34:06.669:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4f1bfe23{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
+<strong>2023-04-11 12:34:06.669:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
+<strong>2023-04-11 12:34:06.670:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@e19bb76<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
+<strong>2023-04-11 12:34:06.758:</strong>INFO :oejs.Server:main: Started Server@5e403b4a{STARTING}[10.0.15-SNAPSHOT,sto=5000] @1342ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6611,7 +7337,7 @@ If the request URI is for a resource that does not exist, the response will like
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="247" height="405">
+<img src="images/diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="253" height="418">
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -6691,7 +7417,8 @@ Forwarded: for=2.36.72.144:21216;proto=https</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : http-forwarded  initialized in ${jetty.base}/start.d/http-forwarded.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6751,7 +7478,8 @@ This mechanism is therefore independent of any protocol, so it can be used for T
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol  initialized in ${jetty.base}/start.d/proxy-protocol.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6764,7 +7492,9 @@ This mechanism is therefore independent of any protocol, so it can be used for T
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:34:08.585:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:08.611:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6aba2b86<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-04-11 12:34:08.620:</strong>INFO :oejs.Server:main: Started Server@78aab498{STARTING}[10.0.15-SNAPSHOT,sto=5000] @452ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6792,7 +7522,8 @@ For every new TCP connection, Jetty first interprets the proxy protocol bytes wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol-ssl initialized in ${jetty.base}/start.d/proxy-protocol-ssl.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6805,7 +7536,11 @@ For every new TCP connection, Jetty first interprets the proxy protocol bytes wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-04-11 12:34:11.116:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-04-11 12:34:11.432:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:11.488:</strong>INFO :oejus.SslContextFactory:main: x509=X509@4032d386(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@28d18df5[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-04-11 12:34:11.533:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2c07545f<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-04-11 12:34:11.539:</strong>INFO :oejs.Server:main: Started Server@6f3187b0{STARTING}[10.0.15-SNAPSHOT,sto=5000] @1067ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9668,7 +10403,15 @@ It will match all <code>ServletContainerInitializer</code> classes not explicitl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jsp/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jsp.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSP for all web applications deployed on the server.
+
+[depend]
+servlet
+annotations
+apache-jsp</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10017,7 +10760,14 @@ trimmed?</p></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jsp/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jstl.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSTL for all web applications deployed on the server.
+
+[depend]
+jsp
+apache-jstl</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10695,7 +11445,24 @@ own custom <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/aut
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jaas/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jaas.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JAAS for deployed web applications.
+
+[depend]
+server
+
+[lib]
+lib/jetty-jaas-${jetty.version}.jar
+
+[xml]
+etc/jetty-jaas.xml
+
+[ini-template]
+## The file location (relative to $jetty.base) for the
+## JAAS "java.security.auth.login.config" system property
+# jetty.jaas.login.conf=etc/login.conf</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11253,7 +12020,27 @@ If false, then authentication proceeds based on username and password informatio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jaspi.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JASPI authentication for deployed web applications.
+
+[tags]
+security
+
+[depend]
+security
+auth-config-factory
+
+[lib]
+lib/jetty-jaspi-${jetty.version}.jar
+lib/jaspi/*.jar
+
+[xml]
+etc/jaspi/jaspi-authmoduleconfig.xml
+
+[files]
+basehome:etc/jaspi/jaspi-authmoduleconfig.xml|etc/jaspi/jaspi-authmoduleconfig.xml</pre>
 </div>
 </div>
 </div>
@@ -11277,7 +12064,54 @@ If false, then authentication proceeds based on username and password informatio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/etc/jaspi/jaspi-demo.xml[]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
+
+<span class="tag">&lt;Configure&gt;</span>
+  <span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">javax.security.auth.message.config.AuthConfigFactory</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">getFactory</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">registerConfigProvider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+      <span class="comment">&lt;!-- The Jetty provided implementation of AuthConfigProvider which will wrap a ServerAuthModule. --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>org.eclipse.jetty.security.jaspi.provider.JaspiAuthConfigProvider<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- A Map of initialization properties. --&gt;</span>
+      <span class="tag">&lt;Arg&gt;</span>
+        <span class="tag">&lt;Map&gt;</span>
+          <span class="tag">&lt;Entry&gt;</span>
+            <span class="comment">&lt;!-- Provide the fully qualified classname of the ServerAuthModule to be used. --&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>ServerAuthModule<span class="tag">&lt;/Item&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>org.eclipse.jetty.security.jaspi.modules.BasicAuthenticationAuthModule<span class="tag">&lt;/Item&gt;</span>
+          <span class="tag">&lt;/Entry&gt;</span>
+          <span class="tag">&lt;Entry&gt;</span>
+            <span class="comment">&lt;!-- Realm as utilised by Jetty Security  --&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>org.eclipse.jetty.security.jaspi.modules.RealmName<span class="tag">&lt;/Item&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>Test Realm<span class="tag">&lt;/Item&gt;</span>
+          <span class="tag">&lt;/Entry&gt;</span>
+        <span class="tag">&lt;/Map&gt;</span>
+      <span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- Message Layer Identifier as per spec chapter 3.1  --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>HttpServlet<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- Application Context Identifier as per spec chapter 3.2
+
+        AppContextID ::= hostname blank context-path
+        The algorithm applied here will use the
+        _serverName on the configured JaspiAuthenticatorFactory (if set) and try to match it
+        against the &quot;server&quot; part (in the &quot;server /test&quot; example below).
+        Next it will try to match the ServletContext#getVirtualServerName to the &quot;server&quot; part.
+        If neither are set, it will then try to match the first Subject's principal name, and finally fall back to
+        the default value &quot;server&quot; if none are available.
+
+        The context-path should match the context path where this applies.
+      --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>server /test<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- A friendly description of the provided auth-module. --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>A simple provider using HTTP BASIC authentication.<span class="tag">&lt;/Arg&gt;</span>
+    <span class="tag">&lt;/Call&gt;</span>
+  <span class="tag">&lt;/Call&gt;</span>
+<span class="tag">&lt;/Configure&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11303,7 +12137,22 @@ For an example of this see the <code>jaspi-default-auth-config-factory</code> mo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jaspi-default-auth-config-factory.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Provides a DefaultAuthConfigFactory for jaspi
+
+[tags]
+security
+
+[depend]
+security
+
+[provide]
+auth-config-factory
+
+[xml]
+etc/jaspi/jaspi-default.xml</pre>
 </div>
 </div>
 </div>
@@ -11860,7 +12709,225 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>Server@6dbb137d{STARTING}[10.0.15-SNAPSHOT,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp1908143486]@71bbf57e{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59981ms,q=0}[ReservedThreadExecutor@dd8ba08{reserved=0/12,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@245b4bdc
+|  += ReservedThreadExecutor@dd8ba08{reserved=0/12,pending=0} - STARTED
+|  |  +&gt; threads size=0
+|  +&gt; threads size=4
+|     +&gt; qtp1908143486-25 TIMED_WAITING tid=25 prio=5 IDLE
+|     +&gt; qtp1908143486-23-acceptor-0@5b8c5d12-ServerConnector@384ad17b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=23 prio=3 ACCEPTING
+|     +&gt; qtp1908143486-22 RUNNABLE tid=22 prio=5 SELECTING
+|     +&gt; qtp1908143486-24 TIMED_WAITING tid=24 prio=5 IDLE
++= AttributeContainerMap@1189dd52{size=0} - STARTED
++- ArrayByteBufferPool@16d04d3d{minBufferCapacity=0, maxBufferCapacity=65536, maxQueueLength=-1, factor=4096}
+|  +&gt; java.util.ArrayList@6ac55(size=5)
+|     +: HeapMemory: 0/4196401152
+|     +: DirectMemory: 0/4196401152
+|     +: Indirect Buckets size=0
+|     +: Direct Buckets size=0
+|     +: org.eclipse.jetty.io.ArrayByteBufferPool$Retained@49ec71f8{min=0,max=65536,buckets=16,heap=0/4196401152,direct=0/4196401152}
+|        +&gt; direct size=16
+|        |  +&gt; RetainedBucket@1d2adfbe[inUse=0,size=0,max=-1,closed=false]{capacity=4096,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@74fe5c40[inUse=0,size=0,max=-1,closed=false]{capacity=8192,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@3febb011[inUse=0,size=0,max=-1,closed=false]{capacity=12288,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@10e31a9a[inUse=0,size=0,max=-1,closed=false]{capacity=16384,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@131774fe[inUse=0,size=0,max=-1,closed=false]{capacity=20480,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@158d2680[inUse=0,size=0,max=-1,closed=false]{capacity=24576,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@77847718[inUse=0,size=0,max=-1,closed=false]{capacity=28672,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@7f3b84b8[inUse=0,size=0,max=-1,closed=false]{capacity=32768,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@57a3af25[inUse=0,size=0,max=-1,closed=false]{capacity=36864,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@2b662a77[inUse=0,size=0,max=-1,closed=false]{capacity=40960,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@7f0eb4b4[inUse=0,size=0,max=-1,closed=false]{capacity=45056,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@5c33f1a9[inUse=0,size=0,max=-1,closed=false]{capacity=49152,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@1623b78d[inUse=0,size=0,max=-1,closed=false]{capacity=53248,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@c8c12ac[inUse=0,size=0,max=-1,closed=false]{capacity=57344,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@6adbc9d[inUse=0,size=0,max=-1,closed=false]{capacity=61440,inuse=0(0%)}
+|        |  |  +&gt; entries size=0
+|        |  +&gt; RetainedBucket@4550bb58[inUse=0,size=0,max=-1,closed=false]{capacity=65536,inuse=0(0%)}
+|        |     +&gt; entries size=0
+|        +&gt; indirect size=16
+|           +&gt; RetainedBucket@4ec4f3a0[inUse=0,size=0,max=-1,closed=false]{capacity=4096,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@223191a6[inUse=0,size=0,max=-1,closed=false]{capacity=8192,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@49139829[inUse=0,size=0,max=-1,closed=false]{capacity=12288,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@9597028[inUse=0,size=0,max=-1,closed=false]{capacity=16384,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@6069db50[inUse=0,size=0,max=-1,closed=false]{capacity=20480,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@4efbca5a[inUse=0,size=0,max=-1,closed=false]{capacity=24576,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@1b7cc17c[inUse=0,size=0,max=-1,closed=false]{capacity=28672,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@59662a0b[inUse=0,size=0,max=-1,closed=false]{capacity=32768,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@77fbd92c[inUse=0,size=0,max=-1,closed=false]{capacity=36864,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@67c27493[inUse=0,size=0,max=-1,closed=false]{capacity=40960,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@1a482e36[inUse=0,size=0,max=-1,closed=false]{capacity=45056,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@72967906[inUse=0,size=0,max=-1,closed=false]{capacity=49152,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@5b8dfcc1[inUse=0,size=0,max=-1,closed=false]{capacity=53248,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@2f9f7dcf[inUse=0,size=0,max=-1,closed=false]{capacity=57344,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@747ddf94[inUse=0,size=0,max=-1,closed=false]{capacity=61440,inuse=0(0%)}
+|           |  +&gt; entries size=0
+|           +&gt; RetainedBucket@35e2d654[inUse=0,size=0,max=-1,closed=false]{capacity=65536,inuse=0(0%)}
+|              +&gt; entries size=0
++= ScheduledExecutorScheduler@76b10754{STARTED} - STARTED
++= HandlerList@1bd4fdd{STARTED} - STARTED <i class="conum" data-value="3"></i><b>(3)</b>
+|  += ContextHandlerCollection@55183b20{STARTED} - STARTED
+|  += DefaultHandler@4f83df68{STARTED} - STARTED
++= ServerConnector@384ad17b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED <i class="conum" data-value="4"></i><b>(4)</b>
+|  +~ QueuedThreadPool[qtp1908143486]@71bbf57e{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59967ms,q=0}[ReservedThreadExecutor@dd8ba08{reserved=0/12,pending=0}] - STARTED
+|  +~ ScheduledExecutorScheduler@76b10754{STARTED} - STARTED
+|  +~ ArrayByteBufferPool@16d04d3d{minBufferCapacity=0, maxBufferCapacity=65536, maxQueueLength=-1, factor=4096}
+|  +- org.eclipse.jetty.io.ArrayByteBufferPool$Retained@49ec71f8{min=0,max=65536,buckets=16,heap=0/4196401152,direct=0/4196401152}
+|  |  +&gt; direct size=16
+|  |  |  +&gt; RetainedBucket@1d2adfbe[inUse=0,size=0,max=-1,closed=false]{capacity=4096,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@74fe5c40[inUse=0,size=0,max=-1,closed=false]{capacity=8192,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@3febb011[inUse=0,size=0,max=-1,closed=false]{capacity=12288,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@10e31a9a[inUse=0,size=0,max=-1,closed=false]{capacity=16384,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@131774fe[inUse=0,size=0,max=-1,closed=false]{capacity=20480,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@158d2680[inUse=0,size=0,max=-1,closed=false]{capacity=24576,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@77847718[inUse=0,size=0,max=-1,closed=false]{capacity=28672,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@7f3b84b8[inUse=0,size=0,max=-1,closed=false]{capacity=32768,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@57a3af25[inUse=0,size=0,max=-1,closed=false]{capacity=36864,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@2b662a77[inUse=0,size=0,max=-1,closed=false]{capacity=40960,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@7f0eb4b4[inUse=0,size=0,max=-1,closed=false]{capacity=45056,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@5c33f1a9[inUse=0,size=0,max=-1,closed=false]{capacity=49152,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@1623b78d[inUse=0,size=0,max=-1,closed=false]{capacity=53248,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@c8c12ac[inUse=0,size=0,max=-1,closed=false]{capacity=57344,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@6adbc9d[inUse=0,size=0,max=-1,closed=false]{capacity=61440,inuse=0(0%)}
+|  |  |  |  +&gt; entries size=0
+|  |  |  +&gt; RetainedBucket@4550bb58[inUse=0,size=0,max=-1,closed=false]{capacity=65536,inuse=0(0%)}
+|  |  |     +&gt; entries size=0
+|  |  +&gt; indirect size=16
+|  |     +&gt; RetainedBucket@4ec4f3a0[inUse=0,size=0,max=-1,closed=false]{capacity=4096,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@223191a6[inUse=0,size=0,max=-1,closed=false]{capacity=8192,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@49139829[inUse=0,size=0,max=-1,closed=false]{capacity=12288,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@9597028[inUse=0,size=0,max=-1,closed=false]{capacity=16384,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@6069db50[inUse=0,size=0,max=-1,closed=false]{capacity=20480,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@4efbca5a[inUse=0,size=0,max=-1,closed=false]{capacity=24576,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@1b7cc17c[inUse=0,size=0,max=-1,closed=false]{capacity=28672,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@59662a0b[inUse=0,size=0,max=-1,closed=false]{capacity=32768,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@77fbd92c[inUse=0,size=0,max=-1,closed=false]{capacity=36864,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@67c27493[inUse=0,size=0,max=-1,closed=false]{capacity=40960,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@1a482e36[inUse=0,size=0,max=-1,closed=false]{capacity=45056,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@72967906[inUse=0,size=0,max=-1,closed=false]{capacity=49152,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@5b8dfcc1[inUse=0,size=0,max=-1,closed=false]{capacity=53248,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@2f9f7dcf[inUse=0,size=0,max=-1,closed=false]{capacity=57344,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@747ddf94[inUse=0,size=0,max=-1,closed=false]{capacity=61440,inuse=0(0%)}
+|  |     |  +&gt; entries size=0
+|  |     +&gt; RetainedBucket@35e2d654[inUse=0,size=0,max=-1,closed=false]{capacity=65536,inuse=0(0%)}
+|  |        +&gt; entries size=0
+|  +- org.eclipse.jetty.server.AbstractConnector$1@6cf0e0ba
+|  += HttpConnectionFactory@15761df8[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@74f0ea28{32768/8192,8192/8192,https://:0,[]}
+|  |     +&gt; customizers size=0
+|  |     +&gt; formEncodedMethods size=2
+|  |     |  +&gt; POST
+|  |     |  +&gt; PUT
+|  |     +&gt; outputBufferSize=32768
+|  |     +&gt; outputAggregationSize=8192
+|  |     +&gt; requestHeaderSize=8192
+|  |     +&gt; responseHeaderSize=8192
+|  |     +&gt; headerCacheSize=1024
+|  |     +&gt; secureScheme=https
+|  |     +&gt; securePort=0
+|  |     +&gt; idleTimeout=-1
+|  |     +&gt; sendDateHeader=false
+|  |     +&gt; sendServerVersion=true
+|  |     +&gt; sendXPoweredBy=false
+|  |     +&gt; delayDispatchUntilContent=true
+|  |     +&gt; persistentConnectionsEnabled=true
+|  |     +&gt; maxErrorDispatches=10
+|  |     +&gt; minRequestDataRate=0
+|  |     +&gt; minResponseDataRate=0
+|  |     +&gt; requestCookieCompliance=RFC6265@1283bb96[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; responseCookieCompliance=RFC6265@1283bb96[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; notifyRemoteAsyncErrors=true
+|  |     +&gt; relativeRedirectAllowed=false
+|  += SelectorManager@ServerConnector@384ad17b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += ManagedSelector@409bf450{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED <i class="conum" data-value="5"></i><b>(5)</b>
+|  |     += AdaptiveExecutionStrategy@38d8f54a/SelectorProducer@49e53c76/PRODUCING/p=false/QueuedThreadPool[qtp1908143486]@71bbf57e{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59957ms,q=0}[ReservedThreadExecutor@dd8ba08{reserved=0/12,pending=0}][pc=0,pic=0,pec=0,epc=0]@2023-04-11T12:34:12.82159298-05:00 - STARTED
+|  |     |  +- SelectorProducer@49e53c76
+|  |     |  +~ QueuedThreadPool[qtp1908143486]@71bbf57e{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59956ms,q=0}[ReservedThreadExecutor@dd8ba08{reserved=0/12,pending=0}] - STARTED
+|  |     +&gt; updates @ 2023-04-11T12:34:12.82092453-05:00 size=0
+|  |     +&gt; keys @ 2023-04-11T12:34:12.821244046-05:00 size=0 <i class="conum" data-value="6"></i><b>(6)</b>
+|  +- sun.nio.ch.ServerSocketChannelImpl[/[0:0:0:0:0:0:0:0]:8080]
+|  +- qtp1908143486-23-acceptor-0@5b8c5d12-ServerConnector@384ad17b{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@351d00c0
++= ErrorHandler@2a3b5b47{STARTED} - STARTED
++&gt; startJarLoader@f2a0b8e <i class="conum" data-value="7"></i><b>(7)</b>
+   +&gt; URLs size=9
+   |  +&gt; file:/path/to/jetty.base/resources/
+   |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.5.jar
+   |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-10.0.15-SNAPSHOT.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-servlet-api-4.0.6.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-http-10.0.15-SNAPSHOT.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-server-10.0.15-SNAPSHOT.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-10.0.15-SNAPSHOT.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-util-10.0.15-SNAPSHOT.jar
+   |  +&gt; file:/path/to/jetty.home/lib/jetty-io-10.0.15-SNAPSHOT.jar
+   +&gt; jdk.internal.loader.ClassLoaders$AppClassLoader@7a4f0f29
+      +&gt; packages size=4
+      |  +&gt; package org.eclipse.jetty.start.config
+      |  +&gt; package org.eclipse.jetty.start.builders
+      |  +&gt; package org.eclipse.jetty.start.shaded.util
+      |  +&gt; package org.eclipse.jetty.start
+      +&gt; jdk.internal.loader.ClassLoaders$PlatformClassLoader@3b85cccc
+         +&gt; packages size=2
+            +&gt; package sun.util.resources.provider
+            +&gt; package sun.util.resources.cldr.provider
+key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +&gt; undefined <i class="conum" data-value="8"></i><b>(8)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -12069,7 +13136,10 @@ Enables remote debugging
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [remote-debug]. Use --dry-run to generate the command line to avoid forking.
+<mark>Listening for transport dt_socket at address: 5005</mark>
+<strong>2023-04-11 12:34:13.876:</strong>INFO :oejs.Server:main: jetty-10.0.15-SNAPSHOT; built: 2023-04-11T16:52:55.201Z; git: 24b7d06fd5ce5468caa3eaa93688879fb2900fda; jvm 19.0.1+10
+<strong>2023-04-11 12:34:13.908:</strong>INFO :oejs.Server:main: Started Server@eafc191{STARTING}[10.0.15-SNAPSHOT,sto=5000] @257ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12655,8 +13725,8 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 10.0.14<br>
-Last updated 2023-02-17 10:15:35 UTC
+Version 10.0.15<br>
+Last updated 2023-04-11 11:50:21 -0500
 </div>
 </div>
 </body>
