@@ -67,7 +67,37 @@
                 </tr>
                 </thead>
                 <tbody>
+		<tr>
+ <!--
+                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
+                    <td class="tableblock halign-left valign-top">
+                      <p class="tableblock">
+                        <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE- - " title="">CVE- - </a>
+                      </p>
+                    </td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"></p></td>
+                </tr>
+                 -->
+                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2023/04/18</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-26049" title="Cookie parsing of quoted values can exfiltrate values from other cookies.">CVE-2023-26049</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><=9.4.50, <=10.013, <=11.0.13, <=12.0.0.alpha3</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.51, 10.0.14, 11.0.14, 12.0.0.beta0</p></td>
+                </tr>
                 <tr>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">2023/04/18</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-26048" title="OutOfMemoryError for large multipart without filename read via request.getParameter()">CVE-2023-26048</a></p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock"><=9.4.50, <=10.0.13, <=11.0.13</p></td>
+                    <td class="tableblock halign-left valign-top"><p class="tableblock">9.4.51, 10.0.14, 11.0.14</p></td>
+                </tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">2022/07/05</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-2191" title="SslConnection does not release pooled ByteBuffers in case of errors.">CVE-2022-2191</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Med</p></td>
