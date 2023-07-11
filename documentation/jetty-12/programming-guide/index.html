@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Programming Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.0.beta0,</span>
-<span id="revdate">2023-03-07</span>
+<span id="revnumber">version 12.0.0.beta3,</span>
+<span id="revdate">2023-07-03</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -78,7 +78,8 @@
 </li>
 <li><a href="#pg-client-http-proxy">HttpClient Proxy Support</a>
 <ul class="sectlevel4">
-<li><a href="#pg-client-http-proxy-authentication">Proxy Authentication Support</a></li>
+<li><a href="#pg-client-http-proxy-socks5">SOCKS5 Proxy Support</a></li>
+<li><a href="#pg-client-http-proxy-authentication">HTTP Proxy Authentication Support</a></li>
 </ul>
 </li>
 <li><a href="#pg-client-http-transport">HttpClient Pluggable Transports</a>
@@ -127,7 +128,7 @@
 <li><a href="#pg-client-websocket-connect-inspect-http-response">Inspecting the Initial HTTP Response</a></li>
 </ul>
 </li>
-<li><a href="#pg-websocket-architecture">WebSocket Architecture</a></li>
+<li><a href="#pg-websocket-architecture">Jetty WebSocket Architecture</a></li>
 <li><a href="#pg-websocket-endpoints">WebSocket Endpoints</a>
 <ul class="sectlevel4">
 <li><a href="#pg-websocket-endpoints-listener">Listener Endpoints</a>
@@ -147,8 +148,6 @@
 <li><a href="#pg-websocket-session-configure">Configuring the Session</a></li>
 <li><a href="#pg-websocket-session-send">Sending Data</a>
 <ul class="sectlevel5">
-<li><a href="#pg-websocket-session-send-blocking">Blocking APIs</a></li>
-<li><a href="#pg-websocket-session-send-non-blocking">Non-Blocking APIs</a></li>
 <li><a href="#pg-websocket-session-send-stream">Streaming Send APIs</a></li>
 </ul>
 </li>
@@ -322,6 +321,7 @@
 <ul class="sectlevel5">
 <li><a href="#pg-server-websocket-jetty-endpoints-container">Using <code>JettyWebSocketServerContainer</code></a></li>
 <li><a href="#pg-server-websocket-jetty-endpoints-servlet">Using <code>JettyWebSocketServlet</code></a></li>
+<li><a href="#pg-server-websocket-jetty-pathspec">Custom PathSpec Mappings</a></li>
 </ul>
 </li>
 </ul>
@@ -1207,7 +1207,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1421,7 +1421,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
 </div>
 </div>
 <div class="paragraph">
@@ -2018,7 +2018,7 @@ Please refer to the <code>HttpClient</code> <a href="https://www.eclipse.org/jet
 <p><code>HttpClient</code> supports HTTPS requests out-of-the-box like a browser does.</p>
 </div>
 <div class="paragraph">
-<p>The support for HTTPS request is provided by a <code>SslContextFactory.Client</code>, typically configured in the <code>ClientConnector</code>.
+<p>The support for HTTPS request is provided by a <code>SslContextFactory.Client</code> instance, typically configured in the <code>ClientConnector</code>.
 If not explicitly configured, the <code>ClientConnector</code> will allocate a default one when started.</p>
 </div>
 <div class="listingblock">
@@ -2033,37 +2033,44 @@ httpClient.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The default <code>SslContextFactory.Client</code> verifies the certificate sent by the server by verifying the certificate chain.
-This means that requests to public websites that have a valid certificate (such as <code><a href="https://google.com" class="bare">https://google.com</a></code>) will work out-of-the-box.</p>
+<p>The default <code>SslContextFactory.Client</code> verifies the certificate sent by the server by verifying the validity of the certificate with respect to the certificate chain, the expiration date, the server host name, etc.
+This means that requests to public websites that have a valid certificate (such as <code>https://google.com</code>) will work out-of-the-box, without the need to specify a KeyStore or a TrustStore.</p>
 </div>
 <div class="paragraph">
-<p>However, requests made to sites (typically <code>localhost</code>) that have an invalid (for example, expired or with a wrong host) or self-signed certificate will fail (like they will in a browser).</p>
+<p>However, requests made to sites that return an invalid or a self-signed certificate will fail (like they will in a browser).
+An invalid certificate may be expired or have the wrong server host name; a self-signed certificate has a certificate chain that cannot be verified.</p>
 </div>
 <div class="paragraph">
-<p>Certificate validation is performed at two levels: at the TLS implementation level (in the JDK) and, optionally, at the application level.</p>
+<p>The validation of the server host name present in the certificate is important, to guarantee that the client is connected indeed with the intended server.</p>
 </div>
 <div class="paragraph">
-<p>By default, certificate validation at the TLS level is enabled, while certificate validation at the application level is disabled.</p>
+<p>The validation of the server host name is performed at two levels: at the TLS level (in the JDK) and, optionally, at the application level.</p>
 </div>
 <div class="paragraph">
-<p>You can configure the <code>SslContextFactory.Client</code> to skip certificate validation at the TLS level:</p>
+<p>By default, the validation of the server host name at the TLS level is enabled, while it is disabled at the application level.</p>
+</div>
+<div class="paragraph">
+<p>You can configure the <code>SslContextFactory.Client</code> to skip the validation of the server host name at the TLS level:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
-<span class="comment">// Disable certificate validation at the TLS level.</span>
+<span class="comment">// Disable the validation of the server host name at the TLS level.</span>
 sslContextFactory.setEndpointIdentificationAlgorithm(<span class="predefined-constant">null</span>);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can enable certificate validation at the application level:</p>
+<p>When you disable the validation of the server host name at the TLS level, you are strongly recommended to enable it at the application level, otherwise you may risk to connect to a server different from the one you intend to connect to:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
-<span class="comment">// Only allow subdomains of domain.com.</span>
+<span class="comment">// Only allow to connect to subdomains of domain.com.</span>
 sslContextFactory.setHostnameVerifier((hostName, session) -&gt; hostName.endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">.domain.com</span><span class="delimiter">&quot;</span></span>));</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You may have the validation of the server host name enabled at both the TLS level and application level, typically when you want to further restrict the client to connect only to a smaller set of server hosts than those allowed in the certificate sent by the server.</p>
 </div>
 <div class="paragraph">
 <p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
@@ -2220,7 +2227,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
 </div>
 </div>
 <div class="paragraph">
@@ -2300,8 +2307,23 @@ request.send();</code></pre>
 <p>Jetty&#8217;s <code>HttpClient</code> can be configured to use proxies to connect to destinations.</p>
 </div>
 <div class="paragraph">
-<p>Two types of proxies are available out of the box: a HTTP proxy (provided by class <code>org.eclipse.jetty.client.HttpProxy</code>) and a SOCKS 4 proxy (provided by class <code>org.eclipse.jetty.client.Socks4Proxy</code>).
-Other implementations may be written by subclassing <code>ProxyConfiguration.Proxy</code>.</p>
+<p>These types of proxies are available out of the box:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTTP proxy (provided by class <code>org.eclipse.jetty.client.HttpProxy</code>)</p>
+</li>
+<li>
+<p>SOCKS 4 proxy (provided by class <code>org.eclipse.jetty.client.Socks4Proxy</code>)</p>
+</li>
+<li>
+<p><a href="#pg-client-http-proxy-socks5">SOCKS 5 proxy</a> (provided by class <code>org.eclipse.jetty.client.Socks5Proxy</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other implementations may be written by subclassing <code>ProxyConfiguration.Proxy</code>.</p>
 </div>
 <div class="paragraph">
 <p>The following is a typical configuration:</p>
@@ -2327,15 +2349,43 @@ ContentResponse response = httpClient.GET(<span class="string"><span class="deli
 <p>Configured in this way, <code>HttpClient</code> makes requests to the HTTP proxy (for plain-text HTTP requests) or establishes a tunnel via HTTP <code>CONNECT</code> (for encrypted HTTPS requests).</p>
 </div>
 <div class="paragraph">
-<p>Proxying is supported for HTTP/1.1 and HTTP/2.</p>
+<p>Proxying is supported for any version of the HTTP protocol.</p>
 </div>
 <div class="sect4">
-<h5 id="pg-client-http-proxy-authentication"><a class="anchor" href="#pg-client-http-proxy-authentication"></a><a class="link" href="#pg-client-http-proxy-authentication">Proxy Authentication Support</a></h5>
+<h5 id="pg-client-http-proxy-socks5"><a class="anchor" href="#pg-client-http-proxy-socks5"></a><a class="link" href="#pg-client-http-proxy-socks5">SOCKS5 Proxy Support</a></h5>
 <div class="paragraph">
-<p>Jetty&#8217;s <code>HttpClient</code> supports proxy authentication in the same way it supports <a href="#pg-client-http-authentication">server authentication</a>.</p>
+<p>SOCKS 5 (defined in <a href="https://datatracker.ietf.org/doc/html/rfc1928">RFC 1928</a>) offers choices for authentication methods and supports IPv6 (things that SOCKS 4 does not support).</p>
 </div>
 <div class="paragraph">
-<p>In the example below, the proxy requires <code>BASIC</code> authentication, but the server requires <code>DIGEST</code> authentication, and therefore:</p>
+<p>A typical SOCKS 5 proxy configuration with the username/password authentication method is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Socks5Proxy proxy = <span class="keyword">new</span> Socks5Proxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">proxyHost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8888</span>);
+<span class="predefined-type">String</span> socks5User = <span class="string"><span class="delimiter">&quot;</span><span class="content">jetty</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">String</span> socks5Pass = <span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>;
+<span class="type">var</span> socks5AuthenticationFactory = <span class="keyword">new</span> Socks5.UsernamePasswordAuthenticationFactory(socks5User, socks5Pass);
+<span class="comment">// Add the authentication method to the proxy.</span>
+proxy.putAuthenticationFactory(socks5AuthenticationFactory);
+
+<span class="comment">// Do not proxy requests for localhost:8080.</span>
+proxy.getExcludedAddresses().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost:8080</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Add the new proxy to the list of proxies already registered.</span>
+ProxyConfiguration proxyConfig = httpClient.getProxyConfiguration();
+proxyConfig.addProxy(proxy);
+
+ContentResponse response = httpClient.GET(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain.com/path</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-client-http-proxy-authentication"><a class="anchor" href="#pg-client-http-proxy-authentication"></a><a class="link" href="#pg-client-http-proxy-authentication">HTTP Proxy Authentication Support</a></h5>
+<div class="paragraph">
+<p>Jetty&#8217;s <code>HttpClient</code> supports HTTP proxy authentication in the same way it supports <a href="#pg-client-http-authentication">server authentication</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the example below, the HTTP proxy requires <code>BASIC</code> authentication, but the server requires <code>DIGEST</code> authentication, and therefore:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2362,7 +2412,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -2768,7 +2818,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2955,7 +3005,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.0.beta0</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.0.beta3</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3067,7 +3117,7 @@ session.newStream(headersFrame, <span class="keyword">new</span> Stream.Listener
         }
         <span class="keyword">else</span>
         {
-            <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http2</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Received trailers {0}</span><span class="delimiter">&quot;</span></span>, metaData.getFields());
+            <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">http2</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">Received trailers {0}</span><span class="delimiter">&quot;</span></span>, metaData.getHttpFields());
         }
     }
 
@@ -3261,9 +3311,9 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
         <span class="comment">// The &quot;request&quot; the client would make for the pushed resource.</span>
         MetaData.Request pushedRequest = frame.getMetaData();
         <span class="comment">// The pushed &quot;request&quot; URI.</span>
-        HttpURI pushedURI = pushedRequest.getURI();
+        HttpURI pushedURI = pushedRequest.getHttpURI();
         <span class="comment">// The pushed &quot;request&quot; headers.</span>
-        HttpFields pushedRequestHeaders = pushedRequest.getFields();
+        HttpFields pushedRequestHeaders = pushedRequest.getHttpFields();
 
         <span class="comment">// If needed, retrieve the primary stream that triggered the push.</span>
         Stream primaryStream = pushedStream.getSession().getStream(frame.getStreamId());
@@ -3280,7 +3330,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
                 <span class="keyword">if</span> (metaData.isResponse())
                 {
                     <span class="comment">// The pushed &quot;response&quot; headers.</span>
-                    HttpFields pushedResponseHeaders = metaData.getFields();
+                    HttpFields pushedResponseHeaders = metaData.getHttpFields();
 
                     <span class="comment">// Typically a pushed stream has data, so demand for data.</span>
                     stream.demand();
@@ -3362,7 +3412,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3474,7 +3524,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.0.beta0</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.0.beta3</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3651,14 +3701,14 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="sect3">
 <h4 id="pg-client-websocket-start"><a class="anchor" href="#pg-client-websocket-start"></a><a class="link" href="#pg-client-websocket-start">Starting WebSocketClient</a></h4>
 <div class="paragraph">
-<p>The main class is <code>org.eclipse.jetty.ee9.websocket.client.WebSocketClient</code>; you instantiate it, configure it, and then start it like may other Jetty components.
+<p>The main class is <code>org.eclipse.jetty.websocket.client.WebSocketClient</code>; you instantiate it, configure it, and then start it like may other Jetty components.
 This is a minimal example:</p>
 </div>
 <div class="listingblock">
@@ -3698,7 +3748,14 @@ Creating multiple instances may be necessary for example when you need to specif
 For example, you may need different instances when you need to configure the <code>HttpClient</code> differently: different transports, different proxies, different cookie stores, different authentications, etc.</p>
 </div>
 <div class="paragraph">
-<p>WebSocket specific configuration may be typically be given a default value in <code>WebSocketClient</code> and then overridden more specifically, see for example <a href="#pg-websocket-session-configure">this section</a>.</p>
+<p>The configuration that is not WebSocket specific (such as idle timeout, etc.) should be directly configured on the associated <code>HttpClient</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>The WebSocket specific configuration can be configured directly on the <code>WebSocketClient</code> instance.
+Configuring the <code>WebSocketClient</code> allows to give default values to various parameters, whose values may be overridden more specifically, as described in <a href="#pg-websocket-session-configure">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the  <code>WebSocketClient</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/client/WebSocketClient.html">javadocs</a> for the setter methods available to customize the WebSocket specific configuration.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3739,7 +3796,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
 </div>
 </div>
 <div class="paragraph">
@@ -3765,7 +3822,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 </div>
 <div class="paragraph">
-<p><code>WebSocketClient.connect()</code> links the client-side WebSocket <em>endpoint</em> to a specific server URI, and returns a <code>CompletableFuture</code> of an <code>org.eclipse.jetty.ee9.websocket.api.Session</code>.</p>
+<p><code>WebSocketClient.connect()</code> links the client-side WebSocket <em>endpoint</em> to a specific server URI, and returns a <code>CompletableFuture</code> of an <code>org.eclipse.jetty.websocket.api.Session</code>.</p>
 </div>
 <div class="paragraph">
 <p>The endpoint offers APIs to <em>receive</em> WebSocket data (or errors) from the server, while the session offers APIs to <em>send</em> WebSocket data to the server.</p>
@@ -3777,7 +3834,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 <p>Initiating a WebSocket communication with a server using HTTP/1.1 is detailed in <a href="https://tools.ietf.org/html/rfc8441">RFC 8441</a>.</p>
 </div>
 <div class="paragraph">
-<p>A WebSocket client establishes a TCP connection to the server or reuses an existing one currently used for HTTP/2, then sends an HTTP/2 <em>connect</em> request over an HTTP/2 stream.</p>
+<p>A WebSocket client establishes a TCP connection to the server or reuses an existing one currently used for HTTP/2, then sends an HTTP/2 <em>CONNECT</em> request over an HTTP/2 stream.</p>
 </div>
 <div class="paragraph">
 <p>If the server supports upgrading to WebSocket, it responds with HTTP status code <code>200</code>, then switches the communication over that stream, either incoming or outgoing, to happen using HTTP/2 <code>DATA</code> frames wrapping WebSocket frames.</p>
@@ -3793,7 +3850,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
 </div>
 </div>
 <div class="paragraph">
@@ -3894,7 +3951,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 </div>
 <div class="sect3">
-<h4 id="pg-websocket-architecture"><a class="anchor" href="#pg-websocket-architecture"></a><a class="link" href="#pg-websocket-architecture">WebSocket Architecture</a></h4>
+<h4 id="pg-websocket-architecture"><a class="anchor" href="#pg-websocket-architecture"></a><a class="link" href="#pg-websocket-architecture">Jetty WebSocket Architecture</a></h4>
 <div class="paragraph">
 <p>The Jetty WebSocket architecture is organized around the concept of a logical <em>connection</em> between the client and the server.</p>
 </div>
@@ -3930,9 +3987,9 @@ In this case, a single TCP connection may carry several WebSocket virtual connec
 <div class="ulist">
 <ul>
 <li>
-<p>The <em>connect</em> event.
+<p>The <em>open</em> event.
 This event is emitted when the WebSocket communication has been successfully established.
-Applications interested in the connect event receive the WebSocket <em>session</em> so that they can use it to send data to the remote peer.</p>
+Applications interested in the open event receive the WebSocket <em>session</em> so that they can use it to send data to the remote peer.</p>
 </li>
 <li>
 <p>The <em>close</em> event.
@@ -3945,41 +4002,48 @@ This event is emitted when the WebSocket communication encounters a fatal error,
 Applications interested in the error event receive a <code>Throwable</code> that represent the error.</p>
 </li>
 <li>
-<p>The <em>message</em> event.
-The message event is emitted when a WebSocket message is received.
-Only one thread at a time will be delivering a message event to the <code>onMessage</code> method; the next message event will not be delivered until the previous call to the <code>onMessage</code> method has exited.
-Endpoints will always be notified of message events in the same order they were received over the network.
+<p>The <em>frame</em> events.
+The frame events are emitted when a WebSocket frame is received, either a control frame such as PING, PONG or CLOSE, or a data frame such as BINARY or TEXT.
+One or more data frames of the same type define a <em>message</em>.</p>
+</li>
+<li>
+<p>The <em>message</em> events.
+The message event are emitted when a WebSocket message is received.
 The message event can be of two types:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Textual message event.
+<p>TEXT.
 Applications interested in this type of messages receive a <code>String</code> representing the UTF-8 bytes received.</p>
 </li>
 <li>
-<p>Binary message event.
-Applications interested in this type of messages receive a <code>byte[]</code> representing the raw bytes received.</p>
+<p>BINARY.
+Applications interested in this type of messages receive a <code>ByteBuffer</code> representing the raw bytes received.</p>
 </li>
 </ul>
 </div>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Only one thread at a time will be delivering frame or message events to the corresponding methods; the next frame or message event will not be delivered until the previous call to the corresponding method has exited, and if there is demand for it.
+Endpoints will always be notified of message events in the same order they were received over the network.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-websocket-endpoints-listener"><a class="anchor" href="#pg-websocket-endpoints-listener"></a><a class="link" href="#pg-websocket-endpoints-listener">Listener Endpoints</a></h5>
 <div class="paragraph">
-<p>A WebSocket endpoint may implement the <code>org.eclipse.jetty.ee9.websocket.api.WebSocketListener</code> interface to receive WebSocket events:</p>
+<p>A WebSocket endpoint may implement the <code>org.eclipse.jetty.websocket.api.Session.Listener</code> interface to receive WebSocket events:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ListenerEndPoint</span> <span class="directive">implements</span> WebSocketListener <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ListenerEndPoint</span> <span class="directive">implements</span> Session.Listener <i class="conum" data-value="1"></i><b>(1)</b>
 {
     <span class="directive">private</span> Session session;
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketOpen(Session session)
     {
-        <span class="comment">// The WebSocket connection is established.</span>
+        <span class="comment">// The WebSocket endpoint has been opened.</span>
 
         <span class="comment">// Store the session to be able to send data to the remote peer.</span>
         <span class="local-variable">this</span>.session = session;
@@ -3988,13 +4052,13 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
         session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
 
         <span class="comment">// You may immediately send a message to the remote peer.</span>
-        session.getRemote().sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, WriteCallback.NOOP);
+        session.sendText(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
     }
 
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onWebSocketClose(<span class="type">int</span> statusCode, <span class="predefined-type">String</span> reason)
     {
-        <span class="comment">// The WebSocket connection is closed.</span>
+        <span class="comment">// The WebSocket endpoint has been closed.</span>
 
         <span class="comment">// You may dispose resources.</span>
         disposeResources();
@@ -4003,7 +4067,7 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">void</span> onWebSocketError(<span class="predefined-type">Throwable</span> cause)
     {
-        <span class="comment">// The WebSocket connection failed.</span>
+        <span class="comment">// The WebSocket endpoint failed.</span>
 
         <span class="comment">// You may log the error.</span>
         cause.printStackTrace();
@@ -4019,11 +4083,11 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
 
         <span class="comment">// You may echo it back if it matches certain criteria.</span>
         <span class="keyword">if</span> (message.startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>))
-            session.getRemote().sendString(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), WriteCallback.NOOP);
+            session.sendText(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), <span class="predefined-type">Callback</span>.NOOP);
     }
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onWebSocketBinary(<span class="type">byte</span><span class="type">[]</span> payload, <span class="type">int</span> offset, <span class="type">int</span> length)
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketBinary(<span class="predefined-type">ByteBuffer</span> payload, <span class="predefined-type">Callback</span> callback)
     {
         <span class="comment">// A WebSocket binary message is received.</span>
 
@@ -4031,10 +4095,11 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
         <span class="type">byte</span><span class="type">[]</span> pngBytes = <span class="keyword">new</span> <span class="type">byte</span><span class="type">[]</span>{(<span class="type">byte</span>)<span class="hex">0x89</span>, <span class="string"><span class="delimiter">'</span><span class="content">P</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">N</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">G</span><span class="delimiter">'</span></span>};
         <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; pngBytes.length; ++i)
         {
-            <span class="keyword">if</span> (pngBytes[i] != payload[offset + i])
+            <span class="keyword">if</span> (pngBytes[i] != payload.get(i))
                 <span class="keyword">return</span>;
         }
-        savePNGImage(payload, offset, length);
+        savePNGImage(payload);
+        callback.succeed();
     }
 }</code></pre>
 </div>
@@ -4043,7 +4108,7 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Your listener class implements <code>WebSocketListener</code>.</td>
+<td>Your listener class implements <code>Session.Listener</code>.</td>
 </tr>
 </table>
 </div>
@@ -4054,17 +4119,17 @@ Applications interested in this type of messages receive a <code>byte[]</code> r
 For large WebSocket messages, the memory usage may be large due to the fact that the text or the bytes must be accumulated until the message is complete before delivering the message event.</p>
 </div>
 <div class="paragraph">
-<p>To stream textual or binary messages, you must implement interface <code>org.eclipse.jetty.ee9.websocket.api.WebSocketPartialListener</code> instead of <code>WebSocketListener</code>.</p>
+<p>To stream textual or binary messages, you override either <code>org.eclipse.jetty.websocket.api.Session.Listener.onWebSocketPartialText(...)</code> or <code>org.eclipse.jetty.websocket.api.Session.Listener.onWebSocketPartialBinary(...)</code>.</p>
 </div>
 <div class="paragraph">
-<p>Interface <code>WebSocketPartialListener</code> exposes one method for textual messages, and one method to binary messages that receive <em>chunks</em> of, respectively, text and bytes that form the whole WebSocket message.</p>
+<p>These methods that receive <em>chunks</em> of, respectively, text and bytes that form the whole WebSocket message.</p>
 </div>
 <div class="paragraph">
 <p>You may accumulate the chunks yourself, or process each chunk as it arrives, or stream the chunks elsewhere, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">StreamingListenerEndpoint</span> <span class="directive">implements</span> WebSocketPartialListener
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">StreamingListenerEndpoint</span> <span class="directive">implements</span> Session.Listener
 {
     <span class="directive">private</span> Path textPath;
 
@@ -4076,10 +4141,12 @@ For large WebSocket messages, the memory usage may be large due to the fact that
     }
 
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onWebSocketPartialBinary(<span class="predefined-type">ByteBuffer</span> payload, <span class="type">boolean</span> fin)
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketPartialBinary(<span class="predefined-type">ByteBuffer</span> payload, <span class="type">boolean</span> fin, <span class="predefined-type">Callback</span> callback)
     {
         <span class="comment">// Save chunks to file.</span>
         appendToFile(payload, fin);
+        <span class="comment">// Complete the callback.</span>
+        callback.succeed();
     }
 }</code></pre>
 </div>
@@ -4089,7 +4156,7 @@ For large WebSocket messages, the memory usage may be large due to the fact that
 <div class="sect4">
 <h5 id="pg-websocket-endpoints-annotated"><a class="anchor" href="#pg-websocket-endpoints-annotated"></a><a class="link" href="#pg-websocket-endpoints-annotated">Annotated Endpoints</a></h5>
 <div class="paragraph">
-<p>A WebSocket endpoint may annotate methods with <code>org.eclipse.jetty.ee9.websocket.api.annotations.*</code> annotations to receive WebSocket events.
+<p>A WebSocket endpoint may annotate methods with <code>org.eclipse.jetty.websocket.api.annotations.*</code> annotations to receive WebSocket events.
 Each annotated method may take an optional <code>Session</code> argument as its first parameter:</p>
 </div>
 <div class="listingblock">
@@ -4099,10 +4166,10 @@ Each annotated method may take an optional <code>Session</code> argument as its 
 {
     <span class="directive">private</span> Session session;
 
-    <span class="annotation">@OnWebSocketConnect</span> <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="directive">public</span> <span class="type">void</span> onConnect(Session session)
+    <span class="annotation">@OnWebSocketOpen</span> <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="directive">public</span> <span class="type">void</span> onOpen(Session session)
     {
-        <span class="comment">// The WebSocket connection is established.</span>
+        <span class="comment">// The WebSocket endpoint has been opened.</span>
 
         <span class="comment">// Store the session to be able to send data to the remote peer.</span>
         <span class="local-variable">this</span>.session = session;
@@ -4111,13 +4178,13 @@ Each annotated method may take an optional <code>Session</code> argument as its 
         session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
 
         <span class="comment">// You may immediately send a message to the remote peer.</span>
-        session.getRemote().sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, WriteCallback.NOOP);
+        session.sendText(<span class="string"><span class="delimiter">&quot;</span><span class="content">connected</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
     }
 
     <span class="annotation">@OnWebSocketClose</span> <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="directive">public</span> <span class="type">void</span> onClose(<span class="type">int</span> statusCode, <span class="predefined-type">String</span> reason)
     {
-        <span class="comment">// The WebSocket connection is closed.</span>
+        <span class="comment">// The WebSocket endpoint has been closed.</span>
 
         <span class="comment">// You may dispose resources.</span>
         disposeResources();
@@ -4126,7 +4193,7 @@ Each annotated method may take an optional <code>Session</code> argument as its 
     <span class="annotation">@OnWebSocketError</span> <i class="conum" data-value="4"></i><b>(4)</b>
     <span class="directive">public</span> <span class="type">void</span> onError(<span class="predefined-type">Throwable</span> cause)
     {
-        <span class="comment">// The WebSocket connection failed.</span>
+        <span class="comment">// The WebSocket endpoint failed.</span>
 
         <span class="comment">// You may log the error.</span>
         cause.printStackTrace();
@@ -4142,11 +4209,11 @@ Each annotated method may take an optional <code>Session</code> argument as its 
 
         <span class="comment">// You may echo it back if it matches certain criteria.</span>
         <span class="keyword">if</span> (message.startsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>))
-            session.getRemote().sendString(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), WriteCallback.NOOP);
+            session.sendText(message.substring(<span class="string"><span class="delimiter">&quot;</span><span class="content">echo:</span><span class="delimiter">&quot;</span></span>.length()), <span class="predefined-type">Callback</span>.NOOP);
     }
 
     <span class="annotation">@OnWebSocketMessage</span> <i class="conum" data-value="5"></i><b>(5)</b>
-    <span class="directive">public</span> <span class="type">void</span> onBinaryMessage(<span class="type">byte</span><span class="type">[]</span> payload, <span class="type">int</span> offset, <span class="type">int</span> length)
+    <span class="directive">public</span> <span class="type">void</span> onBinaryMessage(<span class="predefined-type">ByteBuffer</span> payload, <span class="predefined-type">Callback</span> callback)
     {
         <span class="comment">// A WebSocket binary message is received.</span>
 
@@ -4154,10 +4221,10 @@ Each annotated method may take an optional <code>Session</code> argument as its 
         <span class="type">byte</span><span class="type">[]</span> pngBytes = <span class="keyword">new</span> <span class="type">byte</span><span class="type">[]</span>{(<span class="type">byte</span>)<span class="hex">0x89</span>, <span class="string"><span class="delimiter">'</span><span class="content">P</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">N</span><span class="delimiter">'</span></span>, <span class="string"><span class="delimiter">'</span><span class="content">G</span><span class="delimiter">'</span></span>};
         <span class="keyword">for</span> (<span class="type">int</span> i = <span class="integer">0</span>; i &lt; pngBytes.length; ++i)
         {
-            <span class="keyword">if</span> (pngBytes[i] != payload[offset + i])
+            <span class="keyword">if</span> (pngBytes[i] != payload.get(i))
                 <span class="keyword">return</span>;
         }
-        savePNGImage(payload, offset, length);
+        savePNGImage(payload);
     }
 }</code></pre>
 </div>
@@ -4170,7 +4237,7 @@ Each annotated method may take an optional <code>Session</code> argument as its 
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Use the <code>@OnWebSocketConnect</code> annotation for the <em>connect</em> event.
+<td>Use the <code>@OnWebSocketOpen</code> annotation for the <em>open</em> event.
 As this is the first event notified to the endpoint, you can configure the <code>Session</code> object.</td>
 </tr>
 <tr>
@@ -4198,21 +4265,12 @@ The method may take an optional <code>Session</code> as first parameter.</td>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>For binary messages, you may declare the annotated method with either or these two signatures:</p>
+<p>For binary messages, you may declare the annotated method with this signature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@OnWebSocketMessage</span>
-<span class="directive">public</span> <span class="type">void</span> methodName(<span class="type">byte</span><span class="type">[]</span> bytes, <span class="type">int</span> offset, <span class="type">int</span> length) { ... }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>or</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@OnWebSocketMessage</span>
-<span class="directive">public</span> <span class="type">void</span> methodName(<span class="predefined-type">ByteBuffer</span> buffer) { ... }</code></pre>
+<span class="directive">public</span> <span class="type">void</span> methodName(<span class="predefined-type">ByteBuffer</span> buffer, <span class="predefined-type">Callback</span> callback) { ... }</code></pre>
 </div>
 </div>
 </td>
@@ -4273,15 +4331,15 @@ The method may take an optional <code>Session</code> as first parameter.</td>
 <div class="sect4">
 <h5 id="pg-websocket-session-configure"><a class="anchor" href="#pg-websocket-session-configure"></a><a class="link" href="#pg-websocket-session-configure">Configuring the Session</a></h5>
 <div class="paragraph">
-<p>You may configure the WebSocket session behavior using the <code>org.eclipse.jetty.ee9.websocket.api.Session</code> APIs.
-You want to do this as soon as you have access to the <code>Session</code> object, typically from the <a href="#pg-websocket-endpoints"><em>connect</em> event</a> handler:</p>
+<p>You may configure the WebSocket session behavior using the <code>org.eclipse.jetty.websocket.api.Session</code> APIs.
+You want to do this as soon as you have access to the <code>Session</code> object, typically from the <a href="#pg-websocket-endpoints"><em>open</em> event</a> handler:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigureEndpoint</span> <span class="directive">implements</span> WebSocketListener
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">ConfigureEndpoint</span> <span class="directive">implements</span> Session.Listener
 {
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketOpen(Session session)
     {
         <span class="comment">// Configure the max length of incoming messages.</span>
         session.setMaxTextMessageSize(<span class="integer">16</span> * <span class="integer">1024</span>);
@@ -4293,87 +4351,48 @@ You want to do this as soon as you have access to the <code>Session</code> objec
 </div>
 </div>
 <div class="paragraph">
+<p>The settings that can be configured include:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">maxBinaryMessageSize</dt>
+<dd>
+<p>the maximum size in bytes of a binary message (which may be composed of multiple frames) that can be received.</p>
+</dd>
+<dt class="hdlist1">maxTextMessageSize</dt>
+<dd>
+<p>the maximum size in bytes of a text message (which may be composed of multiple frames) that can be received.</p>
+</dd>
+<dt class="hdlist1">maxFrameSize</dt>
+<dd>
+<p>the maximum payload size in bytes of any WebSocket frame that can be received.</p>
+</dd>
+<dt class="hdlist1">inputBufferSize</dt>
+<dd>
+<p>the input (read from network/transport layer) buffer size in bytes; it has no relationship with the WebSocket frame size or message size.</p>
+</dd>
+<dt class="hdlist1">outputBufferSize</dt>
+<dd>
+<p>the output (write to network/transport layer) buffer size in bytes; it has no relationship to the WebSocket frame size or message size.</p>
+</dd>
+<dt class="hdlist1">autoFragment</dt>
+<dd>
+<p>whether WebSocket frames are automatically fragmented to respect the maximum frame size.</p>
+</dd>
+<dt class="hdlist1">idleTimeout</dt>
+<dd>
+<p>the duration that a WebSocket connection may remain idle (that is, there is no network traffic, neither in read nor in write) before being closed by the implementation.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
 <p>Please refer to the <code>Session</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/api/Session.html">javadocs</a> for the complete list of configuration APIs.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="pg-websocket-session-send"><a class="anchor" href="#pg-websocket-session-send"></a><a class="link" href="#pg-websocket-session-send">Sending Data</a></h5>
 <div class="paragraph">
-<p>To send data to the remote peer, you need to obtain the <code>RemoteEndpoint</code> object from the <code>Session</code>, and then use its API to send data.</p>
-</div>
-<div class="paragraph">
-<p><code>RemoteEndpoint</code> offers two styles of APIs to send data:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Blocking APIs, where the call returns when the data has been sent, or throws an <code>IOException</code> if the data cannot be sent.</p>
-</li>
-<li>
-<p>Non-blocking APIs, where a callback object is notified when the data has been sent, or when there was a failure sending the data.</p>
-</li>
-</ul>
-</div>
-<div class="sect5">
-<h6 id="pg-websocket-session-send-blocking"><a class="anchor" href="#pg-websocket-session-send-blocking"></a><a class="link" href="#pg-websocket-session-send-blocking">Blocking APIs</a></h6>
-<div class="paragraph">
-<p><code>RemoteEndpoint</code> blocking APIs throw <code>IOException</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">BlockingSendEndpoint</span>
-{
-    <span class="annotation">@OnWebSocketMessage</span>
-    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
-    {
-        <span class="comment">// Obtain the RemoteEndpoint APIs.</span>
-        RemoteEndpoint remote = session.getRemote();
-
-        <span class="keyword">try</span>
-        {
-            <span class="comment">// Send textual data to the remote peer.</span>
-            remote.sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>);
-
-            <span class="comment">// Send binary data to the remote peer.</span>
-            <span class="predefined-type">ByteBuffer</span> bytes = readImageFromFile();
-            remote.sendBytes(bytes);
-
-            <span class="comment">// Send a PING frame to the remote peer.</span>
-            remote.sendPing(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">8</span>).putLong(NanoTime.now()).flip());
-        }
-        <span class="keyword">catch</span> (<span class="exception">IOException</span> x)
-        {
-            <span class="comment">// No need to rethrow or close the session.</span>
-            <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send data</span><span class="delimiter">&quot;</span></span>, x);
-        }
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Blocking APIs are simpler to use since they can be invoked one after the other sequentially.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-caution" title="Caution"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Sending large messages to the remote peer may cause the sending thread to block, possibly exhausting the thread pool.
-Consider using non-blocking APIs for large messages.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="pg-websocket-session-send-non-blocking"><a class="anchor" href="#pg-websocket-session-send-non-blocking"></a><a class="link" href="#pg-websocket-session-send-non-blocking">Non-Blocking APIs</a></h6>
-<div class="paragraph">
-<p><code>RemoteEndpoint</code> non-blocking APIs have an additional callback parameter:</p>
+<p>To send data to the remote peer, you can use the non-blocking APIs offered by <code>Session</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4383,27 +4402,24 @@ Consider using non-blocking APIs for large messages.</p>
     <span class="annotation">@OnWebSocketMessage</span>
     <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
     {
-        <span class="comment">// Obtain the RemoteEndpoint APIs.</span>
-        RemoteEndpoint remote = session.getRemote();
-
         <span class="comment">// Send textual data to the remote peer.</span>
-        remote.sendString(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> WriteCallback() <i class="conum" data-value="1"></i><b>(1)</b>
+        session.sendText(<span class="string"><span class="delimiter">&quot;</span><span class="content">data</span><span class="delimiter">&quot;</span></span>, <span class="keyword">new</span> <span class="predefined-type">Callback</span>() <i class="conum" data-value="1"></i><b>(1)</b>
         {
             <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+            <span class="directive">public</span> <span class="type">void</span> succeed()
             {
                 <span class="comment">// Send binary data to the remote peer.</span>
                 <span class="predefined-type">ByteBuffer</span> bytes = readImageFromFile();
-                remote.sendBytes(bytes, <span class="keyword">new</span> WriteCallback() <i class="conum" data-value="2"></i><b>(2)</b>
+                session.sendBinary(bytes, <span class="keyword">new</span> <span class="predefined-type">Callback</span>() <i class="conum" data-value="2"></i><b>(2)</b>
                 {
                     <span class="annotation">@Override</span>
-                    <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+                    <span class="directive">public</span> <span class="type">void</span> succeed()
                     {
                         <span class="comment">// Both sends succeeded.</span>
                     }
 
                     <span class="annotation">@Override</span>
-                    <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+                    <span class="directive">public</span> <span class="type">void</span> fail(<span class="predefined-type">Throwable</span> x)
                     {
                         <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send binary data</span><span class="delimiter">&quot;</span></span>, x);
                     }
@@ -4411,14 +4427,14 @@ Consider using non-blocking APIs for large messages.</p>
             }
 
             <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+            <span class="directive">public</span> <span class="type">void</span> fail(<span class="predefined-type">Throwable</span> x)
             {
                 <span class="comment">// No need to rethrow or close the session.</span>
                 <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">websocket</span><span class="delimiter">&quot;</span></span>).log(<span class="predefined-type">System</span>.Logger.Level.WARNING, <span class="string"><span class="delimiter">&quot;</span><span class="content">could not send textual data</span><span class="delimiter">&quot;</span></span>, x);
             }
         });
 
-        <span class="comment">// remote.sendString(&quot;wrong&quot;, WriteCallback.NOOP); // May throw WritePendingException! </span><i class="conum" data-value="3"></i><b>(3)</b>
+        <span class="comment">// remote.sendString(&quot;wrong&quot;, Callback.NOOP); // May throw WritePendingException! </span><i class="conum" data-value="3"></i><b>(3)</b>
     }
 }</code></pre>
 </div>
@@ -4427,7 +4443,7 @@ Consider using non-blocking APIs for large messages.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Non-blocking APIs require a <code>WriteCallback</code> parameter.</td>
+<td>Non-blocking APIs require a <code>Callback</code> parameter.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -4489,58 +4505,19 @@ At this point you have an out-of-order message delivery that could be unexpected
 <div class="paragraph">
 <p>While non-blocking APIs are more difficult to use, they don&#8217;t block the sender thread and therefore use less resources, which in turn typically allows for greater scalability under load: with respect to blocking APIs, non-blocking APIs need less resources to cope with the same load.</p>
 </div>
-</div>
 <div class="sect5">
 <h6 id="pg-websocket-session-send-stream"><a class="anchor" href="#pg-websocket-session-send-stream"></a><a class="link" href="#pg-websocket-session-send-stream">Streaming Send APIs</a></h6>
 <div class="paragraph">
 <p>If you need to send large WebSocket messages, you may reduce the memory usage by streaming the message content.</p>
 </div>
 <div class="paragraph">
-<p>Both blocking and non-blocking APIs offer <code>sendPartial*(&#8230;&#8203;)</code> methods that allow you to send a chunk of the whole message at a time, therefore reducing the memory usage since it is not necessary to have the whole message <code>String</code> or <code>byte[]</code> in memory to send it.</p>
+<p>The APIs offer <code>sendPartial*(...)</code> methods that allow you to send a chunk of the whole message at a time, therefore reducing the memory usage since it is not necessary to have the whole message <code>String</code> or <code>ByteBuffer</code> in memory to send it.</p>
 </div>
 <div class="paragraph">
-<p>Streaming sends using blocking APIs is quite simple:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="annotation">@WebSocket</span>
-<span class="directive">public</span> <span class="type">class</span> <span class="class">StreamSendBlockingEndpoint</span>
-{
-    <span class="annotation">@OnWebSocketMessage</span>
-    <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
-    {
-        <span class="keyword">try</span>
-        {
-            RemoteEndpoint remote = session.getRemote();
-            <span class="keyword">while</span> (<span class="predefined-constant">true</span>)
-            {
-                <span class="predefined-type">ByteBuffer</span> chunk = readChunkToSend();
-                <span class="keyword">if</span> (chunk == <span class="predefined-constant">null</span>)
-                {
-                    <span class="comment">// No more bytes, finish the WebSocket message.</span>
-                    remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">true</span>);
-                    <span class="keyword">break</span>;
-                }
-                <span class="keyword">else</span>
-                {
-                    <span class="comment">// Send the chunk.</span>
-                    remote.sendPartialBytes(chunk, <span class="predefined-constant">false</span>);
-                }
-            }
-        }
-        <span class="keyword">catch</span> (<span class="exception">IOException</span> x)
-        {
-            x.printStackTrace();
-        }
-    }
-}</code></pre>
-</div>
+<p>The APIs for streaming the message content are non-blocking and therefore slightly more complicated to use, as you should wait (without blocking!) for the callbacks to complete.</p>
 </div>
 <div class="paragraph">
-<p>Streaming sends using non-blocking APIs is more complicated, as you should wait (without blocking!) for the callbacks to complete.</p>
-</div>
-<div class="paragraph">
-<p>Fortunately, Jetty provides you with the <code>IteratingCallback</code> utility class (described in more details <a href="#pg-arch-io-echo">in this section</a>) which greatly simplify the use of non-blocking APIs:</p>
+<p>Fortunately, Jetty provides the <code>IteratingCallback</code> utility class (described in more details <a href="#pg-arch-io-echo">in this section</a>) which greatly simplify the use of non-blocking APIs:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4550,18 +4527,17 @@ At this point you have an out-of-order message delivery that could be unexpected
     <span class="annotation">@OnWebSocketMessage</span>
     <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
     {
-        RemoteEndpoint remote = session.getRemote();
-        <span class="keyword">new</span> Sender(remote).iterate();
+        <span class="keyword">new</span> Sender(session).iterate();
     }
 
-    <span class="directive">private</span> <span class="type">class</span> <span class="class">Sender</span> <span class="directive">extends</span> IteratingCallback <span class="directive">implements</span> WriteCallback <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="directive">private</span> <span class="type">class</span> <span class="class">Sender</span> <span class="directive">extends</span> IteratingCallback <span class="directive">implements</span> <span class="predefined-type">Callback</span> <i class="conum" data-value="1"></i><b>(1)</b>
     {
-        <span class="directive">private</span> <span class="directive">final</span> RemoteEndpoint remote;
+        <span class="directive">private</span> <span class="directive">final</span> Session session;
         <span class="directive">private</span> <span class="type">boolean</span> finished;
 
-        <span class="directive">private</span> Sender(RemoteEndpoint remote)
+        <span class="directive">private</span> Sender(Session session)
         {
-            <span class="local-variable">this</span>.remote = remote;
+            <span class="local-variable">this</span>.session = session;
         }
 
         <span class="annotation">@Override</span>
@@ -4574,27 +4550,27 @@ At this point you have an out-of-order message delivery that could be unexpected
             <span class="keyword">if</span> (chunk == <span class="predefined-constant">null</span>)
             {
                 <span class="comment">// No more bytes, finish the WebSocket message.</span>
-                remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">true</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+                session.sendPartialBinary(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">true</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
                 finished = <span class="predefined-constant">true</span>;
                 <span class="keyword">return</span> <span class="predefined-type">Action</span>.SCHEDULED;
             }
             <span class="keyword">else</span>
             {
                 <span class="comment">// Send the chunk.</span>
-                remote.sendPartialBytes(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">false</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
+                session.sendPartialBinary(<span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">0</span>), <span class="predefined-constant">false</span>, <span class="local-variable">this</span>); <i class="conum" data-value="3"></i><b>(3)</b>
                 <span class="keyword">return</span> <span class="predefined-type">Action</span>.SCHEDULED;
             }
         }
 
         <span class="annotation">@Override</span>
-        <span class="directive">public</span> <span class="type">void</span> writeSuccess()
+        <span class="directive">public</span> <span class="type">void</span> succeed()
         {
             <span class="comment">// When the send succeeds, succeed this IteratingCallback.</span>
             succeeded();
         }
 
         <span class="annotation">@Override</span>
-        <span class="directive">public</span> <span class="type">void</span> writeFailed(<span class="predefined-type">Throwable</span> x)
+        <span class="directive">public</span> <span class="type">void</span> fail(<span class="predefined-type">Throwable</span> x)
         {
             <span class="comment">// When the send fails, fail this IteratingCallback.</span>
             failed(x);
@@ -4613,15 +4589,15 @@ At this point you have an out-of-order message delivery that could be unexpected
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Implementing <code>WriteCallback</code> allows to pass <code>this</code> to <code>sendPartialBytes(&#8230;&#8203;)</code>.</td>
+<td>Implementing <code>Callback</code> allows to pass <code>this</code> to <code>sendPartialBinary(&#8230;&#8203;)</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>process()</code> method is called iteratively when each <code>sendPartialBytes(&#8230;&#8203;)</code> is completed.</td>
+<td>The <code>process()</code> method is called iteratively when each <code>sendPartialBinary(&#8230;&#8203;)</code> is completed.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Send the message chunks.</td>
+<td>Sends the message chunks.</td>
 </tr>
 </table>
 </div>
@@ -4630,7 +4606,7 @@ At this point you have an out-of-order message delivery that could be unexpected
 <div class="sect4">
 <h5 id="pg-websocket-session-ping"><a class="anchor" href="#pg-websocket-session-ping"></a><a class="link" href="#pg-websocket-session-ping">Sending Ping/Pong</a></h5>
 <div class="paragraph">
-<p>The WebSocket protocol defines two special frame, named <code>Ping</code> and <code>Pong</code> that may be interesting to applications for these use cases:</p>
+<p>The WebSocket protocol defines two special frame, named <code>PING</code> and <code>PONG</code> that may be interesting to applications for these use cases:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4643,7 +4619,7 @@ At this point you have an out-of-order message delivery that could be unexpected
 </ul>
 </div>
 <div class="paragraph">
-<p>To handle <code>Ping</code>/<code>Pong</code> events, you may implement interface <code>org.eclipse.jetty.ee9.websocket.api.WebSocketPingPongListener</code>.</p>
+<p>To handle <code>PING</code>/<code>PONG</code> events, you may implement methods <code>Session.Listener.onWebSocketPing(ByteBuffer)</code> and/or <code>Session.Listener.onWebSocketPong(ByteBuffer)</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -4653,25 +4629,25 @@ At this point you have an out-of-order message delivery that could be unexpected
 </td>
 <td class="content">
 <div class="paragraph">
-<p><code>Ping</code>/<code>Pong</code> events are not supported when using annotations.</p>
+<p><code>PING</code>/<code>PONG</code> events are also supported when using annotations via the <code>OnWebSocketFrame</code> annotation.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><code>Ping</code> frames may contain opaque application bytes, and the WebSocket implementation replies to them with a <code>Pong</code> frame containing the same bytes:</p>
+<p><code>PING</code> frames may contain opaque application bytes, and the WebSocket implementation replies to them with a <code>PONG</code> frame containing the same bytes:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RoundTripListenerEndpoint</span> <span class="directive">implements</span> WebSocketPingPongListener <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">class</span> <span class="class">RoundTripListenerEndpoint</span> <span class="directive">implements</span> Session.Listener <i class="conum" data-value="1"></i><b>(1)</b>
 {
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> onWebSocketConnect(Session session)
+    <span class="directive">public</span> <span class="type">void</span> onWebSocketOpen(Session session)
     {
         <span class="comment">// Send to the remote peer the local nanoTime.</span>
         <span class="predefined-type">ByteBuffer</span> buffer = <span class="predefined-type">ByteBuffer</span>.allocate(<span class="integer">8</span>).putLong(NanoTime.now()).flip();
-        session.getRemote().sendPing(buffer, WriteCallback.NOOP);
+        session.sendPing(buffer, <span class="predefined-type">Callback</span>.NOOP);
     }
 
     <span class="annotation">@Override</span>
@@ -4690,7 +4666,7 @@ At this point you have an out-of-order message delivery that could be unexpected
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The WebSocket endpoint class must implement <code>WebSocketPingPongListener</code></td>
+<td>The WebSocket endpoint class must implement <code>Session.Listener</code></td>
 </tr>
 </table>
 </div>
@@ -4709,7 +4685,7 @@ At this point you have an out-of-order message delivery that could be unexpected
     <span class="directive">public</span> <span class="type">void</span> onText(Session session, <span class="predefined-type">String</span> text)
     {
         <span class="keyword">if</span> (<span class="string"><span class="delimiter">&quot;</span><span class="content">close</span><span class="delimiter">&quot;</span></span>.equalsIgnoreCase(text))
-            session.close(StatusCode.NORMAL, <span class="string"><span class="delimiter">&quot;</span><span class="content">bye</span><span class="delimiter">&quot;</span></span>);
+            session.close(StatusCode.NORMAL, <span class="string"><span class="delimiter">&quot;</span><span class="content">bye</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
     }
 }</code></pre>
 </div>
@@ -4975,7 +4951,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4984,7 +4960,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="453" height="308">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
 </div>
 </div>
 <div class="paragraph">
@@ -5054,7 +5030,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
 </div>
 </div>
 <div class="paragraph">
@@ -5150,47 +5126,7 @@ Currently, the following events are available:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">        <span class="comment">// TODO: HttpChannelState.Listener does not exist anymore.</span>
-<span class="comment">/*
-        class TimingHttpChannelListener implements HttpChannelState.Listener
-        {
-            private final ConcurrentMap&lt;Request, Long&gt; times = new ConcurrentHashMap&lt;&gt;();
-
-            @Override
-            public void onRequestBegin(Request request)
-            {
-                times.put(request, NanoTime.now());
-            }
-
-            @Override
-            public void onComplete(Request request)
-            {
-                long begin = times.remove(request);
-                long elapsed = NanoTime.since(begin);
-                System.getLogger(&quot;timing&quot;).log(INFO, &quot;Request {0} took {1} ns&quot;, request, elapsed);
-            }
-        }
-
-        Server server = new Server();
-
-        Connector connector = new ServerConnector(server);
-        server.addConnector(connector);
-
-        // Add the HttpChannel.Listener as bean to the connector.
-        connector.addBean(new TimingHttpChannelListener());
-
-        // Set a simple Handler to handle requests/responses.
-        server.setHandler(new AbstractHandler()
-        {
-            @Override
-            public void handle(String target, Request jettyRequest, HttpServletRequest request, HttpServletResponse response)
-            {
-                jettyRequest.setHandled(true);
-            }
-        });
-
-        server.start();
-*/</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"></code></pre>
 </div>
 </div>
 </div>
@@ -5624,7 +5560,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
 </div>
 </div>
 <div class="paragraph">
@@ -5772,14 +5708,13 @@ This allows <code>Handler</code>s to be organised as a tree comprised of:</p>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
-GzipHandler gzipHandler = <span class="keyword">new</span> GzipHandler();
-server.setHandler(gzipHandler);
-
 <span class="predefined-type">Handler</span>.Sequence sequence = <span class="keyword">new</span> <span class="predefined-type">Handler</span>.Sequence();
-gzipHandler.setHandler(sequence);
-
 sequence.addHandler(<span class="keyword">new</span> App1Handler());
-sequence.addHandler(<span class="keyword">new</span> App2Handler());</code></pre>
+sequence.addHandler(<span class="keyword">new</span> App2Handler());
+
+GzipHandler gzipHandler = <span class="keyword">new</span> GzipHandler(sequence);
+
+server.setHandler(gzipHandler);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5847,7 +5782,7 @@ The Jetty Server Libraries provides a number of out-of-the-box <em>Handler</em>s
 <h6 id="pg-server-http-handler-use-util-context"><a class="anchor" href="#pg-server-http-handler-use-util-context"></a><a class="link" href="#pg-server-http-handler-use-util-context">ContextHandler</a></h6>
 <div class="paragraph">
 <p><code>ContextHandler</code> is a <code>Handler</code> that represents a <em>context</em> for a web application.
-It is a <code>HandlerWrapper</code> that performs some action before and after delegating to the nested <code>Handler</code>.</p>
+It is a <code>Handler.Wrapper</code> that performs some action before and after delegating to the nested <code>Handler</code>.</p>
 </div>
 <div class="paragraph">
 <p>The simplest use of <code>ContextHandler</code> is the following:</p>
@@ -5869,9 +5804,7 @@ Connector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
 <span class="comment">// Create a ContextHandler with contextPath.</span>
-ContextHandler context = <span class="keyword">new</span> ContextHandler();
-context.setContextPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>);
-context.setHandler(<span class="keyword">new</span> ShopHandler());
+ContextHandler context = <span class="keyword">new</span> ContextHandler(<span class="keyword">new</span> ShopHandler(), <span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// Link the context to the server.</span>
 server.setHandler(context);
@@ -5935,20 +5868,17 @@ server.addConnector(connector);
 
 <span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
 ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
+
+<span class="comment">// Create the context for the shop web application and add it to ContextHandlerCollection.</span>
+contextCollection.addHandler(<span class="keyword">new</span> ContextHandler(<span class="keyword">new</span> ShopHandler(), <span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>));
+
 <span class="comment">// Link the ContextHandlerCollection to the Server.</span>
 server.setHandler(contextCollection);
-
-<span class="comment">// Create the context for the shop web application.</span>
-ContextHandler shopContext = <span class="keyword">new</span> ContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>);
-shopContext.setHandler(<span class="keyword">new</span> ShopHandler());
-<span class="comment">// Add it to ContextHandlerCollection.</span>
-contextCollection.addHandler(shopContext);
 
 server.start();
 
 <span class="comment">// Create the context for the API web application.</span>
-ContextHandler apiContext = <span class="keyword">new</span> ContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>);
-apiContext.setHandler(<span class="keyword">new</span> RESTHandler());
+ContextHandler apiContext = <span class="keyword">new</span> ContextHandler(<span class="keyword">new</span> RESTHandler(), <span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>);
 <span class="comment">// Web applications can be deployed after the Server is started.</span>
 contextCollection.deployHandler(apiContext, <span class="predefined-type">Callback</span>.NOOP);</code></pre>
 </div>
@@ -6049,7 +5979,7 @@ We typically recommend <a href="https://haproxy.org">HAProxy</a> as load balance
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">ResourceHandler handler = <span class="keyword">new</span> ResourceHandler();
 
-<span class="comment">// For multiple directories, use ResourceCollection.</span>
+<span class="comment">// For multiple directories, use ResourceFactory.combine().</span>
 Resource resource = ResourceFactory.combine(
     ResourceFactory.of(handler).newResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/static/resources/</span><span class="delimiter">&quot;</span></span>),
     ResourceFactory.of(handler).newResource(<span class="string"><span class="delimiter">&quot;</span><span class="content">/another/path/to/static/resources/</span><span class="delimiter">&quot;</span></span>)
@@ -6068,7 +5998,7 @@ See also <a href="#pg-server-http-handler-use-util-default-handler">how to use</
 <p><code>GzipHandler</code> provides supports for automatic decompression of compressed request content and automatic compression of response content.</p>
 </div>
 <div class="paragraph">
-<p><code>GzipHandler</code> is a <code>HandlerWrapper</code> that inspects the request and, if the request matches the <code>GzipHandler</code> configuration, just installs the required components to eventually perform decompression of the request content or compression of the response content.
+<p><code>GzipHandler</code> is a <code>Handler.Wrapper</code> that inspects the request and, if the request matches the <code>GzipHandler</code> configuration, just installs the required components to eventually perform decompression of the request content or compression of the response content.
 The decompression/compression is not performed until the web application reads request content or writes response content.</p>
 </div>
 <div class="paragraph">
@@ -6080,8 +6010,10 @@ The decompression/compression is not performed until the web application reads r
 Connector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
-<span class="comment">// Create and configure GzipHandler.</span>
-GzipHandler gzipHandler = <span class="keyword">new</span> GzipHandler();
+<span class="comment">// Create a ContextHandlerCollection to manage contexts.</span>
+ContextHandlerCollection contexts = <span class="keyword">new</span> ContextHandlerCollection();
+<span class="comment">// Create and configure GzipHandler linked to the ContextHandlerCollection.</span>
+GzipHandler gzipHandler = <span class="keyword">new</span> GzipHandler(contexts);
 <span class="comment">// Only compress response content larger than this.</span>
 gzipHandler.setMinGzipSize(<span class="integer">1024</span>);
 <span class="comment">// Do not compress these URI paths.</span>
@@ -6090,10 +6022,6 @@ gzipHandler.setExcludedPaths(<span class="string"><span class="delimiter">&quot;
 gzipHandler.addIncludedMethods(<span class="string"><span class="delimiter">&quot;</span><span class="content">POST</span><span class="delimiter">&quot;</span></span>);
 <span class="comment">// Do not compress these mime types.</span>
 gzipHandler.addExcludedMimeTypes(<span class="string"><span class="delimiter">&quot;</span><span class="content">font/ttf</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// Link a ContextHandlerCollection to manage contexts.</span>
-ContextHandlerCollection contexts = <span class="keyword">new</span> ContextHandlerCollection();
-gzipHandler.setHandler(contexts);
 
 <span class="comment">// Link the GzipHandler to the Server.</span>
 server.setHandler(gzipHandler);
@@ -6121,26 +6049,21 @@ server.start();</code></pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
 ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
-<span class="comment">// Link the ContextHandlerCollection to the Server.</span>
-server.setHandler(contextCollection);
 
-<span class="comment">// Create the context for the shop web application.</span>
-ContextHandler shopContext = <span class="keyword">new</span> ContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>);
-shopContext.setHandler(<span class="keyword">new</span> ShopHandler());
-
-<span class="comment">// You want to gzip the shop web application only.</span>
-GzipHandler shopGzipHandler = <span class="keyword">new</span> GzipHandler();
-shopGzipHandler.setHandler(shopContext);
+<span class="comment">// Create the context for the shop web application wrapped with GzipHandler so only the shop will do gzip.</span>
+GzipHandler shopGzipHandler = <span class="keyword">new</span> GzipHandler(<span class="keyword">new</span> ContextHandler(<span class="keyword">new</span> ShopHandler(), <span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>));
 
 <span class="comment">// Add it to ContextHandlerCollection.</span>
 contextCollection.addHandler(shopGzipHandler);
 
 <span class="comment">// Create the context for the API web application.</span>
-ContextHandler apiContext = <span class="keyword">new</span> ContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>);
-apiContext.setHandler(<span class="keyword">new</span> RESTHandler());
+ContextHandler apiContext = <span class="keyword">new</span> ContextHandler(<span class="keyword">new</span> RESTHandler(), <span class="string"><span class="delimiter">&quot;</span><span class="content">/api</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// Add it to ContextHandlerCollection.</span>
-contextCollection.addHandler(apiContext);</code></pre>
+contextCollection.addHandler(apiContext);
+
+<span class="comment">// Link the ContextHandlerCollection to the Server.</span>
+server.setHandler(contextCollection);</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6172,7 +6095,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6194,7 +6117,10 @@ contextCollection.addHandler(apiContext);</code></pre>
 ServerConnector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
-RewriteHandler rewriteHandler = <span class="keyword">new</span> RewriteHandler();
+<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
+ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
+<span class="comment">// Link the ContextHandlerCollection to the RewriteHandler.</span>
+RewriteHandler rewriteHandler = <span class="keyword">new</span> RewriteHandler(contextCollection);
 <span class="comment">// Compacts URI paths with double slashes, e.g. /ctx//path/to//resource.</span>
 rewriteHandler.addRule(<span class="keyword">new</span> CompactPathRule());
 <span class="comment">// Rewrites */products/* to */p/*.</span>
@@ -6206,11 +6132,6 @@ rewriteHandler.addRule(redirectRule);
 
 <span class="comment">// Link the RewriteHandler to the Server.</span>
 server.setHandler(rewriteHandler);
-
-<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
-ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
-<span class="comment">// Link the ContextHandlerCollection to the RewriteHandler.</span>
-rewriteHandler.setHandler(contextCollection);
 
 server.start();</code></pre>
 </div>
@@ -6265,15 +6186,14 @@ server.start();</code></pre>
 ServerConnector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
-StatisticsHandler statsHandler = <span class="keyword">new</span> StatisticsHandler();
+<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
+ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
+
+<span class="comment">// Link the ContextHandlerCollection to the StatisticsHandler.</span>
+StatisticsHandler statsHandler = <span class="keyword">new</span> StatisticsHandler(contextCollection);
 
 <span class="comment">// Link the StatisticsHandler to the Server.</span>
 server.setHandler(statsHandler);
-
-<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
-ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
-<span class="comment">// Link the ContextHandlerCollection to the StatisticsHandler.</span>
-statsHandler.setHandler(contextCollection);
 
 server.start();</code></pre>
 </div>
@@ -6301,16 +6221,14 @@ For instance, <code>StatisticsHandler.MinimumDataRateHandler</code> can be used 
 ServerConnector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
-<span class="comment">// Create the MinimumDataRateHandler with a minimum read rate of 1KB per second and no minimum write rate.</span>
-StatisticsHandler.MinimumDataRateHandler dataRateHandler = <span class="keyword">new</span> StatisticsHandler.MinimumDataRateHandler(<span class="integer">1024L</span>, <span class="integer">0L</span>);
+<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
+ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
+
+<span class="comment">// Create the MinimumDataRateHandler linked the ContextHandlerCollection with a minimum read rate of 1KB per second and no minimum write rate.</span>
+StatisticsHandler.MinimumDataRateHandler dataRateHandler = <span class="keyword">new</span> StatisticsHandler.MinimumDataRateHandler(contextCollection, <span class="integer">1024L</span>, <span class="integer">0L</span>);
 
 <span class="comment">// Link the MinimumDataRateHandler to the Server.</span>
 server.setHandler(dataRateHandler);
-
-<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
-ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
-<span class="comment">// Link the ContextHandlerCollection to the MinimumDataRateHandler.</span>
-dataRateHandler.setHandler(contextCollection);
 
 server.start();</code></pre>
 </div>
@@ -6365,15 +6283,14 @@ ServerConnector secureConnector = <span class="keyword">new</span> ServerConnect
 secureConnector.setPort(<span class="integer">8443</span>);
 server.addConnector(secureConnector);
 
-SecuredRedirectHandler securedHandler = <span class="keyword">new</span> SecuredRedirectHandler();
+<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
+ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
+
+<span class="comment">// Link the ContextHandlerCollection to the SecuredRedirectHandler.</span>
+SecuredRedirectHandler securedHandler = <span class="keyword">new</span> SecuredRedirectHandler(contextCollection);
 
 <span class="comment">// Link the SecuredRedirectHandler to the Server.</span>
 server.setHandler(securedHandler);
-
-<span class="comment">// Create a ContextHandlerCollection to hold contexts.</span>
-ContextHandlerCollection contextCollection = <span class="keyword">new</span> ContextHandlerCollection();
-<span class="comment">// Link the ContextHandlerCollection to the StatisticsHandler.</span>
-securedHandler.setHandler(contextCollection);
 
 server.start();</code></pre>
 </div>
@@ -6398,7 +6315,7 @@ server.start();</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p><code>DefaultHandler</code> is best used as the last <code>Handler</code> of a <code>HandlerList</code>, for example:</p>
+<p><code>DefaultHandler</code> is best used directly set on the server, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6431,7 +6348,7 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the example above, <code>ContextHandlerCollection</code> will try to match a request to one of the contexts; if the match fails, <code>HandlerList</code> will call the next <code>Handler</code> which is <code>DefaultHandler</code> that will return a HTTP <code>404</code> with an HTML page showing the existing contexts deployed on the <code>Server</code>.</p>
+<p>In the example above, <code>ContextHandlerCollection</code> will try to match a request to one of the contexts; if the match fails, <code>Server</code> will call the <code>DefaultHandler</code> that will return a HTTP <code>404</code> with an HTML page showing the existing contexts deployed on the <code>Server</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6466,7 +6383,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6693,6 +6610,11 @@ server.start();</code></pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="type">class</span> <span class="class">FilterHandler</span> <span class="directive">extends</span> <span class="predefined-type">Handler</span>.Wrapper
 {
+    <span class="directive">public</span> FilterHandler(<span class="predefined-type">Handler</span> handler)
+    {
+        <span class="local-variable">super</span>(handler);
+    }
+
     <span class="annotation">@Override</span>
     <span class="directive">public</span> <span class="type">boolean</span> handle(Request request, Response response, <span class="predefined-type">Callback</span> callback) <span class="directive">throws</span> <span class="exception">Exception</span>
     {
@@ -6725,9 +6647,7 @@ Connector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
 <span class="comment">// Link the Handlers.</span>
-FilterHandler filter = <span class="keyword">new</span> FilterHandler();
-filter.setHandler(<span class="keyword">new</span> HelloWorldHandler());
-server.setHandler(filter);
+server.setHandler(<span class="keyword">new</span> FilterHandler(<span class="keyword">new</span> HelloWorldHandler()));
 
 server.start();</code></pre>
 </div>
@@ -6853,7 +6773,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7237,7 +7157,7 @@ Stream.Listener listener = <span class="keyword">new</span> Stream.Listener()
         <span class="comment">// Prepare the response HEADERS frame.</span>
 
         <span class="comment">// The response HTTP status and HTTP headers.</span>
-        MetaData.Response response = <span class="keyword">new</span> MetaData.Response(HttpVersion.HTTP_2, HttpStatus.OK_200, HttpFields.EMPTY);
+        MetaData.Response response = <span class="keyword">new</span> MetaData.Response(HttpStatus.OK_200, <span class="predefined-constant">null</span>, HttpVersion.HTTP_2, HttpFields.EMPTY);
 
         <span class="keyword">if</span> (HttpMethod.GET.is(request.getMethod()))
         {
@@ -7330,17 +7250,17 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
     <span class="directive">public</span> Stream.Listener onNewStream(Stream stream, HeadersFrame frame)
     {
         MetaData.Request request = (MetaData.Request)frame.getMetaData();
-        <span class="keyword">if</span> (pushEnabled &amp;&amp; request.getURIString().endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">/index.html</span><span class="delimiter">&quot;</span></span>))
+        <span class="keyword">if</span> (pushEnabled &amp;&amp; request.getHttpURI().toString().endsWith(<span class="string"><span class="delimiter">&quot;</span><span class="content">/index.html</span><span class="delimiter">&quot;</span></span>))
         {
             <span class="comment">// Push the favicon.</span>
-            HttpURI pushedURI = HttpURI.build(request.getURI()).path(<span class="string"><span class="delimiter">&quot;</span><span class="content">/favicon.ico</span><span class="delimiter">&quot;</span></span>);
+            HttpURI pushedURI = HttpURI.build(request.getHttpURI()).path(<span class="string"><span class="delimiter">&quot;</span><span class="content">/favicon.ico</span><span class="delimiter">&quot;</span></span>);
             MetaData.Request pushedRequest = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, pushedURI, HttpVersion.HTTP_2, HttpFields.EMPTY);
             PushPromiseFrame promiseFrame = <span class="keyword">new</span> PushPromiseFrame(stream.getId(), <span class="integer">0</span>, pushedRequest);
             stream.push(promiseFrame, <span class="predefined-constant">null</span>)
                 .thenCompose(pushedStream -&gt;
                 {
                     <span class="comment">// Send the favicon &quot;response&quot;.</span>
-                    MetaData.Response pushedResponse = <span class="keyword">new</span> MetaData.Response(HttpVersion.HTTP_2, HttpStatus.OK_200, HttpFields.EMPTY);
+                    MetaData.Response pushedResponse = <span class="keyword">new</span> MetaData.Response(HttpStatus.OK_200, <span class="predefined-constant">null</span>, HttpVersion.HTTP_2, HttpFields.EMPTY);
                     <span class="keyword">return</span> pushedStream.headers(<span class="keyword">new</span> HeadersFrame(pushedStream.getId(), pushedResponse, <span class="predefined-constant">null</span>, <span class="predefined-constant">false</span>))
                         .thenCompose(pushed -&gt; pushed.data(<span class="keyword">new</span> DataFrame(pushed.getId(), faviconBuffer, <span class="predefined-constant">true</span>)));
                 });
@@ -7377,7 +7297,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7615,7 +7535,7 @@ This generates the <em>preface</em> event, where applications can customize the 
         <span class="comment">// Prepare the response HEADERS frame.</span>
 
         <span class="comment">// The response HTTP status and HTTP headers.</span>
-        MetaData.Response response = <span class="keyword">new</span> MetaData.Response(HttpVersion.HTTP_3, HttpStatus.OK_200, HttpFields.EMPTY);
+        MetaData.Response response = <span class="keyword">new</span> MetaData.Response(HttpStatus.OK_200, <span class="predefined-constant">null</span>, HttpVersion.HTTP_3, HttpFields.EMPTY);
 
         <span class="keyword">if</span> (HttpMethod.GET.is(request.getMethod()))
         {
@@ -7730,7 +7650,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="302" height="243">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
 </div>
 </div>
 </div>
@@ -8375,7 +8295,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="302" height="243">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
 </div>
 </div>
 <div class="paragraph">
@@ -8621,7 +8541,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8859,7 +8779,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
 </div>
 </div>
 <div class="paragraph">
@@ -9011,7 +8931,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -9079,23 +8999,17 @@ server.addBean(cachingSessionDataStoreFactory);</code></pre>
 <p>Using the standard <code>jakarta.websocket</code> APIs allows your applications to depend only on standard APIs, and your applications may be deployed in any compliant WebSocket Container that supports Jakarta WebSocket 2.0.</p>
 </div>
 <div class="paragraph">
-<p>The standard APIs provide few features that are not present in the Jetty WebSocket APIs:</p>
+<p>The standard APIs provide these features that are not present in the Jetty WebSocket APIs:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>Encoders and Decoders for automatic conversion of text or binary messages to objects.</p>
 </li>
-<li>
-<p><code>Reader</code> and <code>InputStream</code> for simple, blocking, message streaming.</p>
-</li>
-<li>
-<p>Simple URI template matching.</p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>On the other hand, the Jetty WebSocket APIs are more efficient and offer greater and more fine-grained control, and provide features that are not present in the standard APIs:</p>
+<p>On the other hand, the Jetty WebSocket APIs are more efficient and offer greater and more fine-grained control, and provide these features that are not present in the standard APIs:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -9110,9 +9024,6 @@ server.addBean(cachingSessionDataStoreFactory);</code></pre>
 </li>
 <li>
 <p>Advanced URI matching with Servlet WebSocket upgrade.</p>
-</li>
-<li>
-<p>Control of the idle timeout.</p>
 </li>
 <li>
 <p>Configuration of the network buffer capacity.</p>
@@ -9169,7 +9080,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9231,7 +9142,7 @@ server.start();</code></pre>
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Ensure that JavaxWebSocketServletContainerInitializer is initialized,</span>
@@ -9249,7 +9160,7 @@ server.start();</code></pre>
 <div class="sect4">
 <h5 id="pg-server-websocket-standard-endpoints"><a class="anchor" href="#pg-server-websocket-standard-endpoints"></a><a class="link" href="#pg-server-websocket-standard-endpoints">Configuring Endpoints</a></h5>
 <div class="paragraph">
-<p>Once you have <a href="#pg-server-websocket-standard-container">setup</a> the <code>ServerContainer</code>, you can configure your <a href="#pg-websocket-endpoints">WebSocket endpoints</a>.</p>
+<p>Once you have <a href="#pg-server-websocket-standard-container">setup</a> the <code>ServerContainer</code>, you can configure your WebSocket endpoints.</p>
 </div>
 <div class="paragraph">
 <p>The WebSocket endpoints classes may be either annotated with the standard <code>jakarta.websocket</code> annotations, extend the <code>jakarta.websocket.Endpoint</code> abstract class, or implement the <code>jakarta.websocket.server.ServerApplicationConfig</code> interface.</p>
@@ -9270,7 +9181,7 @@ In this way, you do not need to write any additional code; you just need to ensu
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Ensure that JavaxWebSocketServletContainerInitializer is initialized,</span>
@@ -9326,7 +9237,7 @@ server.start();</code></pre>
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Setup the ServerContainer and the WebSocket endpoints for this web application context.</span>
@@ -9402,7 +9313,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9414,7 +9325,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9444,6 +9355,9 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <p>Use the <code>JettyWebSocketServerContainer</code> APIs in your applications to <a href="#pg-server-websocket-jetty-endpoints">register your WebSocket endpoints</a> that implement your application logic.</p>
 </li>
 </ol>
+</div>
+<div class="paragraph">
+<p>You can read more about the <a href="#pg-websocket-architecture">Jetty WebSocket architecture</a>, which is common to both client-side and server-side, to get familiar with the terminology used in the following sections.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-server-websocket-jetty-container"><a class="anchor" href="#pg-server-websocket-jetty-container"></a><a class="link" href="#pg-server-websocket-jetty-container">Setting up <code>JettyWebSocketServerContainer</code></a></h5>
@@ -9476,7 +9390,7 @@ server.start();</code></pre>
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Ensure that JettyWebSocketServletContainerInitializer is initialized,</span>
@@ -9540,7 +9454,7 @@ server.start();</code></pre>
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Ensure that JettyWebSocketServletContainerInitializer is initialized,</span>
@@ -9587,7 +9501,7 @@ server.start();</code></pre>
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Setup the JettyWebSocketServerContainer and the WebSocket endpoints for this web application context.</span>
@@ -9615,11 +9529,14 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>In the call to <code>JettyWebSocketServerContainer.addMapping(...)</code>, you can specify a <em>path spec</em> (the first parameter) that can be configured as specified in <a href="#pg-server-websocket-jetty-pathspec">this section</a>.</p>
+</div>
+<div class="paragraph">
 <p>When the <code>ServletContextHandler</code> is started, the <code>Configurator</code> lambda (the second parameter passed to <code>JettyWebSocketServletContainerInitializer.configure(...)</code>) is invoked and allows you to explicitly configure the WebSocket endpoints using the Jetty WebSocket APIs provided by <code>JettyWebSocketServerContainer</code>.</p>
 </div>
 <div class="paragraph">
 <p>Under the hood, the call to <code>JettyWebSocketServerContainer.addMapping(...)</code> installs the <code>org.eclipse.jetty.websocket.servlet.WebSocketUpgradeFilter</code>, which is the component that intercepts HTTP requests to upgrade to WebSocket, described in <a href="#pg-server-websocket-standard-upgrade">this section</a>.
-For more information about the <code>WebSocketUpgradeFilter</code> see also <a href="#pg-server-websocket-configure-filter">this section</a>.</p>
+For more information about the configuration of <code>WebSocketUpgradeFilter</code> see also <a href="#pg-server-websocket-configure-filter">this section</a>.</p>
 </div>
 <div class="paragraph">
 <p>One last alternative to register your WebSocket endpoints is to use a programmatic WebSocket upgrade via <code>JettyWebSocketServerContainer.upgrade(...)</code>, which allows you to use a standard <code>HttpServlet</code> subclass (rather than a <code>JettyWebSocketServlet</code> as explained in <a href="#pg-server-websocket-jetty-endpoints-servlet">this section</a>) to perform a direct WebSocket upgrade when your application logic demands so:</p>
@@ -9630,7 +9547,7 @@ For more information about the <code>WebSocketUpgradeFilter</code> see also <a h
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Ensure that JettyWebSocketServletContainerInitializer is initialized,</span>
@@ -9694,7 +9611,7 @@ Declaring your <code>JettyWebSocketServlet</code> subclass explicitly in code or
 Server server = <span class="keyword">new</span> Server(<span class="integer">8080</span>);
 
 <span class="comment">// Create a ServletContextHandler with the given context path.</span>
-ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(server, <span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
 server.setHandler(handler);
 
 <span class="comment">// Setup the JettyWebSocketServerContainer to initialize WebSocket components.</span>
@@ -9765,6 +9682,55 @@ If your <code>JettyWebSocketServlet</code> subclass did not override the <code>d
 <div class="paragraph">
 <p>Using <code>JettyWebSocketServerContainer.addMapping(...)</code> will install the <code>WebSocketUpgradeFilter</code> under the hood, which by default will intercepts all HTTP requests to upgrade to WebSocket.
 However, as explained in <a href="#pg-server-websocket-standard-upgrade">this section</a>, if <code>WebSocketUpgradeFilter</code> does not find a matching WebSocket endpoint for the request URI path, then the HTTP request is passed to the Filter chain of your web application and may arrive to your <code>JettyWebSocketServlet</code> subclass, where it would be processed and possibly result in a WebSocket upgrade.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-websocket-jetty-pathspec"><a class="anchor" href="#pg-server-websocket-jetty-pathspec"></a><a class="link" href="#pg-server-websocket-jetty-pathspec">Custom PathSpec Mappings</a></h6>
+<div class="paragraph">
+<p>The <code>JettyWebSocketServerContainer.addMapping(...)</code> API maps a <em>path spec</em> to a <code>JettyWebSocketCreator</code> instance (typically a lambda expression).
+The path spec is matched against the WebSocket upgrade request URI to select the correspondent <code>JettyWebSocketCreator</code> to invoke.</p>
+</div>
+<div class="paragraph">
+<p>The path spec can have these forms:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Servlet syntax, specified with <code>servlet|&lt;path spec&gt;</code>, where the <code>servlet|</code> prefix can be omitted if the path spec begins with <code>/</code> or <code>*.</code> (for example, <code>/ws</code>, <code>/ws/chat</code> or <code>*.ws</code>).</p>
+</li>
+<li>
+<p>Regex syntax, specified with <code>regex|&lt;path spec&gt;</code>, where the <code>regex|</code> prefix can be omitted if the path spec begins with <code>^</code> (for example, <code>^/ws/[0-9]+</code>).</p>
+</li>
+<li>
+<p>URI template syntax, specified with <code>uri-template|&lt;path spec&gt;</code> (for example <code>uri-template|/ws/chat/{room}</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Within the <code>JettyWebSocketCreator</code>, it is possible to access the path spec and, for example in case of URI templates, extract additional information in the following way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">ServletContextHandler handler = <span class="keyword">new</span> ServletContextHandler(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ctx</span><span class="delimiter">&quot;</span></span>);
+server.setHandler(handler);
+
+<span class="comment">// Configure the JettyWebSocketServerContainer.</span>
+JettyWebSocketServletContainerInitializer.configure(handler, (servletContext, container) -&gt;
+{
+    container.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ws/chat/{room}</span><span class="delimiter">&quot;</span></span>, (upgradeRequest, upgradeResponse) -&gt;
+    {
+        <span class="comment">// Retrieve the URI template.</span>
+        UriTemplatePathSpec pathSpec = (UriTemplatePathSpec)upgradeRequest.getServletAttribute(PathSpec.class.getName());
+
+        <span class="comment">// Match the URI template.</span>
+        <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">String</span>&gt; params = pathSpec.getPathParams(upgradeRequest.getRequestPath());
+        <span class="predefined-type">String</span> room = params.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">room</span><span class="delimiter">&quot;</span></span>);
+
+        <span class="comment">// Create the new WebSocket endpoint with the URI template information.</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> MyWebSocketRoomEndPoint(room);
+    });
+});</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -9977,7 +9943,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="453" height="308">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
 </div>
 </div>
 <div class="paragraph">
@@ -10021,7 +9987,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="453" height="308">
+<img src="images/diag-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="941" height="254">
 </div>
 </div>
 <div class="paragraph">
@@ -13084,7 +13050,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="825" height="61">
+<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -13101,7 +13067,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="625" height="181">
+<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13131,7 +13097,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="662" height="181">
+<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13202,6 +13168,24 @@ These threads are reported by <code>QueuedThreadPool.leasedThreads</code> and ar
 This value represents the maximum number of threads that can be reserved and used by the <code>TryExecutor</code> implementation.
 A negative value for <code>QueuedThreadPool.reservedThreads</code> means that the actual value will be heuristically derived from the number of CPU cores and <code>QueuedThreadPool.maxThreads</code>.
 A value of zero for <code>QueuedThreadPool.reservedThreads</code> means that reserved threads are disabled, and therefore the <a href="#pg-arch-threads-execution-strategy-epc"><code>Execute-Produce-Consume</code> mode</a> is never used&#8201;&#8212;&#8201;the <a href="#pg-arch-threads-execution-strategy-pec"><code>Produce-Execute-Consume</code> mode</a> is always used instead.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool</code> always maintains the number of threads between <code>QueuedThreadPool.minThreads</code> and <code>QueuedThreadPool.maxThreads</code>; during load spikes the number of thread grows to meet the load demand, and when the load on the system diminishes or the system goes idle, the number of threads shrinks.</p>
+</div>
+<div class="paragraph">
+<p>Shrinking <code>QueuedThreadPool</code> is important in particular in containerized environments, where typically you want to return the memory occupied by the threads to the operative system.
+The shrinking of the <code>QueuedThreadPool</code> is controlled by two parameters: <code>QueuedThreadPool.idleTimeout</code> and <code>QueuedThreadPool.maxEvictCount</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool.idleTimeout</code> indicates how long a thread should stay around when it is idle, waiting for tasks to execute.
+The longer the threads stay around, the more ready they are in case of new load spikes on the system; however, they consume resources: a Java platform thread typically allocates 1 MiB of native memory.</p>
+</div>
+<div class="paragraph">
+<p><code>QueuedThreadPool.maxEvictCount</code> controls how many idle threads are evicted for one <code>QueuedThreadPool.idleTimeout</code> period.
+The larger this value is, the quicker the threads are evicted when the <code>QueuedThreadPool</code> is idle or has less load, and their resources returned to the operative system; however, large values may result in too much thread thrashing: the <code>QueuedThreadPool</code> shrinks too fast and must re-create a lot of threads in case of a new load spike on the system.</p>
+</div>
+<div class="paragraph">
+<p>A good balance between <code>QueuedThreadPool.idleTimeout</code> and <code>QueuedThreadPool.maxEvictCount</code> depends on the load profile of your system, and it is often tuned via trial and error.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-arch-threads-thread-pool-virtual-threads"><a class="anchor" href="#pg-arch-threads-thread-pool-virtual-threads"></a><a class="link" href="#pg-arch-threads-thread-pool-virtual-threads">Virtual Threads</a></h5>
@@ -13807,7 +13791,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.0.beta0<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.0.beta3<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14699,8 +14683,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.0.beta0<br>
-Last updated 2023-03-07 10:46:04 -0600
+Version 12.0.0.beta3<br>
+Last updated 2023-05-02 11:41:41 -0500
 </div>
 </div>
 </body>

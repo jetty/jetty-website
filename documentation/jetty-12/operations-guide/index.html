@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.17">
+<meta name="generator" content="Asciidoctor 2.0.18">
 <meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Operations Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.0.beta0,</span>
-<span id="revdate">2023-03-07</span>
+<span id="revnumber">version 12.0.0.beta3,</span>
+<span id="revdate">2023-07-03</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -122,6 +122,7 @@
 <li><a href="#og-module-alpn">Module <code>alpn</code></a></li>
 <li><a href="#og-module-bytebufferpool">Module <code>bytebufferpool</code></a></li>
 <li><a href="#og-module-console-capture">Module <code>console-capture</code></a></li>
+<li><a href="#og-module-core-deploy">Module <code>core-deploy</code></a></li>
 <li><a href="#og-module-eeN-deploy">Module <code>ee{8,9,10}-deploy</code></a></li>
 <li><a href="#og-module-http">Module <code>http</code></a>
 <ul class="sectlevel5">
@@ -165,7 +166,12 @@
 <li><a href="#og-deploy">Web Application Deployment</a>
 <ul class="sectlevel3">
 <li><a href="#og-deploy-hot-static">Hot vs Static Deployment</a></li>
-<li><a href="#og-deploy-rules">Deployment Rules</a></li>
+<li><a href="#og-deploy-rules">Deployment Rules</a>
+<ul class="sectlevel4">
+<li><a href="#og-deploy-rules-context-path">Context Path Resolution</a></li>
+<li><a href="#og-deploy-rules-environment">Environment Resolution</a></li>
+</ul>
+</li>
 <li><a href="#og-deploy-jetty">Deploying Jetty Context XML Files</a></li>
 <li><a href="#og-deploy-jndi">Configuring JNDI Entries</a></li>
 <li><a href="#og-deploy-virtual-hosts">Configuring Virtual Hosts</a>
@@ -585,7 +591,7 @@ $ java -jar $JETTY_HOME/start.jar --add-module=server,http,deploy</pre>
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
 <p>After the download, unpacking Eclipse Jetty will extract the files into a directory called <code>jetty-home-VERSION</code>, where <code>VERSION</code> is the version of Jetty that you downloaded.
-For example, installing Jetty 12.0.0.beta0 will create a directory called <code>jetty-home-12.0.0.beta0</code>.</p>
+For example, installing Jetty 12.0.0.beta3 will create a directory called <code>jetty-home-12.0.0.beta3</code>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -647,7 +653,13 @@ However, if you try to start Jetty from an empty <code>$JETTY_BASE</code>, it wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>ERROR : No enabled jetty modules found!
+INFO  : ${jetty.home} = /path/to/jetty.home
+INFO  : ${jetty.base} = /path/to/jetty.base
+ERROR : Please create and/or configure a ${jetty.base} directory.
+
+Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
+       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -696,7 +708,17 @@ If you want to enable support for protocols like secure HTTP/1.1 or HTTP/2 or HT
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : <mark>server          transitively enabled</mark>, ini template available with --add-modules=server
+INFO  : <mark>logging-jetty   transitively enabled</mark>
+INFO  : http            initialized in ${jetty.base}/start.d/http.ini
+INFO  : <mark>resources       transitively enabled</mark>
+INFO  : <mark>threadpool      transitively enabled</mark>, ini template available with --add-modules=threadpool
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : <mark>bytebufferpool  transitively enabled</mark>, ini template available with --add-modules=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -712,7 +734,9 @@ If you want to enable support for protocols like secure HTTP/1.1 or HTTP/2 or HT
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:06.686:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:06.712:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@7b2bbc3<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-07-03 16:24:06.721:</strong>INFO :oejs.Server:main: Started oejs.Server@635eaaf1{STARTING}[12.0.0.beta3,sto=5000] @548ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -807,7 +831,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:07.786:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:07.815:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@7b2bbc3<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2023-07-03 16:24:07.825:</strong>INFO :oejs.Server:main: Started oejs.Server@635eaaf1{STARTING}[12.0.0.beta3,sto=5000] @709ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -821,7 +847,9 @@ A property value specified on the command-line in this way will <strong>override
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:08.708:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:08.736:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@7b2bbc3<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-07-03 16:24:08.745:</strong>INFO :oejs.Server:main: Started oejs.Server@635eaaf1{STARTING}[12.0.0.beta3,sto=5000] @552ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -840,10 +868,22 @@ A property value specified on the command-line in this way will <strong>override
 Their deployment is described in <a href="#og-begin-deploy-war">this section</a>.</p>
 </li>
 <li>
-<p><strong>Jetty context XML files</strong>, that allow you to customize the deployment of standard web applications, and also allow you use Jetty components&#8201;&#8212;&#8201;and possibly custom components written by you&#8201;&#8212;&#8201;to assemble your web applications.
+<p><strong>Jetty context XML files</strong>, that allow you to customize the deployment of standard web applications, and also allow you to use Jetty components&#8201;&#8212;&#8201;and possibly custom components written by you&#8201;&#8212;&#8201;to assemble your web applications.
 Their deployment is described in <a href="#og-deploy">this section</a>.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Jetty supports the deployment of both standard web applications and Jetty context XML files in a specific <em>environment</em>.</p>
+</div>
+<div class="paragraph">
+<p>In the following sections you can find simple examples of deployments of Jakarta EE 10 web applications.</p>
+</div>
+<div class="paragraph">
+<p>However, Jetty supports simultaneous deployment of web applications each to a possibly different environment, for example an old Java EE 8 web application alongside a new Jakarta EE 10 web application.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the section about <a href="#og-deploy">deployment</a> for further information about how to deploy to different environments.</p>
 </div>
 <div class="sect4">
 <h5 id="og-begin-deploy-war"><a class="anchor" href="#og-begin-deploy-war"></a><a class="link" href="#og-begin-deploy-war">Deploying *.war Files</a></h5>
@@ -908,7 +948,12 @@ Their deployment is described in <a href="#og-deploy">this section</a>.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The following examples assume you&#8217;re deploying a Jakarta EE10 application; for other versions of Jakarta EE, make sure to activate the corresponding <code>ee{8,9,10}-deploy</code> module.
+<div class="paragraph">
+<p>The following examples assume you&#8217;re deploying a Jakarta EE 10 application; for other versions of Jakarta EE, make sure to activate the corresponding <code>ee{8,9,10}-deploy</code> module.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the section about <a href="#og-deploy">deployment</a> for further information about how to deploy to different environments.</p>
+</div>
 </td>
 </tr>
 </table>
@@ -920,7 +965,15 @@ The following examples assume you&#8217;re deploying a Jakarta EE10 application;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : sessions        transitively enabled, ini template available with --add-modules=sessions
+INFO  : security        transitively enabled
+INFO  : ee10-deploy     initialized in ${jetty.base}/start.d/ee10-deploy.ini
+INFO  : ee10-security   transitively enabled
+INFO  : ee10-webapp     transitively enabled, ini template available with --add-modules=ee10-webapp
+INFO  : ee10-servlet    transitively enabled
+INFO  : deploy          transitively enabled
+INFO  : mkdir ${jetty.base}/webapps
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -966,7 +1019,15 @@ You can use one of the demos shipped with Jetty:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:10.663:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:10.685:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor ee10 in [file:///path/to/jetty.base/webapps/] at intervals 0s
+<strong>2023-07-03 16:24:10.691:</strong>INFO :oejd.DeploymentManager:main: addApp: App@52af26ee[ee10,null,/path/to/jetty.base/webapps/ee10-demo-simple.war]
+<strong>2023-07-03 16:24:10.802:</strong>INFO :oejew.StandardDescriptorProcessor:main: NO JSP Support for /ee10-demo-simple, did not find org.eclipse.jetty.ee10.jsp.JettyJspServlet
+<mark><strong>2023-07-03 16:24:10.816:</strong>INFO :oejsh.ContextHandler:main: Started oeje10w.WebAppContext@68746f22{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@2f01783a{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<mark><strong>2023-07-03 16:24:10.827:</strong>INFO :oejes.ServletContextHandler:main: Started oeje10w.WebAppContext@68746f22{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@2f01783a{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<strong>2023-07-03 16:24:10.829:</strong>INFO :oejs.DefaultSessionIdManager:main: Session workerName=node0
+<strong>2023-07-03 16:24:10.836:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@52815fa3{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-07-03 16:24:10.843:</strong>INFO :oejs.Server:main: Started oejs.Server@4e268090{STARTING}[12.0.0.beta3,sto=5000] @846ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1110,7 +1171,7 @@ You can use one of the demos shipped with Jetty:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="377" height="257">
+<img src="images/diag-cb8a854642d32c964b17f0a090ef16e3.png" alt="Diagram" width="430" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -1653,7 +1714,97 @@ JVM Options Module
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>Enabled Modules:
+----------------
+  0) resources                 transitive provider of resources for logging-jetty
+  1) logging/slf4j             transitive provider of logging/slf4j for logging-jetty
+                               dynamic dependency of logging-jetty
+  2) logging-jetty             transitive provider of logging for threadpool
+                               transitive provider of logging for bytebufferpool
+                               transitive provider of logging for server
+  3) bytebufferpool            transitive provider of bytebufferpool for server
+                               ini template available with --add-modules=bytebufferpool
+  4) threadpool                transitive provider of threadpool for server
+                               ini template available with --add-modules=threadpool
+  5) jvm                       ${jetty.base}/start.d/jvm.ini
+  6) server                    ${jetty.base}/start.d/server.ini
+  7) http                      ${jetty.base}/start.d/http.ini
+  8) postgresql                ${jetty.base}/start.d/postgresql.ini
+
+JVM Version &amp; Properties:
+-------------------------
+ java.home = /path/to/java.home
+ java.vm.vendor = Eclipse Adoptium
+ java.vm.version = 20.0.1+9
+ java.vm.name = OpenJDK 64-Bit Server VM
+ java.vm.info = mixed mode, sharing
+ java.runtime.name = OpenJDK Runtime Environment
+ java.runtime.version = 20.0.1+9
+ java.io.tmpdir = /path/to/jetty.base/work
+ user.dir = /path/to/jetty.base
+ user.language = en
+ user.country = US
+
+Jetty Version &amp; Properties:
+---------------------------
+ jetty.version = 12.0.0.beta3
+ jetty.tag.version = jetty-12.0.0.beta3
+ jetty.build = a8feee5576945b9ac73298abc61feb617c84a6ac
+ jetty.home = /path/to/jetty.home
+ jetty.base = /path/to/jetty.base
+
+Config Search Order:
+--------------------
+ &lt;command-line&gt;
+ ${jetty.base} -&gt; /path/to/jetty.base
+ ${jetty.home} -&gt; /path/to/jetty.home
+
+Forked JVM Arguments:
+---------------------
+ -Xmx1g 
+ -Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags 
+
+System Properties:
+------------------
+ (no system properties specified)
+
+Properties: Jetty
+-----------------
+ java.version = 20.0.1
+ java.version.major = 20
+ java.version.micro = 1
+ java.version.minor = 0
+ java.version.platform = 20
+ jetty.base = /path/to/jetty.base
+ jetty.base.uri = file:///path/to/jetty.base
+ jetty.home = /path/to/jetty.home
+ jetty.home.uri = file:///path/to/jetty.home
+ jetty.webapp.addServerClasses = org.eclipse.jetty.logging.,${jetty.home.uri}/lib/logging/,org.slf4j.
+ postgresql-version = 42.2.18
+ runtime.feature.alpn = true
+ slf4j.version = 2.0.7
+
+Classpath: Jetty
+----------------
+Version Information on 9 entries in the classpath.
+Note: order presented here is how they would appear on the classpath.
+      changes to the --module=name command line options will be reflected here.
+ 0:                    (dir) | ${jetty.base}/resources
+ 1:                    2.0.7 | ${jetty.home}/lib/logging/slf4j-api-2.0.7.jar
+ 2:             12.0.0.beta3 | ${jetty.home}/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar
+ 3:             12.0.0.beta3 | ${jetty.home}/lib/jetty-http-12.0.0.beta3.jar
+ 4:             12.0.0.beta3 | ${jetty.home}/lib/jetty-server-12.0.0.beta3.jar
+ 5:             12.0.0.beta3 | ${jetty.home}/lib/jetty-xml-12.0.0.beta3.jar
+ 6:             12.0.0.beta3 | ${jetty.home}/lib/jetty-util-12.0.0.beta3.jar
+ 7:             12.0.0.beta3 | ${jetty.home}/lib/jetty-io-12.0.0.beta3.jar
+ 8:                  42.2.18 | ${jetty.base}/lib/postgresql-42.2.18.jar
+
+Active XMLs: Jetty
+------------------
+ ${jetty.home}/etc/jetty-bytebufferpool.xml
+ ${jetty.home}/etc/jetty-threadpool.xml
+ ${jetty.home}/etc/jetty.xml
+ ${jetty.home}/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1715,7 +1866,31 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>/path/to/java.home/bin/java \
+-Djava.io.tmpdir=/path/to/jetty.base/work \
+-Djetty.home=/path/to/jetty.home \
+-Djetty.base=/path/to/jetty.base \
+-Xmx1g \
+-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags \
+--class-path \
+/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.7.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar:/path/to/jetty.home/lib/jetty-http-12.0.0.beta3.jar:/path/to/jetty.home/lib/jetty-server-12.0.0.beta3.jar:/path/to/jetty.home/lib/jetty-xml-12.0.0.beta3.jar:/path/to/jetty.home/lib/jetty-util-12.0.0.beta3.jar:/path/to/jetty.home/lib/jetty-io-12.0.0.beta3.jar \
+org.eclipse.jetty.xml.XmlConfiguration \
+'java.version'='20.0.1' \
+'java.version.major'='20' \
+'java.version.micro'='1' \
+'java.version.minor'='0' \
+'java.version.platform'='20' \
+'jetty.base'='/path/to/jetty.base' \
+'jetty.base.uri'='file:///path/to/jetty.base' \
+'jetty.home'='/path/to/jetty.home' \
+'jetty.home.uri'='file:///path/to/jetty.home' \
+'jetty.webapp.addServerClasses'='org.eclipse.jetty.logging.,file:///path/to/jetty.home/lib/logging/,org.slf4j.' \
+'runtime.feature.alpn'='true' \
+'slf4j.version'='2.0.7' \
+/path/to/jetty.home/etc/jetty-bytebufferpool.xml \
+/path/to/jetty.home/etc/jetty-threadpool.xml \
+/path/to/jetty.home/etc/jetty.xml \
+/path/to/jetty.home/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1742,7 +1917,7 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>/path/to/java.home/bin/java</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1755,7 +1930,11 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>-Djava.io.tmpdir=/path/to/jetty.base/work \
+-Djetty.home=/path/to/jetty.home \
+-Djetty.base=/path/to/jetty.base \
+-Xmx1g \
+-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1768,7 +1947,15 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>--class-path \
+/path/to/jetty.base/resources:\
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.7.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-server-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-io-12.0.0.beta3.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1781,7 +1968,18 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module-path \
+/path/to/jetty.home/lib/jetty-server-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/jetty-io-12.0.0.beta3.jar:\
+/path/to/jetty.home/lib/logging/slf4j-api-2.0.7.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar \
+--class-path \
+/path/to/jetty.base/resources \
+--add-modules \
+ALL-MODULE-PATH</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1794,7 +1992,7 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1807,7 +2005,7 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>--module org.eclipse.jetty.xml/org.eclipse.jetty.xml.XmlConfiguration</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1824,12 +2022,22 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: \
-Unable \
-to \
-access \
-jarfile \
-/path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>'java.version'='20.0.1' \
+'java.version.major'='20' \
+'java.version.micro'='1' \
+'java.version.minor'='0' \
+'java.version.platform'='20' \
+'jetty.base'='/path/to/jetty.base' \
+'jetty.base.uri'='file:///path/to/jetty.base' \
+'jetty.home'='/path/to/jetty.home' \
+'jetty.home.uri'='file:///path/to/jetty.home' \
+'jetty.webapp.addServerClasses'='org.eclipse.jetty.logging.,file:///path/to/jetty.home/lib/logging/,org.slf4j.' \
+'runtime.feature.alpn'='true' \
+'slf4j.version'='2.0.7' \
+/path/to/jetty.home/etc/jetty-bytebufferpool.xml \
+/path/to/jetty.home/etc/jetty-threadpool.xml \
+/path/to/jetty.home/etc/jetty.xml \
+/path/to/jetty.home/etc/jetty-http.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1901,7 +2109,7 @@ This step produces a list of <em>enabled</em> modules; for each enabled module a
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-0f37d1d5b12f280e1587df6f3d528998.png" alt="Diagram" width="361" height="281">
 </div>
 </div>
 <div class="paragraph">
@@ -1914,7 +2122,7 @@ In the forked JVM, the System ClassLoader has the server class-path and/or modul
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-176305f848d18dc8b0c4ef7bd331705d.png" alt="Diagram" width="383" height="374">
 </div>
 </div>
 <div class="paragraph">
@@ -2156,7 +2364,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=f460a1b2i3gg</mark>
+<strong>2023-07-03 16:24:19.790:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:19.822:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@78691363{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-07-03 16:24:19.831:</strong>INFO :oejs.Server:main: Started oejs.Server@3911c2a7{STARTING}[12.0.0.beta3,sto=5000] @634ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2439,6 +2650,9 @@ Options:
                    output will be sent.  This is useful for capturing startup
                    issues when the Jetty logging module has not yet started
                    due to configuration errors.
+
+  --allow-insecure-http-downloads
+                   Allow the use of insecure `http://` scheme for content download.
 
   --approve-all-licenses
                    Approves all license questions from modules that have
@@ -3551,7 +3765,13 @@ etc/acme-audit.xml
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-alpn.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/alpn.mod[tags=documentation]</pre>
+<pre>## Specifies the ordered list of application protocols supported by the server.
+## The default list is specified by the list of the protocol modules that have
+## been enabled, and the order is specified by the module dependencies.
+# jetty.alpn.protocols=h2,http/1.1
+
+## Specifies the protocol to use when the ALPN negotiation fails.
+# jetty.alpn.defaultProtocol=http/1.1</pre>
 </div>
 </div>
 </div>
@@ -3577,7 +3797,45 @@ Excess buffers will not be pooled and will be eventually garbage collected.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-bytebufferpool.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/bytebufferpool.mod[]</pre>
+<pre>[description]
+Configures the ByteBufferPool used by ServerConnectors.
+The bucket sizes increase linearly.
+Use module "bytebufferpool-quadratic" for a pool that holds more coarse sized buffers.
+
+[depends]
+logging
+
+[xml]
+etc/jetty-bytebufferpool.xml
+
+[ini-template]
+## Minimum capacity of a single ByteBuffer.
+#jetty.byteBufferPool.minCapacity=0
+
+## Maximum capacity of a single ByteBuffer.
+## Requests for ByteBuffers larger than this value results
+## in the ByteBuffer being allocated but not pooled.
+#jetty.byteBufferPool.maxCapacity=65536
+
+## Bucket capacity factor.
+## ByteBuffers are allocated out of buckets that have
+## a capacity that is multiple of this factor.
+#jetty.byteBufferPool.factor=4096
+
+## Maximum size for each bucket (-1 for unbounded).
+#jetty.byteBufferPool.maxBucketSize=-1
+
+## Maximum heap memory held idle by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxHeapMemory=0
+
+## Maximum direct memory held idle by the pool (0 for heuristic, -1 for unlimited).
+#jetty.byteBufferPool.maxDirectMemory=0
+
+## Maximum heap memory retained whilst in use by the pool (0 for heuristic, -1 for unlimited, -2 for no retained).
+#jetty.byteBufferPool.retainedHeapMemory=0
+
+## Maximum direct memory retained whilst in use by the pool (0 for heuristic, -1 for unlimited, -2 for no retained).
+#jetty.byteBufferPool.retainedDirectMemory=0</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3610,14 +3868,37 @@ Old, rolled files are kept for the number of days specified by the <code>jetty.c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-console-capture.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/console-capture.mod[tags=documentation]</pre>
+<pre>## Logging directory (relative to $JETTY_BASE).
+# jetty.console-capture.dir=./logs
+
+## Whether to append to existing file.
+# jetty.console-capture.append=true
+
+## How many days to retain old log files.
+# jetty.console-capture.retainDays=90
+
+## Timezone ID of the log timestamps, as specified by java.time.ZoneId.
+# jetty.console-capture.timezone=GMT</pre>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-module-core-deploy"><a class="anchor" href="#og-module-core-deploy"></a><a class="link" href="#og-module-core-deploy">Module <code>core-deploy</code></a></h5>
+<div class="paragraph">
+<p>This module enables webapp deployment from the <code>$JETTY_BASE/webapps</code> directory.</p>
+</div>
+<div class="paragraph">
+<p>Deployment is managed via a <code>DeploymentManager</code> component that watches a directory for changes.
+See <a href="#og-deploy">how to deploy web applications</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>TODO</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="og-module-eeN-deploy"><a class="anchor" href="#og-module-eeN-deploy"></a><a class="link" href="#og-module-eeN-deploy">Module <code>ee{8,9,10}-deploy</code></a></h5>
 <div class="paragraph">
-<p>Unresolved directive in modules/module-eeN-deploy.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-deploy.mod[tags=description]</p>
+<p>This module enables webapp deployment from the <code>$JETTY_BASE/webapps</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>Deployment is managed via a <code>DeploymentManager</code> component that watches a directory for changes.
@@ -3633,7 +3914,38 @@ Jetty&#8217;s configuration properties are nearly identical across these version
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-eeN-deploy.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-deploy.mod[tags=ini-template]</pre>
+<pre>## Monitored directory name (relative to $jetty.base)
+# jetty.deploy.monitoredDir=webapps
+## - OR -
+## Monitored directory path (fully qualified)
+# jetty.deploy.monitoredPath=/var/www/webapps
+
+## Defaults Descriptor for all deployed webapps
+# jetty.deploy.defaultsDescriptor=${jetty.base}/etc/webdefault-ee10.xml
+
+## Monitored directory scan period (seconds)
+# jetty.deploy.scanInterval=1
+
+## Whether to extract *.war files
+# jetty.deploy.extractWars=true
+
+## Whether to give the parent classloader priority
+# jetty.deploy.parentLoaderPriority=true
+
+## Comma separated list of configuration classes to set.
+# jetty.deploy.configurationClasses=
+
+## Pattern to select jars from the container classloader to be scanned (or null to scan no jars)
+# jetty.deploy.containerScanJarPattern=.*/jakarta.servlet-api-[^/]*\.jar$|.*jakarta.servlet.jsp.jstl-.*\.jar$
+
+## Pattern to select jars from the container classloader to be scanned (or null to scan all jars).
+# jetty.deploy.webInfScanJarPattern=
+
+## Pattern to exclude discovered ServletContainerInitializers
+# jetty.deploy.servletContainerInitializerExclusionPattern=
+
+## Order of discovered ServletContainerInitializers
+# jetty.deploy.servletContainerInitializerOrder=</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3663,7 +3975,45 @@ Setting <code>jetty.deploy.scanInterval=0</code> disabled <em>hot</em> deploymen
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http.mod[tags=documentation]</pre>
+<pre>### Clear-Text HTTP Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.http.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.http.port=8080
+
+## The connector idle timeout, in milliseconds.
+# jetty.http.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.http.acceptors=1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.http.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.http.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.http.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.http.reuseAddress=true
+
+## Whether to enable the SO_REUSEPORT socket option.
+# jetty.http.reusePort=false
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.http.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.http.acceptedSendBufferSize=-1</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3745,7 +4095,21 @@ There are 4 I/O operations: ready to be accepted, ready to be connected, ready t
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http2.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http2.mod[tags=documentation]</pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2.maxConcurrentStreams=128
+
+## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2.initialStreamRecvWindow=524288
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2.initialSessionRecvWindow=1048576
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2.rateControl.maxEventsPerSecond=50</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3769,7 +4133,21 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http2c.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http2c.mod[tags=documentation]</pre>
+<pre>## Specifies the maximum number of concurrent requests per session.
+# jetty.http2c.maxConcurrentStreams=128
+
+## Specifies the initial stream receive window (client to server) in bytes.
+# jetty.http2c.initialStreamRecvWindow=524288
+
+## Specifies the initial session receive window (client to server) in bytes.
+# jetty.http2c.initialSessionRecvWindow=1232896
+
+## Specifies the maximum number of keys in all SETTINGS frames received by a session.
+# jetty.http2c.maxSettingsKeys=64
+
+## Specifies the maximum number of bad frames and pings per second,
+## after which a session is closed to avoid denial of service attacks.
+# jetty.http2c.rateControl.maxEventsPerSecond=50</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3793,7 +4171,26 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http3.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http3.mod[tags=documentation]</pre>
+<pre>## The host/address to bind the connector to.
+# jetty.quic.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.quic.port=8444
+
+## The connector idle timeout, in milliseconds.
+# jetty.quic.idleTimeout=30000
+
+## Specifies the maximum number of concurrent requests per session.
+# jetty.quic.maxBidirectionalRemoteStreams=128
+
+## Specifies the session receive window (client to server) in bytes.
+# jetty.quic.sessionRecvWindow=4194304
+
+## Specifies the stream receive window (client to server) in bytes.
+# jetty.quic.bidirectionalStreamRecvWindow=2097152
+
+## Specifies the stream idle timeout, in milliseconds.
+# jetty.http3.streamIdleTimeout=30000</pre>
 </div>
 </div>
 </div>
@@ -3807,7 +4204,46 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-http-forwarded.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/http-forwarded.mod[tags=documentation]</pre>
+<pre>### ForwardedRequestCustomizer Configuration
+
+## Whether to process only the RFC7239 "Forwarded" header.
+## "X-Forwarded-*" headers are not processed.
+# jetty.httpConfig.forwardedOnly=false
+
+## Whether the address obtained from "Forwarded: by=" or
+## "X-Forwarded-Server" is used in the request authority.
+# jetty.httpConfig.forwardedProxyAsAuthority=false
+
+## Whether the "X-Forwarded-Port" header is used in the request authority,
+## or else it is the remote client port.
+# jetty.httpConfig.forwardedPortAsAuthority=true
+
+## The name of the RFC 7239 HTTP header.
+# jetty.httpConfig.forwardedHeader=Forwarded
+
+## The name of the obsolete forwarded host HTTP header.
+# jetty.httpConfig.forwardedHostHeader=X-Forwarded-Host
+
+## The name of the obsolete forwarded server HTTP header.
+# jetty.httpConfig.forwardedServerHeader=X-Forwarded-Server
+
+## The name of the obsolete forwarded scheme HTTP header.
+# jetty.httpConfig.forwardedProtoHeader=X-Forwarded-Proto
+
+## The name of the obsolete forwarded for HTTP header.
+# jetty.httpConfig.forwardedForHeader=X-Forwarded-For
+
+## The name of the obsolete forwarded port HTTP header.
+# jetty.httpConfig.forwardedPortHeader=X-Forwarded-Port
+
+## The name of the obsolete forwarded https HTTP header.
+# jetty.httpConfig.forwardedHttpsHeader=X-Proxied-Https
+
+## The name of the obsolete forwarded SSL session ID HTTP header.
+# jetty.httpConfig.forwardedSslSessionIdHeader=Proxy-ssl-id
+
+## The name of the obsolete forwarded SSL cipher HTTP header.
+# jetty.httpConfig.forwardedCipherSuiteHeader=Proxy-auth-cert</pre>
 </div>
 </div>
 </div>
@@ -3821,14 +4257,34 @@ While the <code>SETTINGS</code> frames don&#8217;t change the server configurati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-https.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/https.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Adds HTTPS protocol support to the TLS(SSL) Connector.
+
+[tags]
+connector
+https
+http
+ssl
+
+[depend]
+ssl
+
+[after]
+alpn
+http2
+http-forwarded
+
+[xml]
+etc/jetty-https.xml</pre>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="og-module-jmx"><a class="anchor" href="#og-module-jmx"></a><a class="link" href="#og-module-jmx">Module <code>jmx</code></a></h5>
 <div class="paragraph">
-<p>Unresolved directive in modules/module-jmx.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-webapp.mod[tags=description]</p>
+<p>This module enables deployment of Java Servlet web applications.</p>
 </div>
 <div class="paragraph">
 <p>This configuration is useful for <a href="#og-jmx-local">local development and testing</a>.
@@ -3845,7 +4301,20 @@ If you need to <a href="#og-jmx-remote">enable remote access</a>, use the <a hre
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-jmx-remote.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/jmx-remote.mod[tags=documentation]</pre>
+<pre>## The host/address to bind the RMI server to.
+# jetty.jmxremote.rmiserverhost=localhost
+
+## The port the RMI server listens to (0 means a random port is chosen).
+# jetty.jmxremote.rmiserverport=1099
+
+## The host/address to bind the RMI registry to.
+# jetty.jmxremote.rmiregistryhost=localhost
+
+## The port the RMI registry listens to.
+# jetty.jmxremote.rmiregistryport=1099
+
+## The host name exported in the RMI stub.
+-Djava.rmi.server.hostname=localhost</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3881,7 +4350,26 @@ However, we the RMI server is configured to bind to <code>localhost</code>, i.e.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-requestlog.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/requestlog.mod[tags=documentation]</pre>
+<pre>## Format string
+# jetty.requestlog.formatString=%{client}a - %u %{dd/MMM/yyyy:HH:mm:ss ZZZ|GMT}t "%r" %s %O "%{Referer}i" "%{User-Agent}i"
+
+## Logging directory (relative to $jetty.base)
+# jetty.requestlog.dir=logs
+
+## File path
+# jetty.requestlog.filePath=${jetty.requestlog.dir}/yyyy_mm_dd.request.log
+
+## Date format for rollovered files (uses SimpleDateFormat syntax)
+# jetty.requestlog.filenameDateFormat=yyyy_MM_dd
+
+## How many days to retain old log files
+# jetty.requestlog.retainDays=90
+
+## Whether to append to existing file
+# jetty.requestlog.append=false
+
+## Timezone of the log file rollover
+# jetty.requestlog.timezone=GMT</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4181,7 +4669,7 @@ When the parameter value is "d", deferred authentication will also be checked.</
 <div class="sect4">
 <h5 id="og-module-resources"><a class="anchor" href="#og-module-resources"></a><a class="link" href="#og-module-resources">Module <code>resources</code></a></h5>
 <div class="paragraph">
-<p>Unresolved directive in modules/module-resources.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/resources.mod[tags=description]</p>
+<p>This module adds the <code>$JETTY_BASE/resources</code> directory to the server&#8217;s classpath.</p>
 </div>
 <div class="paragraph">
 <p>A common use-case for this module is to provide resources for third-party libraries via the <a href="#og-start-start-class-path">server classpath</a>.
@@ -4223,7 +4711,46 @@ For instance, many logging libraries (including <a href="https://logging.apache.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-http-config]</pre>
+<pre>### Common HTTP configuration
+## Scheme to use to build URIs for secure redirects
+# jetty.httpConfig.secureScheme=https
+
+## Port to use to build URIs for secure redirects
+# jetty.httpConfig.securePort=8443
+
+## Response content buffer size (in bytes)
+# jetty.httpConfig.outputBufferSize=32768
+
+## Max response content write length that is buffered (in bytes)
+# jetty.httpConfig.outputAggregationSize=8192
+
+## Max request headers size (in bytes)
+# jetty.httpConfig.requestHeaderSize=8192
+
+## Max response headers size (in bytes)
+# jetty.httpConfig.responseHeaderSize=8192
+
+## Whether to send the Server: header
+# jetty.httpConfig.sendServerVersion=true
+
+## Whether to send the Date: header
+# jetty.httpConfig.sendDateHeader=false
+
+## Max per-connection header cache size (in nodes)
+# jetty.httpConfig.headerCacheSize=1024
+
+## Whether, for requests with content, delay dispatch until some content has arrived
+# jetty.httpConfig.delayDispatchUntilContent=true
+
+## Maximum number of error dispatches to prevent looping
+# jetty.httpConfig.maxErrorDispatches=10
+
+## Relative Redirect Locations allowed
+# jetty.httpConfig.relativeRedirectAllowed=false
+
+## Whether to use direct ByteBuffers for reading or writing
+# jetty.httpConfig.useInputDirectByteBuffers=true
+# jetty.httpConfig.useOutputDirectByteBuffers=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4246,7 +4773,7 @@ For instance, many logging libraries (including <a href="https://logging.apache.
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">HTTP/1.1 200 OK
 Content-Length: 0
-Server: Jetty(12.0.0.beta0)</code></pre>
+Server: Jetty(12.0.0.beta3)</code></pre>
 </div>
 </div>
 </dd>
@@ -4260,7 +4787,21 @@ Server: Jetty(12.0.0.beta0)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-server-config]</pre>
+<pre>### Server configuration
+## Whether ctrl+c on the console gracefully stops the Jetty server
+# jetty.server.stopAtShutdown=true
+
+## Timeout in ms to apply when stopping the server gracefully
+# jetty.server.stopTimeout=5000
+
+## Dump the state of the Jetty server, components, and webapps after startup
+# jetty.server.dumpAfterStart=false
+
+## The temporary directory used by the Jetty server and as a root for its contexts
+# jetty.server.tempDirectory=
+
+## Dump the state of the Jetty server, components, and webapps before shutdown
+# jetty.server.dumpBeforeStop=false</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4295,7 +4836,17 @@ The module properties to configure the Jetty server compliance are:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-server-compliance]</pre>
+<pre>## HTTP Compliance: RFC7230, RFC7230_LEGACY, RFC2616, RFC2616_LEGACY, LEGACY
+# jetty.httpConfig.compliance=RFC7230
+
+## URI Compliance: DEFAULT, LEGACY, RFC3986, RFC3986_UNAMBIGUOUS, UNSAFE
+# jetty.httpConfig.uriCompliance=DEFAULT
+
+## Cookie compliance mode for parsing request Cookie headers: RFC6265_STRICT, RFC6265, RFC6265_LEGACY, RFC2965, RFC2965_LEGACY
+# jetty.httpConfig.requestCookieCompliance=RFC6265
+
+## Cookie compliance mode for generating response Set-Cookie: RFC2965, RFC6265
+# jetty.httpConfig.responseCookieCompliance=RFC6265</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4374,7 +4925,15 @@ For example, <code>jetty.httpConfig.requestCookieCompliance=RFC6265,-RESERVED_NA
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-server.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/server.mod[tags=documentation-scheduler-config]</pre>
+<pre>### Server Scheduler Configuration
+## The scheduler thread name, defaults to "Scheduler-{hashCode()}" if blank.
+# jetty.scheduler.name=
+
+## Whether the server scheduler threads are daemon.
+# jetty.scheduler.daemon=false
+
+## The number of server scheduler threads.
+# jetty.scheduler.threads=1</pre>
 </div>
 </div>
 </div>
@@ -4391,7 +4950,59 @@ For example, <code>jetty.httpConfig.requestCookieCompliance=RFC6265,-RESERVED_NA
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-connector]</pre>
+<pre>### TLS (SSL) Connector Configuration
+
+## The host/address to bind the connector to.
+# jetty.ssl.host=0.0.0.0
+
+## The port the connector listens on.
+# jetty.ssl.port=8443
+
+## The connector idle timeout, in milliseconds.
+# jetty.ssl.idleTimeout=30000
+
+## The number of acceptors (-1 picks a default value based on number of cores).
+# jetty.ssl.acceptors=1
+
+## The number of selectors (-1 picks a default value based on number of cores).
+# jetty.ssl.selectors=-1
+
+## The ServerSocketChannel accept queue backlog (0 picks the platform default).
+# jetty.ssl.acceptQueueSize=0
+
+## The thread priority delta to give to acceptor threads.
+# jetty.ssl.acceptorPriorityDelta=0
+
+## Whether to enable the SO_REUSEADDR socket option.
+# jetty.ssl.reuseAddress=true
+
+## Whether to enable the SO_REUSEPORT socket option.
+# jetty.ssl.reusePort=false
+
+## Whether to enable the TCP_NODELAY socket option on accepted sockets.
+# jetty.ssl.acceptedTcpNoDelay=true
+
+## The SO_RCVBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedReceiveBufferSize=-1
+
+## The SO_SNDBUF socket option to set on accepted sockets.
+## A value of -1 indicates that the platform default is used.
+# jetty.ssl.acceptedSendBufferSize=-1
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with an HTTP 400 response.
+# jetty.ssl.sniRequired=false
+
+## Whether client SNI data is checked to match CN and SAN in server certificates.
+## When SNI is checked, if the match fails the connection is rejected with an HTTP 400 response.
+# jetty.ssl.sniHostCheck=true
+
+## The max age, in seconds, for the Strict-Transport-Security response header.
+# jetty.ssl.stsMaxAgeSeconds=31536000
+
+## Whether to include the subdomain property in any Strict-Transport-Security header.
+# jetty.ssl.stsIncludeSubdomains=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4424,7 +5035,71 @@ Refer to <a href="#og-module-http-selectors">this section</a> for more informati
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl.mod[tags=documentation-ssl-context]</pre>
+<pre>### SslContextFactory Configuration
+## Note that OBF passwords are not secure, just protected from casual observation.
+
+## Whether client SNI data is required for all secure connections.
+## When SNI is required, clients that do not send SNI data are rejected with a TLS handshake error.
+# jetty.sslContext.sniRequired=false
+
+## The Endpoint Identification Algorithm.
+## Same as javax.net.ssl.SSLParameters#setEndpointIdentificationAlgorithm(String).
+# jetty.sslContext.endpointIdentificationAlgorithm=
+
+## The JSSE Provider.
+# jetty.sslContext.provider=
+
+## The KeyStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.keyStorePath=etc/keystore.p12
+## The KeyStore absolute file path.
+# jetty.sslContext.keyStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The TrustStore file path (relative to $JETTY_BASE).
+# jetty.sslContext.trustStorePath=etc/keystore.p12
+## The TrustStore absolute file path.
+# jetty.sslContext.trustStoreAbsolutePath=${jetty.base}/etc/keystore.p12
+
+## The KeyStore password.
+# jetty.sslContext.keyStorePassword=
+
+## The Keystore type.
+# jetty.sslContext.keyStoreType=PKCS12
+
+## The KeyStore provider.
+# jetty.sslContext.keyStoreProvider=
+
+## The KeyManager password.
+# jetty.sslContext.keyManagerPassword=
+
+## The TrustStore password.
+# jetty.sslContext.trustStorePassword=
+
+## The TrustStore type.
+# jetty.sslContext.trustStoreType=PKCS12
+
+## The TrustStore provider.
+# jetty.sslContext.trustStoreProvider=
+
+## Whether client certificate authentication is required.
+# jetty.sslContext.needClientAuth=false
+
+## Whether client certificate authentication is desired, but not required.
+# jetty.sslContext.wantClientAuth=false
+
+## Whether cipher order is significant.
+# jetty.sslContext.useCipherSuitesOrder=true
+
+## The SSLSession cache size.
+# jetty.sslContext.sslSessionCacheSize=-1
+
+## The SSLSession cache timeout (in seconds).
+# jetty.sslContext.sslSessionTimeout=-1
+
+## Whether TLS renegotiation is allowed.
+# jetty.sslContext.renegotiationAllowed=true
+
+## The max number of TLS renegotiations per connection.
+# jetty.sslContext.renegotiationLimit=5</pre>
 </div>
 </div>
 </div>
@@ -4477,7 +5152,8 @@ When the scanning detects a change to the KeyStore file, the correspondent <code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-ssl-reload.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ssl-reload.mod[tags=documentation]</pre>
+<pre># Monitored directory scan period, in seconds.
+# jetty.sslContext.reload.scanInterval=1</pre>
 </div>
 </div>
 </div>
@@ -4492,7 +5168,37 @@ The KeyStore file is automatically deleted when the JVM exits, and re-created wh
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-test-keystore.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/test-keystore.mod[]</pre>
+<pre>[description]
+Test keystore with self-signed SSL Certificate.
+DO NOT USE IN PRODUCTION!!!
+
+[tags]
+demo
+ssl
+
+[before]
+ssl
+
+[files]
+maven://org.bouncycastle/bcpkix-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcprov-jdk15on/${bouncycastle.version}|lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+maven://org.bouncycastle/bcutil-jdk15to18/${bouncycastle.version}|lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
+
+[lib]
+lib/jetty-keystore-${jetty.version}.jar
+lib/bouncycastle/bcpkix-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcprov-jdk15on-${bouncycastle.version}.jar
+lib/bouncycastle/bcutil-jdk15on-${bouncycastle.version}.jar
+
+[xml]
+etc/jetty-test-keystore.xml
+
+[ini]
+bouncycastle.version?=1.70
+jetty.webapp.addServerClasses+=,${jetty.base.uri}/lib/bouncycastle/
+jetty.sslContext.keyStorePath?=etc/test-keystore.p12
+jetty.sslContext.keyStoreType?=PKCS12
+jetty.sslContext.keyStorePassword?=OBF:1vny1zlo1x8e1vnw1vn61x8g1zlu1vn4</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4517,7 +5223,30 @@ Start with the default value of <code>maxThreads</code>, and tune for larger val
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-threadpool.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/threadpool.mod[tags=documentation]</pre>
+<pre>## Thread name prefix.
+#jetty.threadPool.namePrefix=qtp&lt;hashCode&gt;
+
+## Minimum number of pooled threads.
+#jetty.threadPool.minThreads=10
+
+## Maximum number of pooled threads.
+#jetty.threadPool.maxThreads=200
+
+## Number of reserved threads (-1 for heuristic).
+#jetty.threadPool.reservedThreads=-1
+
+## Whether to use virtual threads, if the runtime supports them.
+## Deprecated, use Jetty module 'threadpool-virtual-preview' instead.
+#jetty.threadPool.useVirtualThreads=false
+
+## Thread idle timeout (in milliseconds).
+#jetty.threadPool.idleTimeout=60000
+
+## The max number of idle threads that are evicted in one idleTimeout period.
+#jetty.threadPool.maxEvictCount=1
+
+## Whether to output a detailed dump.
+#jetty.threadPool.detailedDump=false</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4572,7 +5301,35 @@ To enable preview features, this module needs to specify the <code>--enable-prev
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-threadpool-virtual-preview.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/threadpool-virtual-preview.mod[tags=documentation]</pre>
+<pre>## Platform threads name prefix.
+#jetty.threadPool.namePrefix=qtp&lt;hashCode&gt;
+
+## Minimum number of pooled threads.
+#jetty.threadPool.minThreads=10
+
+## Maximum number of pooled threads.
+#jetty.threadPool.maxThreads=200
+
+## Number of reserved threads (-1 for heuristic).
+#jetty.threadPool.reservedThreads=-1
+
+## Thread idle timeout (in milliseconds).
+#jetty.threadPool.idleTimeout=60000
+
+## The max number of idle threads that can be evicted in one idleTimeout period.
+#jetty.threadPool.maxEvictCount=1
+
+## Whether to output a detailed dump.
+#jetty.threadPool.detailedDump=false
+
+## Virtual threads name prefix.
+#jetty.threadPool.virtual.namePrefix=qtp&lt;hashCode&gt;-virtual-
+
+## Whether virtual threads are allowed to set thread locals.
+#jetty.threadPool.virtual.allowSetThreadLocals=true
+
+## Whether virtual threads inherits the values of inheritable thread locals.
+#jetty.threadPool.virtual.inheritInheritableThreadLocals=true</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4598,7 +5355,7 @@ To enable preview features, this module needs to specify the <code>--enable-prev
 <div class="sect4">
 <h5 id="og-module-eeN-webapp"><a class="anchor" href="#og-module-eeN-webapp"></a><a class="link" href="#og-module-eeN-webapp">Module <code>ee{8,9,10}-webapp</code></a></h5>
 <div class="paragraph">
-<p>Unresolved directive in modules/module-eeN-webapp.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-webapp.mod[tags=description]</p>
+<p>This module enables deployment of Java Servlet web applications.</p>
 </div>
 <div class="paragraph">
 <p>Multiple versions of this module exist (<code>ee{8,9,10}-webapp</code>) to support each Jakarta EE platform&#8217;s version of the Java Servlet specification.
@@ -4606,7 +5363,20 @@ Jetty&#8217;s configuration properties are identical across all versions of this
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-eeN-webapp.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-webapp.mod[tags=ini-template]</pre>
+<pre>## Add to the server wide default jars and packages protected or hidden from webapps.
+## System classes are protected and cannot be overridden by a webapp.
+## Server classes are hidden and cannot be seen by a webapp
+## Lists of patterns are comma separated and may be either:
+##  + a qualified classname e.g. 'com.acme.Foo' 
+##  + a package name e.g. 'net.example.'
+##  + a jar file e.g. '${jetty.base.uri}/lib/dependency.jar' 
+##  + a directory of jars,resource or classes e.g. '${jetty.base.uri}/resources' 
+##  + A pattern preceded with a '-' is an exclusion, all other patterns are inclusions
+##
+## The +=, operator appends to a CSV list with a comma as needed.
+##
+#jetty.webapp.addSystemClasses+=,org.example.
+#jetty.webapp.addServerClasses+=,org.example.</pre>
 </div>
 </div>
 </div>
@@ -4627,7 +5397,8 @@ See <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xh
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in modules/module-well-known.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/well-known.mod[tags=documentation]</pre>
+<pre>## Well Known Directory (relative to $JETTY_BASE if relative path, otherwise it is an absolute path).
+# jetty.wellknown.dir=.well-known</pre>
 </div>
 </div>
 </div>
@@ -4636,13 +5407,58 @@ See <a href="https://www.iana.org/assignments/well-known-uris/well-known-uris.xh
 <div class="sect2">
 <h3 id="og-deploy"><a class="anchor" href="#og-deploy"></a><a class="link" href="#og-deploy">Web Application Deployment</a></h3>
 <div class="paragraph">
-<p>Most of the times you want to be able to customize the deployment of your web applications, for example by changing the <code>contextPath</code>, or by adding JNDI entries, or by configuring virtual hosts, etc.</p>
+<p>Most of the time you want to be able to customize the deployment of your web applications, for example by changing the <code>contextPath</code>, or by adding JNDI entries, or by configuring virtual hosts, etc.</p>
 </div>
 <div class="paragraph">
-<p>The customization is performed by the <a href="#og-module-eeN-deploy"><code>ee{8,9,10}-deploy</code> module</a> by processing <a href="#og-deploy-jetty">Jetty context XML files</a>.</p>
+<p>Jetty supports the deployment of each web application to a specific <em>environment</em>.
+The available environments are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java EE 8&#8201;&#8212;&#8201;Supports Servlet 4.0 (and associated specifications) in the <code>javax.*</code> packages.</p>
+</li>
+<li>
+<p>Jakarta EE 9&#8201;&#8212;&#8201;Supports Servlet 5.0 (and associated specifications) in the <code>jakarta.*</code> packages.</p>
+</li>
+<li>
+<p>Jakarta EE 10&#8201;&#8212;&#8201;Supports Servlet 6.0 (and associated specifications) in the <code>jakarta.*</code> packages.</p>
+</li>
+<li>
+<p>Jetty core&#8201;&#8212;&#8201;Supports web applications written against the Jetty <code>Handler</code> APIs, without any Servlet dependencies.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This means that you can simultaneously deploy an old Java EE 8 web application, say <code>old-ee8.war</code>, alongside a new Jakarta EE 10 web application, say <code>new-ee10.war</code>, alongside a web application that only uses the Jetty <code>Handler</code> APIs, say <code>app-jetty.xml</code>.</p>
+</div>
+<div class="paragraph">
+<p>The customization is performed by processing <a href="#og-deploy-jetty">Jetty context XML files</a>.</p>
 </div>
 <div class="paragraph">
 <p>The <code>deploy</code> module contains the <code>DeploymentManager</code> component that scans the <code>$JETTY_BASE/webapps</code> directory for changes, following the deployment rules described in <a href="#og-deploy-rules">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>For each specific environment there is a specific deploy module that you must enable:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For Java EE 8, <a href="#og-module-eeN-deploy"><code>ee8-deploy</code></a></p>
+</li>
+<li>
+<p>For Java EE 9, <a href="#og-module-eeN-deploy"><code>ee9-deploy</code></a></p>
+</li>
+<li>
+<p>For Java EE 10, <a href="#og-module-eeN-deploy"><code>ee10-deploy</code></a></p>
+</li>
+<li>
+<p>For Jetty core, <a href="#og-module-core-deploy"><code>core-deploy</code></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each of these modules provide the environment specific features, and depend on the <code>deploy</code> module that provides the scanning features.</p>
 </div>
 <div class="sect3">
 <h4 id="og-deploy-hot-static"><a class="anchor" href="#og-deploy-hot-static"></a><a class="link" href="#og-deploy-hot-static">Hot vs Static Deployment</a></h4>
@@ -4687,6 +5503,8 @@ This means that to deploy/redeploy/undeploy a web application you will need to s
 <div class="paragraph">
 <p><em>Removing</em> a <code>*.war</code> file, a <code>*.war</code> directory, a Jetty context XML file or a normal directory from <code>$JETTY_BASE/webapps</code> causes the <code>DeploymentManager</code> to undeploy the web application, which means that the Jetty context component representing the web application is stopped and removed from the Jetty server.</p>
 </div>
+<div class="sect4">
+<h5 id="og-deploy-rules-context-path"><a class="anchor" href="#og-deploy-rules-context-path"></a><a class="link" href="#og-deploy-rules-context-path">Context Path Resolution</a></h5>
 <div class="paragraph">
 <p>When a file or directory is added to <code>$JETTY_BASE/webapps</code>, the <code>DeploymentManager</code> derives the web application <code>contextPath</code> from the file or directory name, with the following rules:</p>
 </div>
@@ -4697,7 +5515,7 @@ This means that to deploy/redeploy/undeploy a web application you will need to s
 The <code>contextPath</code> would be <code>/mywebapp</code> (that is, the web application is reachable at <code>http://localhost:8080/mywebapp/</code>).</p>
 </li>
 <li>
-<p>If the directory name is <code>ROOT</code>, case insensitive, the <code>contextPath</code> is <code>/</code> (that is, the web application is reachable at <code>http://localhost:8080/</code>).</p>
+<p>If the directory name is <code>ROOT</code>, case-insensitive, the <code>contextPath</code> is <code>/</code> (that is, the web application is reachable at <code>http://localhost:8080/</code>).</p>
 </li>
 <li>
 <p>If the directory name ends with <code>.d</code>, for example <code>config.d/</code>, it is ignored, although it may be referenced to configure other web applications (for example to store common files).</p>
@@ -4706,20 +5524,48 @@ The <code>contextPath</code> would be <code>/mywebapp</code> (that is, the web a
 <p>If the <code>*.war</code> file name is, for example, <code>mywebapp.war</code>, it is deployed as a standard web application with the context path <code>/mywebapp</code> (that is, the web application is reachable at <code>http://localhost:8080/mywebapp/</code>).</p>
 </li>
 <li>
-<p>If the file name is <code>ROOT.war</code>, case insensitive, the <code>contextPath</code> is <code>/</code> (that is, the web application is reachable at <code>http://localhost:8080/</code>).</p>
+<p>If the file name is <code>ROOT.war</code>, case-insensitive, the <code>contextPath</code> is <code>/</code> (that is, the web application is reachable at <code>http://localhost:8080/</code>).</p>
 </li>
 <li>
 <p>If both the <code>mywebapp.war</code> file and the <code>mywebapp/</code> directory exist, only the file is deployed.
 This allows the directory with the same name to be the <code>*.war</code> file unpack location and avoid that the web application is deployed twice.</p>
 </li>
 <li>
-<p>A <a href="#og-deploy-jetty">Jetty context XML file</a> named <code>mywebapp.xml</code> is deployed as a web application by processing the directives contained in the XML file itself, which must set the <code>contextPath</code>.</p>
+<p>A <a href="#og-deploy-jetty">Jetty context XML file</a> named <code>mywebapp.xml</code> is deployed as a web application by processing the directives contained in the XML file itself, which must set the <code>contextPath</code>, which could be different from the name of the XML file.</p>
 </li>
 <li>
 <p>If both <code>mywebapp.xml</code> and <code>mywebapp.war</code> exist, only the XML file is deployed.
 This allows the XML file to reference the <code>*.war</code> file and avoid that the web application is deployed twice.</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-deploy-rules-environment"><a class="anchor" href="#og-deploy-rules-environment"></a><a class="link" href="#og-deploy-rules-environment">Environment Resolution</a></h5>
+<div class="paragraph">
+<p>A web application is always deployed to a specific environment.</p>
+</div>
+<div class="paragraph">
+<p>If you enabled only one specific deployer module, for example <code>ee10-deploy</code>, then the web applications and the Jetty context XML files in <code>$JETTY_BASE/webapps</code> will be deployed to the <code>ee10</code> environment.</p>
+</div>
+<div class="paragraph">
+<p>You can enable multiple deployer modules if you need to deploy multiple web applications each to a specific environment.</p>
+</div>
+<div class="paragraph">
+<p>For example, you have an <code>old-ee9.war</code> web application that you want to deploy to the Jakarta EE 9 environment, and a <code>new-ee10.war</code> web application that you want to deploy to the Jakarta EE 10 environment.
+First, you must enable both the <code>ee9-deploy</code> and the <code>ee10-deploy</code> modules.
+Then, you add a <code>*.properties</code> file with the same name of the web application, in the example above <code>$JETTY_BASE/webapps/old-ee9.properties</code>, with the following content:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>environment=ee9</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You may also add a <code>*.properties</code> file for <code>new-ee10.war</code>, but it is not necessary because the most recent environment is used by default.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -4751,7 +5597,7 @@ Recall that the <code>DeploymentManager</code> component of the Jetty <code>depl
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/wiki<span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/myapps/myapp.war<span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
 <span class="tag">&lt;/Configure&gt;</span></code></pre>
@@ -4761,7 +5607,7 @@ Recall that the <code>DeploymentManager</code> component of the Jetty <code>depl
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
+<td>Configures a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/ee10/webapp/WebAppContext.html"><code>WebAppContext</code></a>, which is the Jetty component that represents a standard Servlet web application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -4821,7 +5667,7 @@ If you place both the Jetty context XML file <em>and</em> the <code>*.war</code>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/wiki<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;SystemProperty</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">myapps.dir</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span>/myapp.war<span class="tag">&lt;/Set&gt;</span>
 <span class="tag">&lt;/Configure&gt;</span></code></pre>
@@ -4846,12 +5692,12 @@ The JNDI entry must be <em>defined</em> in a <a href="#og-jndi-xml">Jetty XML fi
 <div class="title">mywebapp.xml</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;<a href="https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt" class="bare">https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt</a>;</span>
+<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wac</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wac</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/mywebapp<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/mywebapp.war<span class="tag">&lt;/Set&gt;</span>
-<mark><span class="entity">&nbsp;</span><span class="entity">&nbsp;</span><span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.plus.jndi.Resource</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+#<span class="entity">&amp;nbsp;</span><span class="entity">&amp;nbsp;</span><span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.plus.jndi.Resource</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;Arg&gt;</span><span class="tag">&lt;Ref</span> <span class="attribute-name">refid</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">wac</span><span class="delimiter">&quot;</span></span><span class="tag">/&gt;</span><span class="tag">&lt;/Arg&gt;</span>
     <span class="tag">&lt;Arg&gt;</span>jdbc/myds<span class="tag">&lt;/Arg&gt;</span>
      <span class="tag">&lt;Arg&gt;</span>
@@ -4861,7 +5707,7 @@ The JNDI entry must be <em>defined</em> in a <a href="#og-jndi-xml">Jetty XML fi
            <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">password</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>password<span class="tag">&lt;/Set&gt;</span>
         <span class="tag">&lt;/New&gt;</span>
      <span class="tag">&lt;/Arg&gt;</span>
-  <span class="tag">&lt;/New&gt;</span></mark>
+  <span class="tag">&lt;/New&gt;</span>#
 <span class="tag">&lt;/Configure&gt;</span></code></pre>
 </div>
 </div>
@@ -4947,7 +5793,7 @@ For example if the non-ASCII domain name <code>www.√integral.com</code> is giv
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/mywebapp<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/mywebapp.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">virtualHosts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -5018,7 +5864,7 @@ For example if the non-ASCII domain name <code>www.√integral.com</code> is giv
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/domain.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">virtualHosts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -5035,7 +5881,7 @@ For example if the non-ASCII domain name <code>www.√integral.com</code> is giv
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/hobby.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">virtualHosts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -5067,7 +5913,7 @@ For example if the non-ASCII domain name <code>www.√integral.com</code> is giv
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/domain.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">virtualHosts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -5084,7 +5930,7 @@ For example if the non-ASCII domain name <code>www.√integral.com</code> is giv
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/hobby.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">virtualHosts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
@@ -5132,7 +5978,7 @@ The web application resources are served by Jetty from the files extracted in th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/mywebapp<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/mywebapp.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">extractWAR</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>false<span class="tag">&lt;/Set&gt;</span>
@@ -5153,7 +5999,7 @@ This allows you to add host specific configuration or server specific configurat
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
 
-<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee9.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.webapp.WebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/mywebapp<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/mywebapp.war<span class="tag">&lt;/Set&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">overrideDescriptor</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/opt/webapps/mywebapp-web.xml<span class="tag">&lt;/Set&gt;</span>
@@ -5184,8 +6030,8 @@ This allows you to add host specific configuration or server specific configurat
   <td class="code"><pre><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span>
          <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">4.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">6.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;servlet&gt;</span>
     <span class="tag">&lt;servlet-name&gt;</span>my-servlet<span class="tag">&lt;/servlet-name&gt;</span>
     <span class="tag">&lt;init-param&gt;</span>
@@ -5285,7 +6131,17 @@ When you enable the <code>logging-jetty</code> module&#8201;&#8212;&#8201;either
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-modules=server
+INFO  : <mark>logging-jetty   transitively enabled</mark>
+INFO  : http            initialized in ${jetty.base}/start.d/http.ini
+INFO  : resources       transitively enabled
+INFO  : threadpool      transitively enabled, ini template available with --add-modules=threadpool
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-modules=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : <mark>copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties</mark>
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5509,7 +6365,7 @@ With the <code>logging-jul-capture</code> Jetty module, the logging follows this
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="685" height="174">
+<img src="images/diag-792f4cd700f2b5af8fedd7b0249d25b4.png" alt="Diagram" width="670" height="180">
 </div>
 </div>
 <div class="paragraph">
@@ -5665,7 +6521,11 @@ Request log files are rolled every day, and retained for customizable number of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [threadpool-virtual-preview]. Use --dry-run to generate the command line to avoid forking.
+<strong>2023-07-03 16:24:21.964:</strong>WARN :oe.jetty:main: Virtual threads are a Java Preview Feature, support may be limited.
+<strong>2023-07-03 16:24:22.092:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:22.118:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4690b489{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-07-03 16:24:22.128:</strong>INFO :oejs.Server:main: Started oejs.Server@6b419da{STARTING}[12.0.0.beta3,sto=5000] @347ms</code></pre>
 </div>
 </div>
 </div>
@@ -5789,7 +6649,19 @@ INFO  : Base directory was modified</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : mkdir ${jetty.base}/start.d
+INFO  : server          transitively enabled, ini template available with --add-modules=server
+INFO  : logging-jetty   transitively enabled
+INFO  : resources       transitively enabled
+INFO  : https           initialized in ${jetty.base}/start.d/https.ini
+INFO  : ssl             initialized in ${jetty.base}/start.d/ssl.ini
+INFO  : threadpool      transitively enabled, ini template available with --add-modules=threadpool
+INFO  : logging/slf4j   transitive provider of logging/slf4j for logging-jetty
+INFO  : logging/slf4j   dynamic dependency of logging-jetty
+INFO  : bytebufferpool  transitively enabled, ini template available with --add-modules=bytebufferpool
+INFO  : mkdir ${jetty.base}/resources
+INFO  : copy ${jetty.home}/modules/logging/jetty/resources/jetty-logging.properties to ${jetty.base}/resources/jetty-logging.properties
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5833,7 +6705,12 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : test-keystore   initialized in ${jetty.base}/start.d/test-keystore.ini
+INFO  : mkdir ${jetty.base}/lib/bouncycastle
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15on/1.70/bcpkix-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15on-1.70.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15on/1.70/bcprov-jdk15on-1.70.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15on-1.70.jar
+INFO  : download https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk15to18/1.70/bcutil-jdk15to18-1.70.jar to ${jetty.base}/lib/bouncycastle/bcutil-jdk15on-1.70.jar
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5861,7 +6738,11 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:26.477:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-07-03 16:24:26.905:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:26.949:</strong>INFO :oejus.SslContextFactory:main: x509=X509@1ab06251(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@41ab013[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-07-03 16:24:26.994:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6155d082<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-07-03 16:24:27.000:</strong>INFO :oejs.Server:main: Started oejs.Server@68f1b17f{STARTING}[12.0.0.beta3,sto=5000] @1218ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5916,7 +6797,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="372" height="417">
+<img src="images/diag-e2488cc783b3434076c5a44ee7f19a2b.png" alt="Diagram" width="347" height="454">
 </div>
 </div>
 <div class="paragraph">
@@ -5924,7 +6805,7 @@ Browsers only support secure HTTP/2.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="407" height="417">
+<img src="images/diag-8a7fb4bb9c84453a4bf01a24558e8026.png" alt="Diagram" width="382" height="454">
 </div>
 </div>
 <div class="paragraph">
@@ -5942,7 +6823,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-7387dfbb6f9fb9cfa951a697aca488a8.png" alt="Diagram" width="132" height="297">
 </div>
 </div>
 <div class="paragraph">
@@ -5950,7 +6831,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-70817cc5c7137abc9759cdcd3edbb658.png" alt="Diagram" width="215" height="415">
 </div>
 </div>
 <div class="paragraph">
@@ -5958,7 +6839,7 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="302" height="205">
+<img src="images/diag-2830e38460d606111888c5df2a645163.png" alt="Diagram" width="314" height="651">
 </div>
 </div>
 </div>
@@ -6012,7 +6893,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:29.494:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-07-03 16:24:29.907:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:29.962:</strong>INFO :oejus.SslContextFactory:main: x509=X509@38234a38(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@63fbfaeb[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-07-03 16:24:30.027:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@31976695<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-07-03 16:24:30.035:</strong>INFO :oejs.Server:main: Started oejs.Server@73d983ea{STARTING}[12.0.0.beta3,sto=5000] @1241ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6064,7 +6949,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:31.190:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:31.215:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2ab91552<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2023-07-03 16:24:31.224:</strong>INFO :oejs.Server:main: Started oejs.Server@3023df74{STARTING}[12.0.0.beta3,sto=5000] @582ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6167,7 +7054,13 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:33.639:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-07-03 16:24:34.075:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:34.131:</strong>INFO :oejus.SslContextFactory:main: x509=X509@16fdec90(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@1afdd473[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-07-03 16:24:34.178:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@260e86a1{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
+<strong>2023-07-03 16:24:34.178:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
+<strong>2023-07-03 16:24:34.179:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@19648c40<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
+<strong>2023-07-03 16:24:34.225:</strong>INFO :oejs.Server:main: Started oejs.Server@3899782c{STARTING}[12.0.0.beta3,sto=5000] @1400ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6669,7 +7562,7 @@ If the request URI is for a resource that does not exist, the response will like
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="453" height="308">
+<img src="images/diag-9f323b812fd1edc8217715ca0c2ba8e9.png" alt="Diagram" width="253" height="418">
 </div>
 </div>
 <div class="admonitionblock warning">
@@ -6749,7 +7642,8 @@ Forwarded: for=2.36.72.144:21216;proto=https</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : http-forwarded  initialized in ${jetty.base}/start.d/http-forwarded.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6809,7 +7703,8 @@ This mechanism is therefore independent of any protocol, so it can be used for T
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol  initialized in ${jetty.base}/start.d/proxy-protocol.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6822,7 +7717,9 @@ This mechanism is therefore independent of any protocol, so it can be used for T
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:36.319:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:36.352:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@515c6049<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-07-03 16:24:36.362:</strong>INFO :oejs.Server:main: Started oejs.Server@27ce24aa{STARTING}[12.0.0.beta3,sto=5000] @581ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6850,7 +7747,8 @@ For every new TCP connection, Jetty first interprets the proxy protocol bytes wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>INFO  : proxy-protocol-ssl initialized in ${jetty.base}/start.d/proxy-protocol-ssl.ini
+INFO  : Base directory was modified</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6863,7 +7761,11 @@ For every new TCP connection, Jetty first interprets the proxy protocol bytes wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-07-03 16:24:39.068:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-07-03 16:24:39.593:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:39.656:</strong>INFO :oejus.SslContextFactory:main: x509=X509@4241e0f4(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@4ebff610[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-07-03 16:24:39.721:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@39ff7139<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-07-03 16:24:39.728:</strong>INFO :oejs.Server:main: Started oejs.Server@1205bd62{STARTING}[12.0.0.beta3,sto=5000] @1426ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -9726,7 +10628,18 @@ It will match all <code>ServletContainerInitializer</code> classes not explicitl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jsp/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-jsp.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSP for all web applications deployed on the server.
+
+[environment]
+ee10
+
+[depend]
+ee10-servlet
+ee10-annotations
+ee10-apache-jsp</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10075,7 +10988,17 @@ trimmed?</p></td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jsp/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-jstl.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JSTL for all web applications deployed on the server.
+
+[environment]
+ee10
+
+[depend]
+ee10-jsp
+ee10-glassfish-jstl</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -10777,7 +11700,7 @@ If you don&#8217;t want to put your login module configuration file here, you ca
 <div class="sect4">
 <h5 id="og-jaas-webapp"><a class="anchor" href="#og-jaas-webapp"></a><a class="link" href="#og-jaas-webapp">Configure the webapp for JAAS</a></h5>
 <div class="paragraph">
-<p>The <code>&lt;realm-name&gt;</code> in <code>web.xml</code> will be used to identify the <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration that integrates JAAS with Jetty.</p>
+<p>The <code>&lt;realm-name&gt;</code> in <code>web.xml</code> will be used to identify the <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> declaration that integrates JAAS with Jetty.</p>
 </div>
 <div class="paragraph">
 <p>For example, this <code>web.xml</code> contains a realm called <code>Test JAAS Realm</code>:</p>
@@ -10798,17 +11721,17 @@ If you don&#8217;t want to put your login module configuration file here, you ca
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The name of the realm, which must be <em>identical</em> to the name of an <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration.</td>
+<td>The name of the realm, which must be <em>identical</em> to the name of an <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> declaration.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>We now need to declare an <code>org.eclipse.jetty.jaas.JAASLoginService</code> that references the realm name of <code>Test JAAS Realm</code>.
+<p>We now need to declare an <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> that references the realm name of <code>Test JAAS Realm</code>.
 Here&#8217;s an example of a suitable XML snippet:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.security.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Name</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Test JAAS Realm<span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginModuleName</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>xyz<span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
 <span class="tag">&lt;/New&gt;</span></code></pre>
@@ -10827,12 +11750,12 @@ Here&#8217;s an example of a suitable XML snippet:</p>
 </table>
 </div>
 <div class="paragraph">
-<p>The <code>org.eclipse.jetty.jaas.JAASLoginService</code> can be declared in a couple of different places, pick whichever suits your purposes best:</p>
+<p>The <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> can be declared in a couple of different places, pick whichever suits your purposes best:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>If you have more than one webapp that you would like to use the same security infrastructure, then you can declare your <code>org.eclipse.jetty.jaas.JAASLoginService</code> as a bean that is added to the <code>org.eclipse.jetty.server.Server</code>.
+<p>If you have more than one webapp that you would like to use the same security infrastructure, then you can declare your <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> as a bean that is added to the <code>org.eclipse.jetty.server.Server</code>.
 The file in which you declare this needs to be on Jetty&#8217;s execution path.
 The recommended procedure is to create a file in your <code>$jetty.base/etc</code> directory and then ensure it is on the classpath either by adding it to the Jetty <a href="#og-start-jar">start command line</a>, or more conveniently to a <a href="#custom-modules">custom module</a>.</p>
 <div class="paragraph">
@@ -10845,7 +11768,7 @@ The recommended procedure is to create a file in your <code>$jetty.base/etc</cod
 <span class="tag">&lt;Configure</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Server</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.Server</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">addBean</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;Arg&gt;</span>
-      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.security.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Test JAAS Realm<span class="tag">&lt;/Set&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">LoginModuleName</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>xyz<span class="tag">&lt;/Set&gt;</span>
       <span class="tag">&lt;/New&gt;</span>
@@ -10856,7 +11779,7 @@ The recommended procedure is to create a file in your <code>$jetty.base/etc</cod
 </div>
 </li>
 <li>
-<p>Alternatively, if you want to use JAAS with a specific webapp only, you declare your <code>org.eclipse.jetty.jaas.JAASLoginService</code> in a context XLM file specific to that webapp:</p>
+<p>Alternatively, if you want to use JAAS with a specific webapp only, you declare your <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> in a context XLM file specific to that webapp:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
@@ -10865,7 +11788,7 @@ The recommended procedure is to create a file in your <code>$jetty.base/etc</cod
   <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">securityHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.security.ConstraintSecurityHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
      <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-       <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+       <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.security.jaas.JAASLoginService</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
          <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Test JAAS Realm<span class="tag">&lt;/Set&gt;</span>
          <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">loginModuleName</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>xyz<span class="tag">&lt;/Set&gt;</span>
        <span class="tag">&lt;/New&gt;</span>
@@ -10900,7 +11823,7 @@ Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/a
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The name of the configuration <em>exactly</em> as specified in your <code>org.eclipse.jetty.jaas.JAASLoginService</code> declaration.</td>
+<td>The name of the configuration <em>exactly</em> as specified in your <code>org.eclipse.jetty.security.jaas.JAASLoginService</code> declaration.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -10921,16 +11844,16 @@ Refer to the <a href="https://docs.oracle.com/javase/7/docs/api/javax/security/a
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/jaas/spi/JDBCLoginModule.html"><code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/jaas/spi/JDBCLoginModule.html"><code>org.eclipse.jetty.security.jaas.spi.JDBCLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/jaas/spi/PropertyFileLoginModule.html"><code>org.eclipse.jetty.jaas.spi.PropertyFileLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/jaas/spi/PropertyFileLoginModule.html"><code>org.eclipse.jetty.security.jaas.spi.PropertyFileLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/jaas/spi/DataSourceLoginModule.html"><code>org.eclipse.jetty.jaas.spi.DataSourceLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/jaas/spi/DataSourceLoginModule.html"><code>org.eclipse.jetty.security.jaas.spi.DataSourceLoginModule</code></a></p>
 </li>
 <li>
-<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/jaas/spi/LdapLoginModule.html"><code>org.eclipse.jetty.jaas.ldap.LdapLoginModule</code></a></p>
+<p><a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/security/jaas/spi/LdapLoginModule.html"><code>org.eclipse.jetty.security.jaas.ldap.LdapLoginModule</code></a></p>
 </li>
 </ul>
 </div>
@@ -10952,7 +11875,7 @@ The class <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/je
 <div class="sect4">
 <h5 id="og-jdbcloginmodule"><a class="anchor" href="#og-jdbcloginmodule"></a><a class="link" href="#og-jdbcloginmodule">JDBCLoginModule</a></h5>
 <div class="paragraph">
-<p>The <code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code> stores user passwords and roles in a database accessed via JDBC calls.
+<p>The <code>org.eclipse.jetty.security.jaas.spi.JDBCLoginModule</code> stores user passwords and roles in a database accessed via JDBC calls.
 You can configure the JDBC connection information, as well as the names of the table and columns storing the username and credential, and the names of the table and columns storing the roles.</p>
 </div>
 <div class="paragraph">
@@ -10961,7 +11884,7 @@ You can configure the JDBC connection information, as well as the names of the t
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>jdbc { <i class="conum" data-value="1"></i><b>(1)</b>
-  org.eclipse.jetty.jaas.spi.JDBCLoginModule required <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
+  org.eclipse.jetty.security.jaas.spi.JDBCLoginModule required <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
   dbUrl=&quot;jdbc:hsqldb:.&quot; <i class="conum" data-value="4"></i><b>(4)</b>
   dbUserName=&quot;sa&quot; <i class="conum" data-value="5"></i><b>(5)</b>
   dbDriver=&quot;org.hsqldb.jdbcDriver&quot; <i class="conum" data-value="6"></i><b>(6)</b>
@@ -11047,7 +11970,7 @@ When the user logs out or the session expires, the information is flushed from m
 <div class="sect4">
 <h5 id="og-datasourceloginmodule"><a class="anchor" href="#og-datasourceloginmodule"></a><a class="link" href="#og-datasourceloginmodule">DataSourceLoginModule</a></h5>
 <div class="paragraph">
-<p>Similar to the <code>org.eclipse.jetty.jaas.spi.JDBCLoginModule</code>, but using a <code>javax.sql.DataSource</code> to connect to the database instead of a JDBC driver.
+<p>Similar to the <code>org.eclipse.jetty.security.jaas.spi.JDBCLoginModule</code>, but using a <code>javax.sql.DataSource</code> to connect to the database instead of a JDBC driver.
 The <code>javax.sql.DataSource</code> is obtained at runtime by performing a JNDI lookup on <code>java:comp/env/${dnJNDIName}</code>.</p>
 </div>
 <div class="paragraph">
@@ -11056,7 +11979,7 @@ The <code>javax.sql.DataSource</code> is obtained at runtime by performing a JND
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>ds { <i class="conum" data-value="1"></i><b>(1)</b>
-  org.eclipse.jetty.jaas.spi.DataSourceLoginModule required <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
+  org.eclipse.jetty.security.jaas.spi.DataSourceLoginModule required <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
   dbJNDIName=&quot;ds&quot; <i class="conum" data-value="4"></i><b>(4)</b>
   userTable=&quot;myusers&quot; <i class="conum" data-value="5"></i><b>(5)</b>
   userField=&quot;myuser&quot; <i class="conum" data-value="6"></i><b>(6)</b>
@@ -11120,7 +12043,7 @@ The <code>javax.sql.DataSource</code> is obtained at runtime by performing a JND
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>props { <i class="conum" data-value="1"></i><b>(1)</b>
-  org.eclipse.jetty.jaas.spi.PropertyFileLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
+  org.eclipse.jetty.security.jaas.spi.PropertyFileLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
   file=&quot;/somewhere/somefile.props&quot;; <i class="conum" data-value="4"></i><b>(4)</b>
 };</code></pre>
 </div>
@@ -11171,7 +12094,7 @@ dick: CRYPT:adpexzg3FUZAk,admin</pre>
 <div class="sect4">
 <h5 id="og-ldaploginmodule"><a class="anchor" href="#og-ldaploginmodule"></a><a class="link" href="#og-ldaploginmodule">LdapLoginModule</a></h5>
 <div class="paragraph">
-<p>The <code>org.eclipse.jetty.jaas.spi.LdapLoginModule</code> uses LDAP to access authentication and authorization information stored in a directory.
+<p>The <code>org.eclipse.jetty.security.jaas.spi.LdapLoginModule</code> uses LDAP to access authentication and authorization information stored in a directory.
 The LDAP connection information and structure of the authentication/authorization data can be configured.</p>
 </div>
 <div class="paragraph">
@@ -11180,7 +12103,7 @@ The LDAP connection information and structure of the authentication/authorizatio
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code>example  { <i class="conum" data-value="1"></i><b>(1)</b>
-  org.eclipse.jetty.jaas.spi.LdapLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
+  org.eclipse.jetty.security.jaas.spi.LdapLoginModule required  <i class="conum" data-value="2"></i><b>(2)</b> <i class="conum" data-value="3"></i><b>(3)</b>
   contextFactory=&quot;com.sun.jndi.ldap.LdapCtxFactory&quot; <i class="conum" data-value="4"></i><b>(4)</b>
   hostname=&quot;ldap.example.com&quot; <i class="conum" data-value="5"></i><b>(5)</b>
   port=&quot;389&quot; <i class="conum" data-value="6"></i><b>(6)</b>
@@ -11311,7 +12234,30 @@ If false, then authentication proceeds based on username and password informatio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-jaspi.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Enables JASPI authentication for deployed web applications.
+
+[environment]
+ee10
+
+[tags]
+security
+
+[depend]
+ee10-security
+auth-config-factory
+
+[lib]
+lib/jetty-ee10-jaspi-${jetty.version}.jar
+lib/ee10-jaspi/*.jar
+
+[xml]
+etc/jaspi/jetty-ee10-jaspi-authmoduleconfig.xml
+
+[files]
+basehome:etc/jaspi/jetty-ee10-jaspi-authmoduleconfig.xml|etc/jaspi/jetty-ee10-jaspi-authmoduleconfig.xml</pre>
 </div>
 </div>
 </div>
@@ -11331,14 +12277,61 @@ If false, then authentication proceeds based on username and password informatio
 <div class="sect5">
 <h6 id="og-jaspi-demo"><a class="anchor" href="#og-jaspi-demo"></a><a class="link" href="#og-jaspi-demo">JASPI Demo</a></h6>
 <div class="paragraph">
-<p>The <code>ee9-jaspi-demo</code> and <code>ee10-jaspi-demo</code> modules illustrate setting up HTTP Basic Authentication using the EE9 and EE10 Jakarta Authentication modules that come packaged with Jetty.</p>
+<p>The <code>ee9-jaspi-demo</code> and <code>ee10-jaspi-demo</code> modules illustrate setting up HTTP Basic Authentication using the EE9 and EE 10 Jakarta Authentication modules that come packaged with Jetty.</p>
 </div>
 <div class="paragraph">
-<p>The following example uses Jetty&#8217;s EE10 implementation of <code>AuthConfigProvider</code> to register a <code>ServerAuthModule</code> directly.</p>
+<p>The following example uses Jetty&#8217;s EE 10 implementation of <code>AuthConfigProvider</code> to register a <code>ServerAuthModule</code> directly.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/etc/jaspi/jetty-ee10-jaspi-demo.xml[]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Jetty//Configure//EN&quot; &quot;https://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
+
+<span class="tag">&lt;Configure&gt;</span>
+  <span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">jakarta.security.auth.message.config.AuthConfigFactory</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">getFactory</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">registerConfigProvider</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+      <span class="comment">&lt;!-- The Jetty provided implementation of AuthConfigProvider which will wrap a ServerAuthModule. --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>org.eclipse.jetty.ee10.security.jaspi.provider.JaspiAuthConfigProvider<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- A Map of initialization properties. --&gt;</span>
+      <span class="tag">&lt;Arg&gt;</span>
+        <span class="tag">&lt;Map&gt;</span>
+          <span class="tag">&lt;Entry&gt;</span>
+            <span class="comment">&lt;!-- Provide the fully qualified classname of the ServerAuthModule to be used. --&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>ServerAuthModule<span class="tag">&lt;/Item&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>org.eclipse.jetty.ee10.security.jaspi.modules.BasicAuthenticationAuthModule<span class="tag">&lt;/Item&gt;</span>
+          <span class="tag">&lt;/Entry&gt;</span>
+          <span class="tag">&lt;Entry&gt;</span>
+            <span class="comment">&lt;!-- Realm as utilised by Jetty Security  --&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>org.eclipse.jetty.ee10.security.jaspi.modules.RealmName<span class="tag">&lt;/Item&gt;</span>
+            <span class="tag">&lt;Item&gt;</span>Test Realm<span class="tag">&lt;/Item&gt;</span>
+          <span class="tag">&lt;/Entry&gt;</span>
+        <span class="tag">&lt;/Map&gt;</span>
+      <span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- Message Layer Identifier as per spec chapter 3.1  --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>HttpServlet<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- Application Context Identifier as per spec chapter 3.2
+
+        AppContextID ::= hostname blank context-path
+        The algorithm applied here will use the
+        _serverName on the configured JaspiAuthenticatorFactory (if set) and try to match it
+        against the &quot;server&quot; part (in the &quot;server /test&quot; example below).
+        Next it will try to match the ServletContext#getVirtualServerName to the &quot;server&quot; part.
+        If neither are set, it will then try to match the first Subject's principal name, and finally fall back to
+        the default value &quot;server&quot; if none are available.
+
+        The context-path should match the context path where this applies.
+      --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>server /test<span class="tag">&lt;/Arg&gt;</span>
+
+      <span class="comment">&lt;!-- A friendly description of the provided auth-module. --&gt;</span>
+      <span class="tag">&lt;Arg</span> <span class="attribute-name">type</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>A simple provider using HTTP BASIC authentication.<span class="tag">&lt;/Arg&gt;</span>
+    <span class="tag">&lt;/Call&gt;</span>
+  <span class="tag">&lt;/Call&gt;</span>
+<span class="tag">&lt;/Configure&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -11364,7 +12357,25 @@ For an example of this see the <code>ee10-jaspi-default-auth-config-factory</cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>Unresolved directive in jaspi/chapter.adoc - include::../../../../../../../jetty-home/target/jetty-home/modules/ee10-jaspi-default-auth-config-factory.mod[]</pre>
+<pre># DO NOT EDIT - See: https://www.eclipse.org/jetty/documentation/current/startup-modules.html
+
+[description]
+Provides a DefaultAuthConfigFactory for jaspi
+
+[environment]
+ee10
+
+[tags]
+security
+
+[depend]
+ee10-security
+
+[provide]
+auth-config-factory
+
+[xml]
+etc/jaspi/jetty-ee10-jaspi-default.xml</pre>
 </div>
 </div>
 </div>
@@ -11921,7 +12932,143 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code></code></pre>
+<pre class="CodeRay highlight nowrap"><code>oejs.Server@3911c2a7{STARTING}[12.0.0.beta3,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp798244209]@2f943d71{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59977ms,q=0}[ReservedThreadExecutor@6a78afa0{reserved=0/12,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@2f4948e4
+|  += ReservedThreadExecutor@6a78afa0{reserved=0/12,pending=0} - STARTED
+|  |  +&gt; threads size=0
+|  +&gt; threads size=4
+|     +&gt; qtp798244209-31-acceptor-0@5cb7b2c9-ServerConnector@5656be13{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=31 prio=3 ACCEPTING
+|     +&gt; qtp798244209-30 RUNNABLE tid=30 prio=5 SELECTING
+|     +&gt; qtp798244209-33 TIMED_WAITING tid=33 prio=5 IDLE
+|     +&gt; qtp798244209-32 TIMED_WAITING tid=32 prio=5 IDLE
++= oejut.ScheduledExecutorScheduler@43d7741f{STARTED} - STARTED
++- org.eclipse.jetty.io.ArrayByteBufferPool@77c2494c{min=0,max=65536,buckets=16,heap=0/2098200576,direct=0/2098200576}
+|  +&gt; direct size=16
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@f5958c9{capacity=4096,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@233795b6{capacity=8192,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3eb738bb{capacity=12288,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5bda8e08{capacity=16384,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1e800aaa{capacity=20480,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@185a6e9{capacity=24576,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6f03482{capacity=28672,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@9d5509a{capacity=32768,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@179ece50{capacity=36864,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3b0090a4{capacity=40960,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3cd3e762{capacity=45056,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1fa121e2{capacity=49152,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@7eac9008{capacity=53248,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4116aac9{capacity=57344,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@62ddbd7e{capacity=61440,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@74e52ef6{capacity=65536,inuse=0(0%)}
+|  +&gt; indirect size=16
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6ed3ccb2{capacity=4096,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1a677343{capacity=8192,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@15de0b3c{capacity=12288,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@489115ef{capacity=16384,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3857f613{capacity=20480,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@198b6731{capacity=24576,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@7c6908d7{capacity=28672,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3c9754d8{capacity=32768,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3bf7ca37{capacity=36864,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@79079097{capacity=40960,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4d1c00d0{capacity=45056,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4b2bac3f{capacity=49152,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4e08711f{capacity=53248,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@bcec361{capacity=57344,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@26794848{capacity=61440,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@302552ec{capacity=65536,inuse=0(0%)}
++~ org.eclipse.jetty.util.resource.FileSystemPool@3d285d7e
++= oejsh.DefaultHandler@40005471{showContext=true,favIcon=true,STARTED} - STARTED
++= oejsh.ContextHandlerCollection@2cd76f31{STARTED} - STARTED
++= ServerConnector@5656be13{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  +~ QueuedThreadPool[qtp798244209]@2f943d71{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59966ms,q=0}[ReservedThreadExecutor@6a78afa0{reserved=0/12,pending=0}] - STARTED
+|  +~ oejut.ScheduledExecutorScheduler@43d7741f{STARTED} - STARTED
+|  +~ org.eclipse.jetty.io.ArrayByteBufferPool@77c2494c{min=0,max=65536,buckets=16,heap=0/2098200576,direct=0/2098200576}
+|  += HttpConnectionFactory@1f3f4916[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@1ce24091{32768/8192,8192/8192,https://:0,[]}
+|  |     +&gt; customizers size=0
+|  |     +&gt; formEncodedMethods size=2
+|  |     |  +&gt; POST
+|  |     |  +&gt; PUT
+|  |     +&gt; outputBufferSize=32768
+|  |     +&gt; outputAggregationSize=8192
+|  |     +&gt; requestHeaderSize=8192
+|  |     +&gt; responseHeaderSize=8192
+|  |     +&gt; headerCacheSize=1024
+|  |     +&gt; secureScheme=https
+|  |     +&gt; securePort=0
+|  |     +&gt; idleTimeout=-1
+|  |     +&gt; sendDateHeader=false
+|  |     +&gt; sendServerVersion=true
+|  |     +&gt; sendXPoweredBy=false
+|  |     +&gt; delayDispatchUntilContent=true
+|  |     +&gt; persistentConnectionsEnabled=true
+|  |     +&gt; maxErrorDispatches=10
+|  |     +&gt; minRequestDataRate=0
+|  |     +&gt; minResponseDataRate=0
+|  |     +&gt; requestCookieCompliance=RFC6265@fbd1f6[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; responseCookieCompliance=RFC6265@fbd1f6[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; notifyRemoteAsyncErrors=true
+|  |     +&gt; relativeRedirectAllowed=false
+|  += SelectorManager@ServerConnector@5656be13{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += oeji.ManagedSelector@2aceadd4{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
+|  |     += AdaptiveExecutionStrategy@24aed80c/SelectorProducer@3a52dba3/PRODUCING/p=0/QueuedThreadPool[qtp798244209]@2f943d71{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59959ms,q=0}[ReservedThreadExecutor@6a78afa0{reserved=0/12,pending=0}][pc=0,pic=0,pec=0,epc=0]@2023-07-03T16:24:41.203884206-05:00 - STARTED
+|  |     |  +- SelectorProducer@3a52dba3
+|  |     |  +~ QueuedThreadPool[qtp798244209]@2f943d71{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59959ms,q=0}[ReservedThreadExecutor@6a78afa0{reserved=0/12,pending=0}] - STARTED
+|  |     +&gt; updates @ 2023-07-03T16:24:41.202955377-05:00 size=0
+|  |     +&gt; keys @ 2023-07-03T16:24:41.203154321-05:00 size=0
+|  +- sun.nio.ch.ServerSocketChannelImpl[/[0:0:0:0:0:0:0:0]:8080]
+|  +- qtp798244209-31-acceptor-0@5cb7b2c9-ServerConnector@5656be13{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@2a5c8d3f
++- org.eclipse.jetty.server.Server$DynamicErrorHandler@752325ad
++&gt; startJarLoader@3581c5f3
+|  +&gt; URLs size=8
+|  |  +&gt; file:/path/to/jetty.base/resources/
+|  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.7.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.0.beta3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.0.beta3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.0.beta3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.0.beta3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.0.beta3.jar
+|  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@1cf4f579
+|     +&gt; packages size=4
+|     |  +&gt; package org.eclipse.jetty.start.config
+|     |  +&gt; package org.eclipse.jetty.start.builders
+|     |  +&gt; package org.eclipse.jetty.start.shaded.util
+|     |  +&gt; package org.eclipse.jetty.start
+|     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@2bdd84fc
+|        +&gt; packages size=2
+|           +&gt; package sun.util.resources.provider
+|           +&gt; package sun.util.resources.cldr.provider
++&gt; environments size=1
+|  +&gt; oejuc.Environment$Named@0{core}
+|     +&gt; startJarLoader@3581c5f3
+|     |  +&gt; URLs size=8
+|     |  |  +&gt; file:/path/to/jetty.base/resources/
+|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.7.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.0.beta3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.0.beta3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.0.beta3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.0.beta3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.0.beta3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.0.beta3.jar
+|     |  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@1cf4f579
+|     |     +&gt; packages size=4
+|     |     |  +&gt; package org.eclipse.jetty.start.config
+|     |     |  +&gt; package org.eclipse.jetty.start.builders
+|     |     |  +&gt; package org.eclipse.jetty.start.shaded.util
+|     |     |  +&gt; package org.eclipse.jetty.start
+|     |     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@2bdd84fc
+|     |        +&gt; packages size=2
+|     |           +&gt; package sun.util.resources.provider
+|     |           +&gt; package sun.util.resources.cldr.provider
+|     +&gt; Attributes core size=0
++&gt; attributes size=0
++&gt; org.eclipse.jetty.util.resource.FileSystemPool@3d285d7e
+   +&gt; buckets size=0
+key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +&gt; undefined</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -12130,7 +13277,10 @@ Enables remote debugging
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>Error: Unable to access jarfile /path/to/jetty.home/start.jar</code></pre>
+<pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [remote-debug]. Use --dry-run to generate the command line to avoid forking.
+<mark>Listening for transport dt_socket at address: 5005</mark>
+<strong>2023-07-03 16:24:42.464:</strong>INFO :oejs.Server:main: jetty-12.0.0.beta3; built: 2023-06-29T21:01:14.254Z; git: a8feee5576945b9ac73298abc61feb617c84a6ac; jvm 20.0.1+9
+<strong>2023-07-03 16:24:42.492:</strong>INFO :oejs.Server:main: Started oejs.Server@71d15f18{STARTING}[12.0.0.beta3,sto=5000] @376ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12716,8 +13866,8 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.0.beta0<br>
-Last updated 2023-03-07 10:46:04 -0600
+Version 12.0.0.beta3<br>
+Last updated 2023-05-02 11:41:41 -0500
 </div>
 </div>
 </body>
