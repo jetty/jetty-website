@@ -36,7 +36,7 @@
                     <td class="tableblock halign-left valign-top"><?php print $row['version'];?></td>
                     <td class="tableblock halign-left valign-top">
                         <p class="tableblock">
-                            <b>zip.mp5</b> <?php print $row['zip.md5']; ?><br/>
+                            <b>zip.md5</b> <?php print $row['zip.md5']; ?><br/>
                             <b>zip.sha1</b> <?php print $row['zip.sha1']; ?><br/>
                             <b>tgz.md5</b> <?php print $row['tgz.md5']; ?><br/>
                             <b>tgz.sha1</b> <?php print $row['tgz.sha1']; ?>
