@@ -139,7 +139,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">17 <sup>(2)</sup></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">3.1 4.0 5.0 6.0</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2.3 3.0 3.1</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Beta</strong></p>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable</strong></p>
             </td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup>JavaEE Namespace<sup>(4)</sup></p></td>
