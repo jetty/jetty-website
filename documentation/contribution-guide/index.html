@@ -18,8 +18,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.0.beta3,</span>
-<span id="revdate">2023-07-03</span>
+<span id="revnumber">version 12.0.0.beta4,</span>
+<span id="revdate">2023-07-26</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Contribution Guide</div>
@@ -43,8 +43,8 @@
 <li><a href="#cg-contributing-build">Maven Build</a></li>
 <li><a href="#cg-coding-standards">Coding Standards</a>
 <ul class="sectlevel3">
-<li><a href="#cg-intelli-j">Intelli-J</a></li>
-<li><a href="#cg-eclipse">Eclipse</a></li>
+<li><a href="#cg-intellij-ide">IntelliJ IDE</a></li>
+<li><a href="#cg-eclipse-ide">Eclipse IDE</a></li>
 <li><a href="#cg-code-conventions">Code Conventions</a></li>
 <li><a href="#cg-logging-conventions">Logging Conventions</a></li>
 </ul>
@@ -218,7 +218,13 @@ First we start with how to checkout and build Jetty, then on to our general codi
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-10.0.x">jetty-11.0.x</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-12.0.x">jetty-12.0.x</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 6.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 17+</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-11.0.x">jetty-11.0.x</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Development</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 5.0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java 11+</p></td>
@@ -231,27 +237,27 @@ First we start with how to checkout and build Jetty, then on to our general codi
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x">jetty-9.4.x</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maintenance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End of Community Support</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java 8</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-9.3.x">jetty-9.3.x</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maintenance</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End of Life</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Java 8</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-8.1.x">jetty-8.1.x</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jetty-8</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Historical</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 2.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java 7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 6</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/tree/jetty-7">jetty-7</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jetty-7</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Mythical</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 1.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Java 6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 2.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java 5</p></td>
 </tr>
 </tbody>
 </table>
@@ -287,10 +293,6 @@ These are not needed to use Jetty; these are primarily of use for developers who
 <dt class="hdlist1">Build related artifacts that release separately, common assembly descriptors, remote resources, etc.</dt>
 <dd>
 <p><a href="https://github.com/eclipse/jetty.toolchain" class="bare">https://github.com/eclipse/jetty.toolchain</a></p>
-</dd>
-<dt class="hdlist1">Files associated with the development of Jetty&#8201;&#8212;&#8201;code styles, formatting, iplogs, etc.</dt>
-<dd>
-<p><a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git" class="bare">http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git</a></p>
 </dd>
 </dl>
 </div>
@@ -339,20 +341,17 @@ You can help track these down by opening an <a href="https://github.com/eclipse/
 <p>Jetty uses number of conventions for its source code. The developers of Jetty use a variety of tooling and editors when developing Jetty so standards and conventions are important!</p>
 </div>
 <div class="sect3">
-<h4 id="cg-intelli-j"><a class="anchor" href="#cg-intelli-j"></a><a class="link" href="#cg-intelli-j">Intelli-J</a></h4>
+<h4 id="cg-intellij-ide"><a class="anchor" href="#cg-intellij-ide"></a><a class="link" href="#cg-intellij-ide">IntelliJ IDE</a></h4>
 <div class="paragraph">
-<p>The suggested configuration for Intelli-J when working with Jetty is available here: <a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git/tree/idea-jetty-codestyle-settings.jar">Intelli-J Codestyle</a></p>
+<p>The suggested configuration for the IntelliJ IDE when working with Jetty is available in the code tree
+<code>/build-resources/jetty-codestyle-intellij.xml</code></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="cg-eclipse"><a class="anchor" href="#cg-eclipse"></a><a class="link" href="#cg-eclipse">Eclipse</a></h4>
+<h4 id="cg-eclipse-ide"><a class="anchor" href="#cg-eclipse-ide"></a><a class="link" href="#cg-eclipse-ide">Eclipse IDE</a></h4>
 <div class="paragraph">
-<p>The Eclipse format configuration can be found here:
-<a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git/tree/jetty-eclipse-java-format.xml">Eclipse Java Formatting</a></p>
-</div>
-<div class="paragraph">
-<p>There are also some templates available for Eclipse here:
-<a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git/tree/jetty-eclipse-codetemplates.xml">Eclipse Code Templates</a></p>
+<p>The Eclipse IDE format can be found in the code tree
+<code>/build-resources/jetty-codestyle-eclipse-ide.xml</code></p>
 </div>
 </div>
 <div class="sect3">
@@ -1076,7 +1075,7 @@ We are generally flexible in how we work with reporters of security issues from 
 <div class="sectionbody">
 <div class="paragraph">
 <p>Your interest in contributing to Eclipse Jetty is welcome and if there is anything you feel this guide is lacking please let us know.
-Feel free to open an Issue as described in this document and perhaps even contribute your suggestion to <a href="https://github.com/eclipse/jetty.project/tree/jetty-10.0.x-doc-refactor/jetty-documentation/src/main/asciidoc/contribution-guide">this document</a> itself!</p>
+Feel free to open an Issue as described in this document and perhaps even contribute your suggestion to <a href="https://github.com/eclipse/jetty.project/tree/jetty-12.0.x/documentation/jetty-documentation/src/main/asciidoc/contribution-guide">this document</a> itself!</p>
 </div>
 <div id="cg-contributing-guides" class="paragraph">
 <p>Our current guides are:</p>
@@ -1096,7 +1095,7 @@ Feel free to open an Issue as described in this document and perhaps even contri
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.0.beta3<br>
+Version 12.0.0.beta4<br>
 Last updated 2023-05-02 11:41:41 -0500
 </div>
 </div>
