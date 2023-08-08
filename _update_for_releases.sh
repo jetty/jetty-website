@@ -200,7 +200,7 @@ function maven_download() {
 
       if [[ staging_status -ne 0 ]]; then
         echo "  - download failed: $filename";
-        rm "$ARC_DIR/$filename";
+        rm "$ARC_DIR/$filename" 2>/dev/null;
         exit 1
       fi
     fi
