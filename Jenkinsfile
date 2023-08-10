@@ -21,7 +21,8 @@ pipeline {
                   GIT_SSH_COMMAND="ssh -i $SSH_KEY"
                   mkdir ~/.m2
                   cp $GLOBAL_MVN_SETTINGS ~/.m2/settings.xml
-                  ./_update_for_releases.sh -u
+                  ./_update_for_releases.sh settings
+                  ./_update_for_releases.sh update
                   
                   if [ -n "$(git status --porcelain)" ]; then
                     echo "Commiting Website Updates";
