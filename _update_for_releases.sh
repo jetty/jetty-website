@@ -2,10 +2,12 @@
 
 function usage() {
   echo "Usage: ";
-  echo " ./update_for_releases.sh";
-  echo "   -s : configured settings";
-  echo "   -c : clean archive of unused versions";
-  echo "   -u : update (pulls from staging if needed)";
+  echo " ./update_for_releases.sh [command]";
+  echo "   settings : configured settings";
+#  echo "   clean : clean archive of unused versions";
+  echo "   update : update";
+  echo "";
+  echo "Artifacts are pulled from configured nexus, central, and lastly staging repositories."
 }
 
 function set_global_variables() {
@@ -16,8 +18,12 @@ function set_global_variables() {
   JAVADOC_DIR=$(pwd)/javadoc
   TEMP_DIR=$ARC_DIR/temp
   SCRIPT_DIR=$(pwd)
+  
+  # use one of these and set on CLI, default to maven central?
+  NEXUS_ROOT="http://10.0.0.15:8081/repository/maven-public"
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
+
   GITHUB_ROOT="https://github.com/eclipse/jetty.project/archive"
   DOC_ROOT_9="$MAVEN_ROOT/jetty-documentation"
   DOC_ROOT_1x="$MAVEN_ROOT/documentation/jetty-documentation"
@@ -29,6 +35,7 @@ function print_global_variables() {
   echo "Versions File (txt): $VERSIONS_TXT"
   echo "Versions File (php): $VERSIONS_PHP"
   echo "Archive Directory: $ARC_DIR"
+  echo "Nexus Root URL: $NEXUS_ROOT"
   echo "Maven Root URL: $MAVEN_ROOT"
   echo "Maven Staging Root URL: $STAGING_ROOT"
   echo "Documentation Root 9 URL: $DOC_ROOT_9"
@@ -189,19 +196,25 @@ function maven_download() {
   local filename=$3
 
   if [[ ! -f "$ARC_DIR/$filename" ]]; then
-    echo "  - downloading $filename"
-    wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
-    local download_status=$?;
+    echo " - downloading from nexus $filename";
+    wget -O "$ARC_DIR/$filename" "$NEXUS_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+    local nexus_status=$?;
 
-    if [[ download_status -ne 0 ]]; then
-      echo "  - staging download $filename"
-      wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
-      local staging_status=$?;
+    if [[ nexus_status -ne 0 ]]; then
+      echo "  - downloading from maven $filename";
+      wget -O "$ARC_DIR/$filename" "$MAVEN_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+      local download_status=$?;
 
-      if [[ staging_status -ne 0 ]]; then
-        echo "  - download failed: $filename";
-        rm "$ARC_DIR/$filename" 2>/dev/null;
-        exit 1
+      if [[ download_status -ne 0 ]]; then
+        echo "  - downloading from staging $filename";
+        wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+        local staging_status=$?;
+
+        if [[ staging_status -ne 0 ]]; then
+          echo "  - download failed: $filename";
+          rm "$ARC_DIR/$filename" 2>/dev/null;
+          exit 1;
+        fi
       fi
     fi
   fi
@@ -286,7 +299,7 @@ function download_missing_files() {
 
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0)
   for version in "${versions[@]}"; do
-    echo "checking $jetty_12_0" 
+    #echo "checking $jetty_12_0" 
     download_distribution_files "$version"
     download_documentation_files "$version"
     download_github_files "$version"
@@ -482,7 +495,7 @@ function main() {
   directive=$1
 
   # print out the settings this script operates under
-  if [[ $directive == "-s" ]]; then
+  if [[ $directive == "settings" ]]; then
     init;
     gather_current_versions;
     print_global_variables;
@@ -492,7 +505,7 @@ function main() {
   fi
 
   # run an update process for any version changes
-  if [[ $directive == "-u" ]]; then
+  if [[ $directive == "update" ]]; then
     init;
     gather_current_versions;
     download_missing_files;

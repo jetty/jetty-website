@@ -24,7 +24,7 @@ require_once ('_projectCommon.php');
 // Begin: page-specific settings. Change these.
 $pageTitle = "Jetty Downloads";
 $Theme->setPageAuthor('Jesse McConnell');
-$Theme->setPageKeywords('jetty servlet jakartaee application container jsp');
+$Theme->setPageKeywords('jetty servlet ee8 ee9 ee10 jakartaee application container jsp');
 $Theme->setPageTitle($pageTitle);
 
 if (isset($Nav)) {
