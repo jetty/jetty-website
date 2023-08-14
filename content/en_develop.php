@@ -130,23 +130,11 @@
                 </div>
                 <div class="dlist">
                     <dl>
-                        <dt class="hdlist1">Administrative pom.xml file</dt>
-                        <dd>
-                            <p><a href="https://github.com/eclipse/jetty.parent" class="bare">https://github.com/eclipse/jetty.parent</a>
-                            </p>
-                        </dd>
                         <dt class="hdlist1">Build related artifacts that release separately, common assembly
                             descriptors, remote resources, etc.
                         </dt>
                         <dd>
                             <p><a href="https://github.com/eclipse/jetty.toolchain" class="bare">https://github.com/eclipse/jetty.toolchain</a>
-                            </p>
-                        </dd>
-                        <dt class="hdlist1">Files associated with the development of Jetty&#8201;&#8212;&#8201;code
-                            styles, formatting, iplogs, etc.
-                        </dt>
-                        <dd>
-                            <p><a href="http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git" class="bare">http://git.eclipse.org/c/jetty/org.eclipse.jetty.admin.git</a>
                             </p>
                         </dd>
                     </dl>
