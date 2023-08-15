@@ -22,7 +22,7 @@
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
 <span id="revnumber">version 12.0.0,</span>
-<span id="revdate">2023-08-07</span>
+<span id="revdate">2023-08-15</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -531,6 +531,7 @@
 <li><a href="#pg-migration-11-to-12-java-version">Required Java Version Changes</a></li>
 <li><a href="#pg-migration-11-to-12-maven-artifacts">Maven Artifacts Changes</a></li>
 <li><a href="#pg-migration-11-to-12-class-packages-names">Class Packages/Names Changes</a></li>
+<li><a href="#pg-migration-11-to-12-servlet-to-handler">Migrate Servlets to Jetty Handlers</a></li>
 <li><a href="#pg-migration-11-to-12-api-changes">APIs Changes</a>
 <ul class="sectlevel4">
 <li><a href="#pg-jetty-client"><code>jetty-client</code></a></li>
@@ -1436,7 +1437,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
+<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
 </div>
 </div>
 <div class="paragraph">
@@ -2363,7 +2364,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
+<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
 </div>
 </div>
 <div class="paragraph">
@@ -2548,7 +2549,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
+<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
 </div>
 </div>
 <div class="paragraph">
@@ -3932,7 +3933,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
+<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
 </div>
 </div>
 <div class="paragraph">
@@ -3986,7 +3987,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
+<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
 </div>
 </div>
 <div class="paragraph">
@@ -4879,7 +4880,7 @@ If you are interested in the low-level details of how the Eclipse Jetty server l
 <p>WebSocket support, for applications that want to embed a WebSocket server, via the <a href="#pg-server-websocket">WebSocket libraries</a></p>
 </li>
 <li>
-<p>FCGI support, to delegate requests to python or similar scripting languages.</p>
+<p>FCGI support, to delegate requests to PHP, Python, Ruby or similar scripting languages.</p>
 </li>
 </ul>
 </div>
@@ -5096,7 +5097,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
+<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="504" height="216">
 </div>
 </div>
 <div class="paragraph">
@@ -5166,7 +5167,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
+<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
 </div>
 </div>
 <div class="paragraph">
@@ -5696,7 +5697,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
+<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
 </div>
 </div>
 <div class="paragraph">
@@ -5819,21 +5820,21 @@ server.start();</code></pre>
 </div>
 <div class="paragraph">
 <p><code>Handler</code>s can process the HTTP request themselves, or they can be <code>Handler.Container</code>s that delegate HTTP request processing to one or more contained <code>Handler</code>s.
-This allows <code>Handler</code>s to be organised as a tree comprised of:</p>
+This allows <code>Handler</code>s to be organized as a tree comprised of:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Leaf <code>Handler</code>s that return <code>true</code> from the <code>process(...)</code> method, generate a response and succeed the <code>Callback</code>.</p>
+<p>Leaf <code>Handler</code>s that return <code>true</code> from the <code>handle(...)</code> method, generate a response and succeed the <code>Callback</code>.</p>
 </li>
 <li>
-<p>A <code>Handler.Wrapper</code> can be used to form a chain of <code>Handler</code>s where request, response or callback objects are wrapped in the <code>process(...)</code> method before being passed down the chain.</p>
+<p>A <code>Handler.Wrapper</code> can be used to form a chain of <code>Handler</code>s where request, response or callback objects are wrapped in the <code>handle(...)</code> method before being passed down the chain.</p>
 </li>
 <li>
-<p>A <code>Handler.Collection</code> that contains a sequence of <code>Handler</code>s, with each <code>Handler</code> being called in sequence until one returns <code>true</code> from its <code>process(\..)</code> method.</p>
+<p>A <code>Handler.Sequence</code> that contains a sequence of <code>Handler</code>s, with each <code>Handler</code> being called in sequence until one returns <code>true</code> from its <code>handle(...)</code> method.</p>
 </li>
 <li>
-<p>A specialized <code>Handler.Container</code> that may use properties of the request (for example, the URI, or a header, etc.) to select from one or more contained <code>Handler</code>s to delegate the HTTP request processing to.</p>
+<p>A specialized <code>Handler.Container</code> that may use properties of the request (for example, the URI, or a header, etc.) to select from one or more contained <code>Handler</code>s to delegate the HTTP request processing to, for example <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/PathMappingsHandler.html"><code>PathMappingsHandler</code></a>.</p>
 </li>
 </ul>
 </div>
@@ -5860,7 +5861,7 @@ server.setHandler(gzipHandler);</code></pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="screen">Server
 └── GzipHandler
-    └── Handler.Collection
+    └── Handler.Sequence
         ├── App1Handler
         └── App2Handler</code></pre>
 </div>
@@ -5912,7 +5913,7 @@ Many <em>context</em>s can be deployed together to enrich the web application of
 </div>
 <div class="paragraph">
 <p>Embedded web applications may also require additional features such as access to Jetty specific APIs, or utility features such as redirection from HTTP to HTTPS, support for <code>gzip</code> content compression, etc.
-The Jetty Server Libraries provides a number of out-of-the-box <em>Handler</em>s that implement the most common functionalities and are described in <a href="#pg-server-http-handler-use">this section</a>.</p>
+The Jetty Server Libraries provides a number of out-of-the-box <code>Handler</code>s that implement the most common functionalities and are described in the next sections.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-server-http-handler-use-util-context"><a class="anchor" href="#pg-server-http-handler-use-util-context"></a><a class="link" href="#pg-server-http-handler-use-util-context">ContextHandler</a></h6>
@@ -5972,9 +5973,9 @@ However, this has no knowledge of the concept of <em>context</em> and just itera
 <p>A better choice for multiple web application is <code>ContextHandlerCollection</code>, that matches a <em>context</em> from either its <em>context path</em> or <em>virtual host</em>, without iterating through the <code>Handler</code>s.</p>
 </div>
 <div class="paragraph">
-<p>If <code>ContextHandlerCollection</code> does not find a match, it just returns <code>false</code> from its <code>process(...)</code> method.
+<p>If <code>ContextHandlerCollection</code> does not find a match, it just returns <code>false</code> from its <code>handle(...)</code> method.
 What happens next depends on the <code>Handler</code> tree structure: other <code>Handler</code>s may be invoked after <code>ContextHandlerCollection</code>, for example <code>DefaultHandler</code> (see <a href="#pg-server-http-handler-use-util-default-handler">this section</a>).
-Eventually, if no <code>Handler</code> returns <code>true</code> from their own <code>process(...)</code> method, then Jetty returns an HTTP <code>404</code> response to the client.</p>
+Eventually, if no <code>Handler</code> returns <code>true</code> from their own <code>handle(...)</code> method, then Jetty returns an HTTP <code>404</code> response to the client.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6124,7 +6125,7 @@ handler.setBaseResource(resource);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If the resource is not found, <code>ResourceHandler</code> will not return <code>true</code> from the <code>process(...)</code> method, so what happens next depends on the <code>Handler</code> tree structure.
+<p>If the resource is not found, <code>ResourceHandler</code> will not return <code>true</code> from the <code>handle(...)</code> method, so what happens next depends on the <code>Handler</code> tree structure.
 See also <a href="#pg-server-http-handler-use-util-default-handler">how to use</a> <code>DefaultHandler</code>.</p>
 </div>
 </div>
@@ -6435,7 +6436,7 @@ server.start();</code></pre>
 <div class="sect5">
 <h6 id="pg-server-http-handler-use-util-default-handler"><a class="anchor" href="#pg-server-http-handler-use-util-default-handler"></a><a class="link" href="#pg-server-http-handler-use-util-default-handler">DefaultHandler</a></h6>
 <div class="paragraph">
-<p><code>DefaultHandler</code> is a terminal <code>Handler</code> that always returns <code>true</code> from its <code>process(...)</code> method and performs the following:</p>
+<p><code>DefaultHandler</code> is a terminal <code>Handler</code> that always returns <code>true</code> from its <code>handle(...)</code> method and performs the following:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -6585,7 +6586,7 @@ server.start();</code></pre>
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-<code>ServletContextHandler</code> is a terminal <code>Handler</code>, that is it always returns <code>true</code> from its <code>process(...)</code> method when invoked.
+<code>ServletContextHandler</code> is a terminal <code>Handler</code>, that is it always returns <code>true</code> from its <code>handle(...)</code> method when invoked.
 Server applications must be careful when creating the <code>Handler</code> tree to put <code>ServletContextHandler</code>s as last <code>Handler</code>s in any <code>Handler.Collection</code> or as children of a <code>ContextHandlerCollection</code>.
 </td>
 </tr>
@@ -6630,14 +6631,13 @@ The typical class loading model, parent-first, is <em>inverted</em> for web appl
 </div>
 <div class="paragraph">
 <p>Furthermore, the Servlet specification requires that web applications cannot load or otherwise access the Servlet container implementation classes, also called <em>server classes</em>.
-In the Jetty case, the Servlet specification class <code>javax.servlet.http.HttpServletRequest</code> is implemented by <code>org.eclipse.jetty.server.Request</code>.
-Web applications cannot downcast Servlet&#8217;s <code>HttpServletRequest</code> to Jetty&#8217;s <code>Request</code> to access Jetty specific features&#8201;&#8212;&#8201;this ensures maximum web application portability across Servlet container implementations.</p>
+Web applications receive the HTTP request object as an instance of the <code>jakarta.servlet.http.HttpServletRequest</code> interface, and cannot downcast it to the Jetty specific implementation of that interface to access Jetty specific features&#8201;&#8212;&#8201;this ensures maximum web application portability across Servlet container implementations.</p>
 </div>
 <div class="paragraph">
-<p>Lastly, the Servlet specification requires that other classes, also called <em>system classes</em>, such as <code>javax.servlet.http.HttpServletRequest</code> or JDK classes such as <code>java.lang.String</code> or <code>java.sql.Connection</code> cannot be modified by web applications by putting, for example, modified versions of those classes in <code>WEB-INF/classes</code> so that they are loaded first by the web application class loader (instead of the class-path class loader where they are normally loaded from).</p>
+<p>Lastly, the Servlet specification requires that other classes, also called <em>system classes</em>, such as <code>jakarta.servlet.http.HttpServletRequest</code> or JDK classes such as <code>java.lang.String</code> or <code>java.sql.Connection</code> cannot be modified by web applications by putting, for example, modified versions of those classes in <code>WEB-INF/classes</code> so that they are loaded first by the web application class loader (instead of the class-path class loader where they are normally loaded from).</p>
 </div>
 <div class="paragraph">
-<p><code>WebAppContext</code> implements this class loader logic using a single class loader, <code>org.eclipse.jetty.ee9.webapp.WebAppClassLoader</code>, with filtering capabilities: when it loads a class, it checks whether the class is a <em>system class</em> or a <em>server class</em> and acts according to the Servlet specification.</p>
+<p><code>WebAppContext</code> implements this class loader logic using a single class loader, <code>WebAppClassLoader</code>, with filtering capabilities: when it loads a class, it checks whether the class is a <em>system class</em> or a <em>server class</em> and acts according to the Servlet specification.</p>
 </div>
 <div class="paragraph">
 <p>When <code>WebAppClassLoader</code> is asked to load a class, it first tries to find the class locally (since it must use the inverted child-first model); if the class is found, and it is not a <em>system class</em>, the class is loaded; otherwise the class is not found locally.
@@ -6677,20 +6677,49 @@ servletHolder.setAsyncSupported(<span class="predefined-constant">true</span>);<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">boolean</span> handle(Request request, Response response, <span class="predefined-type">Callback</span> callback) <span class="directive">throws</span> <span class="exception">Exception</span>
-{
-    <span class="keyword">return</span> <span class="predefined-constant">true</span>;
-}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="java"><span class="directive">public</span> <span class="type">boolean</span> handle(Request request, Response response, <span class="predefined-type">Callback</span> callback) <span class="directive">throws</span> <span class="exception">Exception</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>target</code> parameter is an identifier for the resource.
-This is normally the URI that is parsed from an HTTP request.
-However, a request could be forwarded to either a named resource, in which case <code>target</code> will be the name of the resource, or to a different URI, in which case <code>target</code> will be the new URI.</p>
+<p>The code that implements the <code>handle(...)</code> method must respect the following contract:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It may inspect <code>Request</code> immutable information such as URI and headers, typically to decide whether to return <code>true</code> or <code>false</code> (see below).</p>
+</li>
+<li>
+<p>Returning <code>false</code> means that the implementation will not handle the request, and it <strong>must not</strong> complete the <code>callback</code> parameter, nor read the request content, nor write response content.</p>
+</li>
+<li>
+<p>Returning <code>true</code> means that the implementation will handle the request, and it <strong>must</strong> eventually complete the <code>callback</code> parameter.
+The completion of the <code>callback</code> parameter may happen synchronously within the invocation to <code>handle(...)</code>, or at a later time, asynchronously, possibly from another thread.
+If the response has not been explicitly written when the <code>callback</code> has been completed, the implementation will write a <code>200</code> response with no content if the <code>callback</code> has been succeeded, or an error response if the <code>callback</code> has been failed.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Violating the contract above may result in undefined or unexpected behavior, and possibly leak resources.</p>
 </div>
 <div class="paragraph">
-<p>Applications may wrap the request or response (or both) and forward the wrapped request or response to a different URI (which may be possibly handled by a different <code>Handler</code>).
-This is the reason why there are two request parameters in the <code>Handler</code> APIs: the first is the unwrapped, original, request that also gives access to Jetty-specific APIs, while the second is the application-wrapped Servlet request.</p>
+<p>For example, returning <code>true</code> from <code>handle(...)</code>, but not completing the <code>callback</code> parameter may result in the request or the response never be completed, likely causing the client to time out.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, returning <code>false</code> from <code>handle(...)</code> but then either writing the response or completing the <code>callback</code> parameter will likely result in a garbled response be sent to the client, as the implementation will either invoke another <code>Handler</code> (that may write a response) or write a default response.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Applications may wrap the request or response (or both) and forward the wrapped request or response to a child <code>Handler</code>.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-server-http-handler-impl-hello"><a class="anchor" href="#pg-server-http-handler-impl-hello"></a><a class="link" href="#pg-server-http-handler-impl-hello">Hello World Handler</a></h6>
@@ -6734,7 +6763,11 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Such a simple <code>Handler</code> extends from <code>AbstractHandler</code> and can access the request and response main features, such as reading request headers and content, or writing response headers and content.</p>
+<p>Such a simple <code>Handler</code> extends from <code>Handler.Abstract</code> and can access the request and response main features, such as reading request headers and content, or writing response headers and content.</p>
+</div>
+<div class="paragraph">
+<p>Note how the <code>callback</code> parameter is passed to <code>Content.Sink.write(...)</code> (a utility method that eventually calls <code>Response.write(...)</code>), so that when the write completes, also the <code>callback</code> parameter is completed.
+Note also that because the <code>callback</code> parameter will eventually be completed, the value returned from <code>handle(...)</code> is <code>true</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -6763,7 +6796,7 @@ server.start();</code></pre>
             HttpURI newURI = HttpURI.build(uri).path(newPath).asImmutable();
 
             <span class="comment">// Modify the request object by wrapping the HttpURI</span>
-            request = <span class="keyword">new</span> Request.Wrapper(request)
+            Request newRequest = <span class="keyword">new</span> Request.Wrapper(request)
             {
                 <span class="annotation">@Override</span>
                 <span class="directive">public</span> HttpURI getHttpURI()
@@ -6771,10 +6804,15 @@ server.start();</code></pre>
                     <span class="keyword">return</span> newURI;
                 }
             };
-        }
 
-        <span class="comment">// Forward to the next Handler.</span>
-        <span class="keyword">return</span> <span class="local-variable">super</span>.handle(request, response, callback);
+            <span class="comment">// Forward to the next Handler using the wrapped Request.</span>
+            <span class="keyword">return</span> <span class="local-variable">super</span>.handle(newRequest, response, callback);
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="comment">// Forward to the next Handler as-is.</span>
+            <span class="keyword">return</span> <span class="local-variable">super</span>.handle(request, response, callback);
+        }
     }
 }
 
@@ -7786,7 +7824,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
+<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="578" height="550">
 </div>
 </div>
 </div>
@@ -8431,7 +8469,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
+<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1412" height="314">
 </div>
 </div>
 <div class="paragraph">
@@ -8677,7 +8715,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
+<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="381" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8915,7 +8953,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
+<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="325">
 </div>
 </div>
 <div class="paragraph">
@@ -9067,7 +9105,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
+<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="394" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -9448,7 +9486,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
   <span class="tag">&lt;version&gt;</span>12.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -9460,7 +9498,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
   <span class="tag">&lt;version&gt;</span>12.0.0<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
@@ -9473,7 +9511,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The <code>websocket-jetty-api</code> artifact and the <code>websocket-jetty-server</code> artifact (and its transitive dependencies) should be present in the server class-path (or module-path), and never in the web application&#8217;s <code>/WEB-INF/lib</code> directory.</p>
+<p>The <code>jetty-websocket-jetty-api</code> artifact and the <code>jetty-websocket-jetty-server</code> artifact (and its transitive dependencies) should be present in the server class-path (or module-path), and never in the web application&#8217;s <code>/WEB-INF/lib</code> directory.</p>
 </div>
 </td>
 </tr>
@@ -10079,7 +10117,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
+<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="763" height="101">
 </div>
 </div>
 <div class="paragraph">
@@ -10123,7 +10161,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="941" height="254">
+<img src="images/diag-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="978" height="245">
 </div>
 </div>
 <div class="paragraph">
@@ -13186,7 +13224,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
+<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="825" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -13203,7 +13241,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
+<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="625" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13233,7 +13271,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
+<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="662" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13346,7 +13384,9 @@ In Java versions where virtual threads are a preview feature, remember to add <c
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java">QueuedThreadPool threadPool = <span class="keyword">new</span> QueuedThreadPool();
-threadPool.setVirtualThreadsExecutor(<span class="predefined-type">Executors</span>.newVirtualThreadPerTaskExecutor());</code></pre>
+threadPool.setVirtualThreadsExecutor(<span class="predefined-type">Executors</span>.newVirtualThreadPerTaskExecutor());
+
+Server server = <span class="keyword">new</span> Server(threadPool);</code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -14853,10 +14893,42 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.http2:<strong>http2-server</strong></p>
+<p>org.eclipse.jetty.fcgi:<strong>fcgi-client</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.http2:<strong>jetty-http2-server</strong></p>
+<p>org.eclipse.jetty.http2:<strong>jetty-fcgi-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.fcgi:<strong>fcgi-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>jetty-fcgi-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>http2-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>jetty-http2-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>http2-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>jetty-http2-common</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>http2-hpack</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>jetty-http2-hpack</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -14865,6 +14937,353 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>org.eclipse.jetty.http2:<strong>jetty-http2-client-transport</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>http2-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http2:<strong>jetty-http2-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>http3-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>jetty-http3-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>http3-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>jetty-http3-common</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>http3-http-client-transport</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>jetty-http3-client-transport</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>http3-qpack</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>jetty-http3-qpack</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>http3-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.http3:<strong>jetty-http3-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-osgi.</strong>*</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>org.eclipse.jetty:<strong>jetty-osgi</strong></p>
+</li>
+<li>
+<p>org.eclipse.jetty.ee{8,9,10}:<strong>jetty-ee{8,9,10}-osgi-</strong>*</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-proxy</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>org.eclipse.jetty:<strong>jetty-proxy</strong></p>
+</li>
+<li>
+<p>org.eclipse.jetty.ee{8,9,10}:<strong>jetty-ee{8,9,10}-proxy</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>quic-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>jetty-quic-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>quic-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>jetty-quic-common</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>quic-quiche</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>jetty-quic-quiche</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>quic-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.quic:<strong>jetty-quic-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-unixsocket.</strong>*</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Removed&#8201;&#8212;&#8201;Use org.eclipse.jetty:jetty-unixdomain-server</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-core-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-core-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-core-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-core-common</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-core-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-core-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-jetty-api</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-jetty-api</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-jetty-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-jetty-client</strong></p>
+</li>
+<li>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:jetty-<strong>ee{8,9,10}-websocket-jetty-client</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-jetty-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-jetty-common</strong></p>
+</li>
+<li>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:jetty-<strong>ee{8,9,10}-websocket-jetty-common</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.websocket:<strong>websocket-jetty-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>org.eclipse.jetty.websocket:<strong>jetty-websocket-jetty-server</strong></p>
+</li>
+<li>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:jetty-<strong>ee{8,9,10}-websocket-jetty-server</strong></p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>websocket</strong>:<strong>websocket-jakarta-client</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:<strong>jetty-ee{8,9,10}-websocket-jakarta-client</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>websocket</strong>:<strong>websocket-jakarta-common</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:<strong>jetty-ee{8,9,10}-websocket-jakarta-common</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>websocket</strong>:<strong>websocket-jakarta-server</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:<strong>jetty-ee{8,9,10}-websocket-jakarta-server</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>websocket</strong>:<strong>websocket-servlet</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}.websocket</strong>:<strong>jetty-ee{8,9,10}-websocket-servlet</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>apache-jsp</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-apache-jsp</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-annotations</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-annotations</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-ant</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Removed&#8201;&#8212;&#8201;No Replacement</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-cdi</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-cdi</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>glassfish-jstl</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-glassfish-jstl</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-jaspi</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jaspi</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-jndi</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jndi</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-jspc-maven-plugin</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jspc-maven-plugin</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-maven-plugin</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-maven-plugin</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-plus</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-plus</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-quickstart</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-quickstart</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-runner</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-runner</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-servlet</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-servlet</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-servlets</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-servlets</strong></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty:<strong>jetty-webapp</strong></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-webapp</strong></p>
 </div></div></td>
 </tr>
 </tbody>
@@ -14926,6 +15345,10 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="pg-migration-11-to-12-servlet-to-handler"><a class="anchor" href="#pg-migration-11-to-12-servlet-to-handler"></a><a class="link" href="#pg-migration-11-to-12-servlet-to-handler">Migrate Servlets to Jetty Handlers</a></h4>
+
 </div>
 <div class="sect3">
 <h4 id="pg-migration-11-to-12-api-changes"><a class="anchor" href="#pg-migration-11-to-12-api-changes"></a><a class="link" href="#pg-migration-11-to-12-api-changes">APIs Changes</a></h4>
@@ -15007,7 +15430,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <div id="footer">
 <div id="footer-text">
 Version 12.0.0<br>
-Last updated 2023-08-02 16:58:24 -0500
+Last updated 2023-08-15 02:17:46 UTC
 </div>
 </div>
 </body>

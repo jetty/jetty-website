@@ -5,7 +5,8 @@ function usage() {
   echo " ./update_for_releases.sh [command]";
   echo "   settings : configured settings";
 #  echo "   clean : clean archive of unused versions";
-  echo "   update : update";
+  echo "   update : update released versions";
+  echo "   nightly : update latest documentation from nightlies"
   echo "";
   echo "Artifacts are pulled from configured nexus, central, and lastly staging repositories."
 }
@@ -45,12 +46,17 @@ function print_global_variables() {
 
 function print_execution_variables() {
   # TODO make dynamic
+  echo ""
+  echo "Version Variables"
   echo "Jetty 9.2 = $jetty_9_2"
   echo "Jetty 9.3 = $jetty_9_3"
   echo "Jetty 9.4 = $jetty_9_4"
   echo "Jetty 10.0 = $jetty_10_0"
   echo "Jetty 11.0 = $jetty_11_0"
   echo "Jetty 12.0 = $jetty_12_0"
+  echo "Jetty Nightly = $jetty_12_nightly"
+  echo "Jetty Nightly Resolved = $jetty_12_nightly_resolved"
+  echo ""
 }
 
 
@@ -86,32 +92,55 @@ function gather_current_versions() {
   # TODO make dynamic
   # shellcheck disable=SC2162
   while IFS= read line; do
+
     if [[ $line == *"9.2."* ]]; then
-      jetty_9_2=$line
+      jetty_9_2=$line;
     fi
 
     if [[ $line == *"9.3."* ]]; then
-      jetty_9_3=$line
+      jetty_9_3=$line;
     fi
 
     if [[ $line == *"9.4."* ]]; then
-      jetty_9_4=$line
+      jetty_9_4=$line;
     fi
 
     if [[ $line == *"10.0."* ]]; then
-      jetty_10_0=$line
+      jetty_10_0=$line;
     fi
 
     if [[ $line == *"11.0."* ]]; then
-      jetty_11_0=$line
+      jetty_11_0=$line;
     fi
 
-    if [[ $line == *"12.0."* ]]; then
-      jetty_12_0=$line
+    if [[ $line == *"12.0."* && $line != *"SNAPSHOT"* ]]; then
+      jetty_12_0=$line;
+    fi
+
+    if [[ $line == *"12.0."* && $line == *"SNAPSHOT"* ]]; then
+      jetty_12_nightly=$line;
     fi
 
   done <"$version_file"
 
+}
+
+function gather_nightly_version() {
+  local artifact="jetty-documentation";
+  local version="$1";
+  local filename="maven-metadata.xml";
+
+  maven_staging_download "documentation/$artifact" $version $filename;
+
+  local baseVersion=$(echo "$version" | tr -d '\-SNAPSHOT');
+  local timestamp=$(sed -n -e 's:.*<timestamp>\(.*\)</timestamp>.*:\1:p' "$ARC_DIR/$filename");
+  local build=$(sed -n -e 's:.*<buildNumber>\(.*\)</buildNumber>.*:\1:p' "$ARC_DIR/$filename");
+
+  #echo $baseVersion;
+  #echo $timestamp;
+  #echo $build;
+
+  jetty_12_nightly_resolved="$baseVersion-$timestamp-$build";
 }
 
 #
@@ -206,16 +235,27 @@ function maven_download() {
       local download_status=$?;
 
       if [[ download_status -ne 0 ]]; then
-        echo "  - downloading from staging $filename";
-        wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
-        local staging_status=$?;
-
-        if [[ staging_status -ne 0 ]]; then
-          echo "  - download failed: $filename";
-          rm "$ARC_DIR/$filename" 2>/dev/null;
-          exit 1;
-        fi
+        maven_staging_download $1 $2 $3
       fi
+    fi
+  fi
+}
+
+function maven_staging_download() {
+  local artifact=$1
+  local version=$2
+  local filename=$3
+
+  if [[ ! -f "$ARC_DIR/$filename" ]]; then
+    echo "  - downloading from staging $filename";
+
+    wget -O "$ARC_DIR/$filename" "$STAGING_ROOT/$artifact/$version/$filename" &>>"$LOG_FILE";
+    local staging_status=$?;
+
+    if [[ staging_status -ne 0 ]]; then
+      echo "  - download failed: $filename";
+      rm "$ARC_DIR/$filename" 2>/dev/null;
+      exit 1;
     fi
   fi
 }
@@ -306,6 +346,17 @@ function download_missing_files() {
   done
 }
 
+function download_nightly_documentation() {
+  local artifact="jetty-documentation";
+  local version=$jetty_12_nightly;
+  local filename="$artifact-$jetty_12_nightly_resolved-html.zip";
+  create_archive_directory;
+
+  echo " - phase: download nightly";
+
+  maven_staging_download "documentation/$artifact" $version $filename 
+}
+
 function get_dist_info() {
   if [[ "$1" == "1"* ]]; then
     cat "$ARC_DIR/jetty-home-$1.$2"
@@ -365,42 +416,65 @@ function generate_version_php() {
 function process_documentation() {
   # shellcheck disable=SC2206
   local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0);
+  local directive=$1;
 
-  echo " - phase: documentation"
+  echo " - phase: documentation $directive"
 
   create_temp_directory;
 
-  for version in "${versions[@]}"; do
-    local temp_ver_dir="$TEMP_DIR/$version";
-    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip" &>>"$LOG_FILE";
-  done
+  if [[ $directive == "nightly" ]]; then
+    local temp_ver_dir="$TEMP_DIR/$jetty_12_nightly_resolved";
+    echo "test $temp_ver_dir"
 
-  {
-    for version in "${versions[@]}"; do
+    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$jetty_12_nightly_resolved-html.zip" &>>"$LOG_FILE";
+    {
       local primary_version;
-      primary_version=$(get_primary_version "$version");
+      primary_version=$(get_primary_version "$jetty_12_0");
 
-      echo "  - deploying documentation for $version"
+      echo "  - deploying $jetty_12_nightly documentation to $jetty_12_0"
+      find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
 
-      rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
-    done;
-  } &>>"$LOG_FILE";
+      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/" "$(pwd)/documentation/$primary_version";
+    } &>>"$LOG_FILE";
+  else
+    for version in "${versions[@]}"; do
+      local temp_ver_dir="$TEMP_DIR/$version";
+      unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip" &>>"$LOG_FILE";
+    done
 
+    {
+      for version in "${versions[@]}"; do
+        local primary_version;
+        primary_version=$(get_primary_version "$version");
+
+        echo "  - deploying documentation for $version"
+
+        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
+      done;
+    } &>>"$LOG_FILE";
+  fi 
   delete_temp_directory;
 }
 
-function process_contribution_guide {
+function process_contribution_guide() {
   local version=$jetty_12_0;
+  local directive=$1;
 
-  echo " - phase: position contribution guide";
+  echo " - phase: position contribution guide $directive";
 
   create_temp_directory;
 
   {
-    local temp_ver_dir="$TEMP_DIR/$version";
-    unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
-
-    rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$(pwd)/documentation";
+    if [[ $directive == "nightly" ]]; then
+      local temp_ver_dir="$TEMP_DIR/$jetty_12_nightly_resolved";
+      unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$jetty_12_nightly_resolved-html.zip";
+      find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
+      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide" "$(pwd)/documentation";
+    else
+      local temp_ver_dir="$TEMP_DIR/$version";
+      unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
+      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$(pwd)/documentation";
+    fi
   } &>>"$LOG_FILE";
 
   delete_temp_directory;
@@ -516,14 +590,17 @@ function main() {
     exit 0;
   fi
 
-  # just to test some things
-  #if [[ $directive == "-t" ]]; then
-  #  echo "testing javadoc"
-  #  init;
-  #  gather_current_versions;
-  #  process_javadoc
-  #  exit 0;
-  #fi
+  # run an update process for any nightly doc changes
+  if [[ $directive == "nightly" ]]; then
+    init;
+    gather_current_versions;
+    gather_nightly_version $jetty_12_nightly; 
+    #print_execution_variables;
+    download_nightly_documentation;
+    process_documentation $directive;
+    process_contribution_guide $directive;
+    exit 0;
+  fi
 
   # print usage
   usage;
