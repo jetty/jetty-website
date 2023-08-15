@@ -36,7 +36,7 @@
                 <a rel=”canonical” href="/jetty/documentation/jetty-12/programming-guide/index.html">Programming Guide</a><br/>
             </p>
         </td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-12/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">source</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a rel="canonical" href="/jetty/javadoc/jetty-12/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">source</a></p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 11</b></p></td>
