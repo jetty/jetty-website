@@ -27,6 +27,7 @@ function set_global_variables() {
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
 
   GITHUB_ROOT="https://github.com/eclipse/jetty.project/archive"
+  WEBSITE_ROOT="https://eclipse.dev/jetty"
   DOC_ROOT_9="$MAVEN_ROOT/jetty-documentation"
   DOC_ROOT_1x="$MAVEN_ROOT/documentation/jetty-documentation"
   LOG_FILE="$ARC_DIR/update.log"
@@ -553,21 +554,73 @@ function build_javadoc() {
 }
 
 #
-# Goes through a given directory and makes all links inside have rel="canonical"
+# This is implemented wrong
 #
-function make_canonical() {
-  local version=$1;
-  local primary_version;
-  primary_version=$(get_primary_version "$version");
+function process_canonical() {
+  local old_versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
+  local canonical_version=$jetty_12_0;
+  local canonical_prime_version;
+  canonical_prime_version=$(get_primary_version "$canonical_version");
+
+  for old_version in "${old_versions[@]}"; do
+    local old_prime_version;
+    old_prime_version=$(get_primary_version "$old_version");
+
+    if [[ $old_prime_version == "jetty-9" ]]; then
+      echo "implement $old_prime_version";
+    else
+      echo "  - make $old_prime_version files point to canonical $canonical_prime_version files";
+      find_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
+    fi;
+
+  done;
 
   #make javadoc canonical
-  echo "  - mark $primary_version javadoc canonical";
-  find $JAVADOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
+  #echo "  - mark $primary_version javadoc canonical";
+  #find $JAVADOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 
   #make documentation canonical
-  echo "  - mark $primary_version documentation canonical";
-  find $DOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
+  #echo "  - mark $primary_version documentation canonical";
+  #find $DOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 }
+
+function find_canonical_links() {
+  local old_prime_version=$1;
+  local canonical_prime_version=$2;
+  local directory=$3;
+  local url_base=$4;
+
+  local old_files=($(find "$directory/$old_prime_version" -type f -name "*.html" -printf "%P\n"));
+
+  for file in "${old_files[@]}"; do
+    echo "  - check if canonical: $old_prime_version/$file";
+    if grep -q 'link rel="canonical" href' "$directory/$old_prime_version/$file"; then
+      echo "  - canonized $old_prime_version/$file";
+    else
+      if [[ -f "$directory/$canonical_prime_version/$file" ]]; then
+        echo "  - canonizing $old_prime_version/$file";
+        local success=$(sed -i "s/<head>/<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/canonical_prime_version/$file\"/gI");
+        
+      else
+        echo "  - canonical version doesn't exist $canonical_prime_version/$file";
+      fi;
+    fi;
+  done;
+
+}
+
+# true if the html file has a canonical header link
+function is_not_canonicalized() {
+  local file=$1;
+
+  if grep -q 'link rel="canonical" href' $file; then
+    false;
+  else
+    true;
+  fi;
+
+}
+
 
 function deploy_javadoc() {
   local primary_version=$1
@@ -617,7 +670,7 @@ function main() {
     process_documentation;
     process_contribution_guide;
     process_javadoc;
-    make_canonical $jetty_12_0;
+    #make_canonical $jetty_12_0;
     exit 0;
   fi
 
@@ -630,7 +683,15 @@ function main() {
     download_nightly_documentation;
     process_documentation $directive;
     process_contribution_guide $directive;
-    make_canonical $jetty_12_0;
+    #make_canonical $jetty_12_0;
+    exit 0;
+  fi
+
+  if [[ $directive == "test" ]]; then
+    init;
+    gather_current_versions;
+    process_canonical
+
     exit 0;
   fi
 
