@@ -458,7 +458,7 @@ function process_documentation() {
 }
 
 function process_contribution_guide() {
-  local oldVersions=($jetty_10_0 $jetty_11_0)
+  local cleanVersions=($jetty_10_0 $jetty_11_0 $jetty_12_0)
   local version=$jetty_12_0;
   local directive=$1;
 
@@ -472,25 +472,21 @@ function process_contribution_guide() {
       unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$jetty_12_nightly_resolved-html.zip";
       find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
       rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide" "$DOC_DIR";
-      rm -Rf "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide"; # remove duplicate
     else
       local temp_ver_dir="$TEMP_DIR/$version";
       unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
-      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "DOC_DIR";
-      rm -Rf "$TEMP_DIR/$version/$version/contribution-guide"; # remove duplicate
+      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$DOC_DIR";
     fi
-
-    # clean up old contribution guides
-    for oldVersion in "${versions[@]}"; do
-      local primary_version;
-      primary_version=$(get_primary_version "$oldVersion");
-
-      rm -Rf "$DOC_DIR/$primary_version/contribution-guide";
-    done;
-
   } &>>"$LOG_FILE";
 
+    # clean up old contribution guides
+    for cleanVersion in "${cleanVersions[@]}"; do
+      local cleanPrimaryVersion;
+      cleanPrimaryVersion=$(get_primary_version "$cleanVersion");
 
+      echo "  - removing duplicate contribution guide in $cleanPrimaryVersion";
+      rm -Rf "$DOC_DIR/$cleanPrimaryVersion/contribution-guide";
+    done;
 
   delete_temp_directory;
 }
