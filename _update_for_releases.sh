@@ -599,8 +599,8 @@ function find_canonical_links() {
     else
       if [[ -f "$directory/$canonical_prime_version/$file" ]]; then
         echo "  - canonizing $old_prime_version/$file";
-        local success=$(sed -i "s/<head>/<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/canonical_prime_version/$file\"/gI");
-        
+        local success=$(sed -i -e "s+\<head\>+\<head\>\<link rel=\"canonical\" href=\"$WEBSITE_ROOT\/$url_base\/$canonical_prime_version\/$file\"\/\>+gI" "$directory/$old_prime_version/$file" );
+
       else
         echo "  - canonical version doesn't exist $canonical_prime_version/$file";
       fi;
