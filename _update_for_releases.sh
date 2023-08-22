@@ -571,17 +571,10 @@ function process_canonical() {
     else
       echo "  - make $old_prime_version files point to canonical $canonical_prime_version files";
       find_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
+      find_canonical_links $old_prime_version $canonical_prime_version $JAVADOC_DIR "javadoc";
     fi;
 
   done;
-
-  #make javadoc canonical
-  #echo "  - mark $primary_version javadoc canonical";
-  #find $JAVADOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
-
-  #make documentation canonical
-  #echo "  - mark $primary_version documentation canonical";
-  #find $DOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 }
 
 function find_canonical_links() {
@@ -599,7 +592,7 @@ function find_canonical_links() {
     else
       if [[ -f "$directory/$canonical_prime_version/$file" ]]; then
         echo "  - canonizing $old_prime_version/$file";
-        local success=$(sed -i -e "s+\<head\>+\<head\>\<link rel=\"canonical\" href=\"$WEBSITE_ROOT\/$url_base\/$canonical_prime_version\/$file\"\/\>+gI" "$directory/$old_prime_version/$file" );
+        local success=$(sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/$canonical_prime_version/$file\"/>+gI" "$directory/$old_prime_version/$file" );
 
       else
         echo "  - canonical version doesn't exist $canonical_prime_version/$file";
