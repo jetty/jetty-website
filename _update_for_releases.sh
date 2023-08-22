@@ -484,6 +484,8 @@ function process_javadoc() {
   # shellcheck disable=SC2206
   # local versions=($jetty_9_4 $jetty_10_0 $jetty_11_0 $jetty_12_0)
   local versions=($jetty_10_0 $jetty_11_0 $jetty_12_0)
+  local directive=$1;
+  
   echo " - phase: javadoc"
 
   create_temp_directory
@@ -532,12 +534,21 @@ function build_javadoc() {
     elif [[ $primary_version == "jetty-12" ]]; then
       filename="jetty-home-$version-with-docs.zip"
       unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+      make_canonical $temp_build_dir
     fi
 
     cd "$SCRIPT_DIR" || exit 1
   } &>>"$LOG_FILE";
 }
 
+
+function make_canonical() {
+  local directory;
+
+  find $directory -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
+
+
+}
 
 function deploy_javadoc() {
   local primary_version=$1
