@@ -17,6 +17,7 @@ function set_global_variables() {
   VERSIONS_PHP=$(pwd)/_jettyVersions.php
   ARC_DIR=$(pwd)/_archive
   JAVADOC_DIR=$(pwd)/javadoc
+  DOC_DIR=$(pwd)/documentation
   TEMP_DIR=$ARC_DIR/temp
   SCRIPT_DIR=$(pwd)
   
@@ -433,7 +434,6 @@ function process_documentation() {
 
       echo "  - deploying $jetty_12_nightly documentation to $jetty_12_0"
       find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
-
       rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/" "$(pwd)/documentation/$primary_version";
     } &>>"$LOG_FILE";
   else
@@ -450,6 +450,7 @@ function process_documentation() {
         echo "  - deploying documentation for $version"
 
         rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
+        rm -Rf "$DOC_DIR/$primary_version/old_docs";
       done;
     } &>>"$LOG_FILE";
   fi 
@@ -457,6 +458,7 @@ function process_documentation() {
 }
 
 function process_contribution_guide() {
+  local oldVersions=($jetty_10_0 $jetty_11_0)
   local version=$jetty_12_0;
   local directive=$1;
 
@@ -476,6 +478,14 @@ function process_contribution_guide() {
       rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$(pwd)/documentation";
     fi
   } &>>"$LOG_FILE";
+
+  # clean up old contribution guides
+  for oldVersion in "${versions[@]}"; do
+    local primary_version;
+    primary_version=$(get_primary_version "$oldVersion");
+
+    rm -Rf "$DOC_DIR/$primary_version/contribution-guide";
+  done;
 
   delete_temp_directory;
 }
@@ -541,13 +551,19 @@ function build_javadoc() {
   } &>>"$LOG_FILE";
 }
 
-
+#
+# Goes through a given directory and makes all links inside have rel="canonical"
+#
 function make_canonical() {
-  local directory;
+  local version=$1;
+  local primary_version;
+  primary_version=$(get_primary_version "$version");
 
-  find $directory -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
+  #make javadoc canonical
+  find $JAVADOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 
-
+  #make documentation canonical
+  find $DOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 }
 
 function deploy_javadoc() {
@@ -598,6 +614,7 @@ function main() {
     process_documentation;
     process_contribution_guide;
     process_javadoc;
+    make_canonical $jetty_12_0;
     exit 0;
   fi
 
@@ -610,6 +627,7 @@ function main() {
     download_nightly_documentation;
     process_documentation $directive;
     process_contribution_guide $directive;
+    make_canonical $jetty_12_0;
     exit 0;
   fi
 
