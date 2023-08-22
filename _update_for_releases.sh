@@ -568,6 +568,8 @@ function process_canonical() {
 
     if [[ $old_prime_version == "jetty-9" ]]; then
       echo "implement $old_prime_version";
+      find_j9_doc_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
+      find_canonical_links $old_prime_version $canonical_prime_version $JAVADOC_DIR "javadoc";
     else
       echo "  - make $old_prime_version files point to canonical $canonical_prime_version files";
       find_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
@@ -575,6 +577,26 @@ function process_canonical() {
     fi;
 
   done;
+}
+
+function find_j9_doc_canonical_links() {
+  local old_prime_version=$1;
+  local canonical_prime_version=$2;
+  local directory=$3;
+  local url_base=$4;
+
+  local old_files=($(find "$directory/$old_prime_version" -type f -name "*.html" -printf "%P\n"));
+
+  for file in "${old_files[@]}"; do
+    echo "  - check if canonical: $old_prime_version/$file";
+    if grep -q 'link rel="canonical" href' "$directory/$old_prime_version/$file"; then
+      echo "  - canonized $old_prime_version/$file";
+    else
+      local success=$(sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/$canonical_prime_version/index.html\"/>+gI" "$directory/$old_prime_version/$file" );
+    fi;
+  done;
+
+
 }
 
 function find_canonical_links() {
@@ -593,7 +615,6 @@ function find_canonical_links() {
       if [[ -f "$directory/$canonical_prime_version/$file" ]]; then
         echo "  - canonizing $old_prime_version/$file";
         local success=$(sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/$canonical_prime_version/$file\"/>+gI" "$directory/$old_prime_version/$file" );
-
       else
         echo "  - canonical version doesn't exist $canonical_prime_version/$file";
       fi;
