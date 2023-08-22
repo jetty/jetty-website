@@ -425,7 +425,6 @@ function process_documentation() {
 
   if [[ $directive == "nightly" ]]; then
     local temp_ver_dir="$TEMP_DIR/$jetty_12_nightly_resolved";
-    echo "test $temp_ver_dir"
 
     unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$jetty_12_nightly_resolved-html.zip" &>>"$LOG_FILE";
     {
@@ -434,7 +433,8 @@ function process_documentation() {
 
       echo "  - deploying $jetty_12_nightly documentation to $jetty_12_0"
       find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
-      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/" "$(pwd)/documentation/$primary_version";
+      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/" "$DOC_DIR/$primary_version";
+      rm -Rf "$DOC_DIR/$primary_version/old_docs";
     } &>>"$LOG_FILE";
   else
     for version in "${versions[@]}"; do
@@ -449,7 +449,7 @@ function process_documentation() {
 
         echo "  - deploying documentation for $version"
 
-        rsync -avh "$TEMP_DIR/$version/$version/" "$(pwd)/documentation/$primary_version";
+        rsync -avh "$TEMP_DIR/$version/$version/" "$DOC_DIR/$primary_version";
         rm -Rf "$DOC_DIR/$primary_version/old_docs";
       done;
     } &>>"$LOG_FILE";
@@ -471,21 +471,26 @@ function process_contribution_guide() {
       local temp_ver_dir="$TEMP_DIR/$jetty_12_nightly_resolved";
       unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$jetty_12_nightly_resolved-html.zip";
       find $temp_ver_dir -type f -name '*.html' -exec sed -i "s/$jetty_12_nightly/$jetty_12_0/gI" {} \;
-      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide" "$(pwd)/documentation";
+      rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide" "$DOC_DIR";
+      rm -Rf "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide"; # remove duplicate
     else
       local temp_ver_dir="$TEMP_DIR/$version";
       unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
-      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$(pwd)/documentation";
+      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "DOC_DIR";
+      rm -Rf "$TEMP_DIR/$version/$version/contribution-guide"; # remove duplicate
     fi
+
+    # clean up old contribution guides
+    for oldVersion in "${versions[@]}"; do
+      local primary_version;
+      primary_version=$(get_primary_version "$oldVersion");
+
+      rm -Rf "$DOC_DIR/$primary_version/contribution-guide";
+    done;
+
   } &>>"$LOG_FILE";
 
-  # clean up old contribution guides
-  for oldVersion in "${versions[@]}"; do
-    local primary_version;
-    primary_version=$(get_primary_version "$oldVersion");
 
-    rm -Rf "$DOC_DIR/$primary_version/contribution-guide";
-  done;
 
   delete_temp_directory;
 }
@@ -560,9 +565,11 @@ function make_canonical() {
   primary_version=$(get_primary_version "$version");
 
   #make javadoc canonical
+  echo "  - mark $primary_version javadoc canonical";
   find $JAVADOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 
   #make documentation canonical
+  echo "  - mark $primary_version documentation canonical";
   find $DOC_DIR/$primary_version -type f -name '*.html' -exec sed -i 's/<a href/<a rel="canonical" href/gI' {} \;
 }
 
