@@ -7,6 +7,7 @@ function usage() {
 #  echo "   clean : clean archive of unused versions";
   echo "   update : update released versions";
   echo "   nightly : update latest documentation from nightlies"
+  echo "   canonize: update old version javadoc and documentation with jetty 12 metadata"
   echo "";
   echo "Artifacts are pulled from configured nexus, central, and lastly staging repositories."
 }
@@ -684,7 +685,7 @@ function main() {
     process_documentation;
     process_contribution_guide;
     process_javadoc;
-    #make_canonical $jetty_12_0;
+    process_canonical;
     exit 0;
   fi
 
@@ -697,15 +698,14 @@ function main() {
     download_nightly_documentation;
     process_documentation $directive;
     process_contribution_guide $directive;
-    #make_canonical $jetty_12_0;
+    process_canonical;
     exit 0;
   fi
 
-  if [[ $directive == "test" ]]; then
+  if [[ $directive == "canonize" ]]; then
     init;
     gather_current_versions;
-    process_canonical
-
+    process_canonical;
     exit 0;
   fi
 
