@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 11.0.15,</span>
-<span id="revdate">2023-04-11</span>
+<span id="revnumber">version 11.0.16,</span>
+<span id="revdate">2023-08-25</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -78,7 +78,8 @@
 </li>
 <li><a href="#pg-client-http-proxy">HttpClient Proxy Support</a>
 <ul class="sectlevel4">
-<li><a href="#pg-client-http-proxy-authentication">Proxy Authentication Support</a></li>
+<li><a href="#pg-client-http-proxy-socks5">SOCKS5 Proxy Support</a></li>
+<li><a href="#pg-client-http-proxy-authentication">HTTP Proxy Authentication Support</a></li>
 </ul>
 </li>
 <li><a href="#pg-client-http-transport">HttpClient Pluggable Transports</a>
@@ -612,10 +613,10 @@ Yet another example is a client application that needs to receive events from a 
 <h4 id="pg-client-io-arch-network"><a class="anchor" href="#pg-client-io-arch-network"></a><a class="link" href="#pg-client-io-arch-network">Network Layer</a></h4>
 <div class="paragraph">
 <p>The Jetty client libraries use the common I/O design described in <a href="#pg-arch-io">this section</a>.
-The main client-side component is the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
+The main client-side component is the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ClientConnector</code> primarily wraps the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a> and aggregates other four components:</p>
+<p>The <code>ClientConnector</code> primarily wraps the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a> and aggregates other four components:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -737,7 +738,7 @@ This time includes the DNS lookup time <em>and</em> the TCP connect time.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>ClientConnector</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html">javadocs</a> for the complete list of configurable parameters.</p>
+<p>Please refer to the <code>ClientConnector</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnector.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-client-io-arch-unix-domain"><a class="anchor" href="#pg-client-io-arch-unix-domain"></a><a class="link" href="#pg-client-io-arch-unix-domain">Unix-Domain Support</a></h5>
@@ -789,7 +790,7 @@ clientConnector.start();</code></pre>
 <p>Applications use <code>ClientConnector.connect(SocketAddress, Map&lt;String, Object&gt;)</code> to establish a TCP connection to the server, and must tell <code>ClientConnector</code> how to create the <code>Connection</code> for that particular TCP connection, and how to notify back the application when the connection creation succeeds or fails.</p>
 </div>
 <div class="paragraph">
-<p>This is done by passing a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a> (that creates <code>Connection</code> instances) and a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/Promise.html"><code>Promise</code></a> (that is notified of connection creation success or failure) in the context <code>Map</code> as follows:</p>
+<p>This is done by passing a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a> (that creates <code>Connection</code> instances) and a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/util/Promise.html"><code>Promise</code></a> (that is notified of connection creation success or failure) in the context <code>Map</code> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1208,7 +1209,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1425,7 +1426,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
+<img src="images/diag-plantuml-md5-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
 </div>
 </div>
 <div class="paragraph">
@@ -1514,6 +1515,19 @@ ContentResponse response = request.send();</code></pre>
 <div class="paragraph">
 <p>You first create a request object using <code>httpClient.newRequest(&#8230;&#8203;)</code>, and then you customize it using the fluent API style (that is, a chained invocation of methods on the request object).
 When the request object is customized, you call <code>request.send()</code> that produces the <code>ContentResponse</code> when the request/response conversation is complete.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The <code>Request</code> object, despite being mutable, cannot be reused for other requests.
+This is true also when trying to send two or more identical requests: you have to create two or more <code>Request</code> objects.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Simple <code>POST</code> requests also have a shortcut method:</p>
@@ -1663,7 +1677,7 @@ When such an event is fired, a (possibly different) thread taken from the <code>
 <p>This makes Jetty HTTP client suitable for HTTP load testing because, for example, you can accurately time every step of the request/response conversation (thus knowing where the request/response time is really spent).</p>
 </div>
 <div class="paragraph">
-<p>Have a look at the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Request.Listener.html"><code>Request.Listener</code></a> class to know about request events, and to the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Response.Listener.html"><code>Response.Listener</code></a> class to know about response events.</p>
+<p>Have a look at the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Request.Listener.html"><code>Request.Listener</code></a> class to know about request events, and to the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/client/api/Response.Listener.html"><code>Response.Listener</code></a> class to know about response events.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1969,7 +1983,7 @@ request1.send(result -&gt; <span class="predefined-type">System</span>.getLogger
 <h4 id="pg-client-http-configuration"><a class="anchor" href="#pg-client-http-configuration"></a><a class="link" href="#pg-client-http-configuration">HttpClient Configuration</a></h4>
 <div class="paragraph">
 <p><code>HttpClient</code> has a quite large number of configuration parameters.
-Please refer to the <code>HttpClient</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClient.html">javadocs</a> for the complete list of configurable parameters.</p>
+Please refer to the <code>HttpClient</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClient.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 <div class="paragraph">
 <p>The most common parameters are:</p>
@@ -2054,7 +2068,7 @@ sslContextFactory.setHostnameVerifier((hostName, session) -&gt; hostName.endsWit
 <p>You may have the validation of the server host name enabled at both the TLS level and application level, typically when you want to further restrict the client to connect only to a smaller set of server hosts than those allowed in the certificate sent by the server.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
+<p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-client-http-configuration-tls-truststore"><a class="anchor" href="#pg-client-http-configuration-tls-truststore"></a><a class="link" href="#pg-client-http-configuration-tls-truststore">HttpClient TLS TrustStore Configuration</a></h6>
@@ -2206,7 +2220,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
+<img src="images/diag-plantuml-md5-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
 </div>
 </div>
 <div class="paragraph">
@@ -2286,8 +2300,23 @@ request.send();</code></pre>
 <p>Jetty&#8217;s <code>HttpClient</code> can be configured to use proxies to connect to destinations.</p>
 </div>
 <div class="paragraph">
-<p>Two types of proxies are available out of the box: a HTTP proxy (provided by class <code>org.eclipse.jetty.client.HttpProxy</code>) and a SOCKS 4 proxy (provided by class <code>org.eclipse.jetty.client.Socks4Proxy</code>).
-Other implementations may be written by subclassing <code>ProxyConfiguration.Proxy</code>.</p>
+<p>These types of proxies are available out of the box:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTTP proxy (provided by class <code>org.eclipse.jetty.client.HttpProxy</code>)</p>
+</li>
+<li>
+<p>SOCKS 4 proxy (provided by class <code>org.eclipse.jetty.client.Socks4Proxy</code>)</p>
+</li>
+<li>
+<p><a href="#pg-client-http-proxy-socks5">SOCKS 5 proxy</a> (provided by class <code>org.eclipse.jetty.client.Socks5Proxy</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other implementations may be written by subclassing <code>ProxyConfiguration.Proxy</code>.</p>
 </div>
 <div class="paragraph">
 <p>The following is a typical configuration:</p>
@@ -2313,15 +2342,43 @@ ContentResponse response = httpClient.GET(<span class="string"><span class="deli
 <p>Configured in this way, <code>HttpClient</code> makes requests to the HTTP proxy (for plain-text HTTP requests) or establishes a tunnel via HTTP <code>CONNECT</code> (for encrypted HTTPS requests).</p>
 </div>
 <div class="paragraph">
-<p>Proxying is supported for HTTP/1.1 and HTTP/2.</p>
+<p>Proxying is supported for any version of the HTTP protocol.</p>
 </div>
 <div class="sect4">
-<h5 id="pg-client-http-proxy-authentication"><a class="anchor" href="#pg-client-http-proxy-authentication"></a><a class="link" href="#pg-client-http-proxy-authentication">Proxy Authentication Support</a></h5>
+<h5 id="pg-client-http-proxy-socks5"><a class="anchor" href="#pg-client-http-proxy-socks5"></a><a class="link" href="#pg-client-http-proxy-socks5">SOCKS5 Proxy Support</a></h5>
 <div class="paragraph">
-<p>Jetty&#8217;s <code>HttpClient</code> supports proxy authentication in the same way it supports <a href="#pg-client-http-authentication">server authentication</a>.</p>
+<p>SOCKS 5 (defined in <a href="https://datatracker.ietf.org/doc/html/rfc1928">RFC 1928</a>) offers choices for authentication methods and supports IPv6 (things that SOCKS 4 does not support).</p>
 </div>
 <div class="paragraph">
-<p>In the example below, the proxy requires <code>BASIC</code> authentication, but the server requires <code>DIGEST</code> authentication, and therefore:</p>
+<p>A typical SOCKS 5 proxy configuration with the username/password authentication method is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Socks5Proxy proxy = <span class="keyword">new</span> Socks5Proxy(<span class="string"><span class="delimiter">&quot;</span><span class="content">proxyHost</span><span class="delimiter">&quot;</span></span>, <span class="integer">8888</span>);
+<span class="predefined-type">String</span> socks5User = <span class="string"><span class="delimiter">&quot;</span><span class="content">jetty</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">String</span> socks5Pass = <span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>;
+<span class="type">var</span> socks5AuthenticationFactory = <span class="keyword">new</span> Socks5.UsernamePasswordAuthenticationFactory(socks5User, socks5Pass);
+<span class="comment">// Add the authentication method to the proxy.</span>
+proxy.putAuthenticationFactory(socks5AuthenticationFactory);
+
+<span class="comment">// Do not proxy requests for localhost:8080.</span>
+proxy.getExcludedAddresses().add(<span class="string"><span class="delimiter">&quot;</span><span class="content">localhost:8080</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Add the new proxy to the list of proxies already registered.</span>
+ProxyConfiguration proxyConfig = httpClient.getProxyConfiguration();
+proxyConfig.addProxy(proxy);
+
+ContentResponse response = httpClient.GET(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain.com/path</span><span class="delimiter">&quot;</span></span>);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-client-http-proxy-authentication"><a class="anchor" href="#pg-client-http-proxy-authentication"></a><a class="link" href="#pg-client-http-proxy-authentication">HTTP Proxy Authentication Support</a></h5>
+<div class="paragraph">
+<p>Jetty&#8217;s <code>HttpClient</code> supports HTTP proxy authentication in the same way it supports <a href="#pg-client-http-authentication">server authentication</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the example below, the HTTP proxy requires <code>BASIC</code> authentication, but the server requires <code>DIGEST</code> authentication, and therefore:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2348,7 +2405,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
+<img src="images/diag-plantuml-md5-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
 </div>
 </div>
 <div class="paragraph">
@@ -2754,7 +2811,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2915,7 +2972,7 @@ http2Client.connect(serverAddress, <span class="keyword">new</span> Session.List
 </div>
 <div class="paragraph">
 <p>The <code>Session.Listener</code> is notified of session events originated by the server such as receiving a <code>SETTINGS</code> frame from the server, or the server closing the connection, or the client timing out the connection due to idleness.
-Please refer to the <code>Session.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Session.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Session.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Session.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>Once a <code>Session</code> has been established, the communication with the server happens by exchanging <em>frames</em>, as specified in the <a href="https://tools.ietf.org/html/rfc7540#section-4">HTTP/2 specification</a>.</p>
@@ -2939,7 +2996,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.15</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 11.0.16</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -2955,7 +3012,7 @@ session.newStream(headersFrame, <span class="keyword">new</span> Stream.Listener
 <div class="paragraph">
 <p>Note how <code>Session.newStream(&#8230;&#8203;)</code> takes a <code>Stream.Listener</code> parameter.
 This listener is notified of stream events originated by the server such as receiving <code>HEADERS</code> or <code>DATA</code> frames that are part of the response, discussed in more details in the <a href="#pg-client-http2-response">section below</a>.
-Please refer to the <code>Stream.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Stream.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Stream.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/Stream.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>HTTP requests may have content, which is sent using the <code>Stream</code> APIs:</p>
@@ -3291,7 +3348,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3379,7 +3436,7 @@ http3Client.connect(serverAddress, <span class="keyword">new</span> Session.Clie
 </div>
 <div class="paragraph">
 <p>The <code>Session.Client.Listener</code> is notified of session events originated by the server such as receiving a <code>SETTINGS</code> frame from the server, or the server closing the connection, or the client timing out the connection due to idleness.
-Please refer to the <code>Session.Client.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Client.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Session.Client.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Client.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>Once a <code>Session</code> has been established, the communication with the server happens by exchanging <em>frames</em>.</p>
@@ -3403,7 +3460,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.15</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 11.0.16</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3419,7 +3476,7 @@ session.newRequest(headersFrame, <span class="keyword">new</span> Stream.Client.
 <div class="paragraph">
 <p>Note how <code>Session.newRequest(&#8230;&#8203;)</code> takes a <code>Stream.Client.Listener</code> parameter.
 This listener is notified of stream events originated by the server such as receiving <code>HEADERS</code> or <code>DATA</code> frames that are part of the response, discussed in more details in the <a href="#pg-client-http3-response">section below</a>.
-Please refer to the <code>Stream.Client.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Stream.Client.Listener.html">javadocs</a> for the complete list of events.</p>
+Please refer to the <code>Stream.Client.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Stream.Client.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>HTTP requests may have content, which is sent using the <code>Stream</code> APIs:</p>
@@ -3580,7 +3637,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3634,7 +3691,7 @@ For example, you may need different instances when you need to configure the <co
 Configuring the <code>WebSocketClient</code> allows to give default values to various parameters, whose values may be overridden more specifically, as described in <a href="#pg-websocket-session-configure">this section</a>.</p>
 </div>
 <div class="paragraph">
-<p>Refer to the  <code>WebSocketClient</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/client/WebSocketClient.html">javadocs</a> for the setter methods available to customize the WebSocket specific configuration.</p>
+<p>Refer to the  <code>WebSocketClient</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/client/WebSocketClient.html">javadocs</a> for the setter methods available to customize the WebSocket specific configuration.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3675,7 +3732,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
+<img src="images/diag-plantuml-md5-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
 </div>
 </div>
 <div class="paragraph">
@@ -3729,7 +3786,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
+<img src="images/diag-plantuml-md5-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
 </div>
 </div>
 <div class="paragraph">
@@ -4264,7 +4321,7 @@ You want to do this as soon as you have access to the <code>Session</code> objec
 </dl>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>Session</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/api/Session.html">javadocs</a> for the complete list of configuration APIs.</p>
+<p>Please refer to the <code>Session</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/websocket/api/Session.html">javadocs</a> for the complete list of configuration APIs.</p>
 </div>
 </div>
 <div class="sect4">
@@ -4770,7 +4827,7 @@ If you are interested in the low-level details of how the Eclipse Jetty server l
 <p>Compliance modes can be configured to allow violations from the RFC requirements, or in some cases to allow additional behaviors that Jetty has implemented in excess of the RFC (for example, to allow <a href="#pg-server-compliance-uri">ambiguous URIs</a>).</p>
 </div>
 <div class="paragraph">
-<p>For example, the HTTP RFCs require that request HTTP methods are <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1">case sensitive</a>, however Jetty can allow case-insensitive HTTP methods by including the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html#CASE_INSENSITIVE_METHOD"><code>HttpCompliance.Violation.CASE_INSENSITIVE_METHOD</code></a> in the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> set of allowed violations.</p>
+<p>For example, the HTTP RFCs require that request HTTP methods are <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1">case sensitive</a>, however Jetty can allow case-insensitive HTTP methods by including the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html#CASE_INSENSITIVE_METHOD"><code>HttpCompliance.Violation.CASE_INSENSITIVE_METHOD</code></a> in the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> set of allowed violations.</p>
 </div>
 <div class="sect3">
 <h4 id="pg-server-compliance-http"><a class="anchor" href="#pg-server-compliance-http"></a><a class="link" href="#pg-server-compliance-http">HTTP Compliance Modes</a></h4>
@@ -4801,7 +4858,7 @@ If you are interested in the low-level details of how the Eclipse Jetty server l
 Therefore, upgrading to a newer Jetty version may cause runtime behavior differences that may break your applications.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html"><code>HttpCompliance.Violation</code></a> enumeration defines the RFC requirements that may be optionally enforced by Jetty, to support legacy deployments. These possible violations are grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations (with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#RFC7230"><code>HttpCompliance.RFC7230</code></a>).</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.Violation.html"><code>HttpCompliance.Violation</code></a> enumeration defines the RFC requirements that may be optionally enforced by Jetty, to support legacy deployments. These possible violations are grouped into modes by the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html"><code>HttpCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations (with the default being <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#RFC7230"><code>HttpCompliance.RFC7230</code></a>).</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -4813,7 +4870,7 @@ httpConfiguration.setHttpCompliance(HttpCompliance.RFC7230);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#from(java.lang.String)"><code>HttpCompliance.from(String)</code></a> method:</p>
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/HttpCompliance.html#from(java.lang.String)"><code>HttpCompliance.from(String)</code></a> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4863,10 +4920,10 @@ However, if the URI raw path is passed to some other APIs (for example, file sys
 <p>In order to avoid ambiguous URIs, Jetty imposes additional URI requirements in excess of what is required by <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a> compliance.</p>
 </div>
 <div class="paragraph">
-<p>These additional requirements may optionally be violated and are defined by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.Violation.html"><code>UriCompliance.Violation</code></a> enumeration.</p>
+<p>These additional requirements may optionally be violated and are defined by the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.Violation.html"><code>UriCompliance.Violation</code></a> enumeration.</p>
 </div>
 <div class="paragraph">
-<p>These violations are then grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html"><code>UriCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#DEFAULT"><code>UriCompliance.DEFAULT</code></a>.</p>
+<p>These violations are then grouped into modes by the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html"><code>UriCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#DEFAULT"><code>UriCompliance.DEFAULT</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -4878,7 +4935,7 @@ httpConfiguration.setUriCompliance(UriCompliance.RFC3986);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#from(java.lang.String)"><code>UriCompliance.from(String)</code></a> method:</p>
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/UriCompliance.html#from(java.lang.String)"><code>UriCompliance.from(String)</code></a> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4897,10 +4954,10 @@ httpConfiguration.setUriCompliance(customUriCompliance);</code></pre>
 <p>The standards for Cookies have varied greatly over time from a non-specified but de-facto standard (implemented by the first browsers), through <a href="https://tools.ietf.org/html/rfc2965">RFC 2965</a> and currently to <a href="https://tools.ietf.org/html/rfc6265">RFC 6265</a>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.Violation.html">CookieCompliance.Violation</a> enumeration defines the RFC requirements that may be optionally enforced by Jetty when parsing the <code>Cookie</code> HTTP header in requests and when generating the <code>Set-Cookie</code> HTTP header in responses.</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.Violation.html">CookieCompliance.Violation</a> enumeration defines the RFC requirements that may be optionally enforced by Jetty when parsing the <code>Cookie</code> HTTP header in requests and when generating the <code>Set-Cookie</code> HTTP header in responses.</p>
 </div>
 <div class="paragraph">
-<p>These violations are then grouped into modes by the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html"><code>CookieCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#RFC6265"><code>CookieCompliance.RFC6265</code></a>.</p>
+<p>These violations are then grouped into modes by the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html"><code>CookieCompliance</code></a> class, which also defines several named modes that support common deployed sets of violations, with the default being <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#RFC6265"><code>CookieCompliance.RFC6265</code></a>.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
@@ -4913,7 +4970,7 @@ httpConfiguration.setResponseCookieCompliance(CookieCompliance.RFC6265);</code><
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#from(java.lang.String)"><code>CookieCompliance.from(String)</code></a> method:</p>
+<p>If you want to customize the violations that you want to allow, you can create your own mode using the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http/CookieCompliance.html#from(java.lang.String)"><code>CookieCompliance.from(String)</code></a> method:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4946,7 +5003,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4955,7 +5012,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
+<img src="images/diag-plantuml-md5-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
 </div>
 </div>
 <div class="paragraph">
@@ -5025,7 +5082,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
+<img src="images/diag-plantuml-md5-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
 </div>
 </div>
 <div class="paragraph">
@@ -5114,7 +5171,7 @@ Currently, the following events are available:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>HttpChannel.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpChannel.Listener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the <code>HttpChannel.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/HttpChannel.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>Server applications can register <code>HttpChannel.Listener</code> by adding them as <a href="#pg-arch-bean">beans</a> to the <code>Connector</code>:</p>
@@ -5183,7 +5240,7 @@ These tools can provide information such as the most frequently accessed request
 <p>Typically, the extended NCSA format is the is enough and it&#8217;s the standard used and understood by most log parsing tools and monitoring tools.</p>
 </div>
 <div class="paragraph">
-<p>To customize the request/response log line format see the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/CustomRequestLog.html"><code>CustomRequestLog</code> javadocs</a>.</p>
+<p>To customize the request/response log line format see the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/CustomRequestLog.html"><code>CustomRequestLog</code> javadocs</a>.</p>
 </div>
 </td>
 </tr>
@@ -5589,7 +5646,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
+<img src="images/diag-plantuml-md5-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
 </div>
 </div>
 <div class="paragraph">
@@ -6162,7 +6219,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6173,7 +6230,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <p>The Jetty Server Libraries provide rules for the most common usages, but you can write your own rules by extending the <code>org.eclipse.jetty.rewrite.handler.Rule</code> class.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>jetty-rewrite</code> module <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/rewrite/handler/package-summary.html">javadocs</a> for the complete list of available rules.</p>
+<p>Please refer to the <code>jetty-rewrite</code> module <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/rewrite/handler/package-summary.html">javadocs</a> for the complete list of available rules.</p>
 </div>
 <div class="paragraph">
 <p>You typically want to configure <code>RewriteHandler</code> at the server level, although it is possible to configure it on a per-context basis.</p>
@@ -6439,7 +6496,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6822,7 +6879,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6908,7 +6965,7 @@ server.start();</code></pre>
 <p>The <code>ServerSessionListener</code> interface defines a number of methods that are invoked by the implementation upon the occurrence of HTTP/2 events, and that server applications can override to react to those events.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>ServerSessionListener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the <code>ServerSessionListener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http2/api/server/ServerSessionListener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>The first event is the <em>accept</em> event and happens when a client opens a new TCP connection to the server and the server accepts the connection.
@@ -7289,7 +7346,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7342,7 +7399,7 @@ server.start();</code></pre>
 <p>The <code>Session.Server.Listener</code> interface defines a number of methods that are invoked by the implementation upon the occurrence of HTTP/3 events, and that server applications can override to react to those events.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to the <code>Session.Server.Listener</code> <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Server.Listener.html">javadocs</a> for the complete list of events.</p>
+<p>Please refer to the <code>Session.Server.Listener</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/http3/api/Session.Server.Listener.html">javadocs</a> for the complete list of events.</p>
 </div>
 <div class="paragraph">
 <p>The first event is the <em>accept</em> event and happens when a client opens a new QUIC connection to the server and the server accepts the connection.
@@ -7639,7 +7696,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
+<img src="images/diag-plantuml-md5-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
 </div>
 </div>
 </div>
@@ -7653,7 +7710,7 @@ Its purpose is to generate fresh, unique session ids and to coordinate the re-us
 <p>The <code>SessionIdManager</code> is agnostic with respect to the type of clustering technology chosen.</p>
 </div>
 <div class="paragraph">
-<p>Jetty provides a default implementation - the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionIdManager.html">DefaultSessionIdManager</a>  - which should meet the needs of most users.</p>
+<p>Jetty provides a default implementation - the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionIdManager.html">DefaultSessionIdManager</a>  - which should meet the needs of most users.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7730,8 +7787,8 @@ This restriction is important to support cross-context dispatch.</p>
 <div class="sect4">
 <h5 id="pg-server-session-housekeeper"><a class="anchor" href="#pg-server-session-housekeeper"></a><a class="link" href="#pg-server-session-housekeeper">The HouseKeeper</a></h5>
 <div class="paragraph">
-<p>There is a maximum of one <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/HouseKeeper.html">HouseKeeper</a> per <code>SessionIdManager</code>.
-Its purpose is to periodically poll the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandlers</a> to clean out expired sessions.
+<p>There is a maximum of one <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/HouseKeeper.html">HouseKeeper</a> per <code>SessionIdManager</code>.
+Its purpose is to periodically poll the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandlers</a> to clean out expired sessions.
 This operation is usually referred to as "scavenging" expired sessions.
 The scavenging interval is configured by the <code>setIntervalSec(long)</code> method.
 The default value is <code>600</code>sec, ie <code>10</code>mins.</p>
@@ -7780,7 +7837,7 @@ It also calls the context-level session listeners at appropriate points in the s
 <div class="sect4">
 <h5 id="pg-configuration"><a class="anchor" href="#pg-configuration"></a><a class="link" href="#pg-configuration">Configuration</a></h5>
 <div class="paragraph">
-<p>The majority of configuration for the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandler</a> can be done via <code>web.xml</code> <code>&lt;session-config&gt;</code> declarations, or the <code>javax.servlet.SessionCookieConfig</code> api.
+<p>The majority of configuration for the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionHandler.html">SessionHandler</a> can be done via <code>web.xml</code> <code>&lt;session-config&gt;</code> declarations, or the <code>javax.servlet.SessionCookieConfig</code> api.
 There are also a few jetty-specific configuration options that we will cover here:</p>
 </div>
 <div class="dlist">
@@ -8051,7 +8108,7 @@ You are responsible for configuring both the <code>SessionCache</code> instance 
 <p>More on <code>SessionDataStore</code>s <a href="#pg-server-session-datastore">later</a>, in this section we will concentrate on the <code>SessionCache</code> and <code>SessionCacheFactory</code>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a> provides most of the behaviour of <code>SessionCache</code>s.
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a> provides most of the behaviour of <code>SessionCache</code>s.
 If you are implementing a custom <code>SessionCache</code> we strongly recommend you extend this base class, as the Servlet Specification has many subtleties and extending the base class ensures that your implementation will take account of them.</p>
 </div>
 <div class="paragraph">
@@ -8106,7 +8163,7 @@ To prevent his, enable this feature and the <code>SessionCache</code> will ensur
 <dd>
 <p>Some applications want to ensure that all cached sessions are removed when the server shuts down.
 This option will ensure that all cached sessions are invalidated.
-The <code>AbstractSessionCache</code> does not implement this behaviour, a subclass must implement the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
+The <code>AbstractSessionCache</code> does not implement this behaviour, a subclass must implement the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
 </dd>
 <dt class="hdlist1">flushOnResponseCommit</dt>
 <dd>
@@ -8117,17 +8174,17 @@ Using this option ensures that all subsequent requests - either to the same or a
 </dl>
 </div>
 <div class="paragraph">
-<p>Jetty provides two <code>SessionCache</code> implementations: the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> and the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a>.</p>
+<p>Jetty provides two <code>SessionCache</code> implementations: the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> and the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-server-session-hash"><a class="anchor" href="#pg-server-session-hash"></a><a class="link" href="#pg-server-session-hash">The DefaultSessionCache</a></h5>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> retains <code>Session</code> objects in memory in a <code>ConcurrentHashMap</code>.
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html">DefaultSessionCache</a> retains <code>Session</code> objects in memory in a <code>ConcurrentHashMap</code>.
 It is suitable for non-clustered and clustered deployments.
 For clustered deployments, a sticky load balancer is <strong>strongly</strong> recommended, otherwise you risk indeterminate session state as the session bounces around multiple nodes.</p>
 </div>
 <div class="paragraph">
-<p>It implements the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
+<p>It implements the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionCache.html#shutdown()">SessionCache.shutdown()</a> method.</p>
 </div>
 <div class="paragraph">
 <p>It also provides some statistics on sessions, which are convenient to access either directly in code or remotely via jmx:</p>
@@ -8136,24 +8193,24 @@ For clustered deployments, a sticky load balancer is <strong>strongly</strong> r
 <dl>
 <dt class="hdlist1">current sessions</dt>
 <dd>
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsCurrent()</a> reports the number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsCurrent()</a> reports the number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">max sessions</dt>
 <dd>
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsMax()</a> reports the highest number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsCurrent()">DefaultSessionCache.getSessionsMax()</a> reports the highest number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">total sessions</dt>
 <dd>
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsTotal()">DefaultSessionCache.getSessionsTotal()</a> reports the cumulative total of the number of sessions in the cache at the time of the method call.</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#getSessionsTotal()">DefaultSessionCache.getSessionsTotal()</a> reports the cumulative total of the number of sessions in the cache at the time of the method call.</p>
 </dd>
 <dt class="hdlist1">reset</dt>
 <dd>
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#resetStats()">DefaultSessionCache.resetStats()</a> zeros out the statistics counters.</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCache.html#resetStats()">DefaultSessionCache.resetStats()</a> zeros out the statistics counters.</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>If you create a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCacheFactory.html">DefaultSessionFactory</a> and register it as <code>Server</code> bean, a <code>SessionHandler</code> will be able to lazily create a <code>DefaultSessionCache</code>.
+<p>If you create a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/DefaultSessionCacheFactory.html">DefaultSessionFactory</a> and register it as <code>Server</code> bean, a <code>SessionHandler</code> will be able to lazily create a <code>DefaultSessionCache</code>.
 The <code>DefaultSessionCacheFactory</code> has all of the same configuration setters as a <code>DefaultSessionCache</code>.
 Alternatively, if you only have a single <code>SessionHandler</code>, or you need to configure a <code>DefaultSessionCache</code> differently for every <code>SessionHandler</code>, then you could dispense with the <code>DefaultSessionCacheFactory</code> and simply instantiate, configure and pass in the <code>DefaultSessionCache</code> yourself.</p>
 </div>
@@ -8192,14 +8249,14 @@ If you don&#8217;t configure any <code>SessionCache</code> or <code>SessionCache
 <div class="sect4">
 <h5 id="pg-server-session-null"><a class="anchor" href="#pg-server-session-null"></a><a class="link" href="#pg-server-session-null">The NullSessionCache</a></h5>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a> does not actually cache any objects: each request uses a fresh <code>Session</code> object.
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCache.html">NullSessionCache</a> does not actually cache any objects: each request uses a fresh <code>Session</code> object.
 It is suitable for clustered deployments without a sticky load balancer and non-clustered deployments when purely minimal support for sessions is needed.</p>
 </div>
 <div class="paragraph">
 <p>As no sessions are actually cached, of course functions like <code>invalidateOnShutdown</code> and all of the eviction strategies have no meaning for the <code>NullSessionCache</code>.</p>
 </div>
 <div class="paragraph">
-<p>There is a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCacheFactory.html">NullSessionCacheFactory</a> which you can instantiate, configure and set as a <code>Server</code> bean to enable the <code>SessionHandler</code> to automatically create new <code>NullCache</code>s as needed.
+<p>There is a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionCacheFactory.html">NullSessionCacheFactory</a> which you can instantiate, configure and set as a <code>Server</code> bean to enable the <code>SessionHandler</code> to automatically create new <code>NullCache</code>s as needed.
 All of the same configuration options are available on the <code>NullSessionCacheFactory</code> as the <code>NullSessionCache</code> itself.
 Alternatively, if you only have a single <code>SessionHandler</code>, or you need to configure a <code>NullSessionCache</code> differently for every <code>SessionHandler</code>, then you could dispense with the <code>NullSessionCacheFactory</code> and simply instantiate, configure and pass in the <code>NullSessionCache</code> yourself.</p>
 </div>
@@ -8220,7 +8277,7 @@ server.addBean(cacheFactory);</code></pre>
 <div class="sect4">
 <h5 id="pg-server-session-customcache"><a class="anchor" href="#pg-server-session-customcache"></a><a class="link" href="#pg-server-session-customcache">Implementing a Custom SessionCache</a></h5>
 <div class="paragraph">
-<p>As previously mentioned, we highly recommend that you extend the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a>.</p>
+<p>As previously mentioned, we highly recommend that you extend the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionCache.html">AbstractSessionCache</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -8276,17 +8333,17 @@ app2.getSessionHandler().setSessionCache(nullSessionCache);</code></pre>
 <div class="sect3">
 <h4 id="pg-server-session-datastore"><a class="anchor" href="#pg-server-session-datastore"></a><a class="link" href="#pg-server-session-datastore">The SessionDataStore</a></h4>
 <div class="paragraph">
-<p>A <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataStore.html">SessionDataStore</a> mediates the storage, retrieval and deletion of <code>SessionData</code>.
+<p>A <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataStore.html">SessionDataStore</a> mediates the storage, retrieval and deletion of <code>SessionData</code>.
 There is one <code>SessionDataStore</code> per <code>SessionCache</code>.
 The server libraries provide a number of alternative <code>SessionDataStore</code> implementations.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
+<img src="images/diag-plantuml-md5-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
 </div>
 </div>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionDataStore.html">AbstractSessionDataStore</a> provides most of the behaviour common to <code>SessionDataStore</code>s:</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/AbstractSessionDataStore.html">AbstractSessionDataStore</a> provides most of the behaviour common to <code>SessionDataStore</code>s:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -8338,7 +8395,7 @@ Thus, we use the <code>gracePeriod</code> to provide a bit of leeway around the 
 </td>
 <td class="content">
 <div class="paragraph">
-<p>The trivial <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionDataStore.html">NullSessionDataStore</a> - which does not persist sessions - is the default used by the <code>SessionHandler</code>.</p>
+<p>The trivial <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/NullSessionDataStore.html">NullSessionDataStore</a> - which does not persist sessions - is the default used by the <code>SessionHandler</code>.</p>
 </div>
 </td>
 </tr>
@@ -8407,7 +8464,7 @@ If there are no virtual hosts associated with a context, then <code>0.0.0.0</cod
 <div class="sect5">
 <h6 id="pg-configuration-2"><a class="anchor" href="#pg-configuration-2"></a><a class="link" href="#pg-configuration-2">Configuration</a></h6>
 <div class="paragraph">
-<p>You can configure either a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/FileSessionDataStore.html">FileSessionDataStore</a> individually, or a <code>FileSessionDataStoreFactory</code> if you want multiple <code>SessionHandler</code>s to use <code>FileSessionDataStore</code>s that are identically configured.
+<p>You can configure either a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/FileSessionDataStore.html">FileSessionDataStore</a> individually, or a <code>FileSessionDataStoreFactory</code> if you want multiple <code>SessionHandler</code>s to use <code>FileSessionDataStore</code>s that are identically configured.
 The configuration methods are:</p>
 </div>
 <div class="dlist">
@@ -8526,7 +8583,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
+<img src="images/diag-plantuml-md5-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8589,7 +8646,7 @@ Many databases use different keywords for the <code>long</code>, <code>blob</cod
 <div class="sect5">
 <h6 id="pg-configuration-3"><a class="anchor" href="#pg-configuration-3"></a><a class="link" href="#pg-configuration-3">Configuration</a></h6>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStore.html">JDBCSessionDataStore</a> and corresponding <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStoreFactory.html">JDBCSessionDataStoreFactory</a> supports the following configuration:</p>
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStore.html">JDBCSessionDataStore</a> and corresponding <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/JDBCSessionDataStoreFactory.html">JDBCSessionDataStoreFactory</a> supports the following configuration:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -8759,12 +8816,12 @@ This is the name of the column that stores the serialized attributes of a sessio
 <p>The <code>MongoSessionDataStore</code> supports persistence of <code>SessionData</code> in a nosql database.</p>
 </div>
 <div class="paragraph">
-<p>The best description for the document model for session information is found in the javadoc for the <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a>.
+<p>The best description for the document model for session information is found in the javadoc for the <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a>.
 In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
+<img src="images/diag-plantuml-md5-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
 </div>
 </div>
 <div class="paragraph">
@@ -8833,7 +8890,7 @@ As the expiry time can be different for <code>Session</code>s from different con
 <div class="sect5">
 <h6 id="pg-configuration-4"><a class="anchor" href="#pg-configuration-4"></a><a class="link" href="#pg-configuration-4">Configuration</a></h6>
 <div class="paragraph">
-<p>You can configure either a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a> individually, or a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStoreFactory</a> if you want multiple <code>SessionHandler</code>s to use <code>MongoSessionDataStore</code>s that are identically configured.
+<p>You can configure either a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStore</a> individually, or a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/nosql/mongodb/MongoSessionDataStore.html">MongoSessionDataStoreFactory</a> if you want multiple <code>SessionHandler</code>s to use <code>MongoSessionDataStore</code>s that are identically configured.
 The configuration methods for the <code>MongoSessionDataStoreFactory</code> are:</p>
 </div>
 <div class="dlist">
@@ -8916,16 +8973,16 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
+<img src="images/diag-plantuml-md5-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
 </div>
 </div>
 <div class="paragraph">
-<p>The <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/CachingSessionDataStore.html">CachingSessionDataStore</a> is a special type of <code>SessionDataStore</code> that checks an L2 cache for <code>SessionData</code> before checking a delegate <code>SessionDataStore</code>.
+<p>The <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/CachingSessionDataStore.html">CachingSessionDataStore</a> is a special type of <code>SessionDataStore</code> that checks an L2 cache for <code>SessionData</code> before checking a delegate <code>SessionDataStore</code>.
 This can improve the performance of slow stores.</p>
 </div>
 <div class="paragraph">
-<p>The L2 cache is an instance of a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataMap.html">SessionDataMap</a>.
-Jetty provides one implementation of this L2 cache based on <code>memcached</code>, <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/memcached/session/MemcachedSessionDataMap.html">MemcachedSessionDataMap</a>.</p>
+<p>The L2 cache is an instance of a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/session/SessionDataMap.html">SessionDataMap</a>.
+Jetty provides one implementation of this L2 cache based on <code>memcached</code>, <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/memcached/session/MemcachedSessionDataMap.html">MemcachedSessionDataMap</a>.</p>
 </div>
 <div class="sect5">
 <h6 id="pg-configuration-5"><a class="anchor" href="#pg-configuration-5"></a><a class="link" href="#pg-configuration-5">Configuration</a></h6>
@@ -9065,7 +9122,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9298,7 +9355,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9310,7 +9367,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9927,7 +9984,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
+<img src="images/diag-plantuml-md5-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
 </div>
 </div>
 <div class="paragraph">
@@ -9971,7 +10028,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="978" height="254">
+<img src="images/diag-plantuml-md5-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="978" height="254">
 </div>
 </div>
 <div class="paragraph">
@@ -10813,7 +10870,7 @@ This is the <em>default</em> mode.</p>
 <p>Optional.
 Note that to configure a https connector, you will need to use xml configuration files instead, setting the <code>jettyXmls</code> parameter.
 This parameter can only be used to configure a standard http connector.
-If not specified, Jetty will create a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html">ServerConnector</a> instance listening on port 8080.
+If not specified, Jetty will create a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html">ServerConnector</a> instance listening on port 8080.
 You can change this default port number by using the system property <code>jetty.http.port</code> on the command line, for example, <code>mvn -Djetty.http.port=9999 jetty:run</code>.
 Alternatively, you can use this configuration element to set up the information for the ServerConnector.
 The following are the valid configuration sub-elements:</p>
@@ -11120,7 +11177,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -11440,7 +11497,7 @@ Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -13034,7 +13091,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
+<img src="images/diag-plantuml-md5-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -13051,7 +13108,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
+<img src="images/diag-plantuml-md5-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13081,7 +13138,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
+<img src="images/diag-plantuml-md5-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13135,10 +13192,10 @@ Deciding between these two modes depends on whether there is a free thread immed
 <p>Jetty&#8217;s <a href="#pg-arch-threads">threading architecture</a> requires a more sophisticated thread pool than what offered by Java&#8217;s <code>java.util.concurrent.ExecutorService</code>.</p>
 </div>
 <div class="paragraph">
-<p>Jetty&#8217;s default thread pool implementation is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/util/thread/QueuedThreadPool.html"><code>QueuedThreadPool</code></a>.</p>
+<p>Jetty&#8217;s default thread pool implementation is <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/util/thread/QueuedThreadPool.html"><code>QueuedThreadPool</code></a>.</p>
 </div>
 <div class="paragraph">
-<p><code>QueuedThreadPool</code> integrates with the <a href="#pg-arch-bean">Jetty component model</a>, implements <code>Executor</code>, provides a <code>TryExecutor</code> implementation (discussed in the <a href="#pg-arch-threads-execution-strategy-adaptive">adaptive execution strategy section</a>), and supports <a href="#pg-arch-threads-thread-pool-virtual-threads">virtual threads</a> (introduced as a preview feature in Java 19).</p>
+<p><code>QueuedThreadPool</code> integrates with the <a href="#pg-arch-bean">Jetty component model</a>, implements <code>Executor</code>, provides a <code>TryExecutor</code> implementation (discussed in the <a href="#pg-arch-threads-execution-strategy-adaptive">adaptive execution strategy section</a>), and supports <a href="#pg-arch-threads-thread-pool-virtual-threads">virtual threads</a> (introduced as a preview feature in Java 19 and Java 20, and as an official feature since Java 21).</p>
 </div>
 <div class="paragraph">
 <p><code>QueuedThreadPool</code> can be configured with a <code>maxThreads</code> value.</p>
@@ -13174,7 +13231,7 @@ The larger this value is, the quicker the threads are evicted when the <code>Que
 <div class="sect4">
 <h5 id="pg-arch-threads-thread-pool-virtual-threads"><a class="anchor" href="#pg-arch-threads-thread-pool-virtual-threads"></a><a class="link" href="#pg-arch-threads-thread-pool-virtual-threads">Virtual Threads</a></h5>
 <div class="paragraph">
-<p>Virtual threads have been introduced in Java 19 as a preview feature.</p>
+<p>Virtual threads have been introduced in Java 19 and Java 20 as a preview feature, and have become an official feature since Java 21.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -13183,7 +13240,7 @@ The larger this value is, the quicker the threads are evicted when the <code>Que
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In Java versions where virtual threads are a preview feature, remember to add <code>--enable-preview</code> to the command line options to use virtual threads.
+In Java versions where virtual threads are a preview feature, remember to add <code>--enable-preview</code> to the JVM command line options to use virtual threads.
 </td>
 </tr>
 </table>
@@ -13242,10 +13299,10 @@ threadPool.setVirtualThreadsExecutor(<span class="predefined-type">Executors</sp
 <div class="sect3">
 <h4 id="pg-arch-io-selector-manager"><a class="anchor" href="#pg-arch-io-selector-manager"></a><a class="link" href="#pg-arch-io-selector-manager">Jetty I/O: <code>SelectorManager</code></a></h4>
 <div class="paragraph">
-<p>The core class of Jetty I/O is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a>.</p>
+<p>The core class of Jetty I/O is <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a>.</p>
 </div>
 <div class="paragraph">
-<p><code>SelectorManager</code> manages internally a configurable number of <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ManagedSelector.html"><code>ManagedSelector</code></a>s.
+<p><code>SelectorManager</code> manages internally a configurable number of <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ManagedSelector.html"><code>ManagedSelector</code></a>s.
 Each <code>ManagedSelector</code> wraps an instance of <code>java.nio.channels.Selector</code> that in turn manages a number of <code>java.nio.channels.SocketChannel</code> instances.</p>
 </div>
 <div class="admonitionblock note">
@@ -13310,7 +13367,7 @@ In both cases the <code>SocketChannel</code> instance is passed to <code>Selecto
 <div class="sect3">
 <h4 id="pg-arch-io-endpoint-connection"><a class="anchor" href="#pg-arch-io-endpoint-connection"></a><a class="link" href="#pg-arch-io-endpoint-connection">Jetty I/O: <code>EndPoint</code> and <code>Connection</code></a></h4>
 <div class="paragraph">
-<p><code>SocketChannel</code>s that are passed to <code>SelectorManager</code> are wrapped into two related components: an <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/EndPoint.html"><code>EndPoint</code></a> and a <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/Connection.html"><code>Connection</code></a>.</p>
+<p><code>SocketChannel</code>s that are passed to <code>SelectorManager</code> are wrapped into two related components: an <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/EndPoint.html"><code>EndPoint</code></a> and a <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/Connection.html"><code>Connection</code></a>.</p>
 </div>
 <div class="paragraph">
 <p><code>EndPoint</code> is the Jetty abstraction for a <code>SocketChannel</code> or a <code>DatagramChannel</code>: you can read bytes from an <code>EndPoint</code>, you can write bytes to an <code>EndPoint</code> , you can close an <code>EndPoint</code>, etc.</p>
@@ -13327,7 +13384,7 @@ Conversely, an HTTP/1.1 client-side <code>Connection</code> implementation is re
 <p>The writing side for a specific protocol <em>may</em> be implemented in the <code>Connection</code> but may also be implemented in other components, although eventually the bytes to be written will be written through the <code>EndPoint</code>.</p>
 </div>
 <div class="paragraph">
-<p>While there are primarily only two implementations of <code>EndPoint</code>,<a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> for TCP and <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/DatagramChannelEndPoint.html"><code>DatagramChannelEndPoint</code></a> for UDP (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
+<p>While there are primarily only two implementations of <code>EndPoint</code>,<a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/SocketChannelEndPoint.html"><code>SocketChannelEndPoint</code></a> for TCP and <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/DatagramChannelEndPoint.html"><code>DatagramChannelEndPoint</code></a> for UDP (used both on the client-side and on the server-side), there are many implementations of <code>Connection</code>, typically two for each protocol (one for the client-side and one for the server-side).</p>
 </div>
 <div class="paragraph">
 <p>The <code>EndPoint</code> and <code>Connection</code> pairs can be chained, for example in case of encrypted communication using the TLS protocol.
@@ -13342,13 +13399,13 @@ This allows to use the HTTP/1.1 <code>Connection</code> during the initial commu
 <p><code>SelectorManager</code> is an abstract class because while it knows how to create concrete <code>EndPoint</code> instances, it does not know how to create protocol specific <code>Connection</code> instances.</p>
 </div>
 <div class="paragraph">
-<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s.</p>
+<p>Creating <code>Connection</code> instances is performed on the server-side by <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ConnectionFactory.html"><code>ConnectionFactory</code></a>s and on the client-side by <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a>s.</p>
 </div>
 <div class="paragraph">
-<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> for TCP sockets, <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/quic/server/QuicServerConnector.html"><code>QuicServerConnector</code></a> for QUIC sockets, and <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/unixdomain/server/UnixDomainServerConnector.html"><code>UnixDomainServerConnector</code></a> for Unix-Domain sockets (see the <a href="#pg-server-io-arch">server-side architecture section</a> for more information).</p>
+<p>On the server-side, the component that aggregates a <code>SelectorManager</code> with a set of <code>ConnectionFactory</code>s is <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/server/ServerConnector.html"><code>ServerConnector</code></a> for TCP sockets, <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/quic/server/QuicServerConnector.html"><code>QuicServerConnector</code></a> for QUIC sockets, and <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/unixdomain/server/UnixDomainServerConnector.html"><code>UnixDomainServerConnector</code></a> for Unix-Domain sockets (see the <a href="#pg-server-io-arch">server-side architecture section</a> for more information).</p>
 </div>
 <div class="paragraph">
-<p>On the client-side, the components that aggregates a <code>SelectorManager</code> with a set of <code>ClientConnectionFactory</code>s are <a href="https://www.eclipse.org/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClientTransport.html"><code>HttpClientTransport</code></a> subclasses (see the <a href="#pg-client-io-arch">client-side architecture section</a> for more information).</p>
+<p>On the client-side, the components that aggregates a <code>SelectorManager</code> with a set of <code>ClientConnectionFactory</code>s are <a href="https://eclipse.dev/jetty/javadoc/jetty-11/org/eclipse/jetty/client/HttpClientTransport.html"><code>HttpClientTransport</code></a> subclasses (see the <a href="#pg-client-io-arch">client-side architecture section</a> for more information).</p>
 </div>
 </div>
 <div class="sect3">
@@ -13775,7 +13832,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>11.0.15<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>11.0.16<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14667,7 +14724,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 11.0.15<br>
+Version 11.0.16<br>
 Last updated 2023-04-11 13:32:21 -0500
 </div>
 </div>

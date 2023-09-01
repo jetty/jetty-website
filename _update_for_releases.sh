@@ -23,7 +23,8 @@ function set_global_variables() {
   SCRIPT_DIR=$(pwd)
   
   # use one of these and set on CLI, default to maven central?
-  NEXUS_ROOT="http://10.0.0.15:8081/repository/maven-public"
+  #NEXUS_ROOT="http://10.0.0.15:8081/repository/maven-public"
+  NEXUS_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
 
@@ -285,7 +286,7 @@ function download_distribution_files() {
 
   if [[ "$version" == "1"* ]]; then
     local artifact="jetty-home"
-    maven_download "$artifact" "$version" "$artifact-$version-with-docs.zip";
+    maven_download "$artifact" "$version" "$artifact-$version.zip";
   else
     local artifact="jetty-distribution"
   fi
@@ -308,15 +309,21 @@ function download_documentation_files() {
   local artifact="jetty-documentation";
   local version=$1;
   local html_filename="$artifact-$version-html.zip";
+  local jar_filename="$artifact-$version-javadoc.jar";
+
 
   local primary_version
   primary_version=$(get_primary_version "$version")
+
+  echo "CHECK download doc files $artifact $version $html_filename"
 
   if [[ $primary_version == "jetty-9" ]]; then
     maven_download "$artifact" "$version" "$html_filename";
   else
     # this is a hack, should clean this up
     maven_download "documentation/$artifact" "$version" "$html_filename";
+    maven_download "documentation/$artifact" "$version" "$jar_filename";
+
   fi
 }
 
@@ -508,6 +515,8 @@ function process_javadoc() {
     local javadoc_version;
     local temp_build_dir="$TEMP_DIR/$version";
 
+    mkdir $temp_build_dir;
+
     primary_version=$(get_primary_version "$version");
     javadoc_version=$(get_javadoc_version "$primary_version");
 
@@ -522,6 +531,7 @@ function process_javadoc() {
   delete_temp_directory
 }
 
+# TODO clean this up
 function build_javadoc() {
   local primary_version=$1
   local version=$2
@@ -539,23 +549,32 @@ function build_javadoc() {
       mvn clean install -DskipTests
       mvn javadoc:aggregate
     elif [[ $primary_version == "jetty-10" ]]; then
-      filename="jetty-home-$version-with-docs.zip"
-      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+      filename="jetty-documentation-$version-javadoc.jar"
+      cd $temp_build_dir  || bail; 
+      echo $temp_build_dir $pwd
+      jar -xf "$ARC_DIR/$filename"
     elif [[ $primary_version == "jetty-11" ]]; then
-      filename="jetty-home-$version-with-docs.zip"
-      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
+      filename="jetty-documentation-$version-javadoc.jar"
+      cd $temp_build_dir || exit 1; 
+      jar -xf "$ARC_DIR/$filename"
     elif [[ $primary_version == "jetty-12" ]]; then
-      filename="jetty-home-$version-with-docs.zip"
-      unzip -d "$temp_build_dir" -o "$ARC_DIR/$filename"
-      make_canonical $temp_build_dir
+      filename="jetty-documentation-$version-javadoc.jar"
+      cd $temp_build_dir || exit 1;
+      jar -xf "$ARC_DIR/$filename"
     fi
 
     cd "$SCRIPT_DIR" || exit 1
   } &>>"$LOG_FILE";
 }
 
+function bail() {
+
+  echo "Bailing out!";
+  exit 1;
+
+}
+
 #
-# This is implemented wrong
 #
 function process_canonical() {
   local old_versions=($jetty_9_4 $jetty_10_0 $jetty_11_0);
@@ -568,11 +587,11 @@ function process_canonical() {
     old_prime_version=$(get_primary_version "$old_version");
 
     if [[ $old_prime_version == "jetty-9" ]]; then
-      echo "implement $old_prime_version";
+      #echo "implement $old_prime_version";
       find_j9_doc_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
       find_canonical_links $old_prime_version $canonical_prime_version $JAVADOC_DIR "javadoc";
     else
-      echo "  - make $old_prime_version files point to canonical $canonical_prime_version files";
+      #echo "  - make $old_prime_version files point to canonical $canonical_prime_version files";
       find_canonical_links $old_prime_version $canonical_prime_version $DOC_DIR "documentation";
       find_canonical_links $old_prime_version $canonical_prime_version $JAVADOC_DIR "javadoc";
     fi;
@@ -589,10 +608,9 @@ function find_j9_doc_canonical_links() {
   local old_files=($(find "$directory/$old_prime_version" -type f -name "*.html" -printf "%P\n"));
 
   for file in "${old_files[@]}"; do
-    echo "  - check if canonical: $old_prime_version/$file";
+    #echo "  - check if canonical: $old_prime_version/$file";
     if grep -q 'link rel="canonical" href' "$directory/$old_prime_version/$file"; then
-      echo "  - canonized $old_prime_version/$file";
-    else
+      #echo "  - canonized $old_prime_version/$file";
       local success=$(sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/$canonical_prime_version/index.html\"/>+gI" "$directory/$old_prime_version/$file" );
     fi;
   done;
@@ -609,16 +627,15 @@ function find_canonical_links() {
   local old_files=($(find "$directory/$old_prime_version" -type f -name "*.html" -printf "%P\n"));
 
   for file in "${old_files[@]}"; do
-    echo "  - check if canonical: $old_prime_version/$file";
+    #echo "  - check if canonical: $old_prime_version/$file";
     if grep -q 'link rel="canonical" href' "$directory/$old_prime_version/$file"; then
-      echo "  - canonized $old_prime_version/$file";
-    else
-      if [[ -f "$directory/$canonical_prime_version/$file" ]]; then
-        echo "  - canonizing $old_prime_version/$file";
+    #  echo "  - canonized $old_prime_version/$file";
+      foo=bar;
+      elif [[ -f "$directory/$canonical_prime_version/$file" ]]; then
+    #    echo "  - canonizing $old_prime_version/$file";
         local success=$(sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$WEBSITE_ROOT/$url_base/$canonical_prime_version/$file\"/>+gI" "$directory/$old_prime_version/$file" );
-      else
-        echo "  - canonical version doesn't exist $canonical_prime_version/$file";
-      fi;
+    #  else
+    #    echo "  - canonical version doesn't exist $canonical_prime_version/$file";
     fi;
   done;
 
@@ -636,7 +653,7 @@ function is_not_canonicalized() {
 
 }
 
-
+# TODO clean up
 function deploy_javadoc() {
   local primary_version=$1
   local version=$2
@@ -648,11 +665,11 @@ function deploy_javadoc() {
   if [[ $primary_version == "jetty-9" ]]; then
     javadoc_src_dir="$temp_build_dir/jetty.project-jetty-$version/target/site/apidocs/"
   elif [[ $primary_version == "jetty-10" ]]; then
-    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
+    javadoc_src_dir="$temp_build_dir/"
   elif [[ $primary_version == "jetty-11" ]]; then
-    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
+    javadoc_src_dir="$temp_build_dir/"
   elif [[ $primary_version == "jetty-12" ]]; then
-    javadoc_src_dir="$temp_build_dir/jetty-home-$version/javadoc/"
+    javadoc_src_dir="$temp_build_dir/"
   fi
 
   rsync -avh "$javadoc_src_dir" "$JAVADOC_DIR/$primary_version" &>>"$LOG_FILE";
