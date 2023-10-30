@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.2,</span>
-<span id="revdate">2023-10-09</span>
+<span id="revnumber">version 12.0.3,</span>
+<span id="revdate">2023-10-26</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -222,6 +222,18 @@
 <li><a href="#og-protocols-http2s">Secure HTTP/2</a></li>
 <li><a href="#og-protocols-http2c">Clear-Text HTTP/2</a></li>
 <li><a href="#og-protocols-http3">HTTP/3</a></li>
+<li><a href="#og-protocols-websocket">WebSocket</a>
+<ul class="sectlevel4">
+<li><a href="#og-protocols-websocket-configure">Configuring WebSocket</a></li>
+<li><a href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></li>
+<li><a href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></li>
+</ul>
+</li>
+<li><a href="#og-protocols-fcgi">FastCGI</a>
+<ul class="sectlevel4">
+<li><a href="#og-protocols-fcgi-configure">Configuring WordPress</a></li>
+</ul>
+</li>
 <li><a href="#og-protocols-ssl">Configuring Secure Protocols</a>
 <ul class="sectlevel4">
 <li><a href="#og-protocols-ssl-customize">Customizing KeyStore and SSL/TLS Configuration</a>
@@ -241,13 +253,6 @@
 <li><a href="#og-protocols-proxy-forwarded">Configuring the Forwarded Header</a></li>
 <li><a href="#og-protocols-proxy-protocol">Configuring the Proxy Protocol</a></li>
 <li><a href="#og-protocols-proxy-haproxy">HAProxy and Jetty with HTTP/1.1 and HTTP/2</a></li>
-</ul>
-</li>
-<li><a href="#og-protocols-websocket">WebSocket</a>
-<ul class="sectlevel4">
-<li><a href="#og-protocols-websocket-configure">Configuring WebSocket</a></li>
-<li><a href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></li>
-<li><a href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></li>
 </ul>
 </li>
 </ul>
@@ -600,7 +605,7 @@ $ java -jar $JETTY_HOME/start.jar --add-modules=server,http,ee10-deploy</pre>
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
 <p>After the download, unpacking Jetty will extract the files into a directory called <code>jetty-home-&lt;version&gt;</code>, where <code>&lt;version&gt;</code> is the version of Jetty that you downloaded.
-For example, installing Jetty 12.0.2 will create a directory called <code>jetty-home-12.0.2</code>.</p>
+For example, installing Jetty 12.0.3 will create a directory called <code>jetty-home-12.0.3</code>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -743,9 +748,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:06.035:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:06.060:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-10-09 21:15:06.069:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.2,sto=5000] @894ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:42:40.161:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:42:40.183:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-10-26 22:42:40.195:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.3,sto=5000] @596ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -840,9 +845,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:07.055:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:07.075:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
-<strong>2023-10-09 21:15:07.083:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.2,sto=5000] @633ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:42:41.180:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:42:41.206:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2023-10-26 22:42:41.216:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.3,sto=5000] @643ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -856,9 +861,9 @@ A property value specified on the command-line in this way will <strong>override
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:07.995:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:08.015:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-10-09 21:15:08.023:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.2,sto=5000] @599ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:42:42.145:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:42:42.166:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79e2c065<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-10-26 22:42:42.175:</strong>INFO :oejs.Server:main: Started oejs.Server@6f96c77{STARTING}[12.0.3,sto=5000] @599ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1028,15 +1033,15 @@ You can use one of the demos shipped with Jetty:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:10.017:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:10.034:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor ee10 in [file:///path/to/jetty.base/webapps/] at intervals 0s
-<strong>2023-10-09 21:15:10.039:</strong>INFO :oejd.DeploymentManager:main: addApp: App@759d26fb[ee10,null,/path/to/jetty.base/webapps/ee10-demo-simple.war]
-<strong>2023-10-09 21:15:10.138:</strong>INFO :oejew.StandardDescriptorProcessor:main: NO JSP Support for /ee10-demo-simple, did not find org.eclipse.jetty.ee10.jsp.JettyJspServlet
-<mark><strong>2023-10-09 21:15:10.149:</strong>INFO :oejsh.ContextHandler:main: Started oeje10w.WebAppContext@700fb871{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@3b35a229{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
-<mark><strong>2023-10-09 21:15:10.160:</strong>INFO :oejes.ServletContextHandler:main: Started oeje10w.WebAppContext@700fb871{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@3b35a229{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
-<strong>2023-10-09 21:15:10.162:</strong>INFO :oejs.DefaultSessionIdManager:main: Session workerName=node0
-<strong>2023-10-09 21:15:10.169:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@13bc8645{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2023-10-09 21:15:10.177:</strong>INFO :oejs.Server:main: Started oejs.Server@5ab9e72c{STARTING}[12.0.2,sto=5000] @810ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:42:44.096:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:42:44.116:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor ee10 in [file:///path/to/jetty.base/webapps/] at intervals 0s
+<strong>2023-10-26 22:42:44.122:</strong>INFO :oejd.DeploymentManager:main: addApp: App@10d307f1[ee10,null,/path/to/jetty.base/webapps/ee10-demo-simple.war]
+<strong>2023-10-26 22:42:44.210:</strong>INFO :oejew.StandardDescriptorProcessor:main: NO JSP Support for /ee10-demo-simple, did not find org.eclipse.jetty.ee10.jsp.JettyJspServlet
+<mark><strong>2023-10-26 22:42:44.221:</strong>INFO :oejsh.ContextHandler:main: Started oeje10w.WebAppContext@565f390{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@7dc3712{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<mark><strong>2023-10-26 22:42:44.232:</strong>INFO :oejes.ServletContextHandler:main: Started oeje10w.WebAppContext@565f390{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@7dc3712{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<strong>2023-10-26 22:42:44.233:</strong>INFO :oejs.DefaultSessionIdManager:main: Session workerName=node0
+<strong>2023-10-26 22:42:44.239:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@cd1e646{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-10-26 22:42:44.247:</strong>INFO :oejs.Server:main: Started oejs.Server@11c9af63{STARTING}[12.0.3,sto=5000] @808ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1743,12 +1748,12 @@ JVM Options Module
 JVM Version &amp; Properties:
 -------------------------
  java.home = /path/to/java.home
- java.vm.vendor = Oracle Corporation
- java.vm.version = 21+35-2513
+ java.vm.vendor = Eclipse Adoptium
+ java.vm.version = 21.0.1+12-LTS
  java.vm.name = OpenJDK 64-Bit Server VM
  java.vm.info = mixed mode, sharing
  java.runtime.name = OpenJDK Runtime Environment
- java.runtime.version = 21+35-2513
+ java.runtime.version = 21.0.1+12-LTS
  java.io.tmpdir = /path/to/jetty.base/work
  user.dir = /path/to/jetty.base
  user.language = en
@@ -1756,9 +1761,9 @@ JVM Version &amp; Properties:
 
 Jetty Version &amp; Properties:
 ---------------------------
- jetty.version = 12.0.2
- jetty.tag.version = jetty-12.0.2
- jetty.build = b01e3611cfcec50c9157c50f6d32a93515e01510
+ jetty.version = 12.0.3
+ jetty.tag.version = jetty-12.0.3
+ jetty.build = a873259fd5af141dedaa6c7fa8fe8fbdedce0d61
  jetty.home = /path/to/jetty.home
  jetty.base = /path/to/jetty.base
 
@@ -1779,9 +1784,9 @@ System Properties:
 
 Properties: Jetty
 -----------------
- java.version = 21
+ java.version = 21.0.1
  java.version.major = 21
- java.version.micro = 0
+ java.version.micro = 1
  java.version.minor = 0
  java.version.platform = 21
  jetty.base = /path/to/jetty.base
@@ -1800,12 +1805,12 @@ Note: order presented here is how they would appear on the classpath.
       changes to the --module=name command line options will be reflected here.
  0:                    (dir) | ${jetty.base}/resources
  1:                    2.0.9 | ${jetty.home}/lib/logging/slf4j-api-2.0.9.jar
- 2:                   12.0.2 | ${jetty.home}/lib/logging/jetty-slf4j-impl-12.0.2.jar
- 3:                   12.0.2 | ${jetty.home}/lib/jetty-http-12.0.2.jar
- 4:                   12.0.2 | ${jetty.home}/lib/jetty-server-12.0.2.jar
- 5:                   12.0.2 | ${jetty.home}/lib/jetty-xml-12.0.2.jar
- 6:                   12.0.2 | ${jetty.home}/lib/jetty-util-12.0.2.jar
- 7:                   12.0.2 | ${jetty.home}/lib/jetty-io-12.0.2.jar
+ 2:                   12.0.3 | ${jetty.home}/lib/logging/jetty-slf4j-impl-12.0.3.jar
+ 3:                   12.0.3 | ${jetty.home}/lib/jetty-http-12.0.3.jar
+ 4:                   12.0.3 | ${jetty.home}/lib/jetty-server-12.0.3.jar
+ 5:                   12.0.3 | ${jetty.home}/lib/jetty-xml-12.0.3.jar
+ 6:                   12.0.3 | ${jetty.home}/lib/jetty-util-12.0.3.jar
+ 7:                   12.0.3 | ${jetty.home}/lib/jetty-io-12.0.3.jar
  8:                   42.6.0 | ${jetty.base}/lib/postgresql-42.6.0.jar
 
 Active XMLs: Jetty
@@ -1882,9 +1887,9 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 -Xmx1g \
 '-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags' \
 --class-path \
-/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.2.jar:/path/to/jetty.home/lib/jetty-http-12.0.2.jar:/path/to/jetty.home/lib/jetty-server-12.0.2.jar:/path/to/jetty.home/lib/jetty-xml-12.0.2.jar:/path/to/jetty.home/lib/jetty-util-12.0.2.jar:/path/to/jetty.home/lib/jetty-io-12.0.2.jar \
+/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.3.jar:/path/to/jetty.home/lib/jetty-http-12.0.3.jar:/path/to/jetty.home/lib/jetty-server-12.0.3.jar:/path/to/jetty.home/lib/jetty-xml-12.0.3.jar:/path/to/jetty.home/lib/jetty-util-12.0.3.jar:/path/to/jetty.home/lib/jetty-io-12.0.3.jar \
 org.eclipse.jetty.xml.XmlConfiguration \
-java.version=21 \
+java.version=21.0.1 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -1955,12 +1960,12 @@ slf4j.version=2.0.9 \
 <pre class="CodeRay highlight nowrap"><code>--class-path \
 /path/to/jetty.base/resources:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-http-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-server-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-xml-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-util-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-io-12.0.2.jar</code></pre>
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-server-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-io-12.0.3.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1974,13 +1979,13 @@ slf4j.version=2.0.9 \
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>--module-path \
-/path/to/jetty.home/lib/jetty-io-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-util-12.0.2.jar:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:\
-/path/to/jetty.home/lib/jetty-server-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-http-12.0.2.jar:\
-/path/to/jetty.home/lib/jetty-xml-12.0.2.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.2.jar \
+/path/to/jetty.home/lib/jetty-io-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-server-12.0.3.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.3.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.3.jar \
 --class-path \
 /path/to/jetty.base/resources \
 --add-modules \
@@ -2027,7 +2032,7 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.version=21 \
+<pre class="CodeRay highlight nowrap"><code>java.version=21.0.1 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -2368,10 +2373,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=1stbc6i3asa2o</mark>
-<strong>2023-10-09 21:15:19.491:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:19.511:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1623b78d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2023-10-09 21:15:19.525:</strong>INFO :oejs.Server:main: Started oejs.Server@3e92efc3{STARTING}[12.0.2,sto=5000] @693ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=8hxsrkht7mkg</mark>
+<strong>2023-10-26 22:42:53.853:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:42:53.875:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@1623b78d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2023-10-26 22:42:53.884:</strong>INFO :oejs.Server:main: Started oejs.Server@3e92efc3{STARTING}[12.0.3,sto=5000] @614ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4778,7 +4783,7 @@ For instance, many logging libraries (including <a href="https://logging.apache.
 <div class="content">
 <pre class="CodeRay highlight"><code>HTTP/1.1 200 OK
 Content-Length: 0
-Server: Jetty(12.0.2)</code></pre>
+Server: Jetty(12.0.3)</code></pre>
 </div>
 </div>
 </dd>
@@ -6668,10 +6673,10 @@ Request log files are rolled every day, and retained for customizable number of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>**2023-10-09 21:15:21.620:**INFO :oe.jetty:main: Virtual threads are enabled.
-**2023-10-09 21:15:21.764:**INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-**2023-10-09 21:15:21.781:**INFO :oejs.AbstractConnector:main: Started ServerConnector@36fc695d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-**2023-10-09 21:15:21.790:**INFO :oejs.Server:main: Started oejs.Server@44ebcd03{STARTING}[12.0.2,sto=5000] @827ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code>**2023-10-26 22:42:55.806:**INFO :oe.jetty:main: Virtual threads are enabled.
+**2023-10-26 22:42:55.941:**INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+**2023-10-26 22:42:55.963:**INFO :oejs.AbstractConnector:main: Started ServerConnector@6b2ea799{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+**2023-10-26 22:42:55.976:**INFO :oejs.Server:main: Started oejs.Server@661972b0{STARTING}[12.0.3,sto=5000] @621ms</code></pre>
 </div>
 </div>
 </div>
@@ -6724,9 +6729,9 @@ Recall that you must always issue the commands to enable Jetty modules from with
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>**2023-10-09 21:15:23.041:**INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-**2023-10-09 21:15:23.063:**INFO :oejs.AbstractConnector:main: Started ServerConnector@131774fe{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-**2023-10-09 21:15:23.073:**INFO :oejs.Server:main: Started oejs.Server@3e92efc3{STARTING}[12.0.2,sto=5000] @603ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code>**2023-10-26 22:42:57.297:**INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+**2023-10-26 22:42:57.318:**INFO :oejs.AbstractConnector:main: Started ServerConnector@131774fe{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+**2023-10-26 22:42:57.328:**INFO :oejs.Server:main: Started oejs.Server@3e92efc3{STARTING}[12.0.3,sto=5000] @702ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6876,11 +6881,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:25.407:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-10-09 21:15:25.887:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:25.929:</strong>INFO :oejus.SslContextFactory:main: x509=X509@74a6f9c1(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@54eb2b70[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-10-09 21:15:25.979:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@42bc14c1<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-10-09 21:15:25.985:</strong>INFO :oejs.Server:main: Started oejs.Server@1fd14d74{STARTING}[12.0.2,sto=5000] @1339ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:42:59.962:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-10-26 22:43:00.478:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:00.520:</strong>INFO :oejus.SslContextFactory:main: x509=X509@6f7923a5(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@74a6f9c1[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-10-26 22:43:00.570:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@53ddd4ee<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-10-26 22:43:00.579:</strong>INFO :oejs.Server:main: Started oejs.Server@2609b277{STARTING}[12.0.3,sto=5000] @1660ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7031,11 +7036,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:27.983:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-10-09 21:15:28.490:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:28.529:</strong>INFO :oejus.SslContextFactory:main: x509=X509@7fb95505(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@58be6e8[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-10-09 21:15:28.577:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@5ef6ae06<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-10-09 21:15:28.583:</strong>INFO :oejs.Server:main: Started oejs.Server@38b27cdc{STARTING}[12.0.2,sto=5000] @1470ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:43:02.430:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-10-26 22:43:02.950:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:03.007:</strong>INFO :oejus.SslContextFactory:main: x509=X509@45312be2(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@7fb95505[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-10-26 22:43:03.056:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@23aa363a<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-10-26 22:43:03.062:</strong>INFO :oejs.Server:main: Started oejs.Server@54504ecd{STARTING}[12.0.3,sto=5000] @1448ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7087,9 +7092,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:29.842:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:29.871:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@fbd1f6<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
-<strong>2023-10-09 21:15:29.881:</strong>INFO :oejs.Server:main: Started oejs.Server@7f3b84b8{STARTING}[12.0.2,sto=5000] @661ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:43:04.383:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:04.404:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@ba2f4ec<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2023-10-26 22:43:04.413:</strong>INFO :oejs.Server:main: Started oejs.Server@131774fe{STARTING}[12.0.3,sto=5000] @602ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7192,13 +7197,13 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:31.397:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-10-09 21:15:32.018:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:32.062:</strong>INFO :oejus.SslContextFactory:main: x509=X509@3568f9d2(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@71c27ee8[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-10-09 21:15:32.110:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@34f7234e{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
-<strong>2023-10-09 21:15:32.111:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
-<strong>2023-10-09 21:15:32.111:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@753432a2<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
-<strong>2023-10-09 21:15:32.154:</strong>INFO :oejs.Server:main: Started oejs.Server@7f0d96f2{STARTING}[12.0.2,sto=5000] @1591ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:43:05.838:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-10-26 22:43:06.267:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:06.310:</strong>INFO :oejus.SslContextFactory:main: x509=X509@3e7dd664(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@5b1ebf56[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-10-26 22:43:06.360:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@23bff419{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
+<strong>2023-10-26 22:43:06.360:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
+<strong>2023-10-26 22:43:06.360:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@4983159f<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
+<strong>2023-10-26 22:43:06.414:</strong>INFO :oejs.Server:main: Started oejs.Server@76a2ddf3{STARTING}[12.0.3,sto=5000] @1321ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7206,6 +7211,347 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 <div class="paragraph">
 <p>The HTTP/3 protocol parameters can be configured by editing the <a href="#og-module-http3"><code>http3</code> module</a> properties.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-protocols-websocket"><a class="anchor" href="#og-protocols-websocket"></a><a class="link" href="#og-protocols-websocket">WebSocket</a></h4>
+<div class="paragraph">
+<p>WebSocket is a network protocol for bidirectional data communication initiated via the <a href="https://tools.ietf.org/html/rfc7230#section-6.7">HTTP/1.1 upgrade mechanism</a>.
+WebSocket provides a simple, low-level, framing protocol layered over TCP.
+One or more WebSocket frames compose a WebSocket <em>message</em> that is either a UTF-8 <em>text</em> message or <em>binary</em> message.</p>
+</div>
+<div class="paragraph">
+<p>Jetty provides an implementation of the following standards and specifications.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><a href="http://tools.ietf.org/html/rfc6455">RFC-6455</a> - The WebSocket Protocol</dt>
+<dd>
+<p>Jetty supports version 13 of the released and final specification.</p>
+</dd>
+<dt class="hdlist1"><a href="http://www.jcp.org/en/jsr/detail?id=356">JSR-356</a> - The Java WebSocket API (<code>javax.websocket</code>)</dt>
+<dd>
+<p>This is the official Java API for working with WebSockets.</p>
+</dd>
+<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc7692">RFC-7692</a> - WebSocket Per-Message Deflate Extension</dt>
+<dd>
+<p>This is the replacement for perframe-compression, switching the compression to being based on the entire message, not the individual frames.</p>
+</dd>
+<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc8441">RFC-8441</a> - Bootstrapping WebSockets with HTTP/2</dt>
+<dd>
+<p>Allows a single stream of an HTTP/2 connection to be upgraded to WebSocket.
+This allows one TCP connection to be shared by both protocols and extends HTTP/2&#8217;s more efficient use of the network to WebSockets.</p>
+</dd>
+</dl>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-configure"><a class="anchor" href="#og-protocols-websocket-configure"></a><a class="link" href="#og-protocols-websocket-configure">Configuring WebSocket</a></h5>
+<div class="paragraph">
+<p>Jetty provides two WebSocket implementations: one based on the Java WebSocket APIs defined by JSR 356, provided by module <code>websocket-javax</code>, and one based on Jetty specific WebSocket APIs, provided by module <code>websocket-jetty</code>.
+The Jetty <code>websocket</code> module enables both implementations, but each implementation can be enabled independently.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember that a WebSocket connection is always initiated from the HTTP protocol (either an HTTP/1.1 upgrade or an HTTP/2 connect), therefore to enable WebSocket you need to enable HTTP.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To enable WebSocket support, you also need to decide what version of the HTTP protocol you want WebSocket to be initiated from, and whether you want secure HTTP.</p>
+</div>
+<div class="paragraph">
+<p>For example, to enable clear-text WebSocket from HTTP/1.1, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,websocket</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable secure WebSocket from HTTP/2, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http2,websocket</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When enabling secure protocols you need a valid KeyStore (read <a href="#og-keystore">this section</a> to create your own KeyStore).
+As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that creates on-the-fly a KeyStore containing a self-signed certificate:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=test-keystore</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To enable WebSocket on both HTTP/1.1 and HTTP/2, both clear-text and secure, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,https,http2c,http2,websocket</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-disable"><a class="anchor" href="#og-protocols-websocket-disable"></a><a class="link" href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></h5>
+<div class="paragraph">
+<p>Enabling the WebSocket Jetty modules comes with a startup cost because Jetty must perform two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Scan web applications <code>*.war</code> files (and all the jars and classes inside it) looking for WebSocket EndPoints classes (either annotated with WebSocket API annotations or extending/implementing WebSocket API classes/interfaces).
+This can be a significant cost if your web application contains a lot of classes and/or jar files.</p>
+</li>
+<li>
+<p>Configure and wire WebSocket EndPoints so that WebSocket messages are delivered to the correspondent WebSocket EndPoint.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>WebSocket support is by default enabled for all web applications.</p>
+</div>
+<div class="paragraph">
+<p>For a specific web application, you can disable step 2 for Java WebSocket support (i.e. when the <code>websocket-javax</code> module is enabled) by setting the context attribute <code>org.eclipse.jetty.websocket.javax</code> to <code>false</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd</span><span class="delimiter">&quot;</span></span>
+         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">4.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="comment">&lt;!-- Disable Javax WebSocket --&gt;</span>
+  <span class="tag">&lt;context-param&gt;</span>
+    <span class="tag">&lt;param-name&gt;</span>org.eclipse.jetty.websocket.javax<span class="tag">&lt;/param-name&gt;</span>
+    <span class="tag">&lt;param-value&gt;</span>false<span class="tag">&lt;/param-value&gt;</span>
+  <span class="tag">&lt;/context-param&gt;</span>
+
+  ...
+
+<span class="tag">&lt;/web-app&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Furthermore, for a specific web application, you can disable step 1 (and therefore also step 2) as described in the <a href="#og-annotations">annotations processing section</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-websocket-webapp-client"><a class="anchor" href="#og-protocols-websocket-webapp-client"></a><a class="link" href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></h5>
+<div class="paragraph">
+<p>Web applications may need to use a WebSocket client to communicate with third party WebSocket services.</p>
+</div>
+<div class="paragraph">
+<p>If the web application uses the Java WebSocket APIs, the WebSocket client APIs are provided by the Servlet Container and are available to the web application by enabling the WebSocket server APIs, and therefore you must enable the <code>websocket-javax</code> Jetty module.</p>
+</div>
+<div class="paragraph">
+<p>However, the Java WebSocket Client APIs are quite limited (for example, they do not support secure WebSocket).
+For this reason, web applications may want to use the Jetty WebSocket Client APIs.</p>
+</div>
+<div class="paragraph">
+<p>When using the Jetty WebSocket Client APIs, web applications should include the required jars and their dependencies in the <code>WEB-INF/lib</code> directory of the <code>*.war</code> file.
+Alternatively, when deploying your web applications in Jetty, you can enable the <code>websocket-jetty-client</code> Jetty module to allow web applications to use the Jetty WebSocket Client APIs provided by Jetty, without the need to include jars and their dependencies in the <code>*.war</code> file.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="og-protocols-fcgi"><a class="anchor" href="#og-protocols-fcgi"></a><a class="link" href="#og-protocols-fcgi">FastCGI</a></h4>
+<div class="paragraph">
+<p>FastCGI is a network protocol primarily used by a <em>web server</em> to communicate to a <em>FastCGI server</em>.</p>
+</div>
+<div class="paragraph">
+<p>FastCGI servers are typically used to serve web content generated by dynamic web languages, primarily <a href="http://www.php.net/">PHP</a>, but also Python, Ruby, Perl and others.</p>
+</div>
+<div class="paragraph">
+<p>Web servers that supports FastCGI are, among others, <a href="http://httpd.apache.org/">Apache</a>, <a href="http://nginx.org/">Nginx</a>, and Jetty.
+Web servers typically act as reverse proxies, converting HTTP requests that they receive from clients (browsers) to FastCGI requests that are forwarded to the FastCGI server.
+The FastCGI server spawns the dynamic web language interpreter, passing it the information contained in the FastCGI request and a dynamic web language script is executed, producing web content, typically HTML.
+The web content is then formatted into a FastCGI response that is returned to the web server, which converts it to an HTTP response that is then returned to the client.</p>
+</div>
+<div class="paragraph">
+<p>The most well known FastCGI server is the <a href="http://php-fpm.org/">PHP FastCGI Process Manager</a>, or <code>php-fpm</code>.
+In the following we will assume that <code>php-fpm</code> is used as FastCGI server.</p>
+</div>
+<div class="paragraph">
+<p>This is a diagram of what described above:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/diag-plantuml-md5-65af24ee568fd7e4489f99596aaa20b1.png" alt="Diagram" width="712" height="318">
+</div>
+</div>
+<div class="paragraph">
+<p>Jetty can be configured to act as a web server that supports FastCGI, replacing the functionality that is normally provided by Apache or Nginx.
+This allows users to leverage Jetty features such as the support for HTTP/1.1, HTTP/2 and HTTP/3, Jetty&#8217;s scalability, and of course Jetty&#8217;s native support for Java Web Standards such as Servlets, JSPs, etc.</p>
+</div>
+<div class="paragraph">
+<p>With such configuration, users can not only deploy their Java Web Applications in Jetty, but also serve their <a href="http://wordpress.com/">WordPress</a> site or blog or their <a href="https://drupal.org/">Drupal</a> site without having to install and manage multiple web servers.</p>
+</div>
+<div class="sect4">
+<h5 id="og-protocols-fcgi-configure"><a class="anchor" href="#og-protocols-fcgi-configure"></a><a class="link" href="#og-protocols-fcgi-configure">Configuring WordPress</a></h5>
+<div class="paragraph">
+<p>This section explains how to configure Jetty to serve your <a href="https://wordpress.com/">WordPress</a> site.</p>
+</div>
+<div class="paragraph">
+<p>The prerequisites are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Have <code>php-fpm</code> installed on your server host, and configured to listen either on a Unix-Domain socket (such as <code>/run/php/php-fpm.sock</code>), or on a TCP socket (such as <code>localhost:9000</code>).</p>
+</li>
+<li>
+<p>Have WordPress installed on your server host, for example under <code>/var/www/wordpress</code>.
+For more information about how to install WordPress and the necessary PHP modules, please refer to the <a href="https://wordpress.org/support/article/how-to-install-wordpress/">WordPress Installation Guide</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, the <a href="#og-protocols-https">secure HTTP</a> and/or the <a href="#og-protocols-http2">secure HTTP/2</a> Jetty modules should be enabled to allow browsers to connect to Jetty.</p>
+</div>
+<div class="paragraph">
+<p>Lastly, enable the <code>fcgi-proxy</code> module to provide FastCGI support (to convert HTTP requests from browsers to FastCGI for <code>php-fpm</code> and vice versa), and the <code>core-deploy</code> module to deploy your WordPress web application as a <a href="#og-deploy-jetty">Jetty context XML file</a>.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=ssl,https,fcgi-proxy,core-deploy</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <code>https</code> Jetty module requires a KeyStore. If you do not already have one configured, you can add the <code>test-keystore</code> Jetty module to the command line above to create a KeyStore on-the-fly.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now you can deploy a Jetty context XML file that represents your WordPress web application.</p>
+</div>
+<div class="paragraph">
+<p>Use the following file as example, copy it as <code>$JETTY_BASE/webapps/wordpress.xml</code> and customize it as necessary:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;  encoding=&quot;UTF-8&quot;?&gt;</span>
+<span class="doctype">&lt;!DOCTYPE Configure PUBLIC &quot;-//Mort Bay Consulting//DTD Configure//EN&quot; &quot;http://www.eclipse.org/jetty/configure_10_0.dtd&quot;&gt;</span>
+<span class="tag">&lt;Configure</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.handler.ContextHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;New</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">root</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.lang.String</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;Arg&gt;</span>/var/www/wordpress<span class="tag">&lt;/Arg&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="tag">&lt;/New&gt;</span>
+
+  <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/<span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="2"></i><b>(2)</b>
+  <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">baseResourceAsString</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Ref</span> <span class="attribute-name">refid</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">root</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span><span class="tag">&lt;/Set&gt;</span>
+
+  <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">handler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.handler.TryPathsHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">originalPathAttribute</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>wordpress.originalPath<span class="tag">&lt;/Set&gt;</span>
+      <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">originalQueryAttribute</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>wordpress.originalQuery<span class="tag">&lt;/Set&gt;</span>
+      <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">paths</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.util.List</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">of</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          <span class="tag">&lt;Arg&gt;</span>$path<span class="tag">&lt;/Arg&gt;</span>
+          <span class="tag">&lt;Arg&gt;</span>/index.php<span class="tag">&lt;/Arg&gt;</span>
+        <span class="tag">&lt;/Call&gt;</span>
+      <span class="tag">&lt;/Set&gt;</span>
+
+      <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">handler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+        <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.handler.PathMappingsHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+          <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">addMapping</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;Arg&gt;</span>
+              <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.http.pathmap.ServletPathSpec</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>*.php<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/New&gt;</span>
+            <span class="tag">&lt;/Arg&gt;</span>
+            <span class="tag">&lt;Arg&gt;</span>
+              <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.fcgi.proxy.FastCGIProxyHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="3"></i><b>(3)</b>
+                <span class="tag">&lt;Arg&gt;</span>(https?)://([^/]+)(.*)<span class="tag">&lt;/Arg&gt;</span> <i class="conum" data-value="4"></i><b>(4)</b>
+                <span class="tag">&lt;Arg&gt;</span>http://localhost:9000$3<span class="tag">&lt;/Arg&gt;</span> <i class="conum" data-value="5"></i><b>(5)</b>
+                <span class="tag">&lt;Arg&gt;</span><span class="tag">&lt;Ref</span> <span class="attribute-name">refid</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">root</span><span class="delimiter">&quot;</span></span> <span class="tag">/&gt;</span><span class="tag">&lt;/Arg&gt;</span>
+
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">originalPathAttribute</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>wordpress.originalPath<span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">originalQueryAttribute</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>wordpress.originalQuery<span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">scriptPattern</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.util.regex.Pattern</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">compile</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>(.+?\\.php)<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/Call&gt;</span><span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">fastCGISecure</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>true<span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">unixDomainPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.nio.file.Path</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">of</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>/run/php/php-fpm.sock<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/Call&gt;</span><span class="tag">&lt;/Set&gt;</span> <i class="conum" data-value="6"></i><b>(6)</b>
+              <span class="tag">&lt;/New&gt;</span>
+            <span class="tag">&lt;/Arg&gt;</span>
+          <span class="tag">&lt;/Call&gt;</span>
+          <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">addMapping</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+            <span class="tag">&lt;Arg&gt;</span>
+              <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.http.pathmap.ServletPathSpec</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>/<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/New&gt;</span>
+            <span class="tag">&lt;/Arg&gt;</span>
+            <span class="tag">&lt;Arg&gt;</span>
+              <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.handler.ResourceHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span> <i class="conum" data-value="7"></i><b>(7)</b>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">welcomeFiles</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">java.util.List</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">of</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>/index.php<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/Call&gt;</span><span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">welcomeMode</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Call</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.server.ResourceService$WelcomeMode</span><span class="delimiter">&quot;</span></span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">valueOf</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;Arg&gt;</span>REHANDLE<span class="tag">&lt;/Arg&gt;</span><span class="tag">&lt;/Call&gt;</span><span class="tag">&lt;/Set&gt;</span>
+                <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">dirAllowed</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>false<span class="tag">&lt;/Set&gt;</span>
+              <span class="tag">&lt;/New&gt;</span>
+            <span class="tag">&lt;/Arg&gt;</span>
+          <span class="tag">&lt;/Call&gt;</span>
+        <span class="tag">&lt;/New&gt;</span>
+      <span class="tag">&lt;/Set&gt;</span>
+    <span class="tag">&lt;/New&gt;</span>
+  <span class="tag">&lt;/Set&gt;</span>
+
+<span class="tag">&lt;/Configure&gt;</span></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Specify the WordPress installation path.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Specify the context path of your web application.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The <code>FastCGIProxyHandler</code> forwards requests whose URI path matches <code>*.php</code> to <code>php-fpm</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The client URI regex pattern to match.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The URI used to forward the request to <code>php-fpm</code>, where <code>$3</code> is the 3rd matching group of the client URI regex pattern (int this example, the client URI path).
+If <code>php-fpm</code> is configured to listen on a TCP socket, the host and port must match the listening TCP socket.
+If <code>php-fpm</code> is configured to listen on a Unix-Domain socket, the host and port values are ignored but must be present.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>If <code>php-fpm</code> is configured to listen on a Unix-Domain socket, specify the Unix-Domain socket path, otherwise omit this line.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>The <code>ResourceHandler</code> serves static files from WordPress, such as <code>*.css</code>, <code>*.js</code> and image files.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now you can start Jetty and navigate to <code>http://localhost:8080</code> with your browser to enjoy WordPress:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ java -jar $JETTY_HOME/start.jar</pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -7722,7 +8068,7 @@ If the request URI is for a resource that does not exist, the response will like
 </div>
 <div class="paragraph">
 <p>In these setups, typically the proxy performs TLS offloading, and the communication with backend servers happens in clear-text.
-It is possible, however, to configure the proxy so that all the bytes arriving from the client are tunnelled opaquely to the backend Jetty server (that therefore needs to perform the TLS offloading) and viceversa the bytes arriving from the Jetty server are tunnelled opaquely to the client.</p>
+It is possible, however, to configure the proxy so that all the bytes arriving from the client are tunnelled opaquely to the backend Jetty server (that therefore needs to perform the TLS offloading) and vice versa the bytes arriving from the Jetty server are tunnelled opaquely to the client.</p>
 </div>
 <div class="paragraph">
 <p>Also in these setups, the TCP/IP connection terminating on the Jetty servers does not originate from the client, but from the proxy, so that the remote IP address and port number may be reported incorrectly in backend server logs, or worse applications may not work because they need to be able to differentiate different clients based on the client IP address.</p>
@@ -7855,9 +8201,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:34.413:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:34.434:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6adbc9d<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-10-09 21:15:34.445:</strong>INFO :oejs.Server:main: Started oejs.Server@4b0b0854{STARTING}[12.0.2,sto=5000] @598ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:43:08.745:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:08.765:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6adbc9d<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2023-10-26 22:43:08.774:</strong>INFO :oejs.Server:main: Started oejs.Server@4b0b0854{STARTING}[12.0.3,sto=5000] @585ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7899,11 +8245,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-10-09 21:15:36.429:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-10-09 21:15:36.832:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:36.875:</strong>INFO :oejus.SslContextFactory:main: x509=X509@3688eb5b(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@69f1a286[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-10-09 21:15:36.933:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@503ecb24<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-10-09 21:15:36.941:</strong>INFO :oejs.Server:main: Started oejs.Server@5be49b60{STARTING}[12.0.2,sto=5000] @1254ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2023-10-26 22:43:10.753:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2023-10-26 22:43:11.306:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:11.345:</strong>INFO :oejus.SslContextFactory:main: x509=X509@600b9d27(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@3688eb5b[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2023-10-26 22:43:11.392:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@403f0a22<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2023-10-26 22:43:11.398:</strong>INFO :oejs.Server:main: Started oejs.Server@5117dd67{STARTING}[12.0.3,sto=5000] @1317ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8046,155 +8392,6 @@ Likewise, HTTP/1.1 clients will connect to HAProxy, which will decrypt the traff
 </div>
 <div class="paragraph">
 <p>This configuration offers you efficient TLS offloading, HTTP/2 support and transparent fallback to HTTP/1.1 for clients that don&#8217;t support HTTP/1.1.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="og-protocols-websocket"><a class="anchor" href="#og-protocols-websocket"></a><a class="link" href="#og-protocols-websocket">WebSocket</a></h4>
-<div class="paragraph">
-<p>WebSocket is a network protocol for bidirectional data communication initiated via the <a href="https://tools.ietf.org/html/rfc7230#section-6.7">HTTP/1.1 upgrade mechanism</a>.
-WebSocket provides a simple, low-level, framing protocol layered over TCP.
-One or more WebSocket frames compose a WebSocket <em>message</em> that is either a UTF-8 <em>text</em> message or <em>binary</em> message.</p>
-</div>
-<div class="paragraph">
-<p>Jetty provides an implementation of the following standards and specifications.</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><a href="http://tools.ietf.org/html/rfc6455">RFC-6455</a> - The WebSocket Protocol</dt>
-<dd>
-<p>Jetty supports version 13 of the released and final specification.</p>
-</dd>
-<dt class="hdlist1"><a href="http://www.jcp.org/en/jsr/detail?id=356">JSR-356</a> - The Java WebSocket API (<code>javax.websocket</code>)</dt>
-<dd>
-<p>This is the official Java API for working with WebSockets.</p>
-</dd>
-<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc7692">RFC-7692</a> - WebSocket Per-Message Deflate Extension</dt>
-<dd>
-<p>This is the replacement for perframe-compression, switching the compression to being based on the entire message, not the individual frames.</p>
-</dd>
-<dt class="hdlist1"><a href="https://tools.ietf.org/html/rfc8441">RFC-8441</a> - Bootstrapping WebSockets with HTTP/2</dt>
-<dd>
-<p>Allows a single stream of an HTTP/2 connection to be upgraded to WebSocket.
-This allows one TCP connection to be shared by both protocols and extends HTTP/2&#8217;s more efficient use of the network to WebSockets.</p>
-</dd>
-</dl>
-</div>
-<div class="sect4">
-<h5 id="og-protocols-websocket-configure"><a class="anchor" href="#og-protocols-websocket-configure"></a><a class="link" href="#og-protocols-websocket-configure">Configuring WebSocket</a></h5>
-<div class="paragraph">
-<p>Jetty provides two WebSocket implementations: one based on the Java WebSocket APIs defined by JSR 356, provided by module <code>websocket-javax</code>, and one based on Jetty specific WebSocket APIs, provided by module <code>websocket-jetty</code>.
-The Jetty <code>websocket</code> module enables both implementations, but each implementation can be enabled independently.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Remember that a WebSocket connection is always initiated from the HTTP protocol (either an HTTP/1.1 upgrade or an HTTP/2 connect), therefore to enable WebSocket you need to enable HTTP.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>To enable WebSocket support, you also need to decide what version of the HTTP protocol you want WebSocket to be initiated from, and whether you want secure HTTP.</p>
-</div>
-<div class="paragraph">
-<p>For example, to enable clear-text WebSocket from HTTP/1.1, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,websocket</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To enable secure WebSocket from HTTP/2, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http2,websocket</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>When enabling secure protocols you need a valid KeyStore (read <a href="#og-keystore">this section</a> to create your own KeyStore).
-As a quick example, you can enable the <a href="#og-module-test-keystore"><code>test-keystore</code> module</a>, that creates on-the-fly a KeyStore containing a self-signed certificate:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=test-keystore</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To enable WebSocket on both HTTP/1.1 and HTTP/2, both clear-text and secure, use the following command (issued from within the <code>$JETTY_BASE</code> directory):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>$ java -jar $JETTY_HOME/start.jar --add-modules=http,https,http2c,http2,websocket</pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-protocols-websocket-disable"><a class="anchor" href="#og-protocols-websocket-disable"></a><a class="link" href="#og-protocols-websocket-disable">Selectively Disabling WebSocket</a></h5>
-<div class="paragraph">
-<p>Enabling the WebSocket Jetty modules comes with a startup cost because Jetty must perform two steps:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Scan web applications <code>*.war</code> files (and all the jars and classes inside it) looking for WebSocket EndPoints classes (either annotated with WebSocket API annotations or extending/implementing WebSocket API classes/interfaces).
-This can be a significant cost if your web application contains a lot of classes and/or jar files.</p>
-</li>
-<li>
-<p>Configure and wire WebSocket EndPoints so that WebSocket messages are delivered to the correspondent WebSocket EndPoint.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>WebSocket support is by default enabled for all web applications.</p>
-</div>
-<div class="paragraph">
-<p>For a specific web application, you can disable step 2 for Java WebSocket support (i.e. when the <code>websocket-javax</code> module is enabled) by setting the context attribute <code>org.eclipse.jetty.websocket.javax</code> to <code>false</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
-<span class="tag">&lt;web-app</span> <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd</span><span class="delimiter">&quot;</span></span>
-         <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">4.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-
-  <span class="comment">&lt;!-- Disable Javax WebSocket --&gt;</span>
-  <span class="tag">&lt;context-param&gt;</span>
-    <span class="tag">&lt;param-name&gt;</span>org.eclipse.jetty.websocket.javax<span class="tag">&lt;/param-name&gt;</span>
-    <span class="tag">&lt;param-value&gt;</span>false<span class="tag">&lt;/param-value&gt;</span>
-  <span class="tag">&lt;/context-param&gt;</span>
-
-  ...
-
-<span class="tag">&lt;/web-app&gt;</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Furthermore, for a specific web application, you can disable step 1 (and therefore also step 2) as described in the <a href="#og-annotations">annotations processing section</a>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="og-protocols-websocket-webapp-client"><a class="anchor" href="#og-protocols-websocket-webapp-client"></a><a class="link" href="#og-protocols-websocket-webapp-client">Using WebSocket Client in WebApps</a></h5>
-<div class="paragraph">
-<p>Web applications may need to use a WebSocket client to communicate with third party WebSocket services.</p>
-</div>
-<div class="paragraph">
-<p>If the web application uses the Java WebSocket APIs, the WebSocket client APIs are provided by the Servlet Container and are available to the web application by enabling the WebSocket server APIs, and therefore you must enable the <code>websocket-javax</code> Jetty module.</p>
-</div>
-<div class="paragraph">
-<p>However, the Java WebSocket Client APIs are quite limited (for example, they do not support secure WebSocket).
-For this reason, web applications may want to use the Jetty WebSocket Client APIs.</p>
-</div>
-<div class="paragraph">
-<p>When using the Jetty WebSocket Client APIs, web applications should include the required jars and their dependencies in the <code>WEB-INF/lib</code> directory of the <code>*.war</code> file.
-Alternatively, when deploying your web applications in Jetty, you can enable the <code>websocket-jetty-client</code> Jetty module to allow web applications to use the Jetty WebSocket Client APIs provided by Jetty, without the need to include jars and their dependencies in the <code>*.war</code> file.</p>
 </div>
 </div>
 </div>
@@ -12957,7 +13154,7 @@ This is where having certificates signed by a Certification Authority simplifies
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ java -cp jetty-util-12.0.2.jar org.eclipse.jetty.util.security.Password --prompt
+<pre class="CodeRay highlight"><code data-lang="bash">$ java -cp jetty-util-12.0.3.jar org.eclipse.jetty.util.security.Password --prompt
 Username: <i class="conum" data-value="1"></i><b>(1)</b>
 Password: secret <i class="conum" data-value="2"></i><b>(2)</b>
 OBF:1yta1t331v8w1v9q1t331ytc <i class="conum" data-value="3"></i><b>(3)</b>
@@ -13204,61 +13401,61 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>oejs.Server@3e92efc3{STARTING}[12.0.2,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
-+= QueuedThreadPool[qtp394714818]@1786dec2{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59974ms,q=0}[ReservedThreadExecutor@7b2bbc3{reserved=0/12,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
-|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@a1153bc
-|  += ReservedThreadExecutor@7b2bbc3{reserved=0/12,pending=0} - STARTED
+<pre class="CodeRay highlight nowrap"><code>oejs.Server@3e92efc3{STARTING}[12.0.3,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp990416209]@3b088d51{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59982ms,q=0}[ReservedThreadExecutor@a1153bc{reserved=0/12,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@1aafa419
+|  += ReservedThreadExecutor@a1153bc{reserved=0/12,pending=0} - STARTED
 |  |  +&gt; threads size=0
 |  +&gt; threads size=4
-|     +&gt; qtp394714818-32 TIMED_WAITING tid=32 prio=5 IDLE
-|     +&gt; qtp394714818-31-acceptor-0@1e4a5824-ServerConnector@108da59d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=31 prio=3 ACCEPTING
-|     +&gt; qtp394714818-30 RUNNABLE tid=30 prio=5 SELECTING
-|     +&gt; qtp394714818-33 TIMED_WAITING tid=33 prio=5 IDLE
-+= oejut.ScheduledExecutorScheduler@5123a213{STARTED} - STARTED
-+- org.eclipse.jetty.io.ArrayByteBufferPool@59474f18{min=0,max=65536,buckets=16,heap=0/2097152000,direct=0/2097152000}
+|     +&gt; qtp990416209-32 TIMED_WAITING tid=32 prio=5 IDLE
+|     +&gt; qtp990416209-31-acceptor-0@31a55265-ServerConnector@223d2c72{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=31 prio=3 ACCEPTING
+|     +&gt; qtp990416209-30 RUNNABLE tid=30 prio=5 SELECTING
+|     +&gt; qtp990416209-33 TIMED_WAITING tid=33 prio=5 IDLE
++= oejut.ScheduledExecutorScheduler@6dde5c8c{STARTED} - STARTED
++- org.eclipse.jetty.io.ArrayByteBufferPool@65fb9ffc{min=0,max=65536,buckets=16,heap=0/2097152000,direct=0/2097152000}
 |  +&gt; direct size=16
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@65fb9ffc{capacity=4096,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3e694b3f{capacity=8192,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1bb5a082{capacity=12288,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@78691363{capacity=16384,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@41d477ed{capacity=20480,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3590fc5b{capacity=24576,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@397fbdb{capacity=28672,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@33d512c1{capacity=32768,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@515c6049{capacity=36864,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@639c2c1d{capacity=40960,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5fe94a96{capacity=45056,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@443118b0{capacity=49152,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@765d7657{capacity=53248,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@74235045{capacity=57344,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@618b19ad{capacity=61440,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2d3379b4{capacity=65536,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3e694b3f{capacity=4096,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1bb5a082{capacity=8192,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@78691363{capacity=12288,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@41d477ed{capacity=16384,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3590fc5b{capacity=20480,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@397fbdb{capacity=24576,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@33d512c1{capacity=28672,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@515c6049{capacity=32768,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@639c2c1d{capacity=36864,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5fe94a96{capacity=40960,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@443118b0{capacity=45056,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@765d7657{capacity=49152,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@74235045{capacity=53248,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@618b19ad{capacity=57344,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2d3379b4{capacity=61440,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@30c15d8b{capacity=65536,inuse=0(0%)}
 |  +&gt; indirect size=16
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@30c15d8b{capacity=4096,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5e0e82ae{capacity=8192,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6771beb3{capacity=12288,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@51399530{capacity=16384,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6b2ea799{capacity=20480,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@411f53a0{capacity=24576,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2b71e916{capacity=28672,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@36fc695d{capacity=32768,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@28701274{capacity=36864,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@13c9d689{capacity=40960,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3754a4bf{capacity=45056,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@62379589{capacity=49152,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4afcd809{capacity=53248,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@175c2241{capacity=57344,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5bf0d49{capacity=61440,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5b7a5baa{capacity=65536,inuse=0(0%)}
-+~ org.eclipse.jetty.util.resource.FileSystemPool@776aec5c
-+= oejsh.DefaultHandler@1d296da{showContext=true,favIcon=true,STARTED} - STARTED
-+= oejsh.ContextHandlerCollection@7c7a06ec{STARTED} - STARTED
-+= ServerConnector@108da59d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  +~ QueuedThreadPool[qtp394714818]@1786dec2{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59966ms,q=0}[ReservedThreadExecutor@7b2bbc3{reserved=0/12,pending=0}] - STARTED
-|  +~ oejut.ScheduledExecutorScheduler@5123a213{STARTED} - STARTED
-|  +~ org.eclipse.jetty.io.ArrayByteBufferPool@59474f18{min=0,max=65536,buckets=16,heap=0/2097152000,direct=0/2097152000}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5e0e82ae{capacity=4096,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6771beb3{capacity=8192,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@51399530{capacity=12288,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6b2ea799{capacity=16384,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@411f53a0{capacity=20480,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2b71e916{capacity=24576,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@36fc695d{capacity=28672,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@28701274{capacity=32768,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@13c9d689{capacity=36864,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3754a4bf{capacity=40960,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@62379589{capacity=45056,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4afcd809{capacity=49152,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@175c2241{capacity=53248,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5bf0d49{capacity=57344,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5b7a5baa{capacity=61440,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@776aec5c{capacity=65536,inuse=0(0%)}
++~ org.eclipse.jetty.util.resource.FileSystemPool@1d296da
++= oejsh.DefaultHandler@7c7a06ec{showContext=true,favIcon=true,STARTED} - STARTED
++= oejsh.ContextHandlerCollection@75d4a5c2{STARTED} - STARTED
++= ServerConnector@223d2c72{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  +~ QueuedThreadPool[qtp990416209]@3b088d51{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59975ms,q=0}[ReservedThreadExecutor@a1153bc{reserved=0/12,pending=0}] - STARTED
+|  +~ oejut.ScheduledExecutorScheduler@6dde5c8c{STARTED} - STARTED
+|  +~ org.eclipse.jetty.io.ArrayByteBufferPool@65fb9ffc{min=0,max=65536,buckets=16,heap=0/2097152000,direct=0/2097152000}
 |  += HttpConnectionFactory@163e4e87[HTTP/1.1] - STARTED
-|  |  +- HttpConfiguration@206a70ef{32768/8192,8192/8192,https://:0,[]}
+|  |  +- HttpConfiguration@292b08d6{32768/8192,8192/8192,https://:0,[]}
 |  |     +&gt; customizers size=0
 |  |     +&gt; formEncodedMethods size=2
 |  |     |  +&gt; POST
@@ -13279,66 +13476,66 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 |  |     +&gt; maxErrorDispatches=10
 |  |     +&gt; minRequestDataRate=0
 |  |     +&gt; minResponseDataRate=0
-|  |     +&gt; requestCookieCompliance=RFC6265@c730b35[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
-|  |     +&gt; responseCookieCompliance=RFC6265@c730b35[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; requestCookieCompliance=RFC6265@206a70ef[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; responseCookieCompliance=RFC6265@206a70ef[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
 |  |     +&gt; notifyRemoteAsyncErrors=true
 |  |     +&gt; relativeRedirectAllowed=false
-|  += SelectorManager@ServerConnector@108da59d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  |  += oeji.ManagedSelector@45752059{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
-|  |     += AdaptiveExecutionStrategy@34e9fd99/SelectorProducer@3c41ed1d/PRODUCING/p=0/QueuedThreadPool[qtp394714818]@1786dec2{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59960ms,q=0}[ReservedThreadExecutor@7b2bbc3{reserved=0/12,pending=0}][pc=0,pic=0,pec=0,epc=0]@2023-10-09T21:15:38.540480179-05:00 - STARTED
-|  |     |  +- SelectorProducer@3c41ed1d
-|  |     |  +~ QueuedThreadPool[qtp394714818]@1786dec2{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59959ms,q=0}[ReservedThreadExecutor@7b2bbc3{reserved=0/12,pending=0}] - STARTED
-|  |     +&gt; updates @ 2023-10-09T21:15:38.539636587-05:00 size=0
-|  |     +&gt; keys @ 2023-10-09T21:15:38.539833566-05:00 size=0
+|  += SelectorManager@ServerConnector@223d2c72{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += oeji.ManagedSelector@34e9fd99{STARTED} id=0 keys=0 selected=0 updates=0 - STARTED
+|  |     += AdaptiveExecutionStrategy@3c41ed1d/SelectorProducer@54d9d12d/PRODUCING/p=0/QueuedThreadPool[qtp990416209]@3b088d51{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59971ms,q=0}[ReservedThreadExecutor@a1153bc{reserved=0/12,pending=0}][pc=0,pic=0,pec=0,epc=0]@2023-10-26T22:43:12.885120945-05:00 - STARTED
+|  |     |  +- SelectorProducer@54d9d12d
+|  |     |  +~ QueuedThreadPool[qtp990416209]@3b088d51{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59971ms,q=0}[ReservedThreadExecutor@a1153bc{reserved=0/12,pending=0}] - STARTED
+|  |     +&gt; updates @ 2023-10-26T22:43:12.884514327-05:00 size=0
+|  |     +&gt; keys @ 2023-10-26T22:43:12.884682235-05:00 size=0
 |  +- sun.nio.ch.ServerSocketChannelImpl[/[0:0:0:0:0:0:0:0]:8080]
-|  +- qtp394714818-31-acceptor-0@1e4a5824-ServerConnector@108da59d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-+- org.eclipse.jetty.util.component.HaltLifeCycleListener@54d9d12d
-+- org.eclipse.jetty.server.Server$DynamicErrorHandler@38425407
-+&gt; startJarLoader@20fa23c1
+|  +- qtp990416209-31-acceptor-0@31a55265-ServerConnector@223d2c72{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@38425407
++- org.eclipse.jetty.server.Server$DynamicErrorHandler@43bc63a3
++&gt; startJarLoader@593634ad
 |  +&gt; URLs size=8
 |  |  +&gt; file:/path/to/jetty.base/resources/
 |  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.2.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.2.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.2.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.2.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.2.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.2.jar
-|  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@15327b79
+|  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.3.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.3.jar
+|  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@4f2410ac
 |     +&gt; packages size=4
 |     |  +&gt; package org.eclipse.jetty.start.config
 |     |  +&gt; package org.eclipse.jetty.start.builders
 |     |  +&gt; package org.eclipse.jetty.start.shaded.util
 |     |  +&gt; package org.eclipse.jetty.start
-|     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@2f570196
+|     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3434f30f
 |        +&gt; packages size=2
 |           +&gt; package sun.util.resources.provider
 |           +&gt; package sun.util.resources.cldr.provider
 +&gt; environments size=1
 |  +&gt; oejuc.Environment$Named@0{core}
-|     +&gt; startJarLoader@20fa23c1
+|     +&gt; startJarLoader@593634ad
 |     |  +&gt; URLs size=8
 |     |  |  +&gt; file:/path/to/jetty.base/resources/
 |     |  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.2.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.2.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.2.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.2.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.2.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.2.jar
-|     |  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@15327b79
+|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.3.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.3.jar
+|     |  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@4f2410ac
 |     |     +&gt; packages size=4
 |     |     |  +&gt; package org.eclipse.jetty.start.config
 |     |     |  +&gt; package org.eclipse.jetty.start.builders
 |     |     |  +&gt; package org.eclipse.jetty.start.shaded.util
 |     |     |  +&gt; package org.eclipse.jetty.start
-|     |     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@2f570196
+|     |     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3434f30f
 |     |        +&gt; packages size=2
 |     |           +&gt; package sun.util.resources.provider
 |     |           +&gt; package sun.util.resources.cldr.provider
 |     +&gt; Attributes core size=0
 +&gt; attributes size=0
-+&gt; org.eclipse.jetty.util.resource.FileSystemPool@776aec5c
++&gt; org.eclipse.jetty.util.resource.FileSystemPool@1d296da
    +&gt; buckets size=0
 key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +&gt; undefined</code></pre>
 </div>
@@ -13551,8 +13748,8 @@ Enables remote debugging
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [remote-debug]. Use --dry-run to generate the command line to avoid forking.
 <mark>Listening for transport dt_socket at address: 5005</mark>
-<strong>2023-10-09 21:15:39.917:</strong>INFO :oejs.Server:main: jetty-12.0.2; built: 2023-10-10T01:59:47.552Z; git: b01e3611cfcec50c9157c50f6d32a93515e01510; jvm 21+35-2513
-<strong>2023-10-09 21:15:39.945:</strong>INFO :oejs.Server:main: Started oejs.Server@2473b9ce{STARTING}[12.0.2,sto=5000] @349ms</code></pre>
+<strong>2023-10-26 22:43:14.193:</strong>INFO :oejs.Server:main: jetty-12.0.3; built: 2023-10-27T03:25:22.284Z; git: a873259fd5af141dedaa6c7fa8fe8fbdedce0d61; jvm 21.0.1+12-LTS
+<strong>2023-10-26 22:43:14.217:</strong>INFO :oejs.Server:main: Started oejs.Server@1cab0bfb{STARTING}[12.0.3,sto=5000] @333ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -14138,7 +14335,7 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.2<br>
+Version 12.0.3<br>
 Last updated 2023-10-09 09:38:33 -0500
 </div>
 </div>
