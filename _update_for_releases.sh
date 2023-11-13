@@ -483,8 +483,9 @@ function process_contribution_guide() {
       rsync -avh "$TEMP_DIR/$jetty_12_nightly_resolved/$jetty_12_nightly/contribution-guide" "$DOC_DIR";
     else
       local temp_ver_dir="$TEMP_DIR/$version";
+      echo "  - deploy latest contribution guide $version";
       unzip -d "$temp_ver_dir" "$ARC_DIR/jetty-documentation-$version-html.zip";
-      rsync -avh "$TEMP_DIR/$version/$version/contribution-guide" "$DOC_DIR";
+      rsync -avhc "$TEMP_DIR/$version/$version/contribution-guide" "$DOC_DIR";
     fi
   } &>>"$LOG_FILE";
 
@@ -497,7 +498,7 @@ function process_contribution_guide() {
       rm -Rf "$DOC_DIR/$cleanPrimaryVersion/contribution-guide";
     done;
 
-  delete_temp_directory;
+  #delete_temp_directory;
 }
 
 function process_javadoc() {
@@ -699,10 +700,10 @@ function main() {
     gather_current_versions;
     download_missing_files;
     generate_version_php;
-    process_documentation;
+    #process_documentation;
     process_contribution_guide;
-    process_javadoc;
-    process_canonical;
+    #process_javadoc;
+    #process_canonical;
     exit 0;
   fi
 
