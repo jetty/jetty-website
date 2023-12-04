@@ -48,10 +48,10 @@ $jetty = array (
     'tgz.sha1' => 'cc4828d8bc83f7440f07a7345085e918f74fb22a',
   ),
  'jetty_12.0' => array (
-    'version' => '12.0.3',
-    'zip.md5' => '027941264cab849d7ffef7064b0bc545',
-    'zip.sha1' => '3874855b9a4de1f408a630774d0bfaeeaa75dc85',
-    'tgz.md5' => '9c6829892b1d2cf99655f8335732d712',
-    'tgz.sha1' => 'd178d7e004b7e5ca2d4363950493d6c18d64f6f9',
+    'version' => '12.0.4',
+    'zip.md5' => '909d3f81f16b4a4fe8ffba6142e497ab',
+    'zip.sha1' => '8f807d7718667d60c89b8076e347a61ba8a9ed2b',
+    'tgz.md5' => '516537d8f809fc1158ca8796d6e1ad68',
+    'tgz.sha1' => '05e1138447a1d9178d44cbb3adb903014bb72e14',
   )
 );
