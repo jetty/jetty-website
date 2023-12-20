@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.2,</span>
-<span id="revdate">2023-10-09</span>
+<span id="revnumber">version 12.0.5,</span>
+<span id="revdate">2023-12-20</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -179,6 +179,7 @@
 <li><a href="#pg-server-http-connector-protocol-http2">Clear-Text HTTP/2</a></li>
 <li><a href="#pg-server-http-connector-protocol-http2-tls">Encrypted HTTP/2</a></li>
 <li><a href="#pg-server-http-connector-protocol-http3">HTTP/3</a></li>
+<li><a href="#pg-server-http-connector-protocol-tls-conscrypt">Using Conscrypt as SSL/TLS Provider</a></li>
 <li><a href="#pg-server-http-connector-protocol-proxy-http11">Jetty Behind a Load Balancer</a></li>
 </ul>
 </li>
@@ -193,6 +194,7 @@
 <li><a href="#pg-server-http-handler-use-resource">ResourceHandler&#8201;&#8212;&#8201;Static Content</a></li>
 <li><a href="#pg-server-http-handler-use-gzip">GzipHandler</a></li>
 <li><a href="#pg-server-http-handler-use-rewrite">RewriteHandler</a></li>
+<li><a href="#pg-server-http-handler-use-sizelimit">SizeLimitHandler</a></li>
 <li><a href="#pg-server-http-handler-use-statistics">StatisticsHandler</a></li>
 <li><a href="#pg-server-http-handler-use-events">EventsHandler</a></li>
 <li><a href="#pg-server-http-handler-use-qos">QoSHandler</a></li>
@@ -213,6 +215,7 @@
 <li><a href="#pg-server-http-handler-impl-filter">Filtering <code>Handler</code></a></li>
 <li><a href="#pg-server-http-handler-impl-request">Using the <code>Request</code></a></li>
 <li><a href="#pg-server-http-handler-impl-request-content">Reading the <code>Request</code> Content</a></li>
+<li><a href="#pg-server-http-handler-impl-request-listeners"><code>Request</code> Listeners</a></li>
 <li><a href="#pg-server-http-handler-impl-response">Using the <code>Response</code></a></li>
 <li><a href="#pg-server-http-handler-impl-response-content">Writing the <code>Response</code> Content</a></li>
 <li><a href="#pg-server-http-handler-impl-response-interim">Sending Interim <code>Response</code>s</a></li>
@@ -1243,7 +1246,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1460,7 +1463,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
+<img src="images/diag-plantuml-md5-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
 </div>
 </div>
 <div class="paragraph">
@@ -2389,7 +2392,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
+<img src="images/diag-plantuml-md5-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
 </div>
 </div>
 <div class="paragraph">
@@ -2574,7 +2577,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
+<img src="images/diag-plantuml-md5-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
 </div>
 </div>
 <div class="paragraph">
@@ -2980,7 +2983,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3167,7 +3170,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.2</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.5</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3574,7 +3577,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3686,7 +3689,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.2</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.5</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3863,7 +3866,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3958,7 +3961,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
+<img src="images/diag-plantuml-md5-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
 </div>
 </div>
 <div class="paragraph">
@@ -4012,7 +4015,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
+<img src="images/diag-plantuml-md5-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
 </div>
 </div>
 <div class="paragraph">
@@ -5219,7 +5222,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5228,7 +5231,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
+<img src="images/diag-plantuml-md5-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="504" height="216">
 </div>
 </div>
 <div class="paragraph">
@@ -5301,7 +5304,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-483677f5d04b6727cafec45f5d1e212a.png" alt="Diagram" width="742" height="363">
+<img src="images/diag-plantuml-md5-483677f5d04b6727cafec45f5d1e212a.png" alt="Diagram" width="768" height="337">
 </div>
 </div>
 <div class="paragraph">
@@ -5605,7 +5608,7 @@ server.start();</code></pre>
 <div class="sect5">
 <h6 id="pg-server-http-connector-protocol-http11-tls"><a class="anchor" href="#pg-server-http-connector-protocol-http11-tls"></a><a class="link" href="#pg-server-http-connector-protocol-http11-tls">Encrypted HTTP/1.1 (https)</a></h6>
 <div class="paragraph">
-<p>Supporting encrypted HTTP/1.1 (that is, requests with the <code>https</code> scheme) is supported by configuring an <code>SslContextFactory</code> that has access to the keyStore containing the private server key and public server certificate, in this way:</p>
+<p>Supporting encrypted HTTP/1.1 (that is, requests with the <code>https</code> scheme) is supported by configuring an <code>SslContextFactory</code> that has access to the KeyStore containing the private server key and public server certificate, in this way:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5634,6 +5637,9 @@ connector.setPort(<span class="integer">8443</span>);
 server.addConnector(connector);
 server.start();</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can customize the SSL/TLS provider as explained in <a href="#pg-server-http-connector-protocol-tls-conscrypt">this section</a>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -5737,17 +5743,33 @@ With the ALPN extension information, Jetty can negotiate a protocol and pick, am
 <div class="paragraph">
 <p>Note also that the default protocol set in the ALPN <code>ConnectionFactory</code>, which is used in case ALPN is not supported by the client, is HTTP/1.1&#8201;&#8212;&#8201;if the client does not support ALPN is probably an old client so HTTP/1.1 is the safest choice.</p>
 </div>
+<div class="paragraph">
+<p>You can customize the SSL/TLS provider as explained in <a href="#pg-server-http-connector-protocol-tls-conscrypt">this section</a>.</p>
+</div>
 </div>
 <div class="sect5">
 <h6 id="pg-server-http-connector-protocol-http3"><a class="anchor" href="#pg-server-http-connector-protocol-http3"></a><a class="link" href="#pg-server-http-connector-protocol-http3">HTTP/3</a></h6>
 <div class="paragraph">
-<p>HTTP/3 is based on UDP, differently from HTTP/1 and HTTP/2 that are based on TCP.</p>
+<p>The HTTP/3 protocol is layered on top of the <a href="https://datatracker.ietf.org/doc/html/rfc9000">QUIC</a> protocol, which is based on UDP.
+This is rather different with respect to HTTP/1 and HTTP/2, that are based on TCP.</p>
 </div>
 <div class="paragraph">
-<p>An HTTP/3 client may initiate a connection (using the QUIC protocol via UDP) on the canonical HTTP secure port <code>443</code>, but chances are that the connection may not succeed (for example, the server does not listen for UDP on port <code>443</code>, only listens for TCP).</p>
+<p>Jetty only implements the HTTP/3 layer in Java; the QUIC implementation is provided by the <a href="https://github.com/cloudflare/quiche">Quiche</a> native library, that Jetty calls via <a href="https://github.com/java-native-access/jna">JNA</a> (and possibly, in the future, via the <a href="https://openjdk.org/jeps/454">Foreign APIs</a>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Jetty&#8217;s HTTP/3 support can only be used on the platforms (OS and CPU) supported by the Quiche native library.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>For this reason, HTTP servers typically listen on the canonical HTTP secure port <code>443</code> for HTTP/1 and HTTP/2, and advertise the availability HTTP/3 as an <a href="https://datatracker.ietf.org/doc/html/rfc7838"><em>HTTP alternate service</em></a> on a different port (and possibly a different host).</p>
+<p>HTTP/3 clients may not know in advance if the server supports QUIC (over UDP), but the server typically supports either HTTP/1 or HTTP/2 (over TCP) on the default HTTP secure port <code>443</code>, and advertises the availability HTTP/3 as an <a href="https://datatracker.ietf.org/doc/html/rfc7838"><em>HTTP alternate service</em></a>, possibly on a different port and/or on a different host.</p>
 </div>
 <div class="paragraph">
 <p>For example, an HTTP/2 response may include the following header:</p>
@@ -5758,12 +5780,27 @@ With the ALPN extension information, Jetty can negotiate a protocol and pick, am
 </div>
 </div>
 <div class="paragraph">
-<p>The presence of this header indicates that protocol <code>h3</code> is available on the same host (since no host is defined before the port), but on port <code>843</code>.
+<p>The presence of this header indicates that protocol <code>h3</code> is available on the same host (since no host is defined before the port), but on port <code>843</code> (although it may be the same port <code>443</code>).
 The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> and make HTTP/3 requests.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is nowadays common to use the same port <code>443</code> for both HTTP/2 and HTTP/3. This does not cause problems because HTTP/2 listens on the TCP port <code>443</code>, while QUIC listens on the UDP port <code>443</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>It is therefore common for HTTP/3 clients to initiate connections using the HTTP/2 protocol over TCP, and if the server supports HTTP/3 switch to HTTP/3 as indicated by the server.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
+<img src="images/diag-plantuml-md5-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
 </div>
 </div>
 <div class="paragraph">
@@ -5786,9 +5823,79 @@ httpConfig.addCustomizer(<span class="keyword">new</span> SecureRequestCustomize
 <span class="comment">// Create and configure the HTTP/3 connector.</span>
 HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, <span class="keyword">new</span> HTTP3ServerConnectionFactory(httpConfig));
 connector.setPort(<span class="integer">843</span>);
+
+<span class="comment">// It is mandatory to set the PEM directory.</span>
+connector.getQuicConfiguration().setPemWorkDirectory(Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>));
+
 server.addConnector(connector);
 
 server.start();</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The use of the Quiche native library requires the private key and public certificate present in the KeyStore to be exported as PEM files for Quiche to use them.</p>
+</div>
+<div class="paragraph">
+<p>It is therefore mandatory to configure the PEM directory as shown above.</p>
+</div>
+<div class="paragraph">
+<p>The PEM directory must also be adequately protected using file system permissions, because it stores the private key PEM file.
+You want to grant as few permissions as possible, typically only the equivalent of POSIX <code>rwx</code> to the user that runs the Jetty process. Using <code>/tmp</code> or any other directory accessible by any user is not a secure choice.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-http-connector-protocol-tls-conscrypt"><a class="anchor" href="#pg-server-http-connector-protocol-tls-conscrypt"></a><a class="link" href="#pg-server-http-connector-protocol-tls-conscrypt">Using Conscrypt as SSL/TLS Provider</a></h6>
+<div class="paragraph">
+<p>If not explicitly configured, the TLS implementation is provided by the JDK you are using at runtime.</p>
+</div>
+<div class="paragraph">
+<p>OpenJDK&#8217;s vendors may replace the default TLS provider with their own, but you can also explicitly configure an alternative TLS provider.</p>
+</div>
+<div class="paragraph">
+<p>The standard TLS provider from OpenJDK is implemented in Java (no native code), and its performance is not optimal, both in CPU usage and memory usage.</p>
+</div>
+<div class="paragraph">
+<p>A faster alternative, implemented natively, is Google&#8217;s <a href="https://github.com/google/conscrypt/">Conscrypt</a>, which is built on <a href="https://boringssl.googlesource.com/boringssl/">BoringSSL</a>, which is Google&#8217;s fork of <a href="https://www.openssl.org/">OpenSSL</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+As Conscrypt eventually binds to a native library, there is a higher risk that a bug in Conscrypt or in the native library causes a JVM crash, while the Java implementation will not cause a JVM crash.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.5.jar</code> in the class-path or module-path.</p>
+</div>
+<div class="paragraph">
+<p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Configure the JDK with the Conscrypt provider.</span>
+<span class="predefined-type">Security</span>.addProvider(<span class="keyword">new</span> OpenSSLProvider());
+
+SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+<span class="comment">// Configure Jetty's SslContextFactory to use Conscrypt.</span>
+sslContextFactory.setProvider(<span class="string"><span class="delimiter">&quot;</span><span class="content">Conscrypt</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 </div>
@@ -5940,6 +6047,56 @@ Refer to <a href="#pg-server-http-handler-use">this section</a> for more informa
 <div class="paragraph">
 <p>You should write your own leaf <code>Handler</code>s to implement your web application logic.
 Refer to <a href="#pg-server-http-handler-impl">this section</a> for more information about how to write your own <code>Handler</code>s.</p>
+</div>
+<div class="paragraph">
+<p>A <code>Handler</code> may be declared as non-blocking (by extending <code>Handler.Abstract.NonBlocking</code>) or as blocking (by extending <code>Handler.Abstract</code>), to allow interaction with the <a href="#pg-arch-threads">Jetty threading architecture</a> for more efficient thread and CPU utilization during the request/response processing.</p>
+</div>
+<div class="paragraph">
+<p>Container <code>Handler</code>s typically inherit whether they are blocking or non-blocking from their child or children.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, container <code>Handler</code>s may be declared as dynamic: they allow adding/removing child <code>Handler</code>s after they have been started (see <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/Handler.AbstractContainer.html">Handler.AbstractContainer</a> for more information).
+Dynamic container <code>Handler</code>s are therefore always blocking, as it is not possible to know if a child <code>Handler</code> added in the future will be blocking or non-blocking.</p>
+</div>
+<div class="paragraph">
+<p>If the <code>Handler</code> tree is not dynamic, then it is possible to create a non-blocking <code>Handler</code> tree, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="screen">Server
+└── RewriteHandler
+    └── GzipHandler
+        └── ContextHandler
+            └── AppHandler extends Handler.Abstract.NonBlocking</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the <code>Handler</code> tree is non-blocking, Jetty may use the <a href="#pg-arch-threads-execution-strategy-pc"><code>Produce-Consume</code></a> mode to invoke the <code>Handler</code> tree, therefore avoiding a thread hand-off, and saving the cost of being scheduled on a different CPU with cold caches.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Produce-Consume</code> mode is equivalent to what other servers call "event loop" or "selector thread loop" architectures.</p>
+</div>
+<div class="paragraph">
+<p>This mode has the benefit of reducing OS context switches and CPU cache misses, using fewer threads, and it is overall very efficient.
+On the other hand, it requires writing quick, non-blocking code, and partially sequentializes the request/response processing, so that the Nth request in the sequence pays the latency of the processing of the N-1 requests in front of it.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you declare your <code>Handler</code> to be non-blocking by extending <code>Handler.Abstract.NonBlocking</code>, the code you write in <code>handle(...)</code> (and recursively all the code called from there) must truly be non-blocking, and possibly execute quickly.</p>
+</div>
+<div class="paragraph">
+<p>If the code blocks, you risk a server lock-up.
+If the code takes a long time to execute, requests from other connections may be delayed.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect4">
 <h5 id="pg-server-http-handler-use"><a class="anchor" href="#pg-server-http-handler-use"></a><a class="link" href="#pg-server-http-handler-use">Jetty Handlers</a></h5>
@@ -6299,7 +6456,7 @@ server.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6352,6 +6509,30 @@ server.start();</code></pre>
         ├── ContextHandler 1
         :── ...
         └── ContextHandler N</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-http-handler-use-sizelimit"><a class="anchor" href="#pg-server-http-handler-use-sizelimit"></a><a class="link" href="#pg-server-http-handler-use-sizelimit">SizeLimitHandler</a></h6>
+<div class="paragraph">
+<p><code>SizeLimitHandler</code> tracks the sizes of request content and response content, and fails the request processing with an HTTP status code of <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-413-content-too-large"><code>413 Content Too Large</code></a>.</p>
+</div>
+<div class="paragraph">
+<p>Server applications can set up the <code>SizeLimitHandler</code> before or after handlers that modify the request content or response content such as <a href="#pg-server-http-handler-use-gzip"><code>GzipHandler</code></a>.
+When <code>SizeLimitHandler</code> is before <code>GzipHandler</code> in the <code>Handler</code> tree, it will limit the compressed content; when it is after, it will limit the uncompressed content.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Handler</code> tree structure look like the following, to limit uncompressed content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="screen">Server
+└── GzipHandler
+    └── SizeLimitHandler
+        └── ContextHandlerCollection
+            ├── ContextHandler 1
+            :── ...
+            └── ContextHandler N</code></pre>
 </div>
 </div>
 </div>
@@ -6837,12 +7018,12 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.2</code>.</p>
+<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.5</code>.</p>
 </div>
 <div class="paragraph">
 <p>Below you can find an example of how to set up a Jakarta EE 10 <code>ServletContextHandler</code>:</p>
@@ -6931,7 +7112,7 @@ Server applications must be careful when creating the <code>Handler</code> tree 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-webapp<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7000,7 +7181,7 @@ The features are similar, but <code>DefaultServlet</code> is more commonly used 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7119,7 +7300,7 @@ server.start();</code></pre>
 </div>
 <div class="paragraph">
 <p>Note how <code>HelloWorldHandler</code> extends from <code>Handler.Abstract.NonBlocking</code>.
-This is a declaration that <code>HelloWorldHandler</code> does not use blocking APIs (of any kind) to perform its logic, allowing Jetty to apply optimizations that are not applied to <code>Handler</code>s that declare themselves as blocking.</p>
+This is a declaration that <code>HelloWorldHandler</code> does not use blocking APIs (of any kind) to perform its logic, allowing Jetty to apply optimizations (see <a href="#pg-server-http-handler">here</a>) that are not applied to <code>Handler</code>s that declare themselves as blocking.</p>
 </div>
 <div class="paragraph">
 <p>If your <code>Handler</code> implementation uses blocking APIs (of any kind), extend from <code>Handler.Abstract</code>.</p>
@@ -7420,6 +7601,106 @@ The <code>static Content.Source</code> utility methods will allow you to read th
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-http-handler-impl-request-listeners"><a class="anchor" href="#pg-server-http-handler-impl-request-listeners"></a><a class="link" href="#pg-server-http-handler-impl-request-listeners"><code>Request</code> Listeners</a></h6>
+<div class="paragraph">
+<p>Application may add listeners to the <code>Request</code> object to be notified of particular events happening during the request/response processing.</p>
+</div>
+<div class="paragraph">
+<p><code>Request.addIdleTimeoutListener(Predicate&lt;TimeoutException&gt;)</code> allows you to add an idle timeout listener, which is invoked when an idle timeout period elapses during the request/response processing, if the idle timeout event is not notified otherwise.</p>
+</div>
+<div class="paragraph">
+<p>When an idle timeout event happens, it is delivered to the application as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If there is pending demand (via <code>Request.demand(Runnable)</code>), then the demand <code>Runnable</code> is invoked and the application may see the idle timeout failure by reading from the <code>Request</code>, obtaining a <a href="#pg-arch-io-content-source">transient failure chunk</a>.</p>
+</li>
+<li>
+<p>If there is a pending response write (via <code>Response.write(boolean, ByteBuffer, Callback)</code>), the response write <code>Callback</code> is failed.</p>
+</li>
+<li>
+<p>If neither of the above, the idle timeout listeners are invoked, in the same order they have been added.
+The first idle timeout listener that returns <code>true</code> stops the Jetty implementation from invoking the idle timeout listeners that follow.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The idle timeout listeners are therefore invoked only when the application is really idle, neither trying to read nor trying to write.</p>
+</div>
+<div class="paragraph">
+<p>An idle timeout listener may return <code>true</code> to indicate that the idle timeout should be treated as a fatal failure of the request/response processing; otherwise the listener may return <code>false</code> to indicate that no further handling of the idle timeout is needed from the Jetty implementation.</p>
+</div>
+<div class="paragraph">
+<p>When idle timeout listeners return <code>false</code>, then any subsequent idle timeouts are handled as above.
+In the case that the application does not initiate any read or write, then the idle timeout listeners are invoked again after another idle timeout period.</p>
+</div>
+<div class="paragraph">
+<p><code>Request.addFailureListener(Consumer&lt;Throwable&gt;)</code> allows you to add a failure listener, which is invoked when a failure happens during the request/response processing.</p>
+</div>
+<div class="paragraph">
+<p>When a failure happens during the request/response processing, then:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The pending demand for request content, if any, is invoked; that is, the <code>Runnable</code> passed to <code>Request.demand(Runnable)</code> is invoked.</p>
+</li>
+<li>
+<p>The callback of an outstanding call to <code>Response.write(boolean, ByteBuffer, Callback)</code>, if any, is failed.</p>
+</li>
+<li>
+<p>The failure listeners are invoked, in the same order they have been added.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Failure listeners are invoked also in case of idle timeouts, in the following cases:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>At least one idle timeout listener returned <code>true</code> to indicate to the Jetty implementation to treat the idle timeout as a fatal failure.</p>
+</li>
+<li>
+<p>There are no idle timeout listeners.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Failures reported to a failure listener are always fatal failures; see also <a href="#pg-arch-io-content-source">this section</a> about fatal versus transient failures.
+This means that it is not possible to read or write from a failure listener: the read returns a fatal failure chunk, and the write will immediately fail the write callback.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Applications are always required to complete the <code>Handler</code> callback, as described <a href="#pg-server-http-handler-impl">here</a>.
+In case of asynchronous failures, failure listeners are a good place to complete (typically by failing it) the <code>Handler</code> callback.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>Request.addCompletionListener(Consumer&lt;Throwable&gt;)</code> allows you to add a completion listener, which is invoked at the very end of the request/response processing.
+This is equivalent to adding an <code>HttpStream</code> wrapper and overriding both <code>HttpStream.succeeded()</code> and <code>HttpStream.failed(Throwable)</code>.</p>
+</div>
+<div class="paragraph">
+<p>Completion listeners are typically (but not only) used to recycle or dispose resources used during the request/response processing, or get a precise timing for when the request/response processing finishes, to be paired with <code>Request.getBeginNanoTime()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note that while failure listeners are invoked as soon as the failure happens, completion listeners are invoked only at the very end of the request/response processing: after the <code>Callback</code> passed to <code>Handler.handle(Request, Response, Callback)</code> has been completed, all container dispatched threads have returned, and all the response writes have been completed.</p>
+</div>
+<div class="paragraph">
+<p>In case of many completion listeners, they are invoked in the reverse order they have been added.</p>
 </div>
 </div>
 <div class="sect5">
@@ -7785,7 +8066,7 @@ This makes the web application stateful, because a computation performed by a pr
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-session<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7964,7 +8245,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8488,7 +8769,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9039,7 +9320,7 @@ This allows programmers who use core Jetty - without the Servlet API - to still 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-0b755eaa8b60b08e2a661025a11715e1.png" alt="Diagram" width="780" height="446">
+<img src="images/diag-plantuml-md5-0b755eaa8b60b08e2a661025a11715e1.png" alt="Diagram" width="831" height="441">
 </div>
 </div>
 </div>
@@ -9640,7 +9921,7 @@ Jetty provides a number of alternative <code>SessionDataStore</code> implementat
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-36ebfa7e56c0c8222dcb2e860f97a06f.png" alt="Diagram" width="1585" height="317">
+<img src="images/diag-plantuml-md5-36ebfa7e56c0c8222dcb2e860f97a06f.png" alt="Diagram" width="1628" height="314">
 </div>
 </div>
 <div class="dlist">
@@ -10026,7 +10307,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
+<img src="images/diag-plantuml-md5-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="381" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -10263,7 +10544,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
+<img src="images/diag-plantuml-md5-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="325">
 </div>
 </div>
 <div class="paragraph">
@@ -10783,7 +11064,7 @@ server.addBean(storeFactory);</code></pre>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
+<img src="images/diag-plantuml-md5-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="394" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -10929,7 +11210,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11264,7 +11545,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11276,7 +11557,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11351,11 +11632,7 @@ ContextHandler contextHandler = <span class="keyword">new</span> ContextHandler(
 server.setHandler(contextHandler);
 
 <span class="comment">// Create a WebSocketUpgradeHandler that implicitly creates a ServerWebSocketContainer.</span>
-WebSocketUpgradeHandler webSocketHandler = WebSocketUpgradeHandler.from(server, contextHandler);
-contextHandler.setHandler(webSocketHandler);
-
-<span class="comment">// Here you can access the ServerWebSocketContainer through the WebSocketUpgradeHandler APIs.</span>
-webSocketHandler.configure(container -&gt;
+WebSocketUpgradeHandler webSocketHandler = WebSocketUpgradeHandler.from(server, contextHandler, container -&gt;
 {
     <span class="comment">// Configure the ServerWebSocketContainer.</span>
     container.setMaxTextMessageSize(<span class="integer">128</span> * <span class="integer">1024</span>);
@@ -11372,6 +11649,7 @@ webSocketHandler.configure(container -&gt;
         <span class="keyword">return</span> <span class="predefined-constant">null</span>;
     });
 });
+contextHandler.setHandler(webSocketHandler);
 
 <span class="comment">// Starting the Server will start the ContextHandler and the WebSocketUpgradeHandler,</span>
 <span class="comment">// which would run the configuration of the ServerWebSocketContainer.</span>
@@ -11511,11 +11789,7 @@ ContextHandler contextHandler = <span class="keyword">new</span> ContextHandler(
 server.setHandler(contextHandler);
 
 <span class="comment">// Create a WebSocketUpgradeHandler.</span>
-WebSocketUpgradeHandler webSocketHandler = WebSocketUpgradeHandler.from(server, contextHandler);
-contextHandler.setHandler(webSocketHandler);
-
-<span class="comment">// Here you can access the ServerWebSocketContainer through the WebSocketUpgradeHandler APIs.</span>
-webSocketHandler.configure(container -&gt;
+WebSocketUpgradeHandler webSocketHandler = WebSocketUpgradeHandler.from(server, contextHandler, container -&gt;
 {
     container.addMapping(<span class="string"><span class="delimiter">&quot;</span><span class="content">/ws/chat/{room}</span><span class="delimiter">&quot;</span></span>, (upgradeRequest, upgradeResponse, callback) -&gt;
     {
@@ -11530,7 +11804,8 @@ webSocketHandler.configure(container -&gt;
         <span class="comment">// Create the new WebSocket endpoint with the URI template information.</span>
         <span class="keyword">return</span> <span class="keyword">new</span> MyWebSocketRoomEndPoint(room);
     });
-});</code></pre>
+});
+contextHandler.setHandler(webSocketHandler);</code></pre>
 </div>
 </div>
 </div>
@@ -11632,7 +11907,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
+<img src="images/diag-plantuml-md5-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="763" height="101">
 </div>
 </div>
 <div class="paragraph">
@@ -11676,7 +11951,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="941" height="254">
+<img src="images/diag-plantuml-md5-a895f6364296eee265530e1d9fa7bed2.png" alt="Diagram" width="978" height="245">
 </div>
 </div>
 <div class="paragraph">
@@ -12007,9 +12282,6 @@ Other popular tools include Ant and Gradle.</p>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>First we&#8217;ll have a look at a very simple HelloWorld java application that embeds Jetty, then a simple webapp which makes use of the <a href="#jetty-maven-plugin">jetty-maven-plugin</a> to speed up the development cycle.</p>
-</div>
 <div class="sect3">
 <h4 id="configuring-embedded-jetty-with-maven"><a class="anchor" href="#configuring-embedded-jetty-with-maven"></a><a class="link" href="#configuring-embedded-jetty-with-maven">Using Embedded Jetty with Maven</a></h4>
 <div class="paragraph">
@@ -12099,7 +12371,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.2<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.5<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12140,35 +12412,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
 </div>
 </div>
 <div class="paragraph">
-<p>You can point your browser to <code>http://localhost:8080</code> to see the <em>Hello World</em> page.
-You can observe what Maven is doing for you behind the scenes by using the <code>mvn dependency:tree</code> command, which reveals the transitive dependency resolved and downloaded as:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>&gt; mvn dependency:tree
-[INFO] Scanning for projects...
-...
-[INFO]
-[INFO] ------------------------------------------------------------------------
-[INFO] Building Jetty HelloWorld 0.1-SNAPSHOT
-[INFO] ------------------------------------------------------------------------
-[INFO]
-[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ hello-world ---
-...
-[INFO] org.example:hello-world:jar:0.1-SNAPSHOT
-[INFO] \- org.eclipse.jetty:jetty-server:jar:9.3.9.v20160517:compile
-[INFO]    +- jakarta.servlet:jakarta.servlet-api:jar:3.1.0:compile
-[INFO]    +- org.eclipse.jetty:jetty-http:jar:9.3.9.v20160517:compile
-[INFO]    |  \- org.eclipse.jetty:jetty-util:jar:9.3.9.v20160517:compile
-[INFO]    \- org.eclipse.jetty:jetty-io:jar:9.3.9.v20160517:compile
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 4.145 s
-[INFO] Finished at: 2016-08-01T13:46:42-04:00
-[INFO] Final Memory: 15M/209M
-[INFO] ------------------------------------------------------------------------</pre>
-</div>
+<p>Point your browser to <code>http://localhost:8080</code> to see the <em>Hello World</em> page.</p>
 </div>
 </div>
 </div>
@@ -12176,7 +12420,7 @@ You can observe what Maven is doing for you behind the scenes by using the <code
 <h4 id="developing-standard-webapp-with-jetty-and-maven"><a class="anchor" href="#developing-standard-webapp-with-jetty-and-maven"></a><a class="link" href="#developing-standard-webapp-with-jetty-and-maven">Developing a Standard WebApp with Jetty and Maven</a></h4>
 <div class="paragraph">
 <p>The previous section demonstrated how to use Maven with an application that embeds Jetty.
-Now we will examine instead how to develop a standard webapp with Maven and Jetty.
+We can instead develop a standard webapp using Maven and Jetty.
 First create the Maven structure (you can use the maven webapp archetype instead if you prefer):</p>
 </div>
 <div class="listingblock">
@@ -12215,17 +12459,17 @@ First create the Maven structure (you can use the maven webapp archetype instead
 </div>
 </div>
 <div class="paragraph">
-<p>You need to declare this servlet in the deployment descriptor, so create the file <code>src/main/webapp/WEB-INF/web.xml</code> and add the following contents:</p>
+<p>This servlet must be declared in the web deployment descriptor, so create the file <code>src/main/webapp/WEB-INF/web.xml</code> and add the following contents:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
 <span class="tag">&lt;web-app</span>
-   <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span>
+   <span class="attribute-name">xmlns</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">https://jakarta.ee/xml/ns/jakartaee</span><span class="delimiter">&quot;</span></span>
    <span class="attribute-name">xmlns:xsi</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://www.w3.org/2001/XMLSchema-instance</span><span class="delimiter">&quot;</span></span>
-   <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd</span><span class="delimiter">&quot;</span></span>
+   <span class="attribute-name">xsi:schemaLocation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd</span><span class="delimiter">&quot;</span></span>
    <span class="attribute-name">metadata-complete</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">false</span><span class="delimiter">&quot;</span></span>
-   <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">3.1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+   <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">6.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
 
   <span class="tag">&lt;servlet&gt;</span>
     <span class="tag">&lt;servlet-name&gt;</span>Hello<span class="tag">&lt;/servlet-name&gt;</span>
@@ -12244,7 +12488,7 @@ First create the Maven structure (you can use the maven webapp archetype instead
 <h5 id="creating-plugin-pom-descriptor"><a class="anchor" href="#creating-plugin-pom-descriptor"></a><a class="link" href="#creating-plugin-pom-descriptor">Creating the POM Descriptor</a></h5>
 <div class="paragraph">
 <p>The <code>pom.xml</code> file declares the project name and its dependencies.
-Use an editor to create the file <code>pom.xml</code> with the following contents in the <code>JettyMavenHelloWarApp</code> directory, noting particularly the declaration of the <a href="#jetty-maven-plugin">jetty-maven-plugin</a>:</p>
+Use an editor to create the file <code>pom.xml</code> with the following contents in the <code>JettyMavenHelloWarApp</code> directory, noting particularly the declaration of the <a href="#jetty-maven-plugin">jetty-maven-plugin</a> for the Jakarta EE 10 environment:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -12260,14 +12504,14 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld WebApp<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.2<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.5<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
     <span class="tag">&lt;dependency&gt;</span>
       <span class="tag">&lt;groupId&gt;</span>jakarta.servlet<span class="tag">&lt;/groupId&gt;</span>
       <span class="tag">&lt;artifactId&gt;</span>jakarta.servlet-api<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>3.1.0<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;version&gt;</span>6.0.0<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;scope&gt;</span>provided<span class="tag">&lt;/scope&gt;</span>
     <span class="tag">&lt;/dependency&gt;</span>
   <span class="tag">&lt;/dependencies&gt;</span>
@@ -12275,8 +12519,8 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;build&gt;</span>
     <span class="tag">&lt;plugins&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
-        <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-        <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
         <span class="tag">&lt;version&gt;</span>${jettyVersion}<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
     <span class="tag">&lt;/plugins&gt;</span>
@@ -12289,7 +12533,7 @@ Use an editor to create the file <code>pom.xml</code> with the following content
 <div class="sect4">
 <h5 id="building-and-running-web-application"><a class="anchor" href="#building-and-running-web-application"></a><a class="link" href="#building-and-running-web-application">Building and Running the Web Application</a></h5>
 <div class="paragraph">
-<p>Now you can both build and run the web application without needing to assemble it into a war by using the <a href="#jetty-maven-plugin">jetty-maven-plugin</a> via the command:</p>
+<p>The web application can now be built and run without first needing to assemble it into a war by using the <a href="#jetty-maven-plugin">jetty-maven-plugin</a> via the command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -12307,7 +12551,7 @@ The full reference is at <a href="#jetty-maven-plugin">Configuring the Jetty Mav
 <div class="sect4">
 <h5 id="building-war-file"><a class="anchor" href="#building-war-file"></a><a class="link" href="#building-war-file">Building a WAR file</a></h5>
 <div class="paragraph">
-<p>You can create a Web Application Archive (WAR) file from the project with the command:</p>
+<p>A Web Application Archive (WAR) file can be produced from the project with the command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -12324,33 +12568,11 @@ The full reference is at <a href="#jetty-maven-plugin">Configuring the Jetty Mav
 <h3 id="jetty-maven-plugin"><a class="anchor" href="#jetty-maven-plugin"></a><a class="link" href="#jetty-maven-plugin">Using the Jetty Maven Plugin</a></h3>
 <div class="paragraph">
 <p>The Jetty Maven plugin is useful for rapid development and testing.
-It can optionally periodically scan your project for changes and automatically redeploy the webapp if any are found.
-This makes the development cycle more productive by eliminating the build and deploy steps: you use your IDE to make changes to the project, and the running web container automatically picks them up, allowing you to test them straight away.</p>
+It can optionally periodically scan a project for changes and automatically redeploy the webapp if any are found.
+This makes the development cycle more productive by eliminating the build and deploy steps: use an IDE to make changes to the project, and the running web container automatically picks them up, allowing them to be tested straight away.</p>
 </div>
 <div class="paragraph">
-<p>The plugin has been substantially re-architected in jetty-10 to:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>have less goals</p>
-</li>
-<li>
-<p>make deployment modes (embedded, forked or to a jetty distribution) apply uniformly across all goals</p>
-</li>
-<li>
-<p>simplify configuration options</p>
-</li>
-<li>
-<p>make the purpose and operation of each goal clearer</p>
-</li>
-<li>
-<p>rearchitect with composition rather than inheritance to make future extensions easier</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>There are now only 4 goals to run a webapp in jetty:</p>
+<p>There are only 4 goals to run a webapp in Jetty:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -12382,15 +12604,15 @@ This makes the development cycle more productive by eliminating the build and de
 </ul>
 </div>
 <div class="paragraph">
-<p><code>jetty:run</code> and <code>jetty:start</code> are alike in that they both run an unassembled webapp in jetty,however <code>jetty:run</code> is designed to be used at the command line, whereas <code>jetty:start</code> is specifically designed to be bound to execution phases in the build lifecycle.
-<code>jetty:run</code> will pause maven while jetty is running, echoing all output to the console, and then stop maven when jetty exits.
-<code>jetty:start</code> will not pause maven, will write all its output to a file, and will not stop maven when jetty exits.</p>
+<p><code>jetty:run</code> and <code>jetty:start</code> are alike in that they both run an <em>unassembled</em> webapp in Jetty,however <code>jetty:run</code> is designed to be used at the command line, whereas <code>jetty:start</code> is specifically designed to be bound to execution phases in the build lifecycle.
+<code>jetty:run</code> will pause Maven while jetty is running, echoing all output to the console, and then stop Maven when jetty exits.
+<code>jetty:start</code> will not pause Maven, will write all its output to a file, and will not stop Maven when jetty exits.</p>
 </div>
 <div class="paragraph">
-<p><code>jetty:run-war</code> and <code>jetty:start-war</code> are similar in that they both run an <em>assembled</em> war file in jetty.
+<p><code>jetty:run-war</code> and <code>jetty:start-war</code> are similar in that they both run an <em>assembled</em> war file in Jetty.
 However, <code>jetty:run-war</code> is designed to be run at the command line, whereas <code>jetty:start-war</code> is specifically designed to be bound to execution phases in the build lifecycle.
-<code>jetty:run-war</code> will pause maven while jetty is running, echoing all output to the console, and then stop maven when jetty exits.
-<code>jetty:start-war</code> will not not pause maven, will write all its output to a file, and will not stop maven when jetty exits.</p>
+<code>jetty:run-war</code> will pause Maven while Jetty is running, echoing all output to the console, and then stop Maven when Jetty exits.
+<code>jetty:start-war</code> will not pause Maven, will write all its output to a file, and will not stop Maven when Jetty exits.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -12401,7 +12623,7 @@ However, <code>jetty:run-war</code> is designed to be run at the command line, w
 <td class="content">
 <div class="paragraph">
 <p>While the Jetty Maven Plugin can be very useful for development we do not recommend its use in a <em>production capacity</em>.
-In order for the plugin to work it needs to leverage many internal Maven apis and Maven itself it not a production deployment tool.
+In order for the plugin to work it needs to leverage many internal Maven APIs and Maven itself it not a production deployment tool.
 We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deployment approach or using <a href="#advanced-embedding">embedded Jetty</a>.</p>
 </div>
 </td>
@@ -12411,19 +12633,22 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 <div class="sect3">
 <h4 id="get-up-and-running"><a class="anchor" href="#get-up-and-running"></a><a class="link" href="#get-up-and-running">Get Up and Running</a></h4>
 <div class="paragraph">
-<p>First, add <code>jetty-maven-plugin</code> to your <code>pom.xml</code> definition:</p>
+<p>Since Jetty 12, Jetty Maven plugin is repackaged for the corresponding Jakarta EE version with an <code>eeX</code> classifier in the groupId and artifactId.</p>
+</div>
+<div class="paragraph">
+<p>First, add <code>jetty-ee{8,9,10}-maven-plugin</code> to your <code>pom.xml</code> definition. Here&#8217;s an example of how to do that for Jakarta EE 10:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then, from the same directory as your root <code>pom.xml</code>, type:</p>
+<p>Then, from the same directory as the project&#8217;s root <code>pom.xml</code>, type:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -12431,15 +12656,15 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 </div>
 </div>
 <div class="paragraph">
-<p>This starts Jetty and serves up your project on <code>http://localhost:8080/</code>.</p>
+<p>This starts Jetty and serves up the project on <code>http://localhost:8080/</code>.</p>
 </div>
 <div class="paragraph">
 <p>Jetty will continue to run until you stop it.
 By default, it will not automatically restart your webapp.
-Set a non-zero <code>&lt;scan&gt;</code> value to have jetty scan your webapp for changes and automatically redeploy, or set <code>&lt;scan&gt;</code> to <code>0</code> to cause manual redeployment by hitting the <kbd>Enter</kbd> key.</p>
+Set a non-zero <code>&lt;scan&gt;</code> value to have Jetty scan your webapp for changes and automatically redeploy, or set <code>&lt;scan&gt;</code> to <code>0</code> to cause manual redeployment by hitting the <kbd>Enter</kbd> key.</p>
 </div>
 <div class="paragraph">
-<p>You can terminate the plugin with a <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>c</kbd></span> in the terminal window where it is running.</p>
+<p>Terminate the plugin with a <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>c</kbd></span> in the terminal window where it is running.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -12460,18 +12685,18 @@ For example: a webapp&#8217;s dependent jars might be referenced via the local r
 <div class="sect3">
 <h4 id="supported-goals"><a class="anchor" href="#supported-goals"></a><a class="link" href="#supported-goals">Supported Goals</a></h4>
 <div class="paragraph">
-<p>The goals prefixed with <code>"run"</code> are designed to be used at the <em>command line</em>.
-They first run a maven build on your project to ensure at least the classes are all built.
-They then start jetty and pause the maven build process until jetty is manually terminated, at which time the build will also be terminated.
+<p>The goals prefixed with <code>"run-"</code> are designed to be used at the <em>command line</em>.
+They first run a Maven build on your project to ensure at least the classes are all built.
+They then start Jetty and pause the Maven build process until Jetty is manually terminated, at which time the build will also be terminated.
 Jetty can scan various files in your project for changes and redeploy the webapp as necessary, or you can choose to manually trigger a redeploy if you prefer.
-All output from jetty is echoed to the console.</p>
+All output from Jetty is echoed to the console.</p>
 </div>
 <div class="paragraph">
-<p>The goals prefixed with <code>"start"</code> are designed to be used with <em>build lifecycle bindings in the pom</em>, and <em>not</em> at the command line.
+<p>The goals prefixed with <code>"start-"</code> are designed to be used with <em>build lifecycle bindings in the pom</em>, and <em>not</em> at the command line.
 No part of your project will be rebuilt by invoking these goals - you should ensure that your bind the execution to a build phase where all necessary parts of your project have been built.
-Maven will start and terminate jetty at the appropriate points in the build lifecycle, continuing with the build.
+Maven will start and terminate Jetty at the appropriate points in the build lifecycle, continuing with the build.
 Jetty will <em>not</em> scan any files in your project for changes, and your webapp will <em>not</em> be redeployed either automatically or manually.
-Output from jetty is directed to a file in the <code>target</code> directory.</p>
+Output from Jetty is directed to a file in the <code>target</code> directory.</p>
 </div>
 <div class="paragraph">
 <p>To see a list of all goals supported by the Jetty Maven plugin, do:</p>
@@ -12493,16 +12718,16 @@ Output from jetty is directed to a file in the <code>target</code> directory.</p
 <div class="sect3">
 <h4 id="deployment-modes"><a class="anchor" href="#deployment-modes"></a><a class="link" href="#deployment-modes">Deployment Modes</a></h4>
 <div class="paragraph">
-<p>All of the <code>"run"</code> and <code>"start"</code> goals can deploy your webapp either into the running maven process, or forked into a new child process, or forked into a jetty distribution on disk.</p>
+<p>All of the <code>"run-"</code> and <code>"start-"</code> goals can deploy your webapp either into the running maven process, or forked into a new child process, or forked into a Jetty distribution on disk.</p>
 </div>
 <div class="paragraph">
-<p>This is controlled by setting the <code>deployMode</code> configuration parameter in the pom, but can also be set by defining the maven property 'jetty.deployMode'.</p>
+<p>This is controlled by setting the <code>deployMode</code> configuration parameter in the pom, but can also be set by defining the Maven property 'jetty.deployMode'.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-embedded"><a class="anchor" href="#pg-embedded"></a><a class="link" href="#pg-embedded">Embedded</a></h5>
 <div class="paragraph">
 <p><code>deployMode</code> of <code>EMBED</code>.
-This is the "classic" jetty maven plugin deployment mode, running in-process with maven.
+This is the "classic" Jetty Maven plugin deployment mode, running in-process with Maven.
 This is the <em>default</em> mode.</p>
 </div>
 <div class="paragraph">
@@ -12538,8 +12763,8 @@ By default, all interfaces.</p>
 <dt class="hdlist1">idleTimeout</dt>
 <dd>
 <p>Maximum idle time for a connection.
-You could instead configure the connectors in a standard <a href="#jetty-xml-config">jetty xml config file</a> and put its location into the <code>jettyXml</code> parameter.
-Note that since Jetty 9.0 it is no longer possible to configure a <a href="#maven-config-https">https connector</a> directly in the pom.xml: you need to <a href="#maven-config-https">use jetty xml config files to do it</a>.</p>
+You could instead configure the connectors in a standard <a href="#jetty-xml-config">Jetty xml config file</a> and put its location into the <code>jettyXml</code> parameter.
+Note that since Jetty 9.0 it is no longer possible to configure a <a href="#maven-config-https">https connector</a> directly in the pom.xml: you need to <a href="#maven-config-https">use Jetty xml config files to do it</a>.</p>
 </dd>
 </dl>
 </div>
@@ -12556,12 +12781,11 @@ See <a href="#configuring-security-settings">Configuring Security</a>.</p>
 <dd>
 <p>Optional.
 An implementation of the <code>org.eclipse.jetty.server.RequestLog</code> request log interface.
-An implementation that respects the NCSA format is available as <code>org.eclipse.jetty.server.NCSARequestLog</code>.
-There are three other ways to configure the RequestLog:</p>
+There are three other ways to configure the <code>RequestLog</code>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>In a jetty xml config file, as specified in the <code>jettyXml</code> parameter.</p>
+<p>In a Jetty xml config file, as specified in the <code>jettyXml</code> parameter.</p>
 </li>
 <li>
 <p>In a context xml config file, as specified in the <code>contextXml</code> parameter.</p>
@@ -12634,7 +12858,7 @@ See <a href="#container-classpath">Container Classpath vs WebApp Classpath</a>.<
 <h5 id="pg-in-a-jetty-distribution"><a class="anchor" href="#pg-in-a-jetty-distribution"></a><a class="link" href="#pg-in-a-jetty-distribution">In a jetty distribution</a></h5>
 <div class="paragraph">
 <p><code>deployMode</code> of <code>EXTERNAL</code>.
-This is similar to the old "jetty:run-distro" goal - your webapp is deployed into a dynamically downloaded, unpacked and configured jetty distribution.
+This is similar to the old "jetty:run-distro" goal - your webapp is deployed into a dynamically downloaded, unpacked and configured Jetty distribution.
 A separate process is forked to run it.
 These extra configuration parameters are available:</p>
 </div>
@@ -12643,20 +12867,20 @@ These extra configuration parameters are available:</p>
 <dt class="hdlist1">jettyBase</dt>
 <dd>
 <p>Optional.
-The location of an existing jetty base directory to use to deploy the webapp.
+The location of an existing Jetty base directory to use to deploy the webapp.
 The existing base will be copied to the <code>target/</code> directory before the webapp is deployed.
 If there is no existing jetty base, a fresh one will be made in <code>target/jetty-base</code>.</p>
 </dd>
 <dt class="hdlist1">jettyHome</dt>
 <dd>
 <p>Optional.
-The location of an existing unpacked jetty distribution.
-If one does not exist, a fresh jetty distribution will be downloaded from maven and installed to the <code>target</code> directory.</p>
+The location of an existing unpacked Jetty distribution.
+If one does not exist, a fresh Jetty distribution will be downloaded from Maven and installed to the <code>target</code> directory.</p>
 </dd>
 <dt class="hdlist1">jettyOptions</dt>
 <dd>
 <p>Optional.
-A space separated string representing extra arguments to the synthesized jetty command line.
+A space separated string representing extra arguments to the synthesized Jetty command line.
 Values for these arguments can be found in the section titled "Options" in the output of <code>java -jar $jetty.home/start.jar --help</code>.</p>
 </dd>
 <dt class="hdlist1">jvmArgs</dt>
@@ -12667,7 +12891,7 @@ A space separated string representing arguments that should be passed to the jvm
 <dt class="hdlist1">modules</dt>
 <dd>
 <p>Optional.
-An array of names of additional jetty modules that the jetty child process will activate.
+An array of names of additional Jetty modules that the Jetty child process will activate.
 Use this to change the <a href="#container-classpath">container classpath</a> instead of <code>useProvidedScope</code>.
 These modules are enabled by default: <code>server,http,webapp,deploy</code>.</p>
 </dd>
@@ -12687,13 +12911,13 @@ These modules are enabled by default: <code>server,http,webapp,deploy</code>.</p
 <p>One of <code>EMBED</code>, <code>FORK</code> or <code>EXTERNAL</code>.
 Default <code>EMBED</code>.
 Can also be configured by setting the Maven property <code>jetty.deployMode</code>.
-This parameter determines whether the webapp will run in jetty in-process with Maven, forked into a new process, or deployed into a jetty distribution.
+This parameter determines whether the webapp will run in Jetty in-process with Maven, forked into a new process, or deployed into a Jetty distribution.
 See <a href="#deployment-modes">Deployment Modes</a>.</p>
 </dd>
 <dt class="hdlist1">jettyXmls</dt>
 <dd>
 <p>Optional.
-A comma separated list of locations of jetty xml files to apply in addition to any plugin configuration parameters.
+A comma separated list of locations of Jetty xml files to apply in addition to any plugin configuration parameters.
 You might use it if you have other webapps, handlers, specific types of connectors etc., to deploy, or if you have other Jetty objects that you cannot configure from the plugin.</p>
 </dd>
 <dt class="hdlist1">skip</dt>
@@ -12742,18 +12966,18 @@ Allows you to configure standard jetty properties.</p>
 <div class="sect3">
 <h4 id="container-classpath"><a class="anchor" href="#container-classpath"></a><a class="link" href="#container-classpath">Container Classpath vs WebApp Classpath</a></h4>
 <div class="paragraph">
-<p>The Servlet Specification makes a strong distinction between the classpath for a webapp, and the classpath of the container.
-When running in maven, the plugin&#8217;s classpath is equivalent to the container classpath.
-It will make a classpath for the webapp to be deployed comprised of &lt;dependencies&gt; specified in the pom.</p>
+<p>The Servlet Specification makes a strong distinction between the classpath for a <em>webapp</em>, and the classpath of the <em>container</em>.
+When running in Maven, the plugin&#8217;s classpath is equivalent to the <em>container</em> classpath.
+It will make a classpath for the <em>webapp</em> to be deployed comprised of &lt;dependencies&gt; specified in the pom.</p>
 </div>
 <div class="paragraph">
-<p>If your production environment places specific jars onto the container&#8217;s classpath, the equivalent way to do this with maven is to define these as &lt;dependencies&gt; for the <em>plugin</em> itself, not the <em>project</em>. See <a href="http://maven.apache.org/pom.html#Plugins">configuring maven plugins</a>.
+<p>If your production environment places specific jars onto the container&#8217;s classpath, the equivalent way to do this with Maven is to define these as &lt;dependencies&gt; for the <em>plugin</em> itself, not the <em>project</em>. See <a href="http://maven.apache.org/pom.html#Plugins">configuring maven plugins</a>.
 This is suitable if you are using either <code>EMBED</code> or <code>FORK</code> mode.
-If you are using <code>EXTERNAL</code> mode, then you should configure the <code>modules</code> parameter with the names of the jetty modules that place these jars onto the container classpath.</p>
+If you are using <code>EXTERNAL</code> mode, then you should configure the <code>modules</code> parameter with the names of the Jetty modules that place these jars onto the container classpath.</p>
 </div>
 <div class="paragraph">
 <p>Note that in <code>EMBED</code> or <code>FORK</code> mode, you could also influence the container classpath by setting the <code>useProvidedScope</code> parameter to <code>true</code>: this will place any dependencies with &lt;scope&gt;provided&lt;scope&gt; onto the plugin&#8217;s classpath.
-Use this very cautiously: as the plugin already automatically places most jetty jars onto the classpath, you could wind up with duplicate jars.</p>
+Use this very cautiously: as the plugin already automatically places most Jetty jars onto the classpath, you could wind up with duplicate jars.</p>
 </div>
 </div>
 <div class="sect3">
@@ -12761,7 +12985,7 @@ Use this very cautiously: as the plugin already automatically places most jetty 
 <div class="paragraph">
 <p>The <code>run</code> goal deploys a webapp that is <em>not</em> first built into a WAR.
 A virtual webapp is constructed from the project&#8217;s sources and its dependencies.
-It looks for the constituent parts of a webapp in the maven default project locations, although you can override these in the plugin configuration.
+It looks for the constituent parts of a webapp in the Maven default project locations, although you can override these in the plugin configuration.
 For example, by default it looks for:</p>
 </div>
 <div class="ulist">
@@ -12778,25 +13002,24 @@ For example, by default it looks for:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The plugin first runs a maven parallel build to ensure that the classes are built and up-to-date before deployment.
+<p>The plugin first runs a Maven parallel build to ensure that the classes are built and up-to-date before deployment.
 If you change the source of a class and your IDE automatically compiles it in the background, the plugin picks up the changed class (note you need to configure a non-zero <code>scan</code> interval for automatic redeployment).</p>
 </div>
 <div class="paragraph">
-<p>If the plugin is invoked in a multi-module build, any dependencies that are also in the maven reactor are used from their compiled classes.
-Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
+<p>If the plugin is invoked in a multi-module build, any dependencies that are also in the Maven reactor are used from their compiled classes.</p>
 </div>
 <div class="paragraph">
 <p>Once invoked, you can configure the plugin to run continuously, scanning for changes in the project and automatically performing a hot redeploy when necessary.
 Any changes you make are immediately reflected in the running instance of Jetty, letting you quickly jump from coding to testing, rather than going through the cycle of: code, compile, reassemble, redeploy, test.</p>
 </div>
 <div class="paragraph">
-<p>The maven build will be paused until jetty exits, at which time maven will also exit.</p>
+<p>The Maven build will be paused until Jetty exits, at which time Maven will also exit.</p>
 </div>
 <div class="paragraph">
-<p>Stopping jetty is accomplished by typing <code>cntrl-c</code> at the command line.</p>
+<p>Stopping Jetty is accomplished by typing <code>cntrl-c</code> at the command line.</p>
 </div>
 <div class="paragraph">
-<p>Output from jetty will be logged to the console.</p>
+<p>Output from Jetty will be logged to the console.</p>
 </div>
 <div class="paragraph">
 <p>Here is an example, which turns on scanning for changes every ten seconds, and sets the webapp context path to <code>/test</code>:</p>
@@ -12804,9 +13027,9 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -12822,7 +13045,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.ee9.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/ee10}/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.ee10.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/ee10/webapp/WebAppContext.hml"><code>org.eclipse.jetty.ee10.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -12840,7 +13063,7 @@ By default, the plugin will look in <code>src/main/webapp/WEB-INF/web.xml</code>
 <dt class="hdlist1">defaultsDescriptor</dt>
 <dd>
 <p>The path to a <code>webdefault.xml</code> file that will be applied to your webapp before the <code>web.xml</code>.
-If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-webapp.jar</code>.</p>
+If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-ee10-webapp.jar</code>.</p>
 </dd>
 <dt class="hdlist1">overrideDescriptor</dt>
 <dd>
@@ -12950,9 +13173,9 @@ Patterns are specified as a relative path using a glob-like syntax as described 
   <span class="tag">&lt;plugins&gt;</span>
     ...
     <span class="tag">&lt;plugin&gt;</span>
-      <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-      <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+      <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+      <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;configuration&gt;</span>
         <span class="tag">&lt;webApp&gt;</span>
           <span class="tag">&lt;contextPath&gt;</span>/<span class="tag">&lt;/contextPath&gt;</span>
@@ -12997,16 +13220,16 @@ Patterns are specified as a relative path using a glob-like syntax as described 
 <p>When invoked at the command line this goal first executes a maven build of your project to the package phase.</p>
 </div>
 <div class="paragraph">
-<p>By default it then deploys the resultant war to jetty, but you can use this goal instead to deploy <em>any</em> war file by simply setting the <code>&lt;webApp&gt;&lt;war&gt;</code> configuration parameter to its location.</p>
+<p>By default it then deploys the resultant war to Jetty, but you can use this goal instead to deploy <em>any</em> war file by simply setting the <code>&lt;webApp&gt;&lt;war&gt;</code> configuration parameter to its location.</p>
 </div>
 <div class="paragraph">
 <p>If you set a non-zero <code>scan</code>, Jetty watches your <code>pom.xml</code> and the WAR file; if either changes, it redeploys the war.</p>
 </div>
 <div class="paragraph">
-<p>The maven build is held up until jetty exits, which is achieved by typing <code>cntrl-c</code> at the command line.</p>
+<p>The maven build is held up until Jetty exits, which is achieved by typing <code>cntrl-c</code> at the command line.</p>
 </div>
 <div class="paragraph">
-<p>All jetty output is directed to the console.</p>
+<p>All Jetty output is directed to the console.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-configuration-3"><a class="anchor" href="#pg-configuration-3"></a><a class="link" href="#pg-configuration-3">Configuration</a></h5>
@@ -13032,7 +13255,7 @@ If using a custom value for this parameter, you should include the leading <code
 <dt class="hdlist1">defaultsDescriptor</dt>
 <dd>
 <p>The path to a <code>webdefault.xml</code> file that will be applied to your webapp before the <code>web.xml</code>.
-If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-webapp.jar</code>.</p>
+If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-ee10-webapp.jar</code>.</p>
 </dd>
 <dt class="hdlist1">overrideDescriptor</dt>
 <dd>
@@ -13088,15 +13311,14 @@ List of directories with ant-style include/excludes patterns to specify other fi
 <div class="paragraph">
 <p>This is similar to the <code>jetty:run</code> goal, however it is <em>not</em> designed to be run from the command line and does <em>not</em> first execute the build up until the <code>test-compile</code> phase to ensure that all necessary classes and files of the webapp have been generated.
 It will <em>not</em> scan your project for changes and restart your webapp.
-It does <em>not</em> pause maven until jetty is stopped.</p>
+It does <em>not</em> pause maven until Jetty is stopped.</p>
 </div>
 <div class="paragraph">
 <p>Instead, it is designed to be used with build phase bindings in your pom.
-For example to you can have maven start your webapp at the beginning of your tests and stop at the end.</p>
+For example to you can have Maven start your webapp at the beginning of your tests and stop at the end.</p>
 </div>
 <div class="paragraph">
-<p>If the plugin is invoked as part of a multi-module build, any dependencies that are also in the maven reactor are used from their compiled classes.
-Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
+<p>If the plugin is invoked as part of a multi-module build, any dependencies that are also in the maven reactor are used from their compiled classes.</p>
 </div>
 <div class="paragraph">
 <p>Here&#8217;s an example of using the <code>pre-integration-test</code> and <code>post-integration-test</code> Maven build phases to trigger the execution and termination of Jetty:</p>
@@ -13104,9 +13326,9 @@ Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9999<span class="tag">&lt;/stopPort&gt;</span>
@@ -13142,7 +13364,7 @@ Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
 <dl>
 <dt class="hdlist1">webApp</dt>
 <dd>
-<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.ee9.webapp.WebAppContext</code></a>.
+<p>This is an instance of <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/ee10/maven/plugin/MavenWebAppContext.html">org.eclipse.jetty.ee10.maven.plugin.MavenWebAppContext</a>, which is an extension to the class  <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/webapp/WebAppContext.hml"><code>org.eclipse.jetty.ee9.webapp.WebAppContext</code></a>.
 You can use any of the setter methods on this object to configure your webapp.
 Here are a few of the most useful ones:</p>
 <div class="dlist">
@@ -13160,7 +13382,7 @@ The default is <code>src/main/webapp/WEB-INF/web.xml</code>.</p>
 <dt class="hdlist1">defaultsDescriptor</dt>
 <dd>
 <p>The path to a <code>webdefault.xml</code> file that will be applied to your webapp before the <code>web.xml</code>.
-If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-webapp.jar</code>.</p>
+If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-ee10-webapp.jar</code>.</p>
 </dd>
 <dt class="hdlist1">overrideDescriptor</dt>
 <dd>
@@ -13268,15 +13490,14 @@ This is the time in milliseconds between checks on the startup of the forked jet
 </div>
 <div class="paragraph">
 <p>It will <em>not</em> scan your project for changes and restart your webapp.
-It does <em>not</em> pause maven until jetty is stopped.</p>
+It does <em>not</em> pause maven until Jetty is stopped.</p>
 </div>
 <div class="paragraph">
 <p>By default, if your pom is for a webapp project, it will deploy the war file for the project to jetty.
 However, like the <code>jetty:run-war</code> project, you can nominate any war file to deploy by defining its location in the <code>&lt;webApp&gt;&lt;war&gt;</code> parameter.</p>
 </div>
 <div class="paragraph">
-<p>If the plugin is invoked as part of a multi-module build, any dependencies that are also in the maven reactor are used from their compiled classes.
-Prior to jetty-9.4.7 any dependencies needed to be built first.</p>
+<p>If the plugin is invoked as part of a multi-module build, any dependencies that are also in the Maven reactor are used from their compiled classes.</p>
 </div>
 <div class="paragraph">
 <p>This goal will generate output from jetty into the <code>target/jetty-start-war.out</code> file.</p>
@@ -13305,7 +13526,7 @@ If using a custom value for this parameter, you should include the leading <code
 <dt class="hdlist1">defaultsDescriptor</dt>
 <dd>
 <p>The path to a <code>webdefault.xml</code> file that will be applied to your webapp before the <code>web.xml</code>.
-If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-webapp.jar</code>.</p>
+If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-ee10-webapp.jar</code>.</p>
 </dd>
 <dt class="hdlist1">overrideDescriptor</dt>
 <dd>
@@ -13359,12 +13580,12 @@ Useful to use in conjunction with the <a href="#jetty-stop-goal">stop</a>.</p>
 <dt class="hdlist1">maxChildStartChecks</dt>
 <dd>
 <p>Default is <code>10</code>.
-This is maximum number of times the parent process checks to see if the forked jetty process has started correctly</p>
+This is maximum number of times the parent process checks to see if the forked Jetty process has started correctly</p>
 </dd>
 <dt class="hdlist1">maxChildStartCheckMs</dt>
 <dd>
 <p>Default is <code>200</code>.
-This is the time in milliseconds between checks on the startup of the forked jetty process.</p>
+This is the time in milliseconds between checks on the startup of the forked Jetty process.</p>
 </dd>
 </dl>
 </div>
@@ -13375,7 +13596,7 @@ This is the time in milliseconds between checks on the startup of the forked jet
 <div class="paragraph">
 <p>The stop goal stops a FORK or EXTERNAL mode running instance of Jetty.
 To use it, you need to configure the plugin with a special port number and key.
-That same port number and key will also be used by the other goals that start jetty.</p>
+That same port number and key will also be used by the other goals that start Jetty.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-configuration-6"><a class="anchor" href="#pg-configuration-6"></a><a class="link" href="#pg-configuration-6">Configuration</a></h5>
@@ -13402,9 +13623,9 @@ If false or not specified, the plugin does not wait for confirmation but exits a
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9966<span class="tag">&lt;/stopPort&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
@@ -13438,7 +13659,7 @@ No programmatic declarations of servlets, filters and listeners can be taken int
 </div>
 <div class="paragraph">
 <p>Other useful information about your webapp that is produced as part of the analysis is also stored as context parameters in the effective-web.xml.
-The effective-web.xml can be used in conjunction with the <a href="#quickstart-webapp">Quickstart</a> feature to quickly start your webapp (note that Quickstart is not appropriate for the mvn jetty goals).</p>
+The effective-web.xml can be used in conjunction with the <a href="#quickstart-webapp">Quickstart</a> feature to quickly start your webapp (note that Quickstart is not appropriate for the mvn Jetty goals).</p>
 </div>
 <div class="paragraph">
 <p>The effective web.xml from these combined sources is generated into a file, which by default is <code>target/effective-web.xml</code>, but can be changed by setting the <code>effectiveWebXml</code> configuration parameter.</p>
@@ -13469,7 +13690,7 @@ If using a custom value for this parameter, you should include the leading <code
 <dt class="hdlist1">defaultsDescriptor</dt>
 <dd>
 <p>The path to a <code>webdefault.xml</code> file that will be applied to your webapp before the <code>web.xml</code>.
-If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-webapp.jar</code>.</p>
+If you don&#8217;t supply one, Jetty uses a default file baked into the <code>jetty-ee10-webapp.jar</code>.</p>
 </dd>
 <dt class="hdlist1">overrideDescriptor</dt>
 <dd>
@@ -13528,7 +13749,7 @@ By default it is <code>origin</code>.</p>
 </dd>
 <dt class="hdlist1">generateOrigin</dt>
 <dd>
-<p>False by default. If true, will force the generation of the originAttribute onto each element.</p>
+<p>False by default. If true, will force the generation of the <code>originAttribute</code> onto each element.</p>
 </dd>
 </dl>
 </div>
@@ -13543,7 +13764,7 @@ It can do so based on the settings of the <a href="http://maven.apache.org/plugi
 <div class="sect4">
 <h5 id="pg-with-maven-war-plugin"><a class="anchor" href="#pg-with-maven-war-plugin"></a><a class="link" href="#pg-with-maven-war-plugin">With maven-war-plugin</a></h5>
 <div class="paragraph">
-<p>The maven-war-plugin has a rich set of capabilities for merging resources.
+<p>The <code>maven-war-plugin</code> has a rich set of capabilities for merging resources.
 The <code>jetty:run</code> and <code>jetty:start</code> goals are able to interpret most of them and apply them during execution of your unassembled webapp.
 This is probably best seen by looking at a concrete example.</p>
 </div>
@@ -13591,7 +13812,7 @@ WebAppY:
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>maven-war-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;overlays&gt;</span>
       <span class="tag">&lt;overlay&gt;</span>
@@ -13617,8 +13838,8 @@ WebAppY:
 </div>
 <div class="paragraph">
 <p>Then executing jetty:run would yield the following ordering of resources: <code>com.acme.X.war : com.acme.Y.war: ${project.basedir}/src/main/webapp</code>.
-Note that the current project&#8217;s resources are placed last in the ordering due to the empty &lt;overlay/&gt; element in the maven-war-plugin.
-You can either use that, or specify the <code>&lt;baseAppFirst&gt;false&lt;/baseAppFirst&gt;</code> parameter to the jetty-maven-plugin.</p>
+Note that the current project&#8217;s resources are placed last in the ordering due to the empty &lt;overlay/&gt; element in the <code>maven-war-plugin</code>.
+You can either use that, or specify the <code>&lt;baseAppFirst&gt;false&lt;/baseAppFirst&gt;</code> parameter to the <code>jetty-ee10-maven-plugin</code>.</p>
 </div>
 <div class="paragraph">
 <p>Moreover, due to the <code>exclusions</code> specified above, a request for the resource ` bar.jsp` would only be satisfied from <code>com.acme.Y.war.</code>
@@ -13685,14 +13906,14 @@ WebAppY:
 <h4 id="configuring-security-settings"><a class="anchor" href="#configuring-security-settings"></a><a class="link" href="#configuring-security-settings">Configuring Security Settings</a></h4>
 <div class="paragraph">
 <p>You can configure LoginServices in the plugin.
-Here&#8217;s an example of setting up the HashLoginService for a webapp:</p>
+Here&#8217;s an example of setting up the <code>HashLoginService</code> for a webapp:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13748,20 +13969,20 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
       <span class="tag">&lt;contextPath&gt;</span>/test<span class="tag">&lt;/contextPath&gt;</span>
     <span class="tag">&lt;/webApp&gt;</span>
     <span class="tag">&lt;contextHandlers&gt;</span>
-      <span class="tag">&lt;contextHandler</span> <span class="attribute-name">implementation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;contextHandler</span> <span class="attribute-name">implementation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;war&gt;</span>${project.basedir}../../B.war<span class="tag">&lt;/war&gt;</span>
         <span class="tag">&lt;contextPath&gt;</span>/B<span class="tag">&lt;/contextPath&gt;</span>
       <span class="tag">&lt;/contextHandler&gt;</span>
-      <span class="tag">&lt;contextHandler</span> <span class="attribute-name">implementation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;contextHandler</span> <span class="attribute-name">implementation</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.ee10.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;war&gt;</span>${project.basedir}../../C.war<span class="tag">&lt;/war&gt;</span>
         <span class="tag">&lt;contextPath&gt;</span>/C<span class="tag">&lt;/contextPath&gt;</span>
       <span class="tag">&lt;/contextHandler&gt;</span>
@@ -13778,8 +13999,8 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 </td>
 <td class="content">
 <div class="paragraph">
-<p>If the <code>ContextHandler</code> you are deploying is a webapp, it is <strong>essential</strong> that you use an <code>org.eclipse.jetty.maven.plugin.MavenWebAppContext</code> instance rather than a standard <code>org.eclipse.jetty.ee9.webapp.WebAppContext</code> instance.
-Only the former will allow the webapp to function correctly in the maven environment.</p>
+<p>If the <code>ContextHandler</code> you are deploying is a webapp, it is <strong>essential</strong> that you use an <code>org.eclipse.jetty.ee10.maven.plugin.MavenWebAppContext</code> instance rather than a standard <code>org.eclipse.jetty.ee10.webapp.WebAppContext</code> instance.
+Only the former will allow the webapp to function correctly in the Maven environment.</p>
 </div>
 </td>
 </tr>
@@ -13794,7 +14015,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;Ref</span> <span class="attribute-name">refid</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">Contexts</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;Call</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">addHandler</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;Arg&gt;</span>
-      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.{ee-current}.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/B<span class="tag">&lt;/Set&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>../../B.war<span class="tag">&lt;/Set&gt;</span>
       <span class="tag">&lt;/New&gt;</span>
@@ -13802,7 +14023,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
   <span class="tag">&lt;/Call&gt;</span>
   <span class="tag">&lt;Call&gt;</span>
     <span class="tag">&lt;Arg&gt;</span>
-      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+      <span class="tag">&lt;New</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">org.eclipse.jetty.{ee-current}.maven.plugin.MavenWebAppContext</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">contextPath</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>/C<span class="tag">&lt;/Set&gt;</span>
         <span class="tag">&lt;Set</span> <span class="attribute-name">name</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">war</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>../../C.war<span class="tag">&lt;/Set&gt;</span>
       <span class="tag">&lt;/New&gt;</span>
@@ -13812,14 +14033,14 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 </div>
 </div>
 <div class="paragraph">
-<p>Then configure the location of this <code>jetty.xml</code> file into webapp A&#8217;s jetty plugin:</p>
+<p>Then configure the location of this <code>jetty.xml</code> file into webapp A&#8217;s Jetty plugin:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13892,8 +14113,8 @@ However, they can override system properties set from a file instead, see <a hre
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.{ee-current}<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-{ee-current}-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;systemProperties&gt;</span>
         <span class="tag">&lt;fooprop&gt;</span>222<span class="tag">&lt;/fooprop&gt;</span>
@@ -13926,8 +14147,8 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-  <span class="tag">&lt;artifactId&gt;</span>jetty-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.{ee-current}<span class="tag">&lt;/groupId&gt;</span>
+  <span class="tag">&lt;artifactId&gt;</span>jetty-{ee-current}-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;systemPropertiesFile&gt;</span>${project.basedir}/mysys.props<span class="tag">&lt;/systemPropertiesFile&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13946,19 +14167,19 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <div class="sect2">
 <h3 id="jetty-jspc-maven-plugin"><a class="anchor" href="#jetty-jspc-maven-plugin"></a><a class="link" href="#jetty-jspc-maven-plugin">Jetty Jspc Maven Plugin</a></h3>
 <div class="paragraph">
-<p>This plugin will help you pre-compile your JSP and works in conjunction with the Maven war plugin to put them inside an assembled war.</p>
+<p>This plugin will pre-compile your JSP and works in conjunction with the Maven war plugin to put them inside an assembled war.</p>
 </div>
 <div class="sect3">
 <h4 id="jspc-config"><a class="anchor" href="#jspc-config"></a><a class="link" href="#jspc-config">Configuration</a></h4>
 <div class="paragraph">
-<p>Here&#8217;s the basic setup required to put the jspc plugin into your build:</p>
+<p>Here&#8217;s the basic setup required to put the JSPC plugin into your build for the Jakarta EE ee10 environment:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-   <span class="tag">&lt;artifactId&gt;</span>jetty-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14076,15 +14297,13 @@ are in the reactor as unassembled jars.</p>
 </dd>
 <dt class="hdlist1">sourceVersion</dt>
 <dd>
-<p>Introduced in Jetty 9.3.6.
-Java version of jsp source files.
-Defaults to 1.7.</p>
+<p>Java version of jsp source files.
+The default value depends on the version of the <code>jetty-ee10-jspc-maven-plugin</code>.</p>
 </dd>
 <dt class="hdlist1">targetVersion</dt>
 <dd>
-<p>Introduced in Jetty 9.3.6.
-Java version of class files generated from jsps.
-Defaults to 1.7.</p>
+<p>Java version of class files generated from jsps.
+The default value depends on the version of the <code>jetty-ee10-jspc-maven-plugin</code>.</p>
 </dd>
 <dt class="hdlist1">tldJarNamePatterns</dt>
 <dd>
@@ -14099,8 +14318,7 @@ Use | to separate each pattern.</p>
 <p>Default value: the <code>org.apache.jasper.JspC</code> instance being configured.</p>
 <div class="paragraph">
 <p>The JspC class actually performs the pre-compilation.
-All setters on the JspC class are available.
-You can download the javadoc <a href="https://repo1.maven.org/maven2/org/glassfish/web/jakarta.servlet.jsp/2.3.2/jakarta.servlet.jsp-2.3.2-javadoc.jar">here</a>.</p>
+All setters on the JspC class are available.</p>
 </div>
 </dd>
 </dl>
@@ -14139,9 +14357,9 @@ You can download the javadoc <a href="https://repo1.maven.org/maven2/org/glassfi
     <span class="tag">&lt;build&gt;</span>
     <span class="tag">&lt;plugins&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
-        <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-        <span class="tag">&lt;artifactId&gt;</span>jetty-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+        <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+        <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
         <span class="comment">&lt;!-- put your configuration in here --&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
@@ -14168,15 +14386,14 @@ You can download the javadoc <a href="https://repo1.maven.org/maven2/org/glassfi
 <h4 id="jspc-overlay-precompile"><a class="anchor" href="#jspc-overlay-precompile"></a><a class="link" href="#jspc-overlay-precompile">Precompiling Jsps with Overlaid Wars</a></h4>
 <div class="paragraph">
 <p>Precompiling jsps with an overlaid war requires a bit more configuration.
-This is because you need to separate the steps of unpacking the overlaid war and then repacking the final target war so the jetty-jspc-maven-plugin has the opportunity to access the overlaid resources.</p>
+This is because you need to separate the steps of unpacking the overlaid war and then repacking the final target war so the <code>jetty-ee10-jspc-maven-plugin</code> has the opportunity to access the overlaid resources.</p>
 </div>
 <div class="paragraph">
-<p>In the example we&#8217;ll show, we will use an overlaid war.
-The overlaid war will provide the <code>web.xml</code> file but the jsps will be in <code>src/main/webapp</code> (i.e. part of the project that uses the overlay).
-We will unpack the overlaid war file, compile the jsps and merge their servlet definitions into the extracted <code>web.xml</code>, then pack everything into a war.</p>
+<p>In the following example the overlaid war will provide the <code>web.xml</code> file but the jsps will be in <code>src/main/webapp</code> (i.e. part of the project that uses the overlay).
+The overlaid war file will be unpacked, the jsps compiled and their servlet definitions merged into the extracted <code>web.xml</code>, and everything packed into a war.</p>
 </div>
 <div class="paragraph">
-<p>Here&#8217;s an example configuration of the war plugin that separate those phases into an unpack phase, and then a packing phase:</p>
+<p>An example configuration of the war plugin that separates those phases into an unpack phase, and then a packing phase:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -14192,8 +14409,8 @@ We will unpack the overlaid war file, compile the jsps and merge their servlet d
         <span class="tag">&lt;overlays&gt;</span>
           <span class="tag">&lt;overlay</span> <span class="tag">/&gt;</span>
           <span class="tag">&lt;overlay&gt;</span>
-            <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.demos<span class="tag">&lt;/groupId&gt;</span>
-            <span class="tag">&lt;artifactId&gt;</span>demo-jetty-webapp<span class="tag">&lt;/artifactId&gt;</span>
+            <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.{ee-current}.demos<span class="tag">&lt;/groupId&gt;</span>
+            <span class="tag">&lt;artifactId&gt;</span>jetty-{ee-current}-demo-jetty-webapp<span class="tag">&lt;/artifactId&gt;</span>
           <span class="tag">&lt;/overlay&gt;</span>
         <span class="tag">&lt;/overlays&gt;</span>
       <span class="tag">&lt;/configuration&gt;</span>
@@ -14212,16 +14429,16 @@ We will unpack the overlaid war file, compile the jsps and merge their servlet d
 </div>
 </div>
 <div class="paragraph">
-<p>Now you also need to configure the <code>jetty-jspc-maven-plugin</code> so that it can use the web.xml that was extracted by the war unpacking and merge in the generated definitions of the servlets.
+<p>Now you also need to configure the <code>jetty-ee10-jspc-maven-plugin</code> so that it can use the web.xml that was extracted by the war unpacking and merge in the generated definitions of the servlets.
 This is in <code>target/foo/WEB-INF/web.xml</code>.
 Using the default settings, the <code>web.xml</code> merged with the jsp servlet definitions will be put into <code>target/web.xml</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
-  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
-   <span class="tag">&lt;artifactId&gt;</span>jetty-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
+   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14735,7 +14952,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
+<img src="images/diag-plantuml-md5-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="825" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -14752,7 +14969,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
+<img src="images/diag-plantuml-md5-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="625" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -14782,7 +14999,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
+<img src="images/diag-plantuml-md5-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="662" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -15581,19 +15798,41 @@ When more bytes are again available to be read from the network, <code>onFillabl
 <p>A <code>ByteBuffer</code> with the bytes that have been read; it may be empty.</p>
 </li>
 <li>
-<p>Whether the read reached end-of-file.</p>
+<p>Whether the read reached end-of-file, via its <code>last</code> flag.</p>
 </li>
 <li>
-<p>A failure that might have happened during the read.</p>
+<p>A failure that might have happened during the read, via its <code>getFailure()</code> method.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>Content.Chunk</code>'s <code>ByteBuffer</code> is typically a slice of a different <code>ByteBuffer</code> that has been read by a lower layer.
-There may be multiple layers between the bottom layer (where the initial read typically happens) and the application layer.</p>
+<p>The <code>Content.Chunk</code> returned from <code>Content.Source.read()</code> can either be a <em>normal</em> chunk (a chunk containing a <code>ByteBuffer</code> and a <code>null</code> failure), or a <em>failure</em> chunk (a chunk containing an empty <code>ByteBuffer</code> and a non-<code>null</code> failure).</p>
 </div>
 <div class="paragraph">
-<p>By slicing the <code>ByteBuffer</code> (rather than copying its bytes), there is no copy of the bytes between the layers.
+<p>A failure chunk also indicates (via the <code>last</code> flag) whether the failure is a fatal (when <code>last=true</code>) or transient (when <code>last=false</code>) failure.</p>
+</div>
+<div class="paragraph">
+<p>A transient failure is a temporary failure that happened during the read, it may be ignored, and it is recoverable: it is possible to call <code>read()</code> again and obtain a normal chunk (or a <code>null</code> chunk).
+Typical cases of transient failures are idle timeout failures, where the read timed out, but the application may decide to insist reading until some other event happens.
+The application may convert a transient failure into a fatal failure by calling <code>Content.Source.fail(Throwable)</code>.</p>
+</div>
+<div class="paragraph">
+<p>A <code>Content.Source</code> must be fully consumed by reading all its content, or failed by calling <code>Content.Source.fail(Throwable)</code> to signal that the reader is not interested in reading anymore, otherwise it may leak underlying resources.</p>
+</div>
+<div class="paragraph">
+<p>Fully consuming a <code>Content.Source</code> means reading from it until it returns a <code>Content.Chunk</code> whose <code>last</code> flag is <code>true</code>.
+Reading or demanding from an already fully consumed <code>Content.Source</code> is always immediately serviced with the last state of the <code>Content.Source</code>: a <code>Content.Chunk</code> with the <code>last</code> flag set to <code>true</code>, either an end-of-file chunk, or a failure chunk.</p>
+</div>
+<div class="paragraph">
+<p>Once failed, a <code>Content.Source</code> is considered fully consumed.
+Further attempts to read from a failed <code>Content.Source</code> return a failure chunk whose <code>getFailure()</code> method returns the exception passed to <code>Content.Source.fail(Throwable)</code>.</p>
+</div>
+<div class="paragraph">
+<p>When reading a normal chunk, its <code>ByteBuffer</code> is typically a slice of a different <code>ByteBuffer</code> that has been read by a lower layer.
+There may be multiple layers between the bottom layer (where the initial read typically happens) and the application layer that calls <code>Content.Source.read()</code>.</p>
+</div>
+<div class="paragraph">
+<p>By slicing the <code>ByteBuffer</code> (rather than copying its bytes), there is no copy of the bytes between the layers, which yields greater performance.
 However, this comes with the cost that the <code>ByteBuffer</code>, and the associated <code>Content.Chunk</code>, have an intrinsic lifecycle: the final consumer of a <code>Content.Chunk</code> at the application layer must indicate when it has consumed the chunk, so that the bottom layer may reuse/recycle the <code>ByteBuffer</code>.</p>
 </div>
 <div class="paragraph">
@@ -15609,13 +15848,14 @@ However, this comes with the cost that the <code>ByteBuffer</code>, and the asso
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</code> <strong>must</strong> be released.
+A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</code> <strong>must</strong> be released, except for <code>Content.Chunk</code>s that are failure chunks.
+Failure chunks <em>may</em> be released, but they do not <em>need</em> to be.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The example below is the idiomatic way to read from a <code>Content.Source</code>:</p>
+<p>The example below is the idiomatic way of reading from a <code>Content.Source</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -15637,8 +15877,17 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
         <span class="comment">// If there is a failure reading, handle it.</span>
         <span class="keyword">if</span> (Content.Chunk.isFailure(chunk))
         {
-            handleFailure(chunk);
-            <span class="keyword">return</span>;
+            <span class="type">boolean</span> fatal = chunk.isLast();
+            <span class="keyword">if</span> (fatal)
+            {
+                handleFatalFailure(chunk.getFailure());
+                <span class="keyword">return</span>;
+            }
+            <span class="keyword">else</span>
+            {
+                handleTransientFailure(chunk.getFailure());
+                <span class="keyword">continue</span>;
+            }
         }
 
         <span class="comment">// A normal chunk of content, consume it.</span>
@@ -15669,7 +15918,7 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
 </table>
 </div>
 <div class="paragraph">
-<p>Note how the reads happens in a loop, consuming the <code>Content.Source</code> as soon as it has content available to be read, and therefore no backpressure is applied to the reads.</p>
+<p>Note how the reads happen in a loop, consuming the <code>Content.Source</code> as soon as it has content available to be read, and therefore no backpressure is applied to the reads.</p>
 </div>
 <div class="paragraph">
 <p>An alternative way to read from a <code>Content.Source</code>, to use when the chunk is consumed asynchronously, and you don&#8217;t want to read again until the <code>Content.Chunk</code> is consumed, is the following:</p>
@@ -15688,10 +15937,16 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
         <span class="keyword">return</span>;
     }
 
-    <span class="comment">// If there is a failure reading, handle it.</span>
+    <span class="comment">// If there is a failure reading, always treat it as fatal.</span>
     <span class="keyword">if</span> (Content.Chunk.isFailure(chunk))
     {
-        handleFailure(chunk);
+        <span class="comment">// If the failure is transient, fail the source</span>
+        <span class="comment">// to indicate that there will be no more reads.</span>
+        <span class="keyword">if</span> (!chunk.isLast())
+            source.fail(chunk.getFailure());
+
+        <span class="comment">// Handle the failure and stop reading by not demanding.</span>
+        handleFatalFailure(chunk.getFailure());
         <span class="keyword">return</span>;
     }
 
@@ -15699,15 +15954,14 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
     <span class="comment">// read more chunks until this has been consumed.</span>
     CompletableFuture&lt;<span class="predefined-type">Void</span>&gt; consumed = consumeAsync(chunk);
 
-    <span class="comment">// Only when the chunk has been consumed</span>
-    <span class="comment">// release it and try to read more.</span>
+    <span class="comment">// Release the chunk.</span>
+    chunk.release(); <i class="conum" data-value="2"></i><b>(2)</b>
+
+    <span class="comment">// Only when the chunk has been consumed try to read more.</span>
     consumed.whenComplete((result, failure) -&gt;
     {
         <span class="keyword">if</span> (failure == <span class="predefined-constant">null</span>)
         {
-            <span class="comment">// Release the chunk.</span>
-            chunk.release(); <i class="conum" data-value="2"></i><b>(2)</b>
-
             <span class="comment">// Continue reading if EOF was not reached.</span>
             <span class="keyword">if</span> (!chunk.isLast())
                 source.demand(() -&gt; read(source));
@@ -15716,7 +15970,7 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
         {
             <span class="comment">// If there is a failure reading, handle it,</span>
             <span class="comment">// and stop reading by not demanding.</span>
-            handleFailure(chunk);
+            handleFatalFailure(failure);
         }
     });
 }</code></pre>
@@ -15738,10 +15992,10 @@ A <code>Content.Chunk</code> returned by a call to <code>Content.Source.read()</
 <p>Note how the reads do not happen in a loop, and therefore backpressure is applied to the reads, because there is not a next read until the chunk from the previous read has been consumed (and this may take time).</p>
 </div>
 <div class="paragraph">
-<p>You can use <code>Content.Source</code> static methods to conveniently read (in a blocking way or non-blocking way), for example via <code>static Content.Source.asStringAsync(Content.Source, Charset)</code>, or via an <code>InputStream</code> using <code>static Content.Source.asInputStream(Content.Source source)</code>.</p>
+<p>Since the <code>Chunk</code> is consumed asynchronously, you may need to retain it to extend its lifecycle, as explained in <a href="#pg-arch-io-content-source-chunk">this section</a>.</p>
 </div>
 <div class="paragraph">
-<p>For</p>
+<p>You can use <code>Content.Source</code> static methods to conveniently read (in a blocking way or non-blocking way), for example via <code>static Content.Source.asStringAsync(Content.Source, Charset)</code>, or via an <code>InputStream</code> using <code>static Content.Source.asInputStream(Content.Source)</code>.</p>
 </div>
 <div class="paragraph">
 <p>Refer to the <code>Content.Source</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/Content.Source.html"><code>javadocs</code></a> for further details.</p>
@@ -15805,7 +16059,7 @@ For example, you may accumulate the <code>Content.Chunk</code>s in a <code>List<
 
             <span class="keyword">if</span> (Content.Chunk.isFailure(chunk))
             {
-                handleFailure(chunk);
+                handleFatalFailure(chunk.getFailure());
                 <span class="keyword">return</span>;
             }
 
@@ -16113,7 +16367,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.2<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -18145,8 +18399,8 @@ Note that this <code>Callback</code> interface is a different interface from the
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.2<br>
-Last updated 2023-08-02 16:58:24 -0500
+Version 12.0.5<br>
+Last updated 2023-10-24 09:23:54 -0500
 </div>
 </div>
 </body>
