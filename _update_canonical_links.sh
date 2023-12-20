@@ -1,20 +1,26 @@
 #!/usr/bin/env bash
 
-CANONICAL_URL=https://eclipse.dev/jetty/documentation/jetty-12/index.html
+CANONICAL_URL=https://eclipse.dev/jetty/documentation/jetty-12/
+IGNORED_HITS=".*(contribution-guide\/).*"
 html_docs=($(find "documentation/" -type f -name "*.html" -printf "%P\n"));
-
-echo "html_docs = ${html_docs[@]}"
 
 for html in ${html_docs[@]};
 do
   file="documentation/$html"
-  echo "file = $file"    
-  if grep -q 'link rel="canonical" href' $file;
+  echo "file = $file"
+  canonical_file=$(echo $html | sed -e "s+^.[^/]*/++")
+  if [[ $file =~ $IGNORED_HITS ]] ;
   then
-    echo "found canonical header in $file"
+    echo "Ignoring $file"
   else
-    echo "Adding canonical header in $file"
-    sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"$CANONICAL_URL\"/>+gI" "$file"
+    if grep -q 'link rel="canonical" href' $file;
+    then
+      echo "found canonical header in $file"
+      sed -i -e "s+<head><link rel=\"canonical\".*+<head><link rel=\"canonical\" href=\"${CANONICAL_URL}${canonical_file}\"/>+gI" "$file"
+    else
+      echo "Adding canonical header in $file"
+      sed -i -e "s+<head>+<head><link rel=\"canonical\" href=\"${CANONICAL_URL}${canonical_file}\"/>+gI" "$file"
+    fi
   fi
 done
 
