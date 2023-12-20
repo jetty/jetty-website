@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CANONICAL_URL=https://eclipse.dev/jetty/documentation/jetty-12/
-IGNORED_HITS=".*(contribution-guide\/).*"
+IGNORED_HITS=".*(contribution-guide|jetty-12)\/.*"
 html_docs=($(find "documentation/" -type f -name "*.html" -printf "%P\n"));
 
 for html in ${html_docs[@]};
