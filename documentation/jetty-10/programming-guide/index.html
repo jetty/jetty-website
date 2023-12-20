@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link rel="canonical" href="https://eclipse.dev/jetty/documentation/jetty-12/programming-guide/index.html"/>
+<head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 10.0.18,</span>
-<span id="revdate">2023-10-26</span>
+<span id="revnumber">version 10.0.19,</span>
+<span id="revdate">2023-12-20</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Jetty Programming Guide</div>
@@ -187,6 +187,7 @@
 <li><a href="#pg-server-http-connector-protocol-http2">Clear-Text HTTP/2</a></li>
 <li><a href="#pg-server-http-connector-protocol-http2-tls">Encrypted HTTP/2</a></li>
 <li><a href="#pg-server-http-connector-protocol-http3">HTTP/3</a></li>
+<li><a href="#pg-server-http-connector-protocol-tls-conscrypt">Using Conscrypt as SSL/TLS Provider</a></li>
 <li><a href="#pg-server-http-connector-protocol-proxy-http11">Jetty Behind a Load Balancer</a></li>
 </ul>
 </li>
@@ -1209,7 +1210,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1426,7 +1427,7 @@ transport.setConnectionPoolFactory(destination -&gt;
 <h4 id="pg-client-http-request-processing"><a class="anchor" href="#pg-client-http-request-processing"></a><a class="link" href="#pg-client-http-request-processing">HttpClient Request Processing</a></h4>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="658" height="552">
+<img src="images/diag-plantuml-md5-4760564aad148998e116357e8f3a5450.png" alt="Diagram" width="684" height="514">
 </div>
 </div>
 <div class="paragraph">
@@ -2220,7 +2221,7 @@ If an illegal value is discovered Jetty will throw an <code>IllegalArgumentExcep
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="349" height="222">
+<img src="images/diag-plantuml-md5-136e615bb97d8356ceb17a851c86817a.png" alt="Diagram" width="366" height="207">
 </div>
 </div>
 <div class="paragraph">
@@ -2405,7 +2406,7 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="666" height="444">
+<img src="images/diag-plantuml-md5-e7fd1b7ba54e07262bd726c9fe979363.png" alt="Diagram" width="703" height="411">
 </div>
 </div>
 <div class="paragraph">
@@ -2811,7 +2812,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2996,7 +2997,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 10.0.18</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 10.0.19</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8080/path" class="bare">http://localhost:8080/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3348,7 +3349,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3460,7 +3461,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 10.0.18</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 10.0.19</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content"><a href="http://localhost:8444/path" class="bare">http://localhost:8444/path</a></span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3637,7 +3638,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3732,7 +3733,7 @@ The two mechanism are quite different and detailed in the following sections.</p
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="672" height="550">
+<img src="images/diag-plantuml-md5-fada5fbf7628dc70c998680727a069bd.png" alt="Diagram" width="704" height="508">
 </div>
 </div>
 <div class="paragraph">
@@ -3786,7 +3787,7 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="655" height="621">
+<img src="images/diag-plantuml-md5-1ed737fca2f0d63f7ebac20672a2e222.png" alt="Diagram" width="686" height="569">
 </div>
 </div>
 <div class="paragraph">
@@ -5003,7 +5004,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5012,7 +5013,7 @@ This result in your web applications to be available to HTTP clients as if you d
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="487" height="225">
+<img src="images/diag-plantuml-md5-05cfcead1245ff0fbcf3af8873998cee.png" alt="Diagram" width="504" height="216">
 </div>
 </div>
 <div class="paragraph">
@@ -5082,7 +5083,7 @@ You may want to refer to the <a href="#pg-arch-io">Jetty I/O architecture</a> fo
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="640" height="363">
+<img src="images/diag-plantuml-md5-3ca149653ee220164efd33ca869b97b5.png" alt="Diagram" width="666" height="337">
 </div>
 </div>
 <div class="paragraph">
@@ -5488,7 +5489,7 @@ server.start();</code></pre>
 <div class="sect5">
 <h6 id="pg-server-http-connector-protocol-http11-tls"><a class="anchor" href="#pg-server-http-connector-protocol-http11-tls"></a><a class="link" href="#pg-server-http-connector-protocol-http11-tls">Encrypted HTTP/1.1 (https)</a></h6>
 <div class="paragraph">
-<p>Supporting encrypted HTTP/1.1 (that is, requests with the <code>https</code> scheme) is supported by configuring an <code>SslContextFactory</code> that has access to the keyStore containing the private server key and public server certificate, in this way:</p>
+<p>Supporting encrypted HTTP/1.1 (that is, requests with the <code>https</code> scheme) is supported by configuring an <code>SslContextFactory</code> that has access to the KeyStore containing the private server key and public server certificate, in this way:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5517,6 +5518,9 @@ connector.setPort(<span class="integer">8443</span>);
 server.addConnector(connector);
 server.start();</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can customize the SSL/TLS provider as explained in <a href="#pg-server-http-connector-protocol-tls-conscrypt">this section</a>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -5620,6 +5624,9 @@ With the ALPN extension information, Jetty can negotiate a protocol and pick, am
 <div class="paragraph">
 <p>Note also that the default protocol set in the ALPN <code>ConnectionFactory</code>, which is used in case ALPN is not supported by the client, is HTTP/1.1&#8201;&#8212;&#8201;if the client does not support ALPN is probably an old client so HTTP/1.1 is the safest choice.</p>
 </div>
+<div class="paragraph">
+<p>You can customize the SSL/TLS provider as explained in <a href="#pg-server-http-connector-protocol-tls-conscrypt">this section</a>.</p>
+</div>
 </div>
 <div class="sect5">
 <h6 id="pg-server-http-connector-protocol-http3"><a class="anchor" href="#pg-server-http-connector-protocol-http3"></a><a class="link" href="#pg-server-http-connector-protocol-http3">HTTP/3</a></h6>
@@ -5646,7 +5653,7 @@ The HTTP/3 client may now initiate a QUIC connection on port <code>843</code> an
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="299" height="268">
+<img src="images/diag-plantuml-md5-24a0ef88281611e6f6ebbb9d395e2e68.png" alt="Diagram" width="321" height="250">
 </div>
 </div>
 <div class="paragraph">
@@ -5672,6 +5679,51 @@ connector.setPort(<span class="integer">843</span>);
 server.addConnector(connector);
 
 server.start();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="pg-server-http-connector-protocol-tls-conscrypt"><a class="anchor" href="#pg-server-http-connector-protocol-tls-conscrypt"></a><a class="link" href="#pg-server-http-connector-protocol-tls-conscrypt">Using Conscrypt as SSL/TLS Provider</a></h6>
+<div class="paragraph">
+<p>If not explicitly configured, the TLS implementation is provided by the JDK you are using at runtime.</p>
+</div>
+<div class="paragraph">
+<p>OpenJDK&#8217;s vendors may replace the default TLS provider with their own, but you can also explicitly configure an alternative TLS provider.</p>
+</div>
+<div class="paragraph">
+<p>The standard TLS provider from OpenJDK is implemented in Java (no native code), and its performance is not optimal, both in CPU usage and memory usage.</p>
+</div>
+<div class="paragraph">
+<p>A faster alternative, implemented natively, is Google&#8217;s <a href="https://github.com/google/conscrypt/">Conscrypt</a>, which is built on <a href="https://boringssl.googlesource.com/boringssl/">BoringSSL</a>, which is Google&#8217;s fork of <a href="https://www.openssl.org/">OpenSSL</a>.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+As Conscrypt eventually binds to a native library, there is a higher risk that a bug in Conscrypt or in the native library causes a JVM crash, while the Java implementation will not cause a JVM crash.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-10.0.19.jar</code> in the class-path or module-path.</p>
+</div>
+<div class="paragraph">
+<p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Configure the JDK with the Conscrypt provider.</span>
+<span class="predefined-type">Security</span>.addProvider(<span class="keyword">new</span> OpenSSLProvider());
+
+SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+<span class="comment">// Configure Jetty's SslContextFactory to use Conscrypt.</span>
+sslContextFactory.setProvider(<span class="string"><span class="delimiter">&quot;</span><span class="content">Conscrypt</span><span class="delimiter">&quot;</span></span>);</code></pre>
 </div>
 </div>
 </div>
@@ -6219,7 +6271,7 @@ contextCollection.addHandler(apiContext);</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6496,7 +6548,7 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6879,7 +6931,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7346,7 +7398,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7696,7 +7748,7 @@ In this section we&#8217;ll look at the architecture of session support in Jetty
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="548" height="555">
+<img src="images/diag-plantuml-md5-ec0156d64fc9a225c5e022fc352d7d46.png" alt="Diagram" width="578" height="550">
 </div>
 </div>
 </div>
@@ -8339,7 +8391,7 @@ The server libraries provide a number of alternative <code>SessionDataStore</cod
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1373" height="317">
+<img src="images/diag-plantuml-md5-fb3e088ea5480f2b172677334c79d51f.png" alt="Diagram" width="1412" height="314">
 </div>
 </div>
 <div class="paragraph">
@@ -8583,7 +8635,7 @@ To do that, it requires a <code>DatabaseAdaptor</code> that handles the differen
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="367" height="169">
+<img src="images/diag-plantuml-md5-8bbf1fa0b84011383e811eaf9e630100.png" alt="Diagram" width="381" height="169">
 </div>
 </div>
 <div class="paragraph">
@@ -8821,7 +8873,7 @@ In overview, it can be represented thus:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="340">
+<img src="images/diag-plantuml-md5-ae4b86cecdafb2b8e1afb35b06f359a1.png" alt="Diagram" width="284" height="325">
 </div>
 </div>
 <div class="paragraph">
@@ -8973,7 +9025,7 @@ mongoSessionDataStoreFactory.setPort(<span class="integer">27017</span>);</code>
 <h5 id="pg-server-session-cachingsessiondatastore"><a class="anchor" href="#pg-server-session-cachingsessiondatastore"></a><a class="link" href="#pg-server-session-cachingsessiondatastore">The CachingSessionDataStore</a></h5>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="369" height="277">
+<img src="images/diag-plantuml-md5-3e23a5cd9673dbe358271d004cc0d714.png" alt="Diagram" width="394" height="277">
 </div>
 </div>
 <div class="paragraph">
@@ -9122,7 +9174,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-javax-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9355,7 +9407,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9367,7 +9419,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9985,7 +10037,7 @@ server.start();</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="737" height="106">
+<img src="images/diag-plantuml-md5-d8ecf025f2e851a45b4d2132df024ecb.png" alt="Diagram" width="763" height="101">
 </div>
 </div>
 <div class="paragraph">
@@ -10029,7 +10081,7 @@ In the example above, <code>SslConnectionFactory</code> creates a <code>SslConne
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="978" height="254">
+<img src="images/diag-plantuml-md5-63a9fb2dbcfbcb3fb7bb1dffc2609836.png" alt="Diagram" width="1015" height="245">
 </div>
 </div>
 <div class="paragraph">
@@ -13092,7 +13144,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="806" height="61">
+<img src="images/diag-plantuml-md5-00328cb3d2df8187923760470ae4b579.png" alt="Diagram" width="825" height="61">
 </div>
 </div>
 <div class="paragraph">
@@ -13109,7 +13161,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="606" height="181">
+<img src="images/diag-plantuml-md5-624524d586ade94fb3c1aaff2ce724bc.png" alt="Diagram" width="625" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13139,7 +13191,7 @@ parent.addBean(younger);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-plantuml-md5-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="652" height="181">
+<img src="images/diag-plantuml-md5-2186143f423f5fb7696a7e6e67d9a227.png" alt="Diagram" width="662" height="181">
 </div>
 </div>
 <div class="paragraph">
@@ -13833,7 +13885,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>10.0.18<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>10.0.19<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -14725,8 +14777,8 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 10.0.18<br>
-Last updated 2023-04-11 11:50:21 -0500
+Version 10.0.19<br>
+Last updated 2023-11-28 12:32:11 -0600
 </div>
 </div>
 </body>
