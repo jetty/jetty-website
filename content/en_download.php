@@ -151,7 +151,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">5.0</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable</strong></p>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable <a href="https://github.com/jetty/jetty.project/issues/10485">(Notice)</a></strong></p>
             </td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI, <strong>JakartaEE Namespace</strong><sup>(1)</sup></p></td>
@@ -163,7 +163,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">11 <sup>(2)</sup></p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">4.0</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable</strong></p>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Stable <a href="https://github.com/jetty/jetty.project/issues/10485">(Notice)</a></strong></p>
             </td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
