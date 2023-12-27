@@ -175,7 +175,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">1.8</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">2.3</p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p> <a href="https://github.com/eclipse/jetty.project/issues/7958">(Notice)</a></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">Stable</p> <a href="https://github.com/jetty/jetty.project/issues/7958">(Notice)</a></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.1 (RFC 7230), HTTP/2 (RFC 7540),
                     WebSocket (RFC 6455, JSR 356), FastCGI</p></td>
         </tr>
