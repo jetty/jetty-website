@@ -134,7 +134,7 @@
                             descriptors, remote resources, etc.
                         </dt>
                         <dd>
-                            <p><a href="https://github.com/eclipse/jetty.toolchain" class="bare">https://github.com/eclipse/jetty.toolchain</a>
+                            <p><a href="https://github.com/jetty/jetty-toolchain" class="bare">https://github.com/jetty/jetty-toolchain</a>
                             </p>
                         </dd>
                     </dl>
