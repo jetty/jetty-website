@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.5,</span>
-<span id="revdate">2023-12-20</span>
+<span id="revnumber">version 12.0.6,</span>
+<span id="revdate">2024-01-31</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -172,6 +172,9 @@
 <li><a href="#pg-server-http-request-logging">Request Logging</a></li>
 <li><a href="#pg-server-http-connector">Server Connectors</a>
 <ul class="sectlevel4">
+<li><a href="#pg-server-http-connector-acceptors">Acceptors</a></li>
+<li><a href="#pg-server-http-connector-selectors">Selectors</a></li>
+<li><a href="#pg-server-http-connector-multiple">Multiple Connectors</a></li>
 <li><a href="#pg-server-http-connector-protocol">Configuring Protocols</a>
 <ul class="sectlevel5">
 <li><a href="#pg-server-http-connector-protocol-http11">Clear-Text HTTP/1.1</a></li>
@@ -199,6 +202,7 @@
 <li><a href="#pg-server-http-handler-use-events">EventsHandler</a></li>
 <li><a href="#pg-server-http-handler-use-qos">QoSHandler</a></li>
 <li><a href="#pg-server-http-handler-use-secured">SecuredRedirectHandler&#8201;&#8212;&#8201;Redirect from HTTP to HTTPS</a></li>
+<li><a href="#pg-server-http-handler-use-cross-origin">CrossOriginHandler</a></li>
 <li><a href="#pg-server-http-handler-use-default">DefaultHandler</a></li>
 </ul>
 </li>
@@ -1246,7 +1250,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -2983,7 +2987,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3170,7 +3174,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.5</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.6</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3577,7 +3581,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3689,7 +3693,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.5</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.6</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3866,7 +3870,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4195,6 +4199,10 @@ Applications interested in this type of messages receive a <code>ByteBuffer</cod
 </div>
 <div class="paragraph">
 <p><a href="#pg-websocket-endpoints-annotated">Annotated endpoints</a> are notified of events by invoking the correspondent method annotated with the correspondent annotation from the <code>org.eclipse.jetty.websocket.api.annotations.*</code> package.</p>
+</div>
+<div class="paragraph">
+<p>Jetty uses <code>MethodHandle</code>s to instantiate WebSocket endpoints and invoke WebSocket event methods, so WebSocket endpoint classes and WebSocket event methods must be <code>public</code>.
+This guarantees that WebSocket endpoints can be accessed by the Jetty implementation without additional configuration also when your application uses the Java Module System (JPMS).</p>
 </div>
 <div class="paragraph">
 <p>For both types of WebSocket endpoints, only one thread at a time will be delivering frame or message events to the corresponding methods; the next frame or message event will not be delivered until the previous call to the corresponding method has exited, and if there is <a href="#pg-websocket-endpoints-demand">demand</a> for it.
@@ -4530,8 +4538,10 @@ For large WebSocket messages, the memory usage may be large due to the fact that
 <div class="sect4">
 <h5 id="pg-websocket-endpoints-annotated"><a class="anchor" href="#pg-websocket-endpoints-annotated"></a><a class="link" href="#pg-websocket-endpoints-annotated">Annotated Endpoints</a></h5>
 <div class="paragraph">
-<p>A WebSocket endpoint may annotate methods with <code>org.eclipse.jetty.websocket.api.annotations.*</code> annotations to receive WebSocket events.
-Each annotated method may take an optional <code>Session</code> argument as its first parameter:</p>
+<p>A WebSocket endpoint may annotate methods with <code>org.eclipse.jetty.websocket.api.annotations.*</code> annotations to receive WebSocket events.</p>
+</div>
+<div class="paragraph">
+<p>Each annotated event method may take an optional <code>Session</code> argument as its first parameter:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5222,7 +5232,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5518,26 +5528,42 @@ server.addConnector(connector);
 server.start();</code></pre>
 </div>
 </div>
+<div class="sect4">
+<h5 id="pg-server-http-connector-acceptors"><a class="anchor" href="#pg-server-http-connector-acceptors"></a><a class="link" href="#pg-server-http-connector-acceptors">Acceptors</a></h5>
 <div class="paragraph">
-<p>The <em>acceptors</em> are threads (typically only one) that compete to accept socket connections.
-When a connection is accepted, <code>ServerConnector</code> wraps the accepted <code>SocketChannel</code> and passes it to the <a href="#pg-arch-io-selector-manager"><code>SelectorManager</code></a>.
+<p>The <em>acceptors</em> are threads (typically only one) that compete to accept TCP socket connections.
+The connectors for the QUIC or HTTP/3 protocol, based on UDP, have no acceptors.</p>
+</div>
+<div class="paragraph">
+<p>When a TCP connection is accepted, <code>ServerConnector</code> wraps the accepted <code>SocketChannel</code> and passes it to the <a href="#pg-arch-io-selector-manager"><code>SelectorManager</code></a>.
 Therefore, there is a little moment where the acceptor thread is not accepting new connections because it is busy wrapping the just accepted connection to pass it to the <code>SelectorManager</code>.
 Connections that are ready to be accepted but are not accepted yet are queued in a bounded queue (at the OS level) whose capacity can be configured with the <code>acceptQueueSize</code> parameter.</p>
 </div>
 <div class="paragraph">
 <p>If your application must withstand a very high rate of connections opened, configuring more than one acceptor thread may be beneficial: when one acceptor thread accepts one connection, another acceptor thread can take over accepting connections.</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-connector-selectors"><a class="anchor" href="#pg-server-http-connector-selectors"></a><a class="link" href="#pg-server-http-connector-selectors">Selectors</a></h5>
 <div class="paragraph">
-<p>The <em>selectors</em> are components that manage a set of connected sockets, implemented by <a href="#pg-arch-io-selector-manager"><code>ManagedSelector</code></a>.
-Each selector requires one thread and uses the Java NIO mechanism to efficiently handle a set of connected sockets.
-As a rule of thumb, a single selector can easily manage up to 1000-5000 sockets, although the number may vary greatly depending on the application.</p>
+<p>The <em>selectors</em> are components that manage a set of accepted TCP sockets, implemented by <a href="#pg-arch-io-selector-manager"><code>ManagedSelector</code></a>.
+For QUIC or HTTP/3, there are no accepted TCP sockets, but only one <code>DatagramChannel</code> and therefore there is only 1 selector.</p>
 </div>
 <div class="paragraph">
-<p>For example, web applications for websites tend to use sockets for one or more HTTP requests to retrieve resources and then the socket is idle for most of the time.
-In this case a single selector may be able to manage many sockets because chances are that they will be idle most of the time.
-On the contrary, web messaging applications or REST applications tend to send many small messages at a very high frequency so that sockets are rarely idle.
-In this case a single selector may be able to manage less sockets because chances are that many of them will be active at the same time, so you may need more than one.</p>
+<p>Each selector requires one thread and uses the Java NIO mechanism to efficiently handle a set of registered channels.</p>
 </div>
+<div class="paragraph">
+<p>As a rule of thumb, a single selector can easily manage up to 1000-5000 TCP sockets, although the number may vary greatly depending on the application.</p>
+</div>
+<div class="paragraph">
+<p>For example, web applications for websites tend to use TCP sockets for one or more HTTP requests to retrieve resources and then the TCP socket is idle for most of the time.
+In this case a single selector may be able to manage many TCP sockets because chances are that they will be idle most of the time.
+On the contrary, web messaging applications or REST applications tend to send many small messages at a very high frequency so that the TCP sockets are rarely idle.
+In this case a single selector may be able to manage less TCP sockets because chances are that many of them will be active at the same time, so you may need more than one selector.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-connector-multiple"><a class="anchor" href="#pg-server-http-connector-multiple"></a><a class="link" href="#pg-server-http-connector-multiple">Multiple Connectors</a></h5>
 <div class="paragraph">
 <p>It is possible to configure more than one <code>Connector</code> per <code>Server</code>.
 Typical cases are a <code>ServerConnector</code> for clear-text HTTP, and another <code>ServerConnector</code> for secure HTTP.
@@ -5565,6 +5591,75 @@ connector2.setPort(<span class="integer">9090</span>);
 server.addConnector(connector2);
 
 server.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you do not specify the port the connector listens to explicitly, the OS will allocate one randomly when the connector starts.</p>
+</div>
+<div class="paragraph">
+<p>You may need to use the randomly allocated port to configure other components, for example the port to use for secure redirects (when redirecting from a URI with the <code>http</code> scheme to the <code>https</code> scheme).
+Another example is to bind both the HTTP/2 connector and the HTTP/3 connector to the same port.
+This is possible since the HTTP/2 connector uses TCP, while the HTTP/3 connector uses UDP.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+
+Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// The plain HTTP configuration.</span>
+HttpConfiguration plainConfig = <span class="keyword">new</span> HttpConfiguration();
+
+<span class="comment">// The secure HTTP configuration.</span>
+HttpConfiguration secureConfig = <span class="keyword">new</span> HttpConfiguration(plainConfig);
+secureConfig.addCustomizer(<span class="keyword">new</span> SecureRequestCustomizer());
+
+<span class="comment">// First, create the secure connector for HTTPS and HTTP/2.</span>
+HttpConnectionFactory https = <span class="keyword">new</span> HttpConnectionFactory(secureConfig);
+HTTP2ServerConnectionFactory http2 = <span class="keyword">new</span> HTTP2ServerConnectionFactory(secureConfig);
+ALPNServerConnectionFactory alpn = <span class="keyword">new</span> ALPNServerConnectionFactory();
+alpn.setDefaultProtocol(https.getProtocol());
+ConnectionFactory ssl = <span class="keyword">new</span> SslConnectionFactory(sslContextFactory, https.getProtocol());
+ServerConnector secureConnector = <span class="keyword">new</span> ServerConnector(server, <span class="integer">1</span>, <span class="integer">1</span>, ssl, alpn, http2, https);
+server.addConnector(secureConnector);
+
+<span class="comment">// Second, create the plain connector for HTTP.</span>
+HttpConnectionFactory http = <span class="keyword">new</span> HttpConnectionFactory(plainConfig);
+ServerConnector plainConnector = <span class="keyword">new</span> ServerConnector(server, <span class="integer">1</span>, <span class="integer">1</span>, http);
+server.addConnector(plainConnector);
+
+<span class="comment">// Third, create the connector for HTTP/3.</span>
+HTTP3ServerConnectionFactory http3 = <span class="keyword">new</span> HTTP3ServerConnectionFactory(secureConfig);
+HTTP3ServerConnector http3Connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, http3);
+server.addConnector(http3Connector);
+
+<span class="comment">// Set up a listener so that when the secure connector starts,</span>
+<span class="comment">// it configures the other connectors that have not started yet.</span>
+secureConnector.addEventListener(<span class="keyword">new</span> LifeCycle.Listener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> lifeCycleStarted(LifeCycle lifeCycle)
+    {
+        <span class="keyword">if</span> (lifeCycle <span class="keyword">instanceof</span> NetworkConnector networkConnector)
+        {
+            <span class="type">int</span> port = networkConnector.getLocalPort();
+
+            <span class="comment">// Configure the plain connector for secure redirects from http to https.</span>
+            plainConfig.setSecurePort(port);
+
+            <span class="comment">// Configure the HTTP3 connector port to be the same as HTTPS/HTTP2.</span>
+            http3Connector.setPort(port);
+        }
+    }
+});
+
+server.start();</code></pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -5881,7 +5976,7 @@ As Conscrypt eventually binds to a native library, there is a higher risk that a
 </table>
 </div>
 <div class="paragraph">
-<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.5.jar</code> in the class-path or module-path.</p>
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.6.jar</code> in the class-path or module-path.</p>
 </div>
 <div class="paragraph">
 <p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
@@ -6456,7 +6551,7 @@ server.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6926,6 +7021,75 @@ server.start();</code></pre>
 </div>
 </div>
 <div class="sect5">
+<h6 id="pg-server-http-handler-use-cross-origin"><a class="anchor" href="#pg-server-http-handler-use-cross-origin"></a><a class="link" href="#pg-server-http-handler-use-cross-origin">CrossOriginHandler</a></h6>
+<div class="paragraph">
+<p><code>CrossOriginHandler</code> supports the server-side requirements of the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS protocol</a> implemented by browsers when performing cross-origin requests.</p>
+</div>
+<div class="paragraph">
+<p>An example of a cross-origin request is when a script downloaded from the origin domain <code>http://domain.com</code> uses <code>fetch()</code> or <code>XMLHttpRequest</code> to make a request to a cross domain such as <code>http://cross.domain.com</code> (a subdomain of the origin domain) or to <code>http://example.com</code> (a completely different domain).</p>
+</div>
+<div class="paragraph">
+<p>This is common, for example, when you embed reusable components such as a chat component into a web page: the web page and the chat component files are downloaded from <code>http://domain.com</code>, but the chat server is at <code>http://chat.domain.com</code>, so the chat component must make cross-origin requests to the chat server.</p>
+</div>
+<div class="paragraph">
+<p>This kind of setup exposes to <a href="https://owasp.org/www-community/attacks/csrf">cross-site request forgery attacks</a>, and the CORS protocol has been established to protect against this kind of attacks.</p>
+</div>
+<div class="paragraph">
+<p>For security reasons, browsers by default do not allow cross-origin requests, unless the response from the cross domain contains the right CORS headers.</p>
+</div>
+<div class="paragraph">
+<p><code>CrossOriginHandler</code> relieves server-side web applications from handling CORS headers explicitly.
+You can set up your <code>Handler</code> tree with the <code>CrossOriginHandler</code>, configure it, and it will take care of the CORS headers separately from your application, where you can concentrate on the business logic.</p>
+</div>
+<div class="paragraph">
+<p>The <code>Handler</code> tree structure looks like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="screen">Server
+└── CrossOriginHandler
+    └── ContextHandler /app
+        └── AppHandler</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The most important <code>CrossOriginHandler</code> configuration parameter is <code>allowedOrigins</code>, which by default is <code>*</code>, allowing any origin.</p>
+</div>
+<div class="paragraph">
+<p>You may want to restrict your server to only origins you trust.
+From the chat example above, the chat server at <code>http://chat.domain.com</code> knows that the chat component is downloaded from the origin server at <code>http://domain.com</code>, so the <code>CrossOriginHandler</code> is configured in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">CrossOriginHandler crossOriginHandler = <span class="keyword">new</span> CrossOriginHandler();
+<span class="comment">// The allowed origins are regex patterns.</span>
+crossOriginHandler.setAllowedOriginPatterns(<span class="predefined-type">Set</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain</span><span class="char">\\</span><span class="content">.com</span><span class="delimiter">&quot;</span></span>));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Browsers send cross-origin request in two ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Directly, if the cross-origin request meets some simple criteria.</p>
+</li>
+<li>
+<p>By issuing a hidden <em>preflight</em> request before the actual cross-origin request, to verify with the server if it is willing to reply properly to the actual cross-origin request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Both preflight requests and cross-origin requests will be handled by <code>CrossOriginHandler</code>, which will analyze the request and possibly add appropriate CORS response headers.</p>
+</div>
+<div class="paragraph">
+<p>By default, preflight requests are not delivered to the <code>CrossOriginHandler</code> child <code>Handler</code>, but it is possible to configure <code>CrossOriginHandler</code> by setting <code>deliverPreflightRequests=true</code> so that the web application can fine-tune the CORS response headers.</p>
+</div>
+<div class="paragraph">
+<p>For more <code>CrossOriginHandler</code> configuration options, refer to the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/CrossOriginHandler.html"><code>CrossOriginHandler</code> javadocs</a>.</p>
+</div>
+</div>
+<div class="sect5">
 <h6 id="pg-server-http-handler-use-default"><a class="anchor" href="#pg-server-http-handler-use-default"></a><a class="link" href="#pg-server-http-handler-use-default">DefaultHandler</a></h6>
 <div class="paragraph">
 <p><code>DefaultHandler</code> is a terminal <code>Handler</code> that always returns <code>true</code> from its <code>handle(...)</code> method and performs the following:</p>
@@ -7018,12 +7182,12 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.5</code>.</p>
+<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.6</code>.</p>
 </div>
 <div class="paragraph">
 <p>Below you can find an example of how to set up a Jakarta EE 10 <code>ServletContextHandler</code>:</p>
@@ -7046,21 +7210,20 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 Connector connector = <span class="keyword">new</span> ServerConnector(server);
 server.addConnector(connector);
 
+<span class="comment">// Add the CrossOriginHandler to protect from CSRF attacks.</span>
+CrossOriginHandler crossOriginHandler = <span class="keyword">new</span> CrossOriginHandler();
+server.setHandler(crossOriginHandler);
+
 <span class="comment">// Create a ServletContextHandler with contextPath.</span>
 ServletContextHandler context = <span class="keyword">new</span> ServletContextHandler();
 context.setContextPath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/shop</span><span class="delimiter">&quot;</span></span>);
 <span class="comment">// Link the context to the server.</span>
-server.setHandler(context);
+crossOriginHandler.setHandler(context);
 
 <span class="comment">// Add the Servlet implementing the cart functionality to the context.</span>
 ServletHolder servletHolder = context.addServlet(ShopCartServlet.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">/cart/*</span><span class="delimiter">&quot;</span></span>);
 <span class="comment">// Configure the Servlet with init-parameters.</span>
 servletHolder.setInitParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">maxItems</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">128</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// Add the CrossOriginFilter to protect from CSRF attacks.</span>
-FilterHolder filterHolder = context.addFilter(CrossOriginFilter.class, <span class="string"><span class="delimiter">&quot;</span><span class="content">/*</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">EnumSet</span>.of(DispatcherType.REQUEST));
-<span class="comment">// Configure the filter.</span>
-filterHolder.setAsyncSupported(<span class="predefined-constant">true</span>);
 
 server.start();</code></pre>
 </div>
@@ -7112,7 +7275,7 @@ Server applications must be careful when creating the <code>Handler</code> tree 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-webapp<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7181,7 +7344,7 @@ The features are similar, but <code>DefaultServlet</code> is more commonly used 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8066,7 +8229,7 @@ This makes the web application stateful, because a computation performed by a pr
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-session<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8245,7 +8408,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8769,7 +8932,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11179,7 +11342,7 @@ The standard Jakarta EE WebSocket APIs provide these features that are not prese
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-If the feature you are looking for is not present, you may ask for these features by <a href="https://github.com/jetty/jetty.project/issues">submitting an issue</a> to the Jetty Project without waiting for the standard Jakarta EE process to approve them and release a new version of the Jakarta EE WebSocket specification.
+If the feature you are looking for is not present, you may ask for these features by <a href="https://github.com/eclipse/jetty.project/issues">submitting an issue</a> to the Jetty Project without waiting for the standard Jakarta EE process to approve them and release a new version of the Jakarta EE WebSocket specification.
 </td>
 </tr>
 </table>
@@ -11210,7 +11373,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11446,7 +11609,7 @@ From this point on, the communication happens with the WebSocket protocol, and H
 <div class="ulist">
 <ul>
 <li>
-<p>The filter order; for example, by configuring the <code>CrossOriginFilter</code> (or other filters) for increased security or authentication <em>before</em> the <code>WebSocketUpgradeFilter</code>.</p>
+<p>The filter order; for example, by configuring filters for increased security or authentication <em>before</em> the <code>WebSocketUpgradeFilter</code>.</p>
 </li>
 <li>
 <p>The <code>WebSocketUpgradeFilter</code> configuration via <code>init-param</code>s, that affects all <code>Session</code> instances created by this filter.</p>
@@ -11471,14 +11634,14 @@ From this point on, the communication happens with the WebSocket protocol, and H
          <span class="attribute-name">version</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">5.0</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;display-name&gt;</span>My WebSocket WebApp<span class="tag">&lt;/display-name&gt;</span>
 
-  <span class="comment">&lt;!-- The CrossOriginFilter *must* be the first --&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="comment">&lt;!-- The SecurityFilter *must* be the first --&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
   <span class="tag">&lt;filter&gt;</span>
-    <span class="tag">&lt;filter-name&gt;</span>cross-origin<span class="tag">&lt;/filter-name&gt;</span>
-    <span class="tag">&lt;filter-class&gt;</span>org.eclipse.jetty.ee10.servlets.CrossOriginFilter<span class="tag">&lt;/filter-class&gt;</span>
+    <span class="tag">&lt;filter-name&gt;</span>security<span class="tag">&lt;/filter-name&gt;</span>
+    <span class="tag">&lt;filter-class&gt;</span>com.acme.SecurityFilter<span class="tag">&lt;/filter-class&gt;</span>
     <span class="tag">&lt;async-supported&gt;</span>true<span class="tag">&lt;/async-supported&gt;</span>
   <span class="tag">&lt;/filter&gt;</span>
   <span class="tag">&lt;filter-mapping&gt;</span>
-    <span class="tag">&lt;filter-name&gt;</span>cross-origin<span class="tag">&lt;/filter-name&gt;</span>
+    <span class="tag">&lt;filter-name&gt;</span>security<span class="tag">&lt;/filter-name&gt;</span>
     <span class="tag">&lt;url-pattern&gt;</span>/*<span class="tag">&lt;/url-pattern&gt;</span>
   <span class="tag">&lt;/filter-mapping&gt;</span>
 
@@ -11507,7 +11670,7 @@ From this point on, the communication happens with the WebSocket protocol, and H
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>CrossOriginFilter</code> is the first to protect against <a href="https://owasp.org/www-community/attacks/csrf">cross-site request forgery attacks</a>.</td>
+<td>The custom <code>SecurityFilter</code> is the first, to apply custom security.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -11545,7 +11708,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11557,7 +11720,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -12371,7 +12534,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.5<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.6<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12504,7 +12667,7 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld WebApp<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.5<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.6<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12643,7 +12806,7 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
@@ -13029,7 +13192,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13175,7 +13338,7 @@ Patterns are specified as a relative path using a glob-like syntax as described 
     <span class="tag">&lt;plugin&gt;</span>
       <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
       <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;configuration&gt;</span>
         <span class="tag">&lt;webApp&gt;</span>
           <span class="tag">&lt;contextPath&gt;</span>/<span class="tag">&lt;/contextPath&gt;</span>
@@ -13328,7 +13491,7 @@ For example to you can have Maven start your webapp at the beginning of your tes
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9999<span class="tag">&lt;/stopPort&gt;</span>
@@ -13625,7 +13788,7 @@ If false or not specified, the plugin does not wait for confirmation but exits a
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9966<span class="tag">&lt;/stopPort&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
@@ -13812,7 +13975,7 @@ WebAppY:
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>maven-war-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;overlays&gt;</span>
       <span class="tag">&lt;overlay&gt;</span>
@@ -13913,7 +14076,7 @@ Here&#8217;s an example of setting up the <code>HashLoginService</code> for a we
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13971,7 +14134,7 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14040,7 +14203,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14179,7 +14342,7 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14359,7 +14522,7 @@ All setters on the JspC class are available.</p>
       <span class="tag">&lt;plugin&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
         <span class="comment">&lt;!-- put your configuration in here --&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
@@ -14438,7 +14601,7 @@ Using the default settings, the <code>web.xml</code> merged with the jsp servlet
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -16367,7 +16530,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.5<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -17296,7 +17459,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty.fcgi:<strong>fcgi-client</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.http2:<strong>jetty-fcgi-client</strong></p>
+<p>org.eclipse.jetty.fcgi:<strong>jetty-fcgi-client</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17304,7 +17467,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty.fcgi:<strong>fcgi-server</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.http2:<strong>jetty-fcgi-server</strong></p>
+<p>org.eclipse.jetty.fcgi:<strong>jetty-fcgi-server</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17611,7 +17774,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-jaspi</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jaspi</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jaspi</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17619,7 +17782,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-jndi</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jndi</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jndi</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17627,7 +17790,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-jspc-maven-plugin</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-jspc-maven-plugin</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jspc-maven-plugin</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17635,7 +17798,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-maven-plugin</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-maven-plugin</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-maven-plugin</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17643,7 +17806,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-plus</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-plus</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-plus</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17651,7 +17814,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-quickstart</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-quickstart</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-quickstart</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17659,7 +17822,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-runner</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-runner</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-runner</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17667,7 +17830,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-servlet</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-servlet</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-servlet</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17675,7 +17838,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-servlets</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-servlets</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-servlets</strong></p>
 </div></div></td>
 </tr>
 <tr>
@@ -17683,7 +17846,7 @@ More technically, remote debugging exchanges JVM Tools Interface (JVMTI) events 
 <p>org.eclipse.jetty:<strong>jetty-webapp</strong></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-jetty-webapp</strong></p>
+<p>org.eclipse.jetty.<strong>ee{8,9,10}</strong>:<strong>jetty-ee{8,9,10}-webapp</strong></p>
 </div></div></td>
 </tr>
 </tbody>
@@ -18399,7 +18562,7 @@ Note that this <code>Callback</code> interface is a different interface from the
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.5<br>
+Version 12.0.6<br>
 Last updated 2023-10-24 09:23:54 -0500
 </div>
 </div>
