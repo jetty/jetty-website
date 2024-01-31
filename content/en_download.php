@@ -48,7 +48,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a rel="canonical"
                 href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a rel="canonical"
-                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">Release Notes </a> / <a rel="canonical"
+                href="https://github.com/jetty/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">Release Notes </a> / <a rel="canonical"
                 href="http://www.eclipse.org/jetty/javadoc/jetty-12/index.html?overview-summary.html"> API Docs</a></p></td>
          </tr>
          <tr>
@@ -60,7 +60,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                 href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">Release Notes </a> / <a
+                href="https://github.com/jetty/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">Release Notes </a> / <a
                 href="http://www.eclipse.org/jetty/javadoc/jetty-11/index.html?overview-summary.html"> API Docs</a></p></td>
          </tr>
          <tr>
@@ -72,7 +72,7 @@
              <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                  href="/jetty/download_info.php">info</a>)</p></td>
              <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                 href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">Release Notes </a> / <a
+                 href="https://github.com/jetty/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">Release Notes </a> / <a
                  href="http://www.eclipse.org/jetty/javadoc/jetty-10/index.html?overview-summary.html"> API Docs</a></p></td>
          </tr>
         <tr>
@@ -84,7 +84,7 @@
             <td class="tableblock halign-left valign-top"><p class="tableblock">(<a
                 href="/jetty/download_info.php">info</a>)</p></td>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                href="https://github.com/eclipse/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">Release Notes </a> / <a
+                href="https://github.com/jetty/jetty.project/releases/tag/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">Release Notes </a> / <a
                 href="http://www.eclipse.org/jetty/javadoc/jetty-9/index.html?overview-summary.html"> API Docs</a></p></td>
             </td>
         </tr>
@@ -94,7 +94,7 @@
     </table>
     <br/>
     <p><strong>Note:</strong> Release notes can be found in the <code>VERSION.txt</code> file included with the
-        distribution and on the <a href="https://github.com/eclipse/jetty.project/releases">GitHub Releases</a> page for
+        distribution and on the <a href="https://github.com/jetty/jetty.project/releases">GitHub Releases</a> page for
         the Jetty project.</p>
     <p>Release notes are also made available on the <a href="https://www.eclipse.org/jetty/mailinglists.html">jetty-announce@eclipse.org
             mailing list.</a></p>

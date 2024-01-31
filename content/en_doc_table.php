@@ -36,7 +36,7 @@
                 <a rel=”canonical” href="/jetty/documentation/jetty-12/programming-guide/index.html">Programming Guide</a><br/>
             </p>
         </td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a rel="canonical" href="/jetty/javadoc/jetty-12/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">source</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a rel="canonical" href="/jetty/javadoc/jetty-12/index.html?overview-summary.html">api</a> / <a href="https://github.com/jetty/jetty.project/tree/jetty-<?php print $jetty['jetty_12.0']['version']; ?>">source</a></p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 11</b></p></td>
@@ -46,7 +46,7 @@
                 <a href="/jetty/documentation/jetty-11/programming-guide/index.html">Programming Guide</a><br/>
             </p>
         </td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-11/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">source</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-11/index.html?overview-summary.html">api</a> / <a href="https://github.com/jetty/jetty.project/tree/jetty-<?php print $jetty['jetty_11.0']['version']; ?>">source</a></p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 10</b></p></td>
@@ -56,12 +56,12 @@
                 <a href="/jetty/documentation/jetty-10/programming-guide/index.html">Programming Guide</a><br/>
             </p>
         </td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-10/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">source</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-10/index.html?overview-summary.html">api</a> / <a href="https://github.com/jetty/jetty.project/tree/jetty-<?php print $jetty['jetty_10.0']['version']; ?>">source</a></p></td>
     </tr>
     <tr>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><b>Jetty 9</p></td>
         <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/documentation/jetty-9/index.html">Documentation</a></p></td>
-        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-9/index.html?overview-summary.html">api</a> / <a href="https://github.com/eclipse/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">source</a></p></td>
+        <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="/jetty/javadoc/jetty-9/index.html?overview-summary.html">api</a> / <a href="https://github.com/jetty/jetty.project/tree/jetty-<?php print $jetty['jetty_9.4']['version']; ?>">source</a></p></td>
     </tr>
     </tbody>
 </table>

@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.5,</span>
-<span id="revdate">2023-12-20</span>
+<span id="revnumber">version 12.0.6,</span>
+<span id="revdate">2024-01-31</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Operations Guide</div>
@@ -123,6 +123,7 @@
 <li><a href="#og-module-bytebufferpool">Module <code>bytebufferpool</code></a></li>
 <li><a href="#og-module-console-capture">Module <code>console-capture</code></a></li>
 <li><a href="#og-module-core-deploy">Module <code>core-deploy</code></a></li>
+<li><a href="#og-module-cross-origin">Module <code>cross-origin</code></a></li>
 <li><a href="#og-module-eeN-deploy">Module <code>ee{8,9,10}-deploy</code></a></li>
 <li><a href="#og-module-http">Module <code>http</code></a>
 <ul class="sectlevel5">
@@ -605,7 +606,7 @@ $ java -jar $JETTY_HOME/start.jar --add-modules=server,http,ee10-deploy</pre>
 <h4 id="og-begin-install"><a class="anchor" href="#og-begin-install"></a><a class="link" href="#og-begin-install">Installing Jetty</a></h4>
 <div class="paragraph">
 <p>After the download, unpacking Jetty will extract the files into a directory called <code>jetty-home-&lt;version&gt;</code>, where <code>&lt;version&gt;</code> is the version of Jetty that you downloaded.
-For example, installing Jetty 12.0.5 will create a directory called <code>jetty-home-12.0.5</code>.</p>
+For example, installing Jetty 12.0.6 will create a directory called <code>jetty-home-12.0.6</code>.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -667,13 +668,9 @@ However, if you try to start Jetty from an empty <code>$JETTY_BASE</code>, it wi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>ERROR : No enabled jetty modules found!
-INFO  : ${jetty.home} = /path/to/jetty.home
-INFO  : ${jetty.base} = /path/to/jetty.base
-ERROR : Please create and/or configure a ${jetty.base} directory.
-
-Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
-       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
+<pre class="CodeRay highlight nowrap"><code>java.lang.AssertionError: Target Dir
+Expected: path is directory
+     but: &lt;/home/joakim/code/jetty/jetty.project-12.0.x/target&gt; path does not exist</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -748,9 +745,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:11.693:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:11.725:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@10e31a9a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-12-20 10:02:11.741:</strong>INFO :oejs.Server:main: Started oejs.Server@470f1802{STARTING}[12.0.5,sto=5000] @790ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:24:56.891:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:24:56.923:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@35cabb2a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2024-01-31 11:24:56.931:</strong>INFO :oejs.Server:main: Started oejs.Server@3c130745{STARTING}[12.0.6,sto=5000] @778ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -845,9 +842,9 @@ jetty.http.port=9999
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:12.838:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:12.867:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@10e31a9a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
-<strong>2023-12-20 10:02:12.881:</strong>INFO :oejs.Server:main: Started oejs.Server@470f1802{STARTING}[12.0.5,sto=5000] @752ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:24:58.085:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:24:58.116:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@35cabb2a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:9999}</mark>
+<strong>2024-01-31 11:24:58.124:</strong>INFO :oejs.Server:main: Started oejs.Server@3c130745{STARTING}[12.0.6,sto=5000] @822ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -861,9 +858,9 @@ A property value specified on the command-line in this way will <strong>override
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:14.009:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:14.046:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@10e31a9a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-12-20 10:02:14.065:</strong>INFO :oejs.Server:main: Started oejs.Server@470f1802{STARTING}[12.0.5,sto=5000] @814ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:24:59.298:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:24:59.332:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@35cabb2a<mark>{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2024-01-31 11:24:59.342:</strong>INFO :oejs.Server:main: Started oejs.Server@3c130745{STARTING}[12.0.6,sto=5000] @848ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1033,15 +1030,15 @@ You can use one of the demos shipped with Jetty:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:17.298:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:17.318:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor ee10 in [file:///path/to/jetty.base/webapps/] at intervals 0s
-<strong>2023-12-20 10:02:17.323:</strong>INFO :oejd.DeploymentManager:main: addApp: App@67c33749[ee10,null,/path/to/jetty.base/webapps/ee10-demo-simple.war]
-<strong>2023-12-20 10:02:17.432:</strong>INFO :oejew.StandardDescriptorProcessor:main: NO JSP Support for /ee10-demo-simple, did not find org.eclipse.jetty.ee10.jsp.JettyJspServlet
-<mark><strong>2023-12-20 10:02:17.458:</strong>INFO :oejsh.ContextHandler:main: Started oeje10w.WebAppContext@448c8166{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@4470fbd6{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
-<mark><strong>2023-12-20 10:02:17.472:</strong>INFO :oejes.ServletContextHandler:main: Started oeje10w.WebAppContext@448c8166{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@4470fbd6{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
-<strong>2023-12-20 10:02:17.474:</strong>INFO :oejs.DefaultSessionIdManager:main: Session workerName=node0
-<strong>2023-12-20 10:02:17.484:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@39b43d60{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2023-12-20 10:02:17.494:</strong>INFO :oejs.Server:main: Started oejs.Server@87a85e1{STARTING}[12.0.5,sto=5000] @1018ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:01.963:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:01.989:</strong>INFO :oejdp.ScanningAppProvider:main: Deployment monitor ee10 in [file:///path/to/jetty.base/webapps/] at intervals 0s
+<strong>2024-01-31 11:25:01.998:</strong>INFO :oejd.DeploymentManager:main: addApp: App@ea6147e[ee10,null,/path/to/jetty.base/webapps/ee10-demo-simple.war]
+<strong>2024-01-31 11:25:02.143:</strong>INFO :oejew.StandardDescriptorProcessor:main: NO JSP Support for /ee10-demo-simple, did not find org.eclipse.jetty.ee10.jsp.JettyJspServlet
+<mark><strong>2024-01-31 11:25:02.161:</strong>INFO :oejsh.ContextHandler:main: Started oeje10w.WebAppContext@660acfb{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@5d908d47{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<mark><strong>2024-01-31 11:25:02.177:</strong>INFO :oejes.ServletContextHandler:main: Started oeje10w.WebAppContext@660acfb{EE10 Demo Simple WebApp,/ee10-demo-simple,b=file:///path/to/jetty.base/work/jetty-0_0_0_0-8080-ee10-demo-simple_war-_ee10-demo-simple-any-/webapp/,a=AVAILABLE,h=oeje10s.SessionHandler@5d908d47{STARTED}}{/path/to/jetty.base/webapps/ee10-demo-simple.war}</mark>
+<strong>2024-01-31 11:25:02.180:</strong>INFO :oejs.DefaultSessionIdManager:main: Session workerName=node0
+<strong>2024-01-31 11:25:02.206:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@27912e3{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2024-01-31 11:25:02.213:</strong>INFO :oejs.Server:main: Started oejs.Server@45ca843{STARTING}[12.0.6,sto=5000] @1169ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1749,11 +1746,11 @@ JVM Version &amp; Properties:
 -------------------------
  java.home = /path/to/java.home
  java.vm.vendor = Eclipse Adoptium
- java.vm.version = 21.0.1+12-LTS
+ java.vm.version = 17.0.6+10
  java.vm.name = OpenJDK 64-Bit Server VM
  java.vm.info = mixed mode, sharing
  java.runtime.name = OpenJDK Runtime Environment
- java.runtime.version = 21.0.1+12-LTS
+ java.runtime.version = 17.0.6+10
  java.io.tmpdir = /path/to/jetty.base/work
  user.dir = /path/to/jetty.base
  user.language = en
@@ -1761,9 +1758,9 @@ JVM Version &amp; Properties:
 
 Jetty Version &amp; Properties:
 ---------------------------
- jetty.version = 12.0.5
- jetty.tag.version = jetty-12.0.5
- jetty.build = 3aed62e4959bb8c01f5975fe81e078e3ff626126
+ jetty.version = 12.0.6
+ jetty.tag.version = jetty-12.0.6
+ jetty.build = 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf
  jetty.home = /path/to/jetty.home
  jetty.base = /path/to/jetty.base
 
@@ -1784,11 +1781,11 @@ System Properties:
 
 Properties: Jetty
 -----------------
- java.version = 21.0.1
- java.version.major = 21
- java.version.micro = 1
+ java.version = 17.0.6
+ java.version.major = 17
+ java.version.micro = 6
  java.version.minor = 0
- java.version.platform = 21
+ java.version.platform = 17
  jetty.base = /path/to/jetty.base
  jetty.base.uri = file:///path/to/jetty.base
  jetty.home = /path/to/jetty.home
@@ -1805,12 +1802,12 @@ Note: order presented here is how they would appear on the classpath.
       changes to the --module=name command line options will be reflected here.
  0:                    (dir) | ${jetty.base}/resources
  1:                    2.0.9 | ${jetty.home}/lib/logging/slf4j-api-2.0.9.jar
- 2:                   12.0.5 | ${jetty.home}/lib/logging/jetty-slf4j-impl-12.0.5.jar
- 3:                   12.0.5 | ${jetty.home}/lib/jetty-http-12.0.5.jar
- 4:                   12.0.5 | ${jetty.home}/lib/jetty-server-12.0.5.jar
- 5:                   12.0.5 | ${jetty.home}/lib/jetty-xml-12.0.5.jar
- 6:                   12.0.5 | ${jetty.home}/lib/jetty-util-12.0.5.jar
- 7:                   12.0.5 | ${jetty.home}/lib/jetty-io-12.0.5.jar
+ 2:                   12.0.6 | ${jetty.home}/lib/logging/jetty-slf4j-impl-12.0.6.jar
+ 3:                   12.0.6 | ${jetty.home}/lib/jetty-http-12.0.6.jar
+ 4:                   12.0.6 | ${jetty.home}/lib/jetty-server-12.0.6.jar
+ 5:                   12.0.6 | ${jetty.home}/lib/jetty-xml-12.0.6.jar
+ 6:                   12.0.6 | ${jetty.home}/lib/jetty-util-12.0.6.jar
+ 7:                   12.0.6 | ${jetty.home}/lib/jetty-io-12.0.6.jar
  8:                   42.6.0 | ${jetty.base}/lib/postgresql-42.6.0.jar
 
 Active XMLs: Jetty
@@ -1887,9 +1884,9 @@ You can use the <code>--dry-run</code> option as explained below to avoid forkin
 -Xmx1g \
 '-Xlog:gc*,gc+stats=off:file=logs/gc.log:time,level,tags' \
 --class-path \
-/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.5.jar:/path/to/jetty.home/lib/jetty-http-12.0.5.jar:/path/to/jetty.home/lib/jetty-server-12.0.5.jar:/path/to/jetty.home/lib/jetty-xml-12.0.5.jar:/path/to/jetty.home/lib/jetty-util-12.0.5.jar:/path/to/jetty.home/lib/jetty-io-12.0.5.jar \
+/path/to/jetty.base/resources:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.6.jar:/path/to/jetty.home/lib/jetty-http-12.0.6.jar:/path/to/jetty.home/lib/jetty-server-12.0.6.jar:/path/to/jetty.home/lib/jetty-xml-12.0.6.jar:/path/to/jetty.home/lib/jetty-util-12.0.6.jar:/path/to/jetty.home/lib/jetty-io-12.0.6.jar \
 org.eclipse.jetty.xml.XmlConfiguration \
-java.version=21.0.1 \
+java.version=17.0.6 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -1960,12 +1957,12 @@ slf4j.version=2.0.9 \
 <pre class="CodeRay highlight nowrap"><code>--class-path \
 /path/to/jetty.base/resources:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-http-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-server-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-xml-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-util-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-io-12.0.5.jar</code></pre>
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-server-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-io-12.0.6.jar</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1979,13 +1976,13 @@ slf4j.version=2.0.9 \
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>--module-path \
-/path/to/jetty.home/lib/jetty-io-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-xml-12.0.5.jar:\
-/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-util-12.0.5.jar:\
 /path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar:\
-/path/to/jetty.home/lib/jetty-server-12.0.5.jar:\
-/path/to/jetty.home/lib/jetty-http-12.0.5.jar \
+/path/to/jetty.home/lib/jetty-io-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-xml-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-server-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-util-12.0.6.jar:\
+/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.6.jar:\
+/path/to/jetty.home/lib/jetty-http-12.0.6.jar \
 --class-path \
 /path/to/jetty.base/resources \
 --add-modules \
@@ -2032,7 +2029,7 @@ The Jetty XML files compose together the Jetty components that are then configur
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>java.version=21.0.1 \
+<pre class="CodeRay highlight nowrap"><code>java.version=17.0.6 \
 jetty.base=/path/to/jetty.base \
 jetty.base.uri=file:///path/to/jetty.base \
 jetty.home=/path/to/jetty.home \
@@ -2373,10 +2370,10 @@ If you want to stop the Jetty components, to stop Jetty more gracefully, you can
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=8jcy8mz38io</mark>
-<strong>2023-12-20 10:02:28.636:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:28.666:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@67c27493{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-<strong>2023-12-20 10:02:28.681:</strong>INFO :oejs.Server:main: Started oejs.Server@e056f20{STARTING}[12.0.5,sto=5000] @782ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><mark>STOP.KEY=1033sm4lt8phc</mark>
+<strong>2024-01-31 11:25:14.103:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:14.132:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6adbc9d{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+<strong>2024-01-31 11:25:14.143:</strong>INFO :oejs.Server:main: Started oejs.Server@e056f20{STARTING}[12.0.6,sto=5000] @835ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3900,6 +3897,54 @@ See <a href="#og-deploy">how to deploy web applications</a> for more information
 </div>
 </div>
 <div class="sect4">
+<h5 id="og-module-cross-origin"><a class="anchor" href="#og-module-cross-origin"></a><a class="link" href="#og-module-cross-origin">Module <code>cross-origin</code></a></h5>
+<div class="paragraph">
+<p>The <code>cross-origin</code> module provides support for the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS protocol</a> implemented by browsers when performing cross-origin requests.</p>
+</div>
+<div class="paragraph">
+<p>This module installs the <a href="../programming-guide/index.html#pg-server-http-handler-use-cross-origin"><code>CrossOriginHandler</code></a> in the <code>Handler</code> tree; <code>CrossOriginHandler</code> inspects cross-origin requests and adds the relevant CORS response headers.</p>
+</div>
+<div class="paragraph">
+<p><code>CrossOriginHandler</code> should be used when an application performs cross-origin requests to your server, to protect from <a href="https://owasp.org/www-community/attacks/csrf">cross-site request forgery</a> attacks.</p>
+</div>
+<div class="paragraph">
+<p>The module properties are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>## Whether cross-origin requests can include credentials such as cookies or authentication headers.
+# jetty.crossorigin.allowCredentials=true
+
+## A comma-separated list of headers allowed in cross-origin requests.
+# jetty.crossorigin.allowedHeaders=Content-Type
+
+## A comma-separated list of HTTP methods allowed in cross-origin requests.
+# jetty.crossorigin.allowedMethods=GET,POST,HEAD
+
+## A comma-separated list of origins regex patterns allowed in cross-origin requests.
+# jetty.crossorigin.allowedOriginPatterns=*
+
+## A comma-separated list of timing origins regex patterns allowed in cross-origin requests.
+# jetty.crossorigin.allowedTimingOriginPatterns=
+
+## Whether preflight requests are delivered to the child Handler of CrossOriginHandler.
+# jetty.crossorigin.deliverPreflightRequests=false
+
+## Whether requests whose origin is not allowed are delivered to the child Handler of CrossOriginHandler.
+# jetty.crossorigin.deliverNonAllowedOriginRequests=true
+
+## Whether WebSocket upgrade requests whose origin is not allowed are delivered to the child Handler of CrossOriginHandler.
+# jetty.crossorigin.deliverNonAllowedOriginWebSocketUpgradeRequests=false
+
+## A comma-separated list of headers allowed in cross-origin responses.
+# jetty.crossorigin.exposedHeaders=
+
+## How long the preflight results can be cached by browsers, in seconds.
+# jetty.crossorigin.preflightMaxAge=60</pre>
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="og-module-eeN-deploy"><a class="anchor" href="#og-module-eeN-deploy"></a><a class="link" href="#og-module-eeN-deploy">Module <code>ee{8,9,10}-deploy</code></a></h5>
 <div class="paragraph">
 <p>This module enables webapp deployment from the <code>$JETTY_BASE/webapps</code> directory.</p>
@@ -4777,7 +4822,7 @@ For instance, many logging libraries (including <a href="https://logging.apache.
 <div class="content">
 <pre class="CodeRay highlight"><code>HTTP/1.1 200 OK
 Content-Length: 0
-Server: Jetty(12.0.5)</code></pre>
+Server: Jetty(12.0.6)</code></pre>
 </div>
 </div>
 </dd>
@@ -6667,10 +6712,115 @@ Request log files are rolled every day, and retained for customizable number of 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>**2023-12-20 10:02:30.933:**INFO :oe.jetty:main: Virtual threads are enabled.
-**2023-12-20 10:02:31.102:**INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-**2023-12-20 10:02:31.126:**INFO :oejs.AbstractConnector:main: Started ServerConnector@1d296da{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-**2023-12-20 10:02:31.139:**INFO :oejs.Server:main: Started oejs.Server@1fa268de{STARTING}[12.0.5,sto=5000] @800ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code>**2024-01-31 11:25:16.691:**WARN :oejx.XmlConfiguration:main: Config error java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread at &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; in file:///path/to/jetty.home/etc/jetty-threadpool-virtual.xml
+**2024-01-31 11:25:16.695:**WARN :oejx.XmlConfiguration:main: Config error java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread at &lt;New id=&quot;threadPool&quot; class=&quot;org.eclipse.jetty.util.thread.QueuedThreadPool&quot;&gt;&lt;Set name=&quot;name&quot; property=&quot;jetty.threadPool.namePrefix&quot;/&gt;&lt;Set name=&quot;minThreads&quot; type=&quot;int&quot;&gt;&lt;Property name=&quot;jetty.threadPool.minThreads&quot; deprecated=&quot;threads.min&quot; default=&quot;10&quot;/&gt;&lt;/Set&gt;&lt;Set name=&quot;maxThreads&quot; type=&quot;int&quot;&gt;&lt;Property name=&quot;jetty.threadPool.maxThreads&quot; deprecated=&quot;threads.max&quot; default=&quot;200&quot;/&gt;&lt;/Set&gt;&lt;Set name=&quot;reservedThreads&quot; type=&quot;int&quot;&gt;&lt;Property name=&quot;jetty.threadPool.reservedThreads&quot; default=&quot;-1&quot;/&gt;&lt;/Set&gt;&lt;Set name=&quot;idleTimeout&quot; type=&quot;int&quot;&gt;&lt;Property name=&quot;jetty.threadPool.idleTimeout&quot; deprecated=&quot;threads.timeout&quot; default=&quot;60000&quot;/&gt;&lt;/Set&gt;&lt;Set name=&quot;maxEvictCount&quot; type=&quot;int&quot;&gt;&lt;Property name=&quot;jetty.threadPool.maxEvictCount&quot; default=&quot;1&quot;/&gt;&lt;/Set&gt;&lt;Set name=&quot;detailedDump&quot; type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.detailedDump&quot; default=&quot;false&quot;/&gt;&lt;/Set&gt;&lt;Get id=&quot;namePrefix&quot; name=&quot;name&quot;/&gt;&lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;Call name=&quot;setVirtualThreadsExecutor&quot;&gt;&lt;Arg&gt;|        &lt;Call class=&quot;java.util.concurrent.Executors&quot; name=&quot;newThreadPerTaskExecutor&quot;&gt;&lt;Arg&gt;&lt;Ref refid=&quot;virtualThreadFactory&quot;/&gt;&lt;/Arg&gt;&lt;/Call&gt;|      &lt;/Arg&gt;&lt;/Call&gt;&lt;/New&gt; in file:///path/to/jetty.home/etc/jetty-threadpool-virtual.xml
+**2024-01-31 11:25:16.696:**WARN :oejx.XmlConfiguration:main: Unable to execute XmlConfiguration
+java.lang.RuntimeException: java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1997)
+        at org.eclipse.jetty.xml.XmlConfiguration.main(XmlConfiguration.java:2002)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.eclipse.jetty.start.Main.invokeMain(Main.java:221)
+        at org.eclipse.jetty.start.Main.start(Main.java:519)
+        at org.eclipse.jetty.start.Main.main(Main.java:76)
+Caused by: 
+java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;|          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;|        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:976)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:526)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.newObj(XmlConfiguration.java:1046)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:532)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:479)
+        at org.eclipse.jetty.xml.XmlConfiguration.configure(XmlConfiguration.java:381)
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1990)
+        at org.eclipse.jetty.xml.XmlConfiguration.main(XmlConfiguration.java:2002)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.eclipse.jetty.start.Main.invokeMain(Main.java:221)
+        at org.eclipse.jetty.start.Main.start(Main.java:519)
+        at org.eclipse.jetty.start.Main.main(Main.java:76)
+Caused by: 
+java.lang.NoSuchMethodException: ofVirtual
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:1011)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:968)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:526)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.newObj(XmlConfiguration.java:1046)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:532)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:479)
+        at org.eclipse.jetty.xml.XmlConfiguration.configure(XmlConfiguration.java:381)
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1990)
+        at org.eclipse.jetty.xml.XmlConfiguration.main(XmlConfiguration.java:2002)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.eclipse.jetty.start.Main.invokeMain(Main.java:221)
+        at org.eclipse.jetty.start.Main.start(Main.java:519)
+        at org.eclipse.jetty.start.Main.main(Main.java:76)
+java.lang.reflect.InvocationTargetException
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.eclipse.jetty.start.Main.invokeMain(Main.java:221)
+        at org.eclipse.jetty.start.Main.start(Main.java:519)
+        at org.eclipse.jetty.start.Main.main(Main.java:76)
+Caused by: java.lang.RuntimeException: java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;
+          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;
+        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1997)
+        at org.eclipse.jetty.xml.XmlConfiguration.main(XmlConfiguration.java:2002)
+        ... 7 more
+Caused by: java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;
+          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;
+        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:976)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:526)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.newObj(XmlConfiguration.java:1046)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:532)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:479)
+        at org.eclipse.jetty.xml.XmlConfiguration.configure(XmlConfiguration.java:381)
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1990)
+        ... 8 more
+Caused by: java.lang.NoSuchMethodException: ofVirtual
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:1011)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:968)
+        ... 14 more
+java.lang.reflect.InvocationTargetException
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+        at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+        at org.eclipse.jetty.start.Main.invokeMain(Main.java:221)
+        at org.eclipse.jetty.start.Main.start(Main.java:519)
+        at org.eclipse.jetty.start.Main.main(Main.java:76)
+Caused by: java.lang.RuntimeException: java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;
+          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;
+        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1997)
+        at org.eclipse.jetty.xml.XmlConfiguration.main(XmlConfiguration.java:2002)
+        ... 7 more
+Caused by: java.lang.IllegalStateException: No Method: &lt;Call class=&quot;java.lang.Thread&quot; name=&quot;ofVirtual&quot;&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;name&quot;&gt;&lt;Arg&gt;
+          &lt;Property name=&quot;jetty.threadPool.virtual.namePrefix&quot;&gt;&lt;Default&gt;&lt;Ref refid=&quot;namePrefix&quot;/&gt;-virtual-&lt;/Default&gt;&lt;/Property&gt;
+        &lt;/Arg&gt;&lt;Arg type=&quot;long&quot;&gt;0&lt;/Arg&gt;&lt;Call class=&quot;java.lang.Thread$Builder&quot; name=&quot;inheritInheritableThreadLocals&quot;&gt;&lt;Arg type=&quot;boolean&quot;&gt;&lt;Property name=&quot;jetty.threadPool.virtual.inheritInheritableThreadLocals&quot; default=&quot;false&quot;/&gt;&lt;/Arg&gt;&lt;Call id=&quot;virtualThreadFactory&quot; class=&quot;java.lang.Thread$Builder&quot; name=&quot;factory&quot;/&gt;&lt;/Call&gt;&lt;/Call&gt;&lt;/Call&gt; on class java.lang.Thread
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:976)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:526)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.newObj(XmlConfiguration.java:1046)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:532)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.configure(XmlConfiguration.java:479)
+        at org.eclipse.jetty.xml.XmlConfiguration.configure(XmlConfiguration.java:381)
+        at org.eclipse.jetty.xml.XmlConfiguration.lambda$main$3(XmlConfiguration.java:1990)
+        ... 8 more
+Caused by: java.lang.NoSuchMethodException: ofVirtual
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:1011)
+        at org.eclipse.jetty.xml.XmlConfiguration$JettyXmlConfiguration.call(XmlConfiguration.java:968)
+        ... 14 more
+
+Usage: java -jar $JETTY_HOME/start.jar [options] [properties] [configs]
+       java -jar $JETTY_HOME/start.jar --help  # for more information</code></pre>
 </div>
 </div>
 </div>
@@ -6723,9 +6873,9 @@ Recall that you must always issue the commands to enable Jetty modules from with
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>**2023-12-20 10:02:32.639:**INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-**2023-12-20 10:02:32.673:**INFO :oejs.AbstractConnector:main: Started ServerConnector@223191a6{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-**2023-12-20 10:02:32.688:**INFO :oejs.Server:main: Started oejs.Server@e056f20{STARTING}[12.0.5,sto=5000] @800ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code>**2024-01-31 11:25:18.011:**INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+**2024-01-31 11:25:18.050:**INFO :oejs.AbstractConnector:main: Started ServerConnector@7f3b84b8{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+**2024-01-31 11:25:18.060:**INFO :oejs.Server:main: Started oejs.Server@e056f20{STARTING}[12.0.6,sto=5000] @866ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6844,9 +6994,9 @@ You need to configure these two properties by editing <code>ssl.ini</code>:</p>
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>INFO  : test-keystore   initialized in ${jetty.base}/start.d/test-keystore.ini
 INFO  : mkdir ${jetty.base}/lib/bouncycastle
-INFO  : copy /home/joakim/.m2/repository/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15to18-1.77.jar
-INFO  : copy /home/joakim/.m2/repository/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15to18-1.77.jar
-INFO  : copy /home/joakim/.m2/repository/org/bouncycastle/bcutil-jdk15to18/1.77/bcutil-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcutil-jdk15to18-1.77.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcpkix-jdk15to18/1.77/bcpkix-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcpkix-jdk15to18-1.77.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcprov-jdk15to18/1.77/bcprov-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcprov-jdk15to18-1.77.jar
+INFO  : copy /path/to/maven.repository/org/bouncycastle/bcutil-jdk15to18/1.77/bcutil-jdk15to18-1.77.jar to ${jetty.base}/lib/bouncycastle/bcutil-jdk15to18-1.77.jar
 INFO  : Base directory was modified</code></pre>
 </div>
 </div>
@@ -6875,11 +7025,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:35.505:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-12-20 10:02:36.065:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:36.101:</strong>INFO :oejus.SslContextFactory:main: x509=X509@44d52de2(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@95e33cc[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-12-20 10:02:36.165:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@79517588<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-12-20 10:02:36.174:</strong>INFO :oejs.Server:main: Started oejs.Server@5170bcf4{STARTING}[12.0.5,sto=5000] @1570ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:21.160:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2024-01-31 11:25:21.662:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:21.702:</strong>INFO :oejus.SslContextFactory:main: x509=X509@455b6df1(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@4ddbbdf8[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2024-01-31 11:25:21.771:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@40238dd0<mark>{SSL, (ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2024-01-31 11:25:21.782:</strong>INFO :oejs.Server:main: Started oejs.Server@28d18df5{STARTING}[12.0.6,sto=5000] @1589ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7030,11 +7180,11 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:38.228:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-12-20 10:02:38.705:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:38.742:</strong>INFO :oejus.SslContextFactory:main: x509=X509@5ce8d869(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@27eedb64[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-12-20 10:02:38.809:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@2cc44ad<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-12-20 10:02:38.818:</strong>INFO :oejs.Server:main: Started oejs.Server@30c93896{STARTING}[12.0.5,sto=5000] @1523ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:24.026:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2024-01-31 11:25:24.654:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:24.697:</strong>INFO :oejus.SslContextFactory:main: x509=X509@2c4d1ac(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@7f0d96f2[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2024-01-31 11:25:24.765:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@6ad59d92<mark>{SSL, (ssl, alpn, h2, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2024-01-31 11:25:24.773:</strong>INFO :oejs.Server:main: Started oejs.Server@19c65cdc{STARTING}[12.0.6,sto=5000] @1722ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7086,9 +7236,9 @@ The reason to configure both protocols is that you typically do not control the 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:40.374:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:40.405:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@65e98b1c<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
-<strong>2023-12-20 10:02:40.418:</strong>INFO :oejs.Server:main: Started oejs.Server@4efbca5a{STARTING}[12.0.5,sto=5000] @855ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:26.370:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:26.403:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@367ffa75<mark>{HTTP/1.1, (http/1.1, h2c)}{0.0.0.0:8080}</mark>
+<strong>2024-01-31 11:25:26.414:</strong>INFO :oejs.Server:main: Started oejs.Server@5c33f1a9{STARTING}[12.0.6,sto=5000] @858ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7191,13 +7341,13 @@ c3 ab b8 f2 e0 53 03 2a 2f 2a</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:42.170:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-12-20 10:02:42.699:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:42.741:</strong>INFO :oejus.SslContextFactory:main: x509=X509@46dffdc3(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@5a709816[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-12-20 10:02:42.806:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@180da663{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
-<strong>2023-12-20 10:02:42.806:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
-<strong>2023-12-20 10:02:42.807:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@340da44c<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
-<strong>2023-12-20 10:02:42.842:</strong>INFO :oejs.Server:main: Started oejs.Server@ab7395e{STARTING}[12.0.5,sto=5000] @1601ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:28.190:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2024-01-31 11:25:28.809:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:28.851:</strong>INFO :oejus.SslContextFactory:main: x509=X509@5143c662(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@77825085[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2024-01-31 11:25:28.927:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4d722ac9{SSL, (ssl, alpn, h2)}{0.0.0.0:8443}
+<strong>2024-01-31 11:25:28.927:</strong>INFO :oejhs.HTTP3ServerConnector:main: HTTP/3+QUIC support is experimental and not suited for production use.
+<strong>2024-01-31 11:25:28.928:</strong>INFO :oejs.AbstractConnector:main: Started HTTP3ServerConnector@77a7cf58<mark>{h3, (h3)}{0.0.0.0:8444}</mark>
+<strong>2024-01-31 11:25:28.979:</strong>INFO :oejs.Server:main: Started oejs.Server@49ff7d8c{STARTING}[12.0.6,sto=5000] @1754ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8198,9 +8348,9 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:45.972:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:46.011:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@3b3f0ace<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
-<strong>2023-12-20 10:02:46.028:</strong>INFO :oejs.Server:main: Started oejs.Server@7e0b85f9{STARTING}[12.0.5,sto=5000] @936ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:32.121:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:32.156:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4ec4f3a0<mark>{[proxy], ([proxy], http/1.1)}{0.0.0.0:8080}</mark>
+<strong>2024-01-31 11:25:32.168:</strong>INFO :oejs.Server:main: Started oejs.Server@654f0d9c{STARTING}[12.0.6,sto=5000] @833ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -8242,11 +8392,11 @@ INFO  : Base directory was modified</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code><strong>2023-12-20 10:02:48.627:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
-<strong>2023-12-20 10:02:49.245:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:49.291:</strong>INFO :oejus.SslContextFactory:main: x509=X509@181e731e(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@35645047[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
-<strong>2023-12-20 10:02:49.369:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@525575<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
-<strong>2023-12-20 10:02:49.379:</strong>INFO :oejs.Server:main: Started oejs.Server@7357a011{STARTING}[12.0.5,sto=5000] @1730ms</code></pre>
+<pre class="CodeRay highlight nowrap"><code><strong>2024-01-31 11:25:34.843:</strong>WARN :oejk.KeystoreGenerator:main: Generating Test Keystore: DO NOT USE IN PRODUCTION!
+<strong>2024-01-31 11:25:35.397:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:35.436:</strong>INFO :oejus.SslContextFactory:main: x509=X509@f107c50(jetty-test-keystore,h=[localhost],a=[],w=[]) for Server@51133c06[provider=null,keyStore=file:///path/to/jetty.base/etc/test-keystore.p12,trustStore=null]
+<strong>2024-01-31 11:25:35.508:</strong>INFO :oejs.AbstractConnector:main: Started ServerConnector@4b1d6571<mark>{[proxy], ([proxy], ssl, http/1.1)}{0.0.0.0:8443}</mark>
+<strong>2024-01-31 11:25:35.516:</strong>INFO :oejs.Server:main: Started oejs.Server@df6620a{STARTING}[12.0.6,sto=5000] @1650ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -12615,9 +12765,12 @@ security
 ee10-security
 auth-config-factory
 
+[ini]
+ee10.jakarta.authentication.api.version?=3.0.0
+
 [lib]
 lib/jetty-ee10-jaspi-${jetty.version}.jar
-lib/ee10-jaspi/*.jar
+lib/ee10-jaspi/jakarta.authentication-api-${ee10.jakarta.authentication.api.version}.jar
 
 [xml]
 etc/jaspi/jetty-ee10-jaspi-authmoduleconfig.xml
@@ -13169,7 +13322,7 @@ This is where having certificates signed by a Certification Authority simplifies
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ java -cp jetty-util-12.0.5.jar org.eclipse.jetty.util.security.Password --prompt
+<pre class="CodeRay highlight"><code data-lang="bash">$ java -cp jetty-util-12.0.6.jar org.eclipse.jetty.util.security.Password --prompt
 Username: <i class="conum" data-value="1"></i><b>(1)</b>
 Password: secret <i class="conum" data-value="2"></i><b>(2)</b>
 OBF:1yta1t331v8w1v9q1t331ytc <i class="conum" data-value="3"></i><b>(3)</b>
@@ -13416,61 +13569,61 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 </div>
 <div class="listingblock small">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code>oejs.Server@e056f20{STARTING}[12.0.5,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
-+= QueuedThreadPool[qtp1791868405]@6acdbdf5{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59964ms,q=0}[ReservedThreadExecutor@77888435{reserved=0/20,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
-|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@73a1e9a9
-|  += ReservedThreadExecutor@77888435{reserved=0/20,pending=0} - STARTED
+<pre class="CodeRay highlight nowrap"><code>oejs.Server@e056f20{STARTING}[12.0.6,sto=5000] - STARTING <i class="conum" data-value="1"></i><b>(1)</b>
++= QueuedThreadPool[qtp1860513229]@6ee52dcd{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59978ms,q=0}[ReservedThreadExecutor@368f2016{reserved=0/20,pending=0}] - STARTED <i class="conum" data-value="2"></i><b>(2)</b>
+|  +- org.eclipse.jetty.util.thread.ThreadPoolBudget@4c583ecf
+|  += ReservedThreadExecutor@368f2016{reserved=0/20,pending=0} - STARTED
 |  |  +&gt; threads size=0
 |  +&gt; threads size=4
-|     +&gt; qtp1791868405-37 TIMED_WAITING tid=37 prio=5 IDLE
-|     +&gt; qtp1791868405-35 RUNNABLE tid=35 prio=5 SELECTING
-|     +&gt; qtp1791868405-36-acceptor-0@3abf0e6c-ServerConnector@57a3af25{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=36 prio=3 ACCEPTING
-|     +&gt; qtp1791868405-38 TIMED_WAITING tid=38 prio=5 IDLE
-+= oejut.ScheduledExecutorScheduler@5123a213{STARTED} - STARTED
-+- org.eclipse.jetty.io.ArrayByteBufferPool@443118b0{min=0,max=65536,buckets=16,heap=0/3959422976,direct=0/3959422976}
+|     +&gt; qtp1860513229-32 TIMED_WAITING tid=32 prio=5 IDLE
+|     +&gt; qtp1860513229-29 RUNNABLE tid=29 prio=5 SELECTING
+|     +&gt; qtp1860513229-30-acceptor-0@5e9f9ef5-ServerConnector@36902638{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} RUNNABLE tid=30 prio=3 ACCEPTING
+|     +&gt; qtp1860513229-31 TIMED_WAITING tid=31 prio=5 IDLE
++= oejut.ScheduledExecutorScheduler@6dde5c8c{STARTED} - STARTED
++- org.eclipse.jetty.io.ArrayByteBufferPool@76505305{min=0,max=65536,buckets=16,heap=0/4022337536,direct=0/4022337536}
 |  +&gt; direct size=16
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@618b19ad{capacity=4096,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2d3379b4{capacity=8192,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@30c15d8b{capacity=12288,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5e0e82ae{capacity=16384,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6771beb3{capacity=20480,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@51399530{capacity=24576,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6b2ea799{capacity=28672,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@411f53a0{capacity=32768,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2b71e916{capacity=36864,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@36fc695d{capacity=40960,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@28701274{capacity=45056,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@13c9d689{capacity=49152,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3754a4bf{capacity=53248,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@62379589{capacity=57344,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4afcd809{capacity=61440,inuse=0(0%)}
-|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@175c2241{capacity=65536,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@73a1e9a9{capacity=4096,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@71d44a3{capacity=8192,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@7b98f307{capacity=12288,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@4802796d{capacity=16384,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@34123d65{capacity=20480,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@59474f18{capacity=24576,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@65fb9ffc{capacity=28672,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3e694b3f{capacity=32768,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1bb5a082{capacity=36864,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@78691363{capacity=40960,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@41d477ed{capacity=45056,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3590fc5b{capacity=49152,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@397fbdb{capacity=53248,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@33d512c1{capacity=57344,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@515c6049{capacity=61440,inuse=0(0%)}
+|  |  +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@639c2c1d{capacity=65536,inuse=0(0%)}
 |  +&gt; indirect size=16
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5bf0d49{capacity=4096,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5b7a5baa{capacity=8192,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@776aec5c{capacity=12288,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@1d296da{capacity=16384,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@7c7a06ec{capacity=20480,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@75d4a5c2{capacity=24576,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@557caf28{capacity=28672,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@408d971b{capacity=32768,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6c6cb480{capacity=36864,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@3c46e67a{capacity=40960,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@c730b35{capacity=45056,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@206a70ef{capacity=49152,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@292b08d6{capacity=53248,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@22555ebf{capacity=57344,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@36ebc363{capacity=61440,inuse=0(0%)}
-|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@45752059{capacity=65536,inuse=0(0%)}
-+~ org.eclipse.jetty.util.resource.FileSystemPool@34e9fd99
-+= oejsh.DefaultHandler@3c41ed1d{showContext=true,favIcon=true,STARTED} - STARTED
-+= oejsh.ContextHandlerCollection@54d9d12d{STARTED} - STARTED
-+= ServerConnector@57a3af25{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  +~ QueuedThreadPool[qtp1791868405]@6acdbdf5{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59952ms,q=0}[ReservedThreadExecutor@77888435{reserved=0/20,pending=0}] - STARTED
-|  +~ oejut.ScheduledExecutorScheduler@5123a213{STARTED} - STARTED
-|  +~ org.eclipse.jetty.io.ArrayByteBufferPool@443118b0{min=0,max=65536,buckets=16,heap=0/3959422976,direct=0/3959422976}
-|  += HttpConnectionFactory@5dd6264[HTTP/1.1] - STARTED
-|  |  +- HttpConfiguration@22ff4249{32768/8192,8192/8192,https://:0,[]}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5fe94a96{capacity=4096,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@443118b0{capacity=8192,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@765d7657{capacity=12288,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@74235045{capacity=16384,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@618b19ad{capacity=20480,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2d3379b4{capacity=24576,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@30c15d8b{capacity=28672,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@5e0e82ae{capacity=32768,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6771beb3{capacity=36864,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@51399530{capacity=40960,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@6b2ea799{capacity=45056,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@411f53a0{capacity=49152,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@2b71e916{capacity=53248,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@36fc695d{capacity=57344,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@28701274{capacity=61440,inuse=0(0%)}
+|     +&gt; org.eclipse.jetty.io.ArrayByteBufferPool$RetainedBucket@13c9d689{capacity=65536,inuse=0(0%)}
++~ org.eclipse.jetty.util.resource.FileSystemPool@3754a4bf
++= oejsh.DefaultHandler@62379589{showContext=true,favIcon=true,STARTED} - STARTED
++= oejsh.ContextHandlerCollection@4afcd809{STARTED} - STARTED
++= ServerConnector@36902638{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  +~ QueuedThreadPool[qtp1860513229]@6ee52dcd{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59968ms,q=0}[ReservedThreadExecutor@368f2016{reserved=0/20,pending=0}] - STARTED
+|  +~ oejut.ScheduledExecutorScheduler@6dde5c8c{STARTED} - STARTED
+|  +~ org.eclipse.jetty.io.ArrayByteBufferPool@76505305{min=0,max=65536,buckets=16,heap=0/4022337536,direct=0/4022337536}
+|  += HttpConnectionFactory@51e5fc98[HTTP/1.1] - STARTED
+|  |  +- HttpConfiguration@7c7a06ec{32768/8192,8192/8192,https://:0,[]}
 |  |     +&gt; customizers size=0
 |  |     +&gt; formEncodedMethods size=2
 |  |     |  +&gt; POST
@@ -13491,66 +13644,66 @@ It is possible to configure the thread pool to dump the whole stack trace for ea
 |  |     +&gt; maxErrorDispatches=10
 |  |     +&gt; minRequestDataRate=0
 |  |     +&gt; minResponseDataRate=0
-|  |     +&gt; requestCookieCompliance=RFC6265@6025e1b6[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
-|  |     +&gt; responseCookieCompliance=RFC6265@6025e1b6[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; requestCookieCompliance=RFC6265@1d296da[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
+|  |     +&gt; responseCookieCompliance=RFC6265@1d296da[INVALID_COOKIES, OPTIONAL_WHITE_SPACE, SPACE_IN_VALUES]
 |  |     +&gt; notifyRemoteAsyncErrors=true
 |  |     +&gt; relativeRedirectAllowed=false
-|  += SelectorManager@ServerConnector@57a3af25{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
-|  |  += oeji.ManagedSelector@5b12b668{STARTED}[id=0 keys=0 selected=0 updates=0 selection:tot=0/avg=0.00/max=0] - STARTED
-|  |     += AdaptiveExecutionStrategy@4c12331b/SelectorProducer@7586beff/PRODUCING/p=0/QueuedThreadPool[qtp1791868405]@6acdbdf5{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59943ms,q=0}[ReservedThreadExecutor@77888435{reserved=0/20,pending=0}][pc=0,pic=0,pec=0,epc=0]@2023-12-20T10:02:51.347426648-06:00 - STARTED
-|  |     |  +- SelectorProducer@7586beff
-|  |     |  +~ QueuedThreadPool[qtp1791868405]@6acdbdf5{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59942ms,q=0}[ReservedThreadExecutor@77888435{reserved=0/20,pending=0}] - STARTED
-|  |     +&gt; updates @ 2023-12-20T10:02:51.34532896-06:00 size=0
-|  |     +&gt; keys @ 2023-12-20T10:02:51.345733216-06:00 size=0
+|  += SelectorManager@ServerConnector@36902638{HTTP/1.1, (http/1.1)}{0.0.0.0:8080} - STARTED
+|  |  += oeji.ManagedSelector@6c6cb480{STARTED}[id=0 keys=0 selected=0 updates=0 selection:tot=0/avg=0.00/max=0] - STARTED
+|  |     += AdaptiveExecutionStrategy@22555ebf/SelectorProducer@36ebc363/PRODUCING/p=0/QueuedThreadPool[qtp1860513229]@6ee52dcd{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59958ms,q=0}[ReservedThreadExecutor@368f2016{reserved=0/20,pending=0}][pc=0,pic=0,pec=0,epc=0]@2024-01-31T11:25:37.428351151-06:00 - STARTED
+|  |     |  +- SelectorProducer@36ebc363
+|  |     |  +~ QueuedThreadPool[qtp1860513229]@6ee52dcd{STARTED,4&lt;=4&lt;=200,i=2,r=-1,t=59958ms,q=0}[ReservedThreadExecutor@368f2016{reserved=0/20,pending=0}] - STARTED
+|  |     +&gt; updates @ 2024-01-31T11:25:37.425334189-06:00 size=0
+|  |     +&gt; keys @ 2024-01-31T11:25:37.426259694-06:00 size=0
 |  +- sun.nio.ch.ServerSocketChannelImpl[/[0:0:0:0:0:0:0:0]:8080]
-|  +- qtp1791868405-36-acceptor-0@3abf0e6c-ServerConnector@57a3af25{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
-+- org.eclipse.jetty.util.component.HaltLifeCycleListener@3b69e7d1
-+- org.eclipse.jetty.server.Server$DynamicErrorHandler@815b41f
-+&gt; startJarLoader@593634ad
+|  +- qtp1860513229-30-acceptor-0@5e9f9ef5-ServerConnector@36902638{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
++- org.eclipse.jetty.util.component.HaltLifeCycleListener@45752059
++- org.eclipse.jetty.server.Server$DynamicErrorHandler@34e9fd99
++&gt; startJarLoader@61e4705b
 |  +&gt; URLs size=8
 |  |  +&gt; file:/path/to/jetty.base/resources/
 |  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.5.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.5.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.5.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.5.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.5.jar
-|  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.5.jar
-|  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@4f2410ac
+|  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.6.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.6.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.6.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.6.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.6.jar
+|  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.6.jar
+|  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@5cb0d902
 |     +&gt; packages size=4
 |     |  +&gt; package org.eclipse.jetty.start.config
 |     |  +&gt; package org.eclipse.jetty.start.builders
 |     |  +&gt; package org.eclipse.jetty.start.shaded.util
 |     |  +&gt; package org.eclipse.jetty.start
-|     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3434f30f
+|     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3932ab05
 |        +&gt; packages size=2
 |           +&gt; package sun.util.resources.provider
 |           +&gt; package sun.util.resources.cldr.provider
 +&gt; environments size=1
 |  +&gt; oejuc.Environment$Named@0{core}
-|     +&gt; startJarLoader@593634ad
+|     +&gt; startJarLoader@61e4705b
 |     |  +&gt; URLs size=8
 |     |  |  +&gt; file:/path/to/jetty.base/resources/
 |     |  |  +&gt; file:/path/to/jetty.home/lib/logging/slf4j-api-2.0.9.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.5.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.5.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.5.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.5.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.5.jar
-|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.5.jar
-|     |  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@4f2410ac
+|     |  |  +&gt; file:/path/to/jetty.home/lib/logging/jetty-slf4j-impl-12.0.6.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-http-12.0.6.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-server-12.0.6.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-xml-12.0.6.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-util-12.0.6.jar
+|     |  |  +&gt; file:/path/to/jetty.home/lib/jetty-io-12.0.6.jar
+|     |  +&gt; parent: jdk.internal.loader.ClassLoaders$AppClassLoader@5cb0d902
 |     |     +&gt; packages size=4
 |     |     |  +&gt; package org.eclipse.jetty.start.config
 |     |     |  +&gt; package org.eclipse.jetty.start.builders
 |     |     |  +&gt; package org.eclipse.jetty.start.shaded.util
 |     |     |  +&gt; package org.eclipse.jetty.start
-|     |     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3434f30f
+|     |     +&gt; parent: jdk.internal.loader.ClassLoaders$PlatformClassLoader@3932ab05
 |     |        +&gt; packages size=2
 |     |           +&gt; package sun.util.resources.provider
 |     |           +&gt; package sun.util.resources.cldr.provider
 |     +&gt; Attributes core size=0
 +&gt; attributes size=0
-+&gt; org.eclipse.jetty.util.resource.FileSystemPool@34e9fd99
++&gt; org.eclipse.jetty.util.resource.FileSystemPool@3754a4bf
    +&gt; buckets size=0
 key: +- bean, += managed, +~ unmanaged, +? auto, +: iterable, +] array, +@ map, +&gt; undefined</code></pre>
 </div>
@@ -13763,8 +13916,8 @@ Enables remote debugging
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code>WARN  : Forking second JVM due to forking module(s): [remote-debug]. Use --dry-run to generate the command line to avoid forking.
 <mark>Listening for transport dt_socket at address: 5005</mark>
-<strong>2023-12-20 10:02:53.083:</strong>INFO :oejs.Server:main: jetty-12.0.5; built: 2023-12-20T15:58:00.878Z; git: 3aed62e4959bb8c01f5975fe81e078e3ff626126; jvm 21.0.1+12-LTS
-<strong>2023-12-20 10:02:53.122:</strong>INFO :oejs.Server:main: Started oejs.Server@76b10754{STARTING}[12.0.5,sto=5000] @514ms</code></pre>
+<strong>2024-01-31 11:25:39.110:</strong>INFO :oejs.Server:main: jetty-12.0.6; built: 2024-01-31T17:20:31.462Z; git: 78ab6e6ba163f89cdd97f2ae0283fbb5e371cfaf; jvm 17.0.6+10
+<strong>2024-01-31 11:25:39.142:</strong>INFO :oejs.Server:main: Started oejs.Server@51b279c9{STARTING}[12.0.6,sto=5000] @478ms</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -14350,7 +14503,7 @@ Within these elements there may be nested elements that will operate on that sco
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.5<br>
+Version 12.0.6<br>
 Last updated 2023-10-24 09:23:54 -0500
 </div>
 </div>
