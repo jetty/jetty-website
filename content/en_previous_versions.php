@@ -67,7 +67,7 @@
   </tr>
   </tbody>
   </table>
-  <p><strong>Note:</strong> Release notes can be found in the <code>VERSION.txt</code> file included with the distribution and on the <a href="https://github.com/eclipse/jetty.project/releases">GitHub Releases</a> page for the Jetty project.
+  <p><strong>Note:</strong> Release notes can be found in the <code>VERSION.txt</code> file included with the distribution and on the <a href="https://github.com/jetty/jetty.project/releases">GitHub Releases</a> page for the Jetty project.
   Release notes are also made available on the <a href="https://www.eclipse.org/jetty/mailinglists.html">jetty-announce@eclipse.org mailing list.</a></p>
   <div class="sect2">
   <h3 id="_jetty_p2_provisioning">Jetty P2 Provisioning</h3>

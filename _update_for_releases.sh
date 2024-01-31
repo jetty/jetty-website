@@ -28,7 +28,7 @@ function set_global_variables() {
   MAVEN_ROOT="https://repo1.maven.org/maven2/org/eclipse/jetty"
   STAGING_ROOT="https://oss.sonatype.org/content/groups/jetty-with-staging/org/eclipse/jetty"
 
-  GITHUB_ROOT="https://github.com/eclipse/jetty.project/archive"
+  GITHUB_ROOT="https://github.com/jetty/jetty.project/archive"
   WEBSITE_ROOT="https://eclipse.dev/jetty"
   DOC_ROOT_9="$MAVEN_ROOT/jetty-documentation"
   DOC_ROOT_1x="$MAVEN_ROOT/documentation/jetty-documentation"

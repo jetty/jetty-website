@@ -116,7 +116,7 @@
     <div class="ulist">
         <ul>
             <li>
-                <p><a href="http://github.com/eclipse/jetty.project">Issues at Github</a>.</p>
+                <p><a href="http://github.com/jetty/jetty.project">Issues at Github</a>.</p>
             </li>
         </ul>
     </div>
@@ -129,7 +129,7 @@
         <ul>
             <li>
                 <p>
-                    <a href="https://github.com/eclipse/jetty.project/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22">Help
+                    <a href="https://github.com/jetty/jetty.project/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+Wanted%22">Help
                         Wanted</a></p>
             </li>
         </ul>

@@ -42,7 +42,7 @@
             </div>
             <div class="olist arabic">
                 <pre>
-- [ ] On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/eclipse/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.
+- [ ] On receipt of a security report via <a href="mailto:security@webtide.com">security@webtide.com</a> or other channels, if it cannot be trivially dismissed (already fixed, known not a problem, etc.), then a <a href="https://github.com/jetty/jetty.project/security/advisories?state=published">Github security advisory</a> is created by project leadership.
 - [ ] Copy this list as a markdown in the security advisory for tracking the completion of various tasks.
 - [ ] Jetty committers and the reporters are added to the security advisory. Individual committers can also be named in the comments for addition.
 - [ ] Initial triage and discussion are performed in the comments of the advisory.
@@ -70,7 +70,7 @@
 - [ ] Interested parties are notified of the availability of release on Maven Central.
 - [ ] Publish security advisory and CVE publicly.
 - [ ] Edit VERSION.txt and so that the CVE number is now recorded against merged PR.
-- [ ] Edit the <a href="https://github.com/eclipse/jetty.project/releases">release(s)</a> on Github to identify CVE number that was addressed/resolved.
+- [ ] Edit the <a href="https://github.com/jetty/jetty.project/releases">release(s)</a> on Github to identify CVE number that was addressed/resolved.
 - [ ] Update downstream images (Docker, etc.).
 - [ ] Update project website with new security entry.
 - [ ] Review security processes & completion.

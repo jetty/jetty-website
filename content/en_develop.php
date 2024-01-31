@@ -31,7 +31,7 @@
                                                                                               href="#cg-community-source">Source
                     Control</a></h3>
             <div class="paragraph">
-                <p>The <a href="https://github.com/eclipse/jetty.project">Eclipse Jetty project</a> is located at <a
+                <p>The <a href="https://github.com/jetty/jetty.project">Eclipse Jetty project</a> is located at <a
                             href="https://github.com">Github</a> under the Eclipse Foundation <a
                             href="https://github.com/eclipse">parent project</a>. There are a number of branches that
                     are generally of interest.</p>
@@ -47,7 +47,7 @@
                 <tbody>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-10.0.x">jetty-11.0.x</a>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-10.0.x">jetty-11.0.x</a>
                         </p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Development</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 5.0</p></td>
@@ -55,7 +55,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-10.0.x">jetty-10.0.x</a>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-10.0.x">jetty-10.0.x</a>
                         </p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Development (default branch)</p>
                     </td>
@@ -64,7 +64,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-9.4.x">jetty-9.4.x</a></p>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-9.4.x">jetty-9.4.x</a></p>
                     </td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Maintenance</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.1</p></td>
@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-9.3.x">jetty-9.3.x</a></p>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-9.3.x">jetty-9.3.x</a></p>
                     </td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Maintenance</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 3.0</p></td>
@@ -80,7 +80,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-8.1.x">jetty-8.1.x</a></p>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-8.1.x">jetty-8.1.x</a></p>
                     </td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Historical</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 2.0</p></td>
@@ -88,7 +88,7 @@
                 </tr>
                 <tr>
                     <td class="tableblock halign-left valign-top"><p class="tableblock"><a
-                                    href="https://github.com/eclipse/jetty.project/tree/jetty-7">jetty-7</a></p></td>
+                                    href="https://github.com/jetty/jetty.project/tree/jetty-7">jetty-7</a></p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Mythical</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Servlet 1.0</p></td>
                     <td class="tableblock halign-left valign-top"><p class="tableblock">Java 6</p></td>
@@ -113,7 +113,7 @@
                     <dl>
                         <dt class="hdlist1">Jetty Project Repository</dt>
                         <dd>
-                            <p><a href="https://github.com/eclipse/jetty.project" class="bare">https://github.com/eclipse/jetty.project</a>
+                            <p><a href="https://github.com/jetty/jetty.project" class="bare">https://github.com/jetty/jetty.project</a>
                             </p>
                         </dd>
                     </dl>
@@ -155,7 +155,7 @@
             </div>
             <div class="listingblock">
                 <div class="content">
-<pre class="highlight"><code class="language-screen" data-lang="screen">$ git clone https://github.com/eclipse/jetty.project.git
+<pre class="highlight"><code class="language-screen" data-lang="screen">$ git clone https://github.com/jetty/jetty.project.git
 $ cd jetty.project
 $ mvn install</code></pre>
                 </div>
@@ -179,7 +179,7 @@ $ mvn install</code></pre>
                                     Periodically we find some test cases to be more time dependent than they should be
                                     and this results in intermittent test failures.
                                     You can help track these down by opening an <a
-                                            href="https://github.com/eclipse/jetty.project/issues">Issue</a>.
+                                            href="https://github.com/jetty/jetty.project/issues">Issue</a>.
                                 </td>
                             </tr>
                         </table>
