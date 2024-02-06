@@ -101,10 +101,12 @@
 
     <h3 id="what-jetty-version">What Version Do I Use?</h3>
     <div class="paragraph">
-        <p>Jetty 10 and 11 are the most recent versions of Jetty and have a great many improvements over previous
+        <p>Jetty 12 is the only community supported versions of Jetty at this point in time, and has a great many improvements over previous
             releases.</p>
-        <p>While many people continue to use older versions of Jetty like 9.4 for a variety of reasons, we recommend using Jetty 10 or 11 as
-            they represent the version of Jetty that we will actively maintain and improve over the next few years.  The decision to use Jetty 10 or 11 depends entirely on which flavor of servlet package name needs to be used. June 1st, 2022 marks the end of community support for the Jetty 9.4.x release branch.</p>
+        <p>While many people continue to use older versions of Jetty like 11/10/9 for a variety of reasons, we recommend using Jetty 12</p>
+        <p>Note that Jetty 12 is the only version that will receive support for the open source community, and represents
+         the version of Jetty that we will actively maintain and improve over the next few years.</p>
+        <p>January 1st, 2024 marks the end of community support for the Jetty 11 and older releases.</p>
     </div>
 
     <h3 id="version-table">Jetty Versions</h3>
