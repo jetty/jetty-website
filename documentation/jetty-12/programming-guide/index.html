@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.6,</span>
-<span id="revdate">2024-01-31</span>
+<span id="revnumber">version 12.0.7,</span>
+<span id="revdate">2024-03-06</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -32,9 +32,10 @@
 <ul class="sectlevel2">
 <li><a href="#pg-client-io-arch">I/O Architecture</a>
 <ul class="sectlevel3">
-<li><a href="#pg-client-io-arch-network">Network Layer</a>
+<li><a href="#pg-client-io-arch-transport">Transport Layer</a>
 <ul class="sectlevel4">
 <li><a href="#pg-client-io-arch-unix-domain">Unix-Domain Support</a></li>
+<li><a href="#pg-client-io-arch-memory">Memory Support</a></li>
 </ul>
 </li>
 <li><a href="#pg-client-io-arch-protocol">Protocol Layer</a></li>
@@ -54,12 +55,14 @@
 <li><a href="#pg-client-http-non-blocking">HttpClient Non-Blocking APIs</a></li>
 <li><a href="#pg-client-http-content-request">Request Content Handling</a></li>
 <li><a href="#pg-client-http-content-response">Response Content Handling</a></li>
+<li><a href="#pg-client-http-api-transport">Request <code>Transport</code></a></li>
 </ul>
 </li>
 <li><a href="#pg-client-http-configuration">HttpClient Configuration</a>
 <ul class="sectlevel4">
 <li><a href="#pg-client-http-configuration-tls">HttpClient TLS Configuration</a>
 <ul class="sectlevel5">
+<li><a href="#pg-client-http-configuration-tls-listener">HttpClient <code>SslHandshakeListener</code></a></li>
 <li><a href="#pg-client-http-configuration-tls-truststore">HttpClient TLS TrustStore Configuration</a></li>
 <li><a href="#pg-client-http-configuration-tls-client-certs">HttpClient TLS Client Certificates Configuration</a></li>
 </ul>
@@ -89,7 +92,6 @@
 <li><a href="#pg-client-http-transport-http3">HTTP/3 Transport</a></li>
 <li><a href="#pg-client-http-transport-fcgi">FastCGI Transport</a></li>
 <li><a href="#pg-client-http-transport-dynamic">Dynamic Transport</a></li>
-<li><a href="#pg-client-http-transport-unix-domain">Unix-Domain Configuration</a></li>
 </ul>
 </li>
 </ul>
@@ -632,7 +634,7 @@ Yet another example is a client application that needs to receive events from a 
 <div class="sect2">
 <h3 id="pg-client-io-arch"><a class="anchor" href="#pg-client-io-arch"></a><a class="link" href="#pg-client-io-arch">I/O Architecture</a></h3>
 <div class="paragraph">
-<p>The Jetty client libraries provide the basic components and APIs to implement a network client.</p>
+<p>The Jetty client libraries provide the basic components and APIs to implement a client application.</p>
 </div>
 <div class="paragraph">
 <p>They build on the common <a href="#pg-arch-io">Jetty I/O Architecture</a> and provide client specific concepts (such as establishing a connection to a server).</p>
@@ -643,21 +645,53 @@ Yet another example is a client application that needs to receive events from a 
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><a href="#pg-client-io-arch-network">The network layer</a>, that handles the low level I/O and deals with buffers, threads, etc.</p>
+<p><a href="#pg-client-io-arch-transport">The transport layer</a>, that handles the low-level communication with the server, and deals with buffers, threads, etc.</p>
 </li>
 <li>
-<p><a href="#pg-client-io-arch-protocol">The protocol layer</a>, that handles the parsing of bytes read from the network and the generation of bytes to write to the network.</p>
+<p><a href="#pg-client-io-arch-protocol">The protocol layer</a>, that handles the high-level protocol by parsing the bytes read from the transport layer and by generating the bytes to write to the transport layer.</p>
 </li>
 </ol>
 </div>
 <div class="sect3">
-<h4 id="pg-client-io-arch-network"><a class="anchor" href="#pg-client-io-arch-network"></a><a class="link" href="#pg-client-io-arch-network">Network Layer</a></h4>
+<h4 id="pg-client-io-arch-transport"><a class="anchor" href="#pg-client-io-arch-transport"></a><a class="link" href="#pg-client-io-arch-transport">Transport Layer</a></h4>
 <div class="paragraph">
-<p>The Jetty client libraries use the common I/O design described in <a href="#pg-arch-io">this section</a>.
-The main client-side component is the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/ClientConnector.html"><code>ClientConnector</code></a>.</p>
+<p>The transport layer is the low-level layer that communicates with the server.</p>
 </div>
 <div class="paragraph">
-<p>The <code>ClientConnector</code> primarily wraps the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/SelectorManager.html"><code>SelectorManager</code></a> and aggregates other four components:</p>
+<p>Protocols such as HTTP/1.1 and HTTP/2 are typically transported over TCP, while the newer HTTP/3 is transported over QUIC, which is itself transported over UDP.</p>
+</div>
+<div class="paragraph">
+<p>However, there are other means of communication supported by the Jetty client libraries, in particular over <a href="#pg-client-io-arch-unix-domain">Unix-Domain sockets</a> (for inter-process communication), and over <a href="#pg-client-io-arch-memory">memory</a> (for intra-process communication).</p>
+</div>
+<div class="paragraph">
+<p>The same high-level protocol can be carried by different low-level transports.
+For example, the high-level HTTP/1.1 protocol can be transported over either TCP (the default), or QUIC, or Unix-Domain sockets, or memory, because all these low-level transport provide reliable and ordered communication between client and server.</p>
+</div>
+<div class="paragraph">
+<p>Similarly, the high-level HTTP/3 protocol can be transported over either QUIC (the default) or memory.
+It would be possible to transport HTTP/3 also over Unix-Domain sockets, but the current version of Java only supports Unix-Domain sockets for <code>SocketChannel</code>s and not for <code>DatagramChannel</code>s.</p>
+</div>
+<div class="paragraph">
+<p>The Jetty client libraries use the common I/O design described in <a href="#pg-arch-io">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>The common I/O components and concepts are used for all low-level transports.
+The only partial exception is the <a href="#pg-client-io-arch-memory">memory transport</a>, which is not based on network components; as such it does not need a <code>SelectorManager</code>, but it exposes <code>EndPoint</code> so that high-level protocols have a common interface to interact with the low-level transport.</p>
+</div>
+<div class="paragraph">
+<p>The client-side abstraction for the low-level transport is <code>org.eclipse.jetty.io.Transport</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>Transport</code> represents how high-level protocols can be transported; there is <code>Transport.TCP_IP</code> that represents communication over TCP, but also <code>Transport.TCPUnix</code> for Unix-Domain sockets, <code>QuicTransport</code> for QUIC and <code>MemoryTransport</code> for memory.</p>
+</div>
+<div class="paragraph">
+<p>Applications can specify the <code>Transport</code> to use for each request as described in <a href="#pg-client-http-api-transport">this section</a>.</p>
+</div>
+<div class="paragraph">
+<p>When the <code>Transport</code> implementation uses the network, it delegates to <code>org.eclipse.jetty.io.ClientConnector</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientConnector</code> primarily wraps <code>org.eclipse.jetty.io.SelectorManager</code> to provide network functionalities, and aggregates other four components:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -678,6 +712,9 @@ The main client-side component is the <a href="https://eclipse.dev/jetty/javadoc
 <div class="paragraph">
 <p>The <code>ClientConnector</code> is where you want to set those components after you have configured them.
 If you don&#8217;t explicitly set those components on the <code>ClientConnector</code>, then appropriate defaults will be chosen when the <code>ClientConnector</code> starts.</p>
+</div>
+<div class="paragraph">
+<p><code>ClientConnector</code> manages all network-related components, and therefore it is used for TCP, UDP, QUIC and <a href="#pg-client-io-arch-unix-domain">Unix-Domain sockets</a>.</p>
 </div>
 <div class="paragraph">
 <p>The simplest example that creates and starts a <code>ClientConnector</code> is the following:</p>
@@ -750,7 +787,7 @@ clientConnector.start();</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Since <code>ClientConnector</code> is the component that handles the low-level network, it is also the component where you want to configure the low-level network configuration.</p>
+<p>Since <code>ClientConnector</code> is the component that handles the low-level network transport, it is also the component where you want to configure the low-level network configuration.</p>
 </div>
 <div class="paragraph">
 <p>The most common parameters are:</p>
@@ -758,7 +795,7 @@ clientConnector.start();</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ClientConnector.selectors</code>: the number of <code>java.nio.Selector</code>s components (defaults to <code>1</code>) that are present to handle the <code>SocketChannel</code>s opened by the <code>ClientConnector</code>.
+<p><code>ClientConnector.selectors</code>: the number of <code>java.nio.Selector</code>s components (defaults to <code>1</code>) that are present to handle the <code>SocketChannel</code>s and <code>DatagramChannel</code>s opened by the <code>ClientConnector</code>.
 You typically want to increase the number of selectors only for those use cases where each selector should handle more than few hundreds <em>concurrent</em> socket events.
 For example, one selector typically runs well for <code>250</code> <em>concurrent</em> socket events; as a rule of thumb, you can multiply that number by <code>10</code> to obtain the number of opened sockets a selector can handle (<code>2500</code>), based on the assumption that not all the <code>2500</code> sockets will be active <em>at the same time</em>.</p>
 </li>
@@ -784,54 +821,58 @@ This time includes the DNS lookup time <em>and</em> the TCP connect time.</p>
 <div class="sect4">
 <h5 id="pg-client-io-arch-unix-domain"><a class="anchor" href="#pg-client-io-arch-unix-domain"></a><a class="link" href="#pg-client-io-arch-unix-domain">Unix-Domain Support</a></h5>
 <div class="paragraph">
-<p><a href="https://openjdk.java.net/jeps/380">JEP 380</a> introduced Unix-Domain sockets support in Java 16, on all operative systems.</p>
+<p><a href="https://openjdk.java.net/jeps/380">JEP 380</a> introduced Unix-Domain sockets support in Java 16, on all operative systems, but only for <code>SocketChannel</code>s (not for <code>DatagramChannel</code>s).</p>
 </div>
 <div class="paragraph">
-<p><code>ClientConnector</code> can be configured to support Unix-Domain sockets in the following way:</p>
+<p><code>ClientConnector</code> handles Unix-Domain sockets exactly like it handles regular TCP sockets, so there is no additional configuration necessary&#8201;&#8212;&#8201;Unix-Domain sockets are supported out-of-the-box.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// This is the path where the server &quot;listens&quot; on.</span>
-Path unixDomainPath = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/server.sock</span><span class="delimiter">&quot;</span></span>);
-
-<span class="comment">// Creates a ClientConnector that uses Unix-Domain</span>
-<span class="comment">// sockets, not the network, to connect to the server.</span>
-ClientConnector clientConnector = ClientConnector.forUnixDomain(unixDomainPath);
-clientConnector.start();</code></pre>
-</div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
 <div class="paragraph">
-<p>You can use Unix-Domain sockets support only when you run your client application with Java 16 or later.</p>
+<p>Applications can specify the <code>Transport</code> to use for each request as described in <a href="#pg-client-http-api-transport">this section</a>.</p>
 </div>
-</td>
-</tr>
-</table>
+</div>
+<div class="sect4">
+<h5 id="pg-client-io-arch-memory"><a class="anchor" href="#pg-client-io-arch-memory"></a><a class="link" href="#pg-client-io-arch-memory">Memory Support</a></h5>
+<div class="paragraph">
+<p>In addition to support communication between client and server via network or Unix-Domain, the Jetty client libraries also support communication between client and server via memory for intra-process communication.
+This means that the client and server must be in the same JVM process.</p>
+</div>
+<div class="paragraph">
+<p>This functionality is provided by <code>org.eclipse.jetty.server.MemoryTransport</code>, which does not delegate to <code>ClientConnector</code>, but instead delegates to the server-side <code>MemoryConnector</code> and its related classes.</p>
+</div>
+<div class="paragraph">
+<p>Applications can specify the <code>Transport</code> to use for each request as described in <a href="#pg-client-http-api-transport">this section</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="pg-client-io-arch-protocol"><a class="anchor" href="#pg-client-io-arch-protocol"></a><a class="link" href="#pg-client-io-arch-protocol">Protocol Layer</a></h4>
 <div class="paragraph">
-<p>The protocol layer builds on top of the network layer to generate the bytes to be written to the network and to parse the bytes read from the network.</p>
+<p>The protocol layer builds on top of the transport layer to generate the bytes to be written to the low-level transport and to parse the bytes read from the low-level transport.</p>
 </div>
 <div class="paragraph">
-<p>Recall from <a href="#pg-arch-io-connection">this section</a> that Jetty uses the <code>Connection</code> abstraction to produce and interpret the network bytes.</p>
+<p>Recall from <a href="#pg-arch-io-connection">this section</a> that Jetty uses the <code>Connection</code> abstraction to produce and interpret the low-level transport bytes.</p>
 </div>
 <div class="paragraph">
 <p>On the client side, a <code>ClientConnectionFactory</code> implementation is the component that creates <code>Connection</code> instances based on the protocol that the client wants to "speak" with the server.</p>
 </div>
 <div class="paragraph">
-<p>Applications use <code>ClientConnector.connect(SocketAddress, Map&lt;String, Object&gt;)</code> to establish a TCP connection to the server, and must tell <code>ClientConnector</code> how to create the <code>Connection</code> for that particular TCP connection, and how to notify back the application when the connection creation succeeds or fails.</p>
+<p>Applications may use <code>ClientConnector.connect(SocketAddress, Map&lt;String, Object&gt;)</code> to establish a TCP connection to the server, and must provide <code>ClientConnector</code> with the following information in the context map:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>Transport</code> instance that specifies the low-level transport to use.</p>
+</li>
+<li>
+<p>A <code>ClientConnectionFactory</code> that creates <code>Connection</code> instances for the high-level protocol.</p>
+</li>
+<li>
+<p>A <code>Promise</code> that is notified when the connection creation succeeds or fails.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>This is done by passing a <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/ClientConnectionFactory.html"><code>ClientConnectionFactory</code></a> (that creates <code>Connection</code> instances) and a <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/util/Promise.html"><code>Promise</code></a> (that is notified of connection creation success or failure) in the context <code>Map</code> as follows:</p>
+<p>For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -862,6 +903,9 @@ clientConnector.start();
 <span class="type">int</span> port = <span class="integer">8080</span>;
 <span class="predefined-type">SocketAddress</span> address = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(host, port);
 
+<span class="comment">// The Transport instance.</span>
+Transport transport = Transport.TCP_IP;
+
 <span class="comment">// The ClientConnectionFactory that creates CustomConnection instances.</span>
 ClientConnectionFactory connectionFactory = (endPoint, context) -&gt;
 {
@@ -873,7 +917,8 @@ ClientConnectionFactory connectionFactory = (endPoint, context) -&gt;
 CompletableFuture&lt;CustomConnection&gt; connectionPromise = <span class="keyword">new</span> Promise.Completable&lt;&gt;();
 
 <span class="comment">// Populate the context with the mandatory keys to create and obtain connections.</span>
-<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">ConcurrentHashMap</span>&lt;&gt;();
+context.put(Transport.class.getName(), transport);
 context.put(ClientConnector.CLIENT_CONNECTION_FACTORY_CONTEXT_KEY, connectionFactory);
 context.put(ClientConnector.CONNECTION_PROMISE_CONTEXT_KEY, connectionPromise);
 clientConnector.connect(address, context);
@@ -981,7 +1026,7 @@ connectionPromise.whenComplete((connection, failure) -&gt;
 ClientConnector clientConnector = <span class="keyword">new</span> ClientConnector();
 clientConnector.start();
 
-<span class="predefined-type">String</span> host = <span class="string"><span class="delimiter">&quot;</span><span class="content">wikipedia.org</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">String</span> host = <span class="string"><span class="delimiter">&quot;</span><span class="content">example.org</span><span class="delimiter">&quot;</span></span>;
 <span class="type">int</span> port = <span class="integer">80</span>;
 <span class="predefined-type">SocketAddress</span> address = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(host, port);
 
@@ -991,6 +1036,7 @@ ClientConnectionFactory connectionFactory = (endPoint, context) -&gt;
 CompletableFuture&lt;TelnetConnection&gt; connectionPromise = <span class="keyword">new</span> Promise.Completable&lt;&gt;();
 
 <span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+context.put(Transport.class.getName(), Transport.TCP_IP);
 context.put(ClientConnector.CLIENT_CONNECTION_FACTORY_CONTEXT_KEY, connectionFactory);
 context.put(ClientConnector.CONNECTION_PROMISE_CONTEXT_KEY, connectionPromise);
 clientConnector.connect(address, context);
@@ -1003,9 +1049,7 @@ connectionPromise.whenComplete((connection, failure) -&gt;
         connection.onLine(line -&gt; <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">app</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">line: {0}</span><span class="delimiter">&quot;</span></span>, line));
 
         <span class="comment">// Write a line.</span>
-        connection.writeLine(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span> +
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">GET / HTTP/1.0</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> +
-            <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
+        connection.writeLine(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET / HTTP/1.0</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
     }
     <span class="keyword">else</span>
     {
@@ -1130,7 +1174,7 @@ ClientConnector clientConnector = <span class="keyword">new</span> ClientConnect
 clientConnector.start();
 
 <span class="comment">// Use port 443 to contact the server using encrypted HTTP.</span>
-<span class="predefined-type">String</span> host = <span class="string"><span class="delimiter">&quot;</span><span class="content">wikipedia.org</span><span class="delimiter">&quot;</span></span>;
+<span class="predefined-type">String</span> host = <span class="string"><span class="delimiter">&quot;</span><span class="content">example.org</span><span class="delimiter">&quot;</span></span>;
 <span class="type">int</span> port = <span class="integer">443</span>;
 <span class="predefined-type">SocketAddress</span> address = <span class="keyword">new</span> <span class="predefined-type">InetSocketAddress</span>(host, port);
 
@@ -1144,7 +1188,8 @@ connectionFactory = <span class="keyword">new</span> SslClientConnectionFactory(
 <span class="comment">// We will obtain a SslConnection now.</span>
 CompletableFuture&lt;SslConnection&gt; connectionPromise = <span class="keyword">new</span> Promise.Completable&lt;&gt;();
 
-<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">HashMap</span>&lt;&gt;();
+<span class="predefined-type">Map</span>&lt;<span class="predefined-type">String</span>, <span class="predefined-type">Object</span>&gt; context = <span class="keyword">new</span> <span class="predefined-type">ConcurrentHashMap</span>&lt;&gt;();
+context.put(Transport.class.getName(), Transport.TCP_IP);
 context.put(ClientConnector.CLIENT_CONNECTION_FACTORY_CONTEXT_KEY, connectionFactory);
 context.put(ClientConnector.CONNECTION_PROMISE_CONTEXT_KEY, connectionPromise);
 clientConnector.connect(address, context);
@@ -1159,9 +1204,7 @@ connectionPromise.whenComplete((sslConnection, failure) -&gt;
         connection.onLine(line -&gt; <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">app</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">line: {0}</span><span class="delimiter">&quot;</span></span>, line));
 
         <span class="comment">// Write a line.</span>
-        connection.writeLine(<span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span> +
-            <span class="string"><span class="delimiter">&quot;</span><span class="content">GET / HTTP/1.0</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span> +
-            <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
+        connection.writeLine(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET / HTTP/1.0</span><span class="char">\r</span><span class="char">\n</span><span class="delimiter">&quot;</span></span>, <span class="predefined-type">Callback</span>.NOOP);
     }
     <span class="keyword">else</span>
     {
@@ -1203,21 +1246,26 @@ It offers an asynchronous API that never blocks for I/O, making it very efficien
 <p>However, when all you need to do is to perform a <code>GET</code> request to a resource, Jetty&#8217;s HTTP client offers also a synchronous API; a programming interface where the thread that issued the request blocks until the request/response conversation is complete.</p>
 </div>
 <div class="paragraph">
-<p>Jetty&#8217;s HTTP client supports different <a href="#pg-client-http-transport">transports protocols</a>: HTTP/1.1, HTTP/2, HTTP/3 and FastCGI. This means that the semantic of an HTTP request such as: " <code>GET</code> the resource <code>/index.html</code> " can be carried over the network in different formats.
-The most common and default format is HTTP/1.1. That said, Jetty&#8217;s HTTP client can carry the same request using the HTTP/2 format, the HTTP/3 format, or the FastCGI format.</p>
+<p>Jetty&#8217;s HTTP client supports different <a href="#pg-client-http-transport">HTTP formats</a>: HTTP/1.1, HTTP/2, HTTP/3 and FastCGI.
+Each format has a different <code>HttpClientTransport</code> implementation, that in turn use a <a href="#pg-client-io-arch-transport">low-level transport</a> to communicate with the server.</p>
 </div>
 <div class="paragraph">
-<p>Furthermore, every transport protocol can be sent either over the network or via Unix-Domain sockets.
+<p>This means that the semantic of an HTTP request such as: " <code>GET</code> the resource <code>/index.html</code> " can be carried over the low-level transport in different formats.
+The most common and default format is HTTP/1.1.
+That said, Jetty&#8217;s HTTP client can carry the same request using the HTTP/2 format, the HTTP/3 format, or the FastCGI format.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, every format can be transported over different low-level transport, such as TCP, Unix-Domain sockets, QUIC or memory.
 Supports for Unix-Domain sockets requires Java 16 or later, since Unix-Domain sockets support has been introduced in OpenJDK with <a href="https://openjdk.java.net/jeps/380">JEP 380</a>.</p>
 </div>
 <div class="paragraph">
-<p>The <a href="#pg-client-http-transport-fcgi">FastCGI transport</a> is heavily used in Jetty&#8217;s <a href="#pg-server-fastcgi">FastCGI support</a> that allows Jetty to work as a reverse proxy to PHP (exactly like Apache or Nginx do) and therefore be able to serve, for example, WordPress websites, often in conjunction with Unix-Domain sockets (although it&#8217;s possible to use FastCGI via network too).</p>
+<p>The <a href="#pg-client-http-transport-fcgi">FastCGI format</a> is used in Jetty&#8217;s <a href="#pg-server-fastcgi">FastCGI support</a> that allows Jetty to work as a reverse proxy to PHP (exactly like Apache or Nginx do) and therefore be able to serve, for example, WordPress websites, often in conjunction with Unix-Domain sockets (although it is possible to use FastCGI via network too).</p>
 </div>
 <div class="paragraph">
-<p>The HTTP/2 transport allows Jetty&#8217;s HTTP client to perform requests using HTTP/2 to HTTP/2 enabled web sites, see also Jetty&#8217;s <a href="#pg-client-http2">HTTP/2 support</a>.</p>
+<p>The HTTP/2 format allows Jetty&#8217;s HTTP client to perform requests using HTTP/2 to HTTP/2 enabled websites, see also Jetty&#8217;s <a href="#pg-client-http2">HTTP/2 support</a>.</p>
 </div>
 <div class="paragraph">
-<p>The HTTP/3 transport allows Jetty&#8217;s HTTP client to perform requests using HTTP/3 to HTTP/3 enabled web sites, see also Jetty&#8217;s <a href="#pg-client-http3">HTTP/3 support</a>.</p>
+<p>The HTTP/3 format allows Jetty&#8217;s HTTP client to perform requests using HTTP/3 to HTTP/3 enabled websites, see also Jetty&#8217;s <a href="#pg-client-http3">HTTP/3 support</a>.</p>
 </div>
 <div class="paragraph">
 <p>Out of the box features that you get with the Jetty HTTP client include:</p>
@@ -1250,7 +1298,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1289,7 +1337,7 @@ There are several reasons for having multiple <code>HttpClient</code> instances 
 <p>You want the two instances to behave like two different browsers and hence have different cookies, different authentication credentials, etc.</p>
 </li>
 <li>
-<p>You want to use <a href="#pg-client-http-transport">different transports</a>.</p>
+<p>You want to use <a href="#pg-client-http-transport">different <code>HttpClientTransport</code>s</a>.</p>
 </li>
 </ul>
 </div>
@@ -1343,21 +1391,21 @@ It is recommended that you stop <code>HttpClient</code> from an unrelated thread
 <div class="ulist">
 <ul>
 <li>
-<p>a <code>CookieStore</code> (see <a href="#pg-client-http-cookie">this section</a>).</p>
+<p>A <code>CookieStore</code> (see <a href="#pg-client-http-cookie">this section</a>).</p>
 </li>
 <li>
-<p>a <code>AuthenticationStore</code> (see <a href="#pg-client-http-authentication">this section</a>).</p>
+<p>A <code>AuthenticationStore</code> (see <a href="#pg-client-http-authentication">this section</a>).</p>
 </li>
 <li>
-<p>a <code>ProxyConfiguration</code> (see <a href="#pg-client-http-proxy">this section</a>).</p>
+<p>A <code>ProxyConfiguration</code> (see <a href="#pg-client-http-proxy">this section</a>).</p>
 </li>
 <li>
-<p>a set of <code>Destination</code>s</p>
+<p>A set of <code>Destination</code>s</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>A <code>Destination</code> is the client-side component that represents an <em>origin</em> server, and manages a queue of requests for that origin, and a <a href="#pg-client-http-connection-pool">pool of TCP connections</a> to that origin.</p>
+<p>A <code>Destination</code> is the client-side component that represents an <em>origin</em> server, and manages a queue of requests for that origin, and a <a href="#pg-client-http-connection-pool">pool of connections</a> to that origin.</p>
 </div>
 <div class="paragraph">
 <p>An <em>origin</em> may be simply thought as the tuple <code>(scheme, host, port)</code> and it is where the client connects to in order to communicate with the server.
@@ -1365,7 +1413,7 @@ However, this is not enough.</p>
 </div>
 <div class="paragraph">
 <p>If you use <code>HttpClient</code> to write a proxy you may have different clients that want to contact the same server.
-In this case, you may not want to use the same proxy-to-server connection to proxy requests for both clients, for example for authentication reasons: the server may associate the connection with authentication credentials and you do not want to use the same connection for two different users that have different credentials.
+In this case, you may not want to use the same proxy-to-server connection to proxy requests for both clients, for example for authentication reasons: the server may associate the connection with authentication credentials, and you do not want to use the same connection for two different users that have different credentials.
 Instead, you want to use different connections for different clients and this can be achieved by "tagging" a destination with a tag object that represents the remote client (for example, it could be the remote client IP address).</p>
 </div>
 <div class="paragraph">
@@ -1377,17 +1425,22 @@ However, also this is not enough.</p>
 A connection may start by speaking one protocol, for example HTTP/1.1, but then be upgraded to speak a different protocol, for example HTTP/2. After a connection has been upgraded to a second protocol, it cannot speak the first protocol anymore, so it can only be used to communicate using the second protocol.</p>
 </div>
 <div class="paragraph">
-<p>Two origins with the same <code>(scheme, host, port)</code> but different <code>protocol</code> create two different destinations and therefore two different connection pools.</p>
+<p>Two origins with the same <code>(scheme, host, port, tag)</code> but different <code>protocol</code> create two different destinations and therefore two different connection pools.</p>
 </div>
 <div class="paragraph">
-<p>Therefore an origin is identified by the tuple <code>(scheme, host, port, tag, protocol)</code>.</p>
+<p>Finally, it is possible for a server to speak the same protocol over different <a href="#pg-client-io-arch-transport">low-level transports</a> (represented by <code>Transport</code>), for example TCP and Unix-Domain.</p>
+</div>
+<div class="paragraph">
+<p>Two origins with the same <code>(scheme, host, port, tag, protocol)</code> but different low-level transports create two different destinations and therefore two different connection pools.</p>
+</div>
+<div class="paragraph">
+<p>Therefore, an origin is identified by the tuple <code>(scheme, host, port, tag, protocol, transport)</code>.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="pg-client-http-connection-pool"><a class="anchor" href="#pg-client-http-connection-pool"></a><a class="link" href="#pg-client-http-connection-pool">HttpClient Connection Pooling</a></h4>
 <div class="paragraph">
-<p>A <code>Destination</code> manages a <code>org.eclipse.jetty.client.ConnectionPool</code>, where connections to a particular origin are pooled for performance reasons:
-opening a connection is a costly operation and it&#8217;s better to reuse them for multiple requests.</p>
+<p>A <code>Destination</code> manages a <code>org.eclipse.jetty.client.ConnectionPool</code>, where connections to a particular origin are pooled for performance reasons: opening a connection is a costly operation, and it&#8217;s better to reuse them for multiple requests.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1396,7 +1449,7 @@ opening a connection is a costly operation and it&#8217;s better to reuse them f
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Remember that to select a specific <code>Destination</code> you must select a specific origin, and that an origin is identified by the tuple <code>(scheme, host, port, tag, protocol)</code>, so you can have multiple <code>Destination</code>s for the same <code>host</code> and <code>port</code>, and therefore multiple <code>ConnectionPool</code>s
+Remember that to select a specific <code>Destination</code> you must select a specific origin, and that an origin is identified by the tuple <code>(scheme, host, port, tag, protocol, transport)</code>, so you can have multiple <code>Destination</code>s for the same <code>host</code> and <code>port</code>, and therefore multiple <code>ConnectionPool</code>s
 </td>
 </tr>
 </table>
@@ -1427,7 +1480,7 @@ ConnectionPool connectionPool = httpClient.getDestinations().stream()
 <p><code>DuplexConnectionPool</code>, historically the first implementation, only used by the HTTP/1.1 transport.</p>
 </li>
 <li>
-<p><code>MultiplexConnectionPool</code>, the generic implementation valid for any transport where connections are reused with a MRU (most recently used) algorithm (that is, the connections most recently returned to the connection pool are the more likely to be used again).</p>
+<p><code>MultiplexConnectionPool</code>, the generic implementation valid for any transport where connections are reused with a most recently used algorithm (that is, the connections most recently returned to the connection pool are the more likely to be used again).</p>
 </li>
 <li>
 <p><code>RoundRobinConnectionPool</code>, similar to <code>MultiplexConnectionPool</code> but where connections are reused with a round-robin algorithm.</p>
@@ -2152,6 +2205,109 @@ request1.send(result -&gt; <span class="predefined-type">System</span>.getLogger
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="pg-client-http-api-transport"><a class="anchor" href="#pg-client-http-api-transport"></a><a class="link" href="#pg-client-http-api-transport">Request <code>Transport</code></a></h5>
+<div class="paragraph">
+<p>The communication between client and server happens over a <a href="#pg-client-io-arch-transport">low-level transport</a>, and applications can specify the low-level transport to use for each request.</p>
+</div>
+<div class="paragraph">
+<p>This gives client applications great flexibility, because they can use the same <code>HttpClient</code> instance to communicate, for example, with an external third party web application via TCP, to a different process via Unix-Domain sockets, and efficiently to the same process via memory.</p>
+</div>
+<div class="paragraph">
+<p>Client application can also choose more esoteric configurations such as using QUIC, typically used to transport HTTP/3, to transport HTTP/1.1 or HTTP/2, because QUIC provides reliable and ordered communication like TCP does.</p>
+</div>
+<div class="paragraph">
+<p>Provided you have configured a <a href="#pg-server-http-connector"><code>UnixDomainServerConnector</code></a> on the server, this is how you can configure a request to use Unix-Domain sockets:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// This is the path where the server &quot;listens&quot; on.</span>
+Path unixDomainPath = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/server.sock</span><span class="delimiter">&quot;</span></span>);
+
+<span class="comment">// Creates a ClientConnector.</span>
+ClientConnector clientConnector = <span class="keyword">new</span> ClientConnector();
+
+<span class="comment">// You can use Unix-Domain for HTTP/1.1.</span>
+HttpClientTransportOverHTTP http1Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP(clientConnector);
+
+<span class="comment">// You can use Unix-Domain also for HTTP/2.</span>
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(clientConnector);
+HttpClientTransportOverHTTP2 http2Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP2(http2Client);
+
+<span class="comment">// You can use Unix-Domain also for the dynamic transport.</span>
+ClientConnectionFactory.Info http1 = HttpClientConnectionFactory.HTTP11;
+ClientConnectionFactoryOverHTTP2.HTTP2 http2 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client);
+HttpClientTransportDynamic dynamicTransport = <span class="keyword">new</span> HttpClientTransportDynamic(clientConnector, http1, http2);
+
+<span class="comment">// Choose the transport you prefer for HttpClient, for example the dynamic transport.</span>
+HttpClient httpClient = <span class="keyword">new</span> HttpClient(dynamicTransport);
+httpClient.start();
+
+ContentResponse response = httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">jetty.org</span><span class="delimiter">&quot;</span></span>, <span class="integer">80</span>)
+    <span class="comment">// Specify that the request must be sent over Unix-Domain.</span>
+    .transport(<span class="keyword">new</span> Transport.TCPUnix(unixDomainPath))
+    .send();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the same way, if you have configured a <a href="#pg-server-http-connector"><code>MemoryConnector</code></a> on the server, this is how you can configure a request to use memory for communication:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// The server-side MemoryConnector speaking HTTP/1.1.</span>
+Server server = <span class="keyword">new</span> Server();
+MemoryConnector memoryConnector = <span class="keyword">new</span> MemoryConnector(server, <span class="keyword">new</span> HttpConnectionFactory());
+server.addConnector(memoryConnector);
+<span class="comment">// ...</span>
+
+<span class="comment">// The code above is the server-side.</span>
+<span class="comment">// ----</span>
+<span class="comment">// The code below is the client-side.</span>
+
+HttpClient httpClient = <span class="keyword">new</span> HttpClient();
+httpClient.start();
+
+<span class="comment">// Use the MemoryTransport to communicate with the server-side.</span>
+Transport transport = <span class="keyword">new</span> MemoryTransport(memoryConnector);
+
+httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost/</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// Specify the Transport to use.</span>
+    .transport(transport)
+    .send();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a fancy example of how to mix HTTP versions and low-level transports:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">HttpClient httpClient = <span class="keyword">new</span> HttpClient(<span class="keyword">new</span> HttpClientTransportDynamic(clientConnector, http2, http1, http3));
+httpClient.start();
+
+<span class="comment">// Make a TCP request to a 3rd party web application.</span>
+ContentResponse thirdPartyResponse = httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://third-party.com/api</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// No need to specify the Transport, TCP will be used by default.</span>
+    .send();
+
+<span class="comment">// Upload the third party response content to a validation process.</span>
+ContentResponse validatedResponse = httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost/validate</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// The validation process is available via Unix-Domain.</span>
+    .transport(<span class="keyword">new</span> Transport.TCPUnix(unixDomainPath))
+    .method(HttpMethod.POST)
+    .body(<span class="keyword">new</span> BytesRequestContent(thirdPartyResponse.getContent()))
+    .send();
+
+<span class="comment">// Process the validated response intra-process by sending</span>
+<span class="comment">// it to another web application in the same Jetty server.</span>
+ContentResponse response = httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost/process</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// The processing is in-memory.</span>
+    .transport(<span class="keyword">new</span> MemoryTransport(memoryConnector))
+    .method(HttpMethod.POST)
+    .body(<span class="keyword">new</span> BytesRequestContent(validatedResponse.getContent()))
+    .send();</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="pg-client-http-configuration"><a class="anchor" href="#pg-client-http-configuration"></a><a class="link" href="#pg-client-http-configuration">HttpClient Configuration</a></h4>
@@ -2165,13 +2321,13 @@ Please refer to the <code>HttpClient</code> <a href="https://eclipse.dev/jetty/j
 <div class="ulist">
 <ul>
 <li>
-<p><code>HttpClient.idleTimeout</code>: same as <code>ClientConnector.idleTimeout</code> described in <a href="#pg-client-io-arch-network">this section</a>.</p>
+<p><code>HttpClient.idleTimeout</code>: same as <code>ClientConnector.idleTimeout</code> described in <a href="#pg-client-io-arch-transport">this section</a>.</p>
 </li>
 <li>
-<p><code>HttpClient.connectBlocking</code>: same as <code>ClientConnector.connectBlocking</code> described in <a href="#pg-client-io-arch-network">this section</a>.</p>
+<p><code>HttpClient.connectBlocking</code>: same as <code>ClientConnector.connectBlocking</code> described in <a href="#pg-client-io-arch-transport">this section</a>.</p>
 </li>
 <li>
-<p><code>HttpClient.connectTimeout</code>: same as <code>ClientConnector.connectTimeout</code> described in <a href="#pg-client-io-arch-network">this section</a>.</p>
+<p><code>HttpClient.connectTimeout</code>: same as <code>ClientConnector.connectTimeout</code> described in <a href="#pg-client-io-arch-transport">this section</a>.</p>
 </li>
 <li>
 <p><code>HttpClient.maxConnectionsPerDestination</code>: the max number of TCP connections that are opened for a particular destination (defaults to 64).</p>
@@ -2229,7 +2385,8 @@ sslContextFactory.setEndpointIdentificationAlgorithm(<span class="predefined-con
 </div>
 </div>
 <div class="paragraph">
-<p>When you disable the validation of the server host name at the TLS level, you are strongly recommended to enable it at the application level, otherwise you may risk to connect to a server different from the one you intend to connect to:</p>
+<p>When you disable the validation of the server host name at the TLS level, you are strongly recommended to enable it at the application level.
+Failing to do so puts you at risk of connecting to a server different from the one you intend to connect to:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2239,10 +2396,49 @@ sslContextFactory.setHostnameVerifier((hostName, session) -&gt; hostName.endsWit
 </div>
 </div>
 <div class="paragraph">
-<p>You may have the validation of the server host name enabled at both the TLS level and application level, typically when you want to further restrict the client to connect only to a smaller set of server hosts than those allowed in the certificate sent by the server.</p>
+<p>Enabling server host name validation at both the TLS level and application level allow you to further restrict the set of server hosts the client can connect to, among those allowed in the certificate sent by the server.</p>
+</div>
+<div class="paragraph">
+<p>Entirely disabling server host name validation is not recommended, but may be done in controlled environments.</p>
+</div>
+<div class="paragraph">
+<p>Even with server host name validation disabled, the validation of the certificate chain, by validating cryptographic signatures and validity dates is still performed.</p>
 </div>
 <div class="paragraph">
 <p>Please refer to the <code>SslContextFactory.Client</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/util/ssl/SslContextFactory.Client.html">javadocs</a> for the complete list of configurable parameters.</p>
+</div>
+<div class="sect5">
+<h6 id="pg-client-http-configuration-tls-listener"><a class="anchor" href="#pg-client-http-configuration-tls-listener"></a><a class="link" href="#pg-client-http-configuration-tls-listener">HttpClient <code>SslHandshakeListener</code></a></h6>
+<div class="paragraph">
+<p>Applications may register a <code>org.eclipse.jetty.io.ssl.SslHandshakeListener</code> to be notified of TLS handshakes success or failure, by adding the <code>SslHandshakeListener</code> as a bean to <code>HttpClient</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">// Create a SslHandshakeListener.</span>
+SslHandshakeListener listener = <span class="keyword">new</span> SslHandshakeListener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> handshakeSucceeded(<span class="predefined-type">Event</span> event) <span class="directive">throws</span> <span class="exception">SSLException</span>
+    {
+        <span class="predefined-type">SSLEngine</span> sslEngine = event.getSSLEngine();
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">tls</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">TLS handshake successful to %s</span><span class="delimiter">&quot;</span></span>, sslEngine.getPeerHost());
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> handshakeFailed(<span class="predefined-type">Event</span> event, <span class="predefined-type">Throwable</span> failure)
+    {
+        <span class="predefined-type">SSLEngine</span> sslEngine = event.getSSLEngine();
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">tls</span><span class="delimiter">&quot;</span></span>).log(ERROR, <span class="string"><span class="delimiter">&quot;</span><span class="content">TLS handshake failure to %s</span><span class="delimiter">&quot;</span></span>, sslEngine.getPeerHost(), failure);
+    }
+};
+
+HttpClient httpClient = <span class="keyword">new</span> HttpClient();
+
+<span class="comment">// Add the SslHandshakeListener as bean to HttpClient.</span>
+<span class="comment">// The listener will be notified of TLS handshakes success and failure.</span>
+httpClient.addBean(listener);</code></pre>
+</div>
+</div>
 </div>
 <div class="sect5">
 <h6 id="pg-client-http-configuration-tls-truststore"><a class="anchor" href="#pg-client-http-configuration-tls-truststore"></a><a class="link" href="#pg-client-http-configuration-tls-truststore">HttpClient TLS TrustStore Configuration</a></h6>
@@ -2595,13 +2791,13 @@ ContentResponse response = httpClient.newRequest(serverURI).send();</code></pre>
 <div class="sect3">
 <h4 id="pg-client-http-transport"><a class="anchor" href="#pg-client-http-transport"></a><a class="link" href="#pg-client-http-transport">HttpClient Pluggable Transports</a></h4>
 <div class="paragraph">
-<p>Jetty&#8217;s <code>HttpClient</code> can be configured to use different transport protocols to carry the semantic of HTTP requests and responses.</p>
+<p>Jetty&#8217;s <code>HttpClient</code> can be configured to use different HTTP formats to carry the semantic of HTTP requests and responses, by specifying different <code>HttpClientTransport</code> implementations.</p>
 </div>
 <div class="paragraph">
-<p>This means that the intention of a client to request resource <code>/index.html</code> using the <code>GET</code> method can be carried over the network in different formats.</p>
+<p>This means that the intention of a client to request resource <code>/index.html</code> using the <code>GET</code> method can be carried over a <a href="#pg-client-http-api-transport">low-level transport</a> in different formats.</p>
 </div>
 <div class="paragraph">
-<p>An <code>HttpClient</code> transport is the component that is in charge of converting a high-level, semantic, HTTP requests such as " <code>GET</code> resource <code>/index.html</code> " into the specific format understood by the server (for example, HTTP/2 or HTTP/3), and to convert the server response from the specific format (HTTP/2 or HTTP/3) into high-level, semantic objects that can be used by applications.</p>
+<p>An <code>HttpClientTransport</code> is the component that is in charge of converting a high-level, semantic, HTTP requests such as " <code>GET</code> resource <code>/index.html</code> " into the specific format understood by the server (for example, HTTP/2 or HTTP/3), and to convert the server response from the specific format (HTTP/2 or HTTP/3) into high-level, semantic objects that can be used by applications.</p>
 </div>
 <div class="paragraph">
 <p>The most common protocol format is HTTP/1.1, a textual protocol with lines separated by <code>\r\n</code>:</p>
@@ -2630,41 +2826,41 @@ x0C x0B  D   O   C   U   M   E
 </div>
 </div>
 <div class="paragraph">
-<p>Similarly, HTTP/2 is a binary protocol that transports the same information in a yet different format via TCP, while HTTP/3 is a binary protocol that transports the same information in yet another format via UDP.</p>
+<p>Similarly, HTTP/2 is a binary protocol that transports the same information in a yet different format via TCP, while HTTP/3 is a binary protocol that transports the same information in yet another format via QUIC.</p>
 </div>
 <div class="paragraph">
-<p>A protocol may be <em>negotiated</em> between client and server.
+<p>The HTTP protocol version may be <em>negotiated</em> between client and server.
 A request for a resource may be sent using one protocol (for example, HTTP/1.1), but the response may arrive in a different protocol (for example, HTTP/2).</p>
 </div>
 <div class="paragraph">
-<p><code>HttpClient</code> supports these static transports, each speaking only one protocol:</p>
+<p><code>HttpClient</code> supports these <code>HttpClientTransport</code> implementations, each speaking only one protocol:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#pg-client-http-transport-http11">HTTP/1.1</a> (both clear-text and TLS encrypted)</p>
+<p><code>HttpClientTransportOverHTTP</code>, for <a href="#pg-client-http-transport-http11">HTTP/1.1</a> (both clear-text and TLS encrypted)</p>
 </li>
 <li>
-<p><a href="#pg-client-http-transport-http2">HTTP/2</a> (both clear-text and TLS encrypted)</p>
+<p><code>HttpClientTransportOverHTTP2</code>, for <a href="#pg-client-http-transport-http2">HTTP/2</a> (both clear-text and TLS encrypted)</p>
 </li>
 <li>
-<p><a href="#pg-client-http-transport-http3">HTTP/3</a> (only encrypted via QUIC+TLS)</p>
+<p><code>HttpClientTransportOverHTTP3</code>, for <a href="#pg-client-http-transport-http3">HTTP/3</a> (only encrypted via QUIC)</p>
 </li>
 <li>
-<p><a href="#pg-client-http-transport-fcgi">FastCGI</a> (both clear-text and TLS encrypted)</p>
+<p><code>HttpClientTransportOverFCGI</code>, for <a href="#pg-client-http-transport-fcgi">FastCGI</a> (both clear-text and TLS encrypted)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p><code>HttpClient</code> also supports one <a href="#pg-client-http-transport-dynamic">dynamic transport</a>, that can speak different protocols and can select the right protocol by negotiating it with the server or by explicit indication from applications.</p>
+<p><code>HttpClient</code> also supports <code>HttpClientTransportDynamic</code>, a <a href="#pg-client-http-transport-dynamic">dynamic transport</a> that can speak different HTTP formats and can select the right protocol by negotiating it with the server or by explicit indication from applications.</p>
 </div>
 <div class="paragraph">
-<p>Furthermore, every transport protocol can be sent either over the network or via Unix-Domain sockets.
+<p>Furthermore, every HTTP format can be sent over different <a href="#pg-client-http-api-transport">low-level transports</a> such as TCP, Unix-Domain, QUIC or memory.
 Supports for Unix-Domain sockets requires Java 16 or later, since Unix-Domain sockets support has been introduced in OpenJDK with <a href="https://openjdk.java.net/jeps/380">JEP 380</a>.</p>
 </div>
 <div class="paragraph">
-<p>Applications are typically not aware of the actual protocol being used.
-This allows them to write their logic against a high-level API that hides the details of the specific protocol being used over the network.</p>
+<p>Applications are typically not aware of the actual HTTP format or low-level transport being used.
+This allows them to write their logic against a high-level API that hides the details of the specific HTTP format and low-level transport being used.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-client-http-transport-http11"><a class="anchor" href="#pg-client-http-transport-http11"></a><a class="link" href="#pg-client-http-transport-http11">HTTP/1.1 Transport</a></h5>
@@ -2700,11 +2896,11 @@ client.start();</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// The HTTP2Client powers the HTTP/2 transport.</span>
-HTTP2Client h2Client = <span class="keyword">new</span> HTTP2Client();
-h2Client.setInitialSessionRecvWindow(<span class="integer">64</span> * <span class="integer">1024</span> * <span class="integer">1024</span>);
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client();
+http2Client.setInitialSessionRecvWindow(<span class="integer">64</span> * <span class="integer">1024</span> * <span class="integer">1024</span>);
 
 <span class="comment">// Create and configure the HTTP/2 transport.</span>
-HttpClientTransportOverHTTP2 transport = <span class="keyword">new</span> HttpClientTransportOverHTTP2(h2Client);
+HttpClientTransportOverHTTP2 transport = <span class="keyword">new</span> HttpClientTransportOverHTTP2(http2Client);
 transport.setUseALPN(<span class="predefined-constant">true</span>);
 
 HttpClient client = <span class="keyword">new</span> HttpClient(transport);
@@ -2715,7 +2911,7 @@ client.start();</code></pre>
 <p><code>HTTP2Client</code> is the lower-level client that provides an API based on HTTP/2 concepts such as <em>sessions</em>, <em>streams</em> and <em>frames</em> that are specific to HTTP/2. See <a href="#pg-client-http2">the HTTP/2 client section</a> for more information.</p>
 </div>
 <div class="paragraph">
-<p><code>HttpClientTransportOverHTTP2</code> uses <code>HTTP2Client</code> to format high-level semantic HTTP requests (like "GET resource /index.html") into the HTTP/2 specific format.</p>
+<p><code>HttpClientTransportOverHTTP2</code> uses <code>HTTP2Client</code> to format high-level semantic HTTP requests into the HTTP/2 specific format.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2725,12 +2921,15 @@ client.start();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// The HTTP3Client powers the HTTP/3 transport.</span>
-HTTP3Client h3Client = <span class="keyword">new</span> HTTP3Client();
-h3Client.getQuicConfiguration().setSessionRecvWindow(<span class="integer">64</span> * <span class="integer">1024</span> * <span class="integer">1024</span>);
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// HTTP/3 requires secure communication.</span>
+SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
+<span class="comment">// The HTTP3Client powers the HTTP/3 transport.</span>
+ClientQuicConfiguration clientQuicConfig = <span class="keyword">new</span> ClientQuicConfiguration(sslContextFactory, <span class="predefined-constant">null</span>);
+HTTP3Client http3Client = <span class="keyword">new</span> HTTP3Client(clientQuicConfig);
+http3Client.getQuicConfiguration().setSessionRecvWindow(<span class="integer">64</span> * <span class="integer">1024</span> * <span class="integer">1024</span>);
 
 <span class="comment">// Create and configure the HTTP/3 transport.</span>
-HttpClientTransportOverHTTP3 transport = <span class="keyword">new</span> HttpClientTransportOverHTTP3(h3Client);
+HttpClientTransportOverHTTP3 transport = <span class="keyword">new</span> HttpClientTransportOverHTTP3(http3Client);
 
 HttpClient client = <span class="keyword">new</span> HttpClient(transport);
 client.start();</code></pre>
@@ -2740,7 +2939,7 @@ client.start();</code></pre>
 <p><code>HTTP3Client</code> is the lower-level client that provides an API based on HTTP/3 concepts such as <em>sessions</em>, <em>streams</em> and <em>frames</em> that are specific to HTTP/3. See <a href="#pg-client-http3">the HTTP/3 client section</a> for more information.</p>
 </div>
 <div class="paragraph">
-<p><code>HttpClientTransportOverHTTP3</code> uses <code>HTTP3Client</code> to format high-level semantic HTTP requests (like "GET resource /index.html") into the HTTP/3 specific format.</p>
+<p><code>HttpClientTransportOverHTTP3</code> uses <code>HTTP3Client</code> to format high-level semantic HTTP requests into the HTTP/3 specific format.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2767,17 +2966,18 @@ client.start();</code></pre>
 <div class="sect4">
 <h5 id="pg-client-http-transport-dynamic"><a class="anchor" href="#pg-client-http-transport-dynamic"></a><a class="link" href="#pg-client-http-transport-dynamic">Dynamic Transport</a></h5>
 <div class="paragraph">
-<p>The static transports work well if you know in advance the protocol you want to speak with the server, or if the server only supports one protocol (such as FastCGI).</p>
+<p>The static <code>HttpClientTransport</code> implementations work well if you know in advance the protocol you want to speak with the server, or if the server only supports one protocol (such as FastCGI).</p>
 </div>
 <div class="paragraph">
-<p>With the advent of HTTP/2 and HTTP/3, however, servers are now able to support multiple protocols, at least both HTTP/1.1 and HTTP/2.</p>
+<p>With the advent of HTTP/2 and HTTP/3, however, servers are now able to support multiple protocols.</p>
 </div>
 <div class="paragraph">
 <p>The HTTP/2 protocol is typically negotiated between client and server.
 This negotiation can happen via ALPN, a TLS extension that allows the client to tell the server the list of protocol that the client supports, so that the server can pick one of the client supported protocols that also the server supports; or via HTTP/1.1 upgrade by means of the <code>Upgrade</code> header.</p>
 </div>
 <div class="paragraph">
-<p>Applications can configure the dynamic transport with one or more <em>application</em> protocols such as HTTP/1.1 or HTTP/2. The implementation will take care of using TLS for HTTPS URIs, using ALPN if necessary, negotiating protocols, upgrading from one protocol to another, etc.</p>
+<p>Applications can configure the dynamic transport with one or more HTTP versions such as HTTP/1.1, HTTP/2 or HTTP/3.
+The implementation will take care of using TLS for HTTPS URIs, using ALPN if necessary, negotiating protocols, upgrading from one protocol to another, etc.</p>
 </div>
 <div class="paragraph">
 <p>By default, the dynamic transport only speaks HTTP/1.1:</p>
@@ -2807,34 +3007,42 @@ HttpClientTransportDynamic http2Transport = <span class="keyword">new</span> Htt
 </div>
 </div>
 <div class="paragraph">
-<p>The dynamic transport, however, has been implemented to support multiple transports, in particular both HTTP/1.1 and HTTP/2:</p>
+<p>The dynamic transport, however, has been implemented to support multiple transports, in particular HTTP/1.1, HTTP/2 and HTTP/3:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">ClientConnector connector = <span class="keyword">new</span> ClientConnector();
+<pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
+
+ClientConnector connector = <span class="keyword">new</span> ClientConnector();
+connector.setSslContextFactory(sslContextFactory);
 
 ClientConnectionFactory.Info http1 = HttpClientConnectionFactory.HTTP11;
 
 HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(connector);
 ClientConnectionFactoryOverHTTP2.HTTP2 http2 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client);
 
-HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http1, http2);
+ClientQuicConfiguration quicConfiguration = <span class="keyword">new</span> ClientQuicConfiguration(sslContextFactory, <span class="predefined-constant">null</span>);
+HTTP3Client http3Client = <span class="keyword">new</span> HTTP3Client(quicConfiguration, connector);
+ClientConnectionFactoryOverHTTP3.HTTP3 http3 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP3.HTTP3(http3Client);
+
+<span class="comment">// The order of the protocols indicates the client's preference.</span>
+<span class="comment">// The first is the most preferred, the last is the least preferred, but</span>
+<span class="comment">// the protocol version to use can be explicitly specified in the request.</span>
+HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http1, http2, http3);
 
 HttpClient client = <span class="keyword">new</span> HttpClient(transport);
 client.start();</code></pre>
 </div>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The order in which the protocols are specified to <code>HttpClientTransportDynamic</code> indicates what is the client preference.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The order in which the protocols are specified to <code>HttpClientTransportDynamic</code> indicates what is the client preference (first the most preferred).</p>
+</div>
+<div class="paragraph">
+<p>When clear-text communication is used (i.e. URIs with the <code>http</code> scheme) there is no HTTP protocol version negotiation, and therefore the application must know <em>a priori</em> whether the server supports the HTTP version or not.
+For example, if the server only supports clear-text HTTP/2, and <code>HttpClientTransportDynamic</code> is configured as in the example above, where HTTP/1.1 has precedence over HTTP/2, the client will send, by default, a clear-text HTTP/1.1 request to a clear-text HTTP/2 only server, which will result in a communication failure.</p>
+</div>
+<div class="paragraph">
+<p>When using TLS (i.e. URIs with the <code>https</code> scheme), the HTTP protocol version is <em>negotiated</em> between client and server via ALPN, and it is the server that decides what is the application protocol to use for the communication, regardless of the client preference.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -2843,45 +3051,45 @@ The order in which the protocols are specified to <code>HttpClientTransportDynam
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-When using TLS (i.e. URIs with the <code>https</code> scheme), the application protocol is <em>negotiated</em> between client and server via ALPN, and it is the server that decides what is the application protocol to use for the communication, regardless of the client preference.
+<div class="paragraph">
+<p>HTTP/1.1 and HTTP/2 are <em>compatible</em> because they both use TCP, while HTTP/3 is incompatible with previous HTTP versions because it uses QUIC.</p>
+</div>
+<div class="paragraph">
+<p>Only compatible HTTP versions can negotiate the HTTP protocol version to use via ALPN, and only compatible HTTP versions can be upgraded from an older version to a newer version.</p>
+</div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>When clear-text communication is used (i.e. URIs with the <code>http</code> scheme) there is no application protocol negotiation, and therefore the application must know <em>a priori</em> whether the server supports the protocol or not.
-For example, if the server only supports clear-text HTTP/2, and <code>HttpClientTransportDynamic</code> is configured as in the example above, the client will send, by default, a clear-text HTTP/1.1 request to a clear-text HTTP/2 only server, which will result in a communication failure.</p>
-</div>
-<div class="paragraph">
-<p>Provided that the server supports both HTTP/1.1 and HTTP/2 clear-text, client applications can explicitly hint the version they want to use:</p>
+<p>Provided that the server supports HTTP/1.1, HTTP/2 and HTTP/3, client applications can explicitly hint the version they want to use:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">ClientConnector connector = <span class="keyword">new</span> ClientConnector();
-ClientConnectionFactory.Info http1 = HttpClientConnectionFactory.HTTP11;
-HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(connector);
-ClientConnectionFactoryOverHTTP2.HTTP2 http2 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client);
-HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http1, http2);
+<pre class="CodeRay highlight nowrap"><code data-lang="java">HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http1, http2, http3);
 HttpClient client = <span class="keyword">new</span> HttpClient(transport);
 client.start();
 
-<span class="comment">// The server supports both HTTP/1.1 and HTTP/2 clear-text on port 8080.</span>
+<span class="comment">// The server supports HTTP/1.1, HTTP/2 and HTTP/3.</span>
 
-<span class="comment">// Make a clear-text request without explicit version.</span>
-<span class="comment">// The first protocol specified to HttpClientTransportDynamic</span>
-<span class="comment">// is picked, in this example will be HTTP/1.1.</span>
-ContentResponse http1Response = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">host</span><span class="delimiter">&quot;</span></span>, <span class="integer">8080</span>).send();
+ContentResponse http1Response = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// Specify the version explicitly.</span>
+    .version(HttpVersion.HTTP_1_1)
+    .send();
 
-<span class="comment">// Make a clear-text request with explicit version.</span>
-<span class="comment">// Clear-text HTTP/2 is used for this request.</span>
-ContentResponse http2Response = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">host</span><span class="delimiter">&quot;</span></span>, <span class="integer">8080</span>)
+ContentResponse http2Response = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
     <span class="comment">// Specify the version explicitly.</span>
     .version(HttpVersion.HTTP_2)
     .send();
 
+ContentResponse http3Response = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// Specify the version explicitly.</span>
+    .version(HttpVersion.HTTP_3)
+    .send();
+
 <span class="comment">// Make a clear-text upgrade request from HTTP/1.1 to HTTP/2.</span>
 <span class="comment">// The request will start as HTTP/1.1, but the response will be HTTP/2.</span>
-ContentResponse upgradedResponse = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">host</span><span class="delimiter">&quot;</span></span>, <span class="integer">8080</span>)
+ContentResponse upgradedResponse = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
     .headers(headers -&gt; headers
         .put(HttpHeader.UPGRADE, <span class="string"><span class="delimiter">&quot;</span><span class="content">h2c</span><span class="delimiter">&quot;</span></span>)
         .put(HttpHeader.HTTP2_SETTINGS, <span class="string"><span class="delimiter">&quot;</span><span class="delimiter">&quot;</span></span>)
@@ -2890,75 +3098,47 @@ ContentResponse upgradedResponse = client.newRequest(<span class="string"><span 
 </div>
 </div>
 <div class="paragraph">
-<p>In case of TLS encrypted communication using the <code>https</code> scheme, things are a little more complicated.</p>
-</div>
-<div class="paragraph">
 <p>If the client application explicitly specifies the HTTP version, then ALPN is not used by the client.
 By specifying the HTTP version explicitly, the client application has prior-knowledge of what HTTP version the server supports, and therefore ALPN is not needed.
 If the server does not support the HTTP version chosen by the client, then the communication will fail.</p>
 </div>
 <div class="paragraph">
-<p>If the client application does not explicitly specify the HTTP version, then ALPN will be used by the client.
+<p>If the client application does not explicitly specify the HTTP version, then ALPN will be used by the client, but only for compatible protocols.
 If the server also supports ALPN, then the protocol will be negotiated via ALPN and the server will choose the protocol to use.
 If the server does not support ALPN, the client will try to use the first protocol configured in <code>HttpClientTransportDynamic</code>, and the communication may succeed or fail depending on whether the server supports the protocol chosen by the client.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="pg-client-http-transport-unix-domain"><a class="anchor" href="#pg-client-http-transport-unix-domain"></a><a class="link" href="#pg-client-http-transport-unix-domain">Unix-Domain Configuration</a></h5>
 <div class="paragraph">
-<p>All the transports can be configured with a <code>ClientConnector</code>, the component that is responsible for the transmission of the bytes generated by the transport to the server.</p>
-</div>
-<div class="paragraph">
-<p>By default, <code>ClientConnector</code> uses TCP networking to send bytes to the server and receive bytes from the server.</p>
-</div>
-<div class="paragraph">
-<p>When you are using Java 16 or later, <code>ClientConnector</code> also support <a href="#pg-client-io-arch-unix-domain">Unix-Domain sockets</a>, and every transport can be configured to use Unix-Domain sockets instead of TCP networking.</p>
-</div>
-<div class="paragraph">
-<p>To configure Unix-Domain sockets, you can create a <code>ClientConnector</code> instance in the following way:</p>
+<p>For example, HTTP/3 is not compatible with previous HTTP version; if <code>HttpClientTransportDynamic</code> is configured to prefer HTTP/3, it will be the only protocol attempted by the client:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// This is the path where the server &quot;listens&quot; on.</span>
-Path unixDomainPath = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/server.sock</span><span class="delimiter">&quot;</span></span>);
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">// Client prefers HTTP/3.</span>
+HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http3, http2, http1);
+HttpClient client = <span class="keyword">new</span> HttpClient(transport);
+client.start();
 
-<span class="comment">// Creates a ClientConnector that uses Unix-Domain</span>
-<span class="comment">// sockets, not the network, to connect to the server.</span>
-ClientConnector unixDomainClientConnector = ClientConnector.forUnixDomain(unixDomainPath);
-
-<span class="comment">// Use Unix-Domain for HTTP/1.1.</span>
-HttpClientTransportOverHTTP http1Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP(unixDomainClientConnector);
-
-<span class="comment">// You can use Unix-Domain also for HTTP/2.</span>
-HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(unixDomainClientConnector);
-HttpClientTransportOverHTTP2 http2Transport = <span class="keyword">new</span> HttpClientTransportOverHTTP2(http2Client);
-
-<span class="comment">// You can also use UnixDomain for the dynamic transport.</span>
-ClientConnectionFactory.Info http1 = HttpClientConnectionFactory.HTTP11;
-ClientConnectionFactoryOverHTTP2.HTTP2 http2 = <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client);
-HttpClientTransportDynamic dynamicTransport = <span class="keyword">new</span> HttpClientTransportDynamic(unixDomainClientConnector, http1, http2);
-
-<span class="comment">// Choose the transport you prefer for HttpClient, for example the dynamic transport.</span>
-HttpClient httpClient = <span class="keyword">new</span> HttpClient(dynamicTransport);
-httpClient.start();</code></pre>
+<span class="comment">// No explicit HTTP version specified.</span>
+<span class="comment">// Either HTTP/3 succeeds, or communication failure.</span>
+ContentResponse httpResponse = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
+    .send();</code></pre>
 </div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>You can use Unix-Domain sockets support only when you run your client application with Java 16 or later.</p>
-</div>
-</td>
-</tr>
-</table>
 </div>
 <div class="paragraph">
-<p>You can configure a Jetty server to use Unix-Domain sockets, as explained in <a href="#pg-server-http-connector">this section</a>.</p>
+<p>When the client application configures <code>HttpClientTransportDynamic</code> to prefer HTTP/2, there could be ALPN negotiation between HTTP/2 and HTTP/1.1 (but not HTTP/3 because it is incompatible); HTTP/3 will only be possible by specifying the HTTP version explicitly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">// Client prefers HTTP/2.</span>
+HttpClientTransportDynamic transport = <span class="keyword">new</span> HttpClientTransportDynamic(connector, http2, http1, http3);
+HttpClient client = <span class="keyword">new</span> HttpClient(transport);
+client.start();
+
+<span class="comment">// No explicit HTTP version specified.</span>
+<span class="comment">// Either HTTP/1.1 or HTTP/2 will be negotiated via ALPN.</span>
+<span class="comment">// HTTP/3 only possible by specifying the version explicitly.</span>
+ContentResponse httpResponse = client.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">https://host/</span><span class="delimiter">&quot;</span></span>)
+    .send();</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2987,7 +3167,7 @@ httpClient.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3174,7 +3354,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.6</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.7</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3581,7 +3761,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3591,7 +3771,8 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Instantiate HTTP3Client.</span>
-HTTP3Client http3Client = <span class="keyword">new</span> HTTP3Client();
+SslContextFactory.Client sslContextFactory = <span class="keyword">new</span> SslContextFactory.Client();
+HTTP3Client http3Client = <span class="keyword">new</span> HTTP3Client(<span class="keyword">new</span> ClientQuicConfiguration(sslContextFactory, <span class="predefined-constant">null</span>));
 
 <span class="comment">// Configure HTTP3Client, for example:</span>
 http3Client.getHTTP3Configuration().setStreamIdleTimeout(<span class="integer">15000</span>);
@@ -3693,7 +3874,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.6</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.7</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3870,7 +4051,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4051,8 +4232,9 @@ CompletableFuture&lt;Session&gt; clientSessionPromise = webSocketClient.connect(
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Use the dynamic HTTP/2 transport for HttpClient.</span>
-HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client();
-HttpClient httpClient = <span class="keyword">new</span> HttpClient(<span class="keyword">new</span> HttpClientTransportDynamic(<span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client)));
+ClientConnector clientConnector = <span class="keyword">new</span> ClientConnector();
+HTTP2Client http2Client = <span class="keyword">new</span> HTTP2Client(clientConnector);
+HttpClient httpClient = <span class="keyword">new</span> HttpClient(<span class="keyword">new</span> HttpClientTransportDynamic(clientConnector, <span class="keyword">new</span> ClientConnectionFactoryOverHTTP2.HTTP2(http2Client)));
 
 <span class="comment">// Create and start WebSocketClient.</span>
 WebSocketClient webSocketClient = <span class="keyword">new</span> WebSocketClient(httpClient);
@@ -5232,7 +5414,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5422,22 +5604,24 @@ You can implement your own <code>RequestLog</code> if you want to have functiona
 <p><code>org.eclipse.jetty.unixdomain.server.UnixDomainServerConnector</code> for Unix-Domain sockets (requires Java 16 or later).</p>
 </li>
 <li>
-<p><code>org.eclipse.jetty.quic.server.QuicServerConnector</code>, for the low-level QUIC protocol.</p>
+<p><code>org.eclipse.jetty.quic.server.QuicServerConnector</code>, for the low-level QUIC protocol and HTTP/3.</p>
 </li>
 <li>
-<p><code>org.eclipse.jetty.http3.server.HTTP3ServerConnector</code> for the HTTP/3 protocol.</p>
+<p><code>org.eclipse.jetty.server.MemoryConnector</code>, for memory communication between client and server.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The first two use a <code>java.nio.channels.ServerSocketChannel</code> to listen to a socket address and to accept socket connections, while last two use a <code>java.nio.channels.DatagramChannel</code>.</p>
+<p><code>ServerConnector</code> and <code>UnixDomainServerConnector</code> use a <code>java.nio.channels.ServerSocketChannel</code> to listen to a socket address and to accept socket connections.
+<code>QuicServerConnector</code> uses a <code>java.nio.channels.DatagramChannel</code> to listen to incoming UDP packets.
+<code>MemoryConnector</code> uses memory for the communication between client and server, avoiding the use of sockets.</p>
 </div>
 <div class="paragraph">
-<p>Since <code>ServerConnector</code> wraps a <code>ServerSocketChannel</code>, it can be configured in a similar way, for example the IP port to listen to, the IP address to bind to, etc.:</p>
+<p>Since <code>ServerConnector</code> wraps a <code>ServerSocketChannel</code>, it can be configured in a similar way, for example the TCP port to listen to, the IP address to bind to, etc.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The number of acceptor threads.</span>
 <span class="type">int</span> acceptors = <span class="integer">1</span>;
@@ -5467,7 +5651,7 @@ server.start();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The number of acceptor threads.</span>
 <span class="type">int</span> acceptors = <span class="integer">1</span>;
@@ -5498,26 +5682,29 @@ server.start();</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can use Unix-Domain sockets support only when you run your server with Java 16 or later.</p>
+<p>You can use Unix-Domain sockets only when you run your server with Java 16 or later.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p><code>QuicServerConnector</code> and its extension <code>HTTP3ServerConnector</code> wrap a <code>DatagramChannel</code> and can be configured in a similar way:</p>
+<p><code>QuicServerConnector</code> wraps a <code>DatagramChannel</code> and can be configured in a similar way, as shown in the example below.
+Since the communication via UDP does not require to "accept" connections like TCP does, the number of <a href="#pg-server-http-connector-acceptors">acceptors</a> is set to <code>0</code> and there is no API to configure their number.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// Configure the SslContextFactory with the keyStore information.</span>
 SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
 sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
 sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
 
-<span class="comment">// Create an HTTP3ServerConnector instance.</span>
-HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, <span class="keyword">new</span> HTTP3ServerConnectionFactory());
+<span class="comment">// Create a QuicServerConnector instance.</span>
+Path pemWorkDir = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>);
+ServerQuicConfiguration serverQuicConfig = <span class="keyword">new</span> ServerQuicConfiguration(sslContextFactory, pemWorkDir);
+QuicServerConnector connector = <span class="keyword">new</span> QuicServerConnector(server, serverQuicConfig, <span class="keyword">new</span> HTTP3ServerConnectionFactory(serverQuicConfig));
 
 <span class="comment">// The port to listen to.</span>
 connector.setPort(<span class="integer">8080</span>);
@@ -5526,6 +5713,35 @@ connector.setHost(<span class="string"><span class="delimiter">&quot;</span><spa
 
 server.addConnector(connector);
 server.start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>MemoryConnector</code> uses in-process memory, not sockets, for the communication between client and server, that therefore must be in the same process.</p>
+</div>
+<div class="paragraph">
+<p>Typical usage of <code>MemoryConnector</code> is the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// Create a MemoryConnector instance that speaks HTTP/1.1.</span>
+MemoryConnector connector = <span class="keyword">new</span> MemoryConnector(server, <span class="keyword">new</span> HttpConnectionFactory());
+
+server.addConnector(connector);
+server.start();
+
+<span class="comment">// The code above is the server-side.</span>
+<span class="comment">// ----</span>
+<span class="comment">// The code below is the client-side.</span>
+
+HttpClient httpClient = <span class="keyword">new</span> HttpClient();
+httpClient.start();
+
+ContentResponse response = httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost/</span><span class="delimiter">&quot;</span></span>)
+    <span class="comment">// Use the memory Transport to communicate with the server-side.</span>
+    .transport(<span class="keyword">new</span> MemoryTransport(connector))
+    .send();</code></pre>
 </div>
 </div>
 <div class="sect4">
@@ -5540,14 +5756,14 @@ Therefore, there is a little moment where the acceptor thread is not accepting n
 Connections that are ready to be accepted but are not accepted yet are queued in a bounded queue (at the OS level) whose capacity can be configured with the <code>acceptQueueSize</code> parameter.</p>
 </div>
 <div class="paragraph">
-<p>If your application must withstand a very high rate of connections opened, configuring more than one acceptor thread may be beneficial: when one acceptor thread accepts one connection, another acceptor thread can take over accepting connections.</p>
+<p>If your application must withstand a very high rate of connection opening, configuring more than one acceptor thread may be beneficial: when one acceptor thread accepts one connection, another acceptor thread can take over accepting connections.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="pg-server-http-connector-selectors"><a class="anchor" href="#pg-server-http-connector-selectors"></a><a class="link" href="#pg-server-http-connector-selectors">Selectors</a></h5>
 <div class="paragraph">
 <p>The <em>selectors</em> are components that manage a set of accepted TCP sockets, implemented by <a href="#pg-arch-io-selector-manager"><code>ManagedSelector</code></a>.
-For QUIC or HTTP/3, there are no accepted TCP sockets, but only one <code>DatagramChannel</code> and therefore there is only 1 selector.</p>
+For QUIC or HTTP/3, there are no accepted TCP sockets, but only one <code>DatagramChannel</code> and therefore there is only one selector.</p>
 </div>
 <div class="paragraph">
 <p>Each selector requires one thread and uses the Java NIO mechanism to efficiently handle a set of registered channels.</p>
@@ -5567,15 +5783,15 @@ In this case a single selector may be able to manage less TCP sockets because ch
 <div class="paragraph">
 <p>It is possible to configure more than one <code>Connector</code> per <code>Server</code>.
 Typical cases are a <code>ServerConnector</code> for clear-text HTTP, and another <code>ServerConnector</code> for secure HTTP.
-Another case could be a publicly exposed <code>ServerConnector</code> for secure HTTP, and an internally exposed <code>UnixDomainServerConnector</code> for clear-text HTTP.
-Yet another example could be a <code>ServerConnector</code> for clear-text HTTP, a <code>ServerConnector</code> for secure HTTP/2, and an <code>HTTP3ServerConnector</code> for QUIC+HTTP/3.</p>
+Another case could be a publicly exposed <code>ServerConnector</code> for secure HTTP, and an internally exposed <code>UnixDomainServerConnector</code> or <code>MemoryConnector</code> for clear-text HTTP.
+Yet another example could be a <code>ServerConnector</code> for clear-text HTTP, a <code>ServerConnector</code> for secure HTTP/2, and an <code>QuicServerConnector</code> for QUIC+HTTP/3.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// Create a ServerConnector instance on port 8080.</span>
 ServerConnector connector1 = <span class="keyword">new</span> ServerConnector(server, <span class="integer">1</span>, <span class="integer">1</span>, <span class="keyword">new</span> HttpConnectionFactory());
@@ -5597,16 +5813,17 @@ server.start();</code></pre>
 <p>If you do not specify the port the connector listens to explicitly, the OS will allocate one randomly when the connector starts.</p>
 </div>
 <div class="paragraph">
-<p>You may need to use the randomly allocated port to configure other components, for example the port to use for secure redirects (when redirecting from a URI with the <code>http</code> scheme to the <code>https</code> scheme).
-Another example is to bind both the HTTP/2 connector and the HTTP/3 connector to the same port.
-This is possible since the HTTP/2 connector uses TCP, while the HTTP/3 connector uses UDP.</p>
+<p>You may need to use the randomly allocated port to configure other components.
+One example is to use the randomly allocated port to configure secure redirects (when redirecting from a URI with the <code>http</code> scheme to the <code>https</code> scheme).
+Another example is to bind both the HTTP/2 connector and the HTTP/3 connector to the same randomly allocated port.
+It is possible that the HTTP/2 connector and the HTTP/3 connector share the same port, because one uses TCP, while the other uses UDP.</p>
 </div>
 <div class="paragraph">
 <p>For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
 sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
 sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
 
@@ -5634,8 +5851,9 @@ ServerConnector plainConnector = <span class="keyword">new</span> ServerConnecto
 server.addConnector(plainConnector);
 
 <span class="comment">// Third, create the connector for HTTP/3.</span>
-HTTP3ServerConnectionFactory http3 = <span class="keyword">new</span> HTTP3ServerConnectionFactory(secureConfig);
-HTTP3ServerConnector http3Connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, http3);
+Path pemWorkDir = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>);
+ServerQuicConfiguration serverQuicConfig = <span class="keyword">new</span> ServerQuicConfiguration(sslContextFactory, pemWorkDir);
+QuicServerConnector http3Connector = <span class="keyword">new</span> QuicServerConnector(server, serverQuicConfig, <span class="keyword">new</span> HTTP3ServerConnectionFactory(serverQuicConfig));
 server.addConnector(http3Connector);
 
 <span class="comment">// Set up a listener so that when the secure connector starts,</span>
@@ -5665,11 +5883,61 @@ server.start();</code></pre>
 <div class="sect4">
 <h5 id="pg-server-http-connector-protocol"><a class="anchor" href="#pg-server-http-connector-protocol"></a><a class="link" href="#pg-server-http-connector-protocol">Configuring Protocols</a></h5>
 <div class="paragraph">
-<p>For each accepted socket connection, the server <code>Connector</code> asks a <code>ConnectionFactory</code> to create a <code>Connection</code> object that handles the traffic on that socket connection, parsing and generating bytes for a specific protocol (see <a href="#pg-arch-io">this section</a> for more details about <code>Connection</code> objects).</p>
+<p>A server <code>Connector</code> can be configured with one or more <code>ConnectionFactory</code>s, and this list of <code>ConnectionFactory</code>s represents the protocols that the <code>Connector</code> can understand.
+If no <code>ConnectionFactory</code> is specified then <code>HttpConnectionFactory</code> is implicitly configured.</p>
 </div>
 <div class="paragraph">
-<p>A server <code>Connector</code> can be configured with one or more <code>ConnectionFactory</code>s.
-If no <code>ConnectionFactory</code> is specified then <code>HttpConnectionFactory</code> is implicitly configured.</p>
+<p>For each accepted connection, the server <code>Connector</code> asks a <code>ConnectionFactory</code> to create a <code>Connection</code> object that handles the traffic on that connection, parsing and generating bytes for a specific protocol (see <a href="#pg-arch-io">this section</a> for more details about <code>Connection</code> objects).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can listen for <code>Connection</code> open and close events as detailed in <a href="#pg-arch-io-connection-listener">this section</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Secure protocols like secure HTTP/1.1, secure HTTP/2 or HTTP/3 (HTTP/3 is intrinsically secure&#8201;&#8212;&#8201;there is no clear-text HTTP/3) require an <code>SslContextFactory.Server</code> to be configured with a KeyStore.</p>
+</div>
+<div class="paragraph">
+<p>For HTTP/1.1 and HTTP/2, <code>SslContextFactory.Server</code> is used in conjunction with <code>SSLEngine</code>, which drives the TLS handshake that establishes the secure communication.</p>
+</div>
+<div class="paragraph">
+<p>Applications may register a <code>org.eclipse.jetty.io.ssl.SslHandshakeListener</code> to be notified of TLS handshakes success or failure, by adding the <code>SslHandshakeListener</code> as a bean to the <code>Connector</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Create a SslHandshakeListener.</span>
+SslHandshakeListener listener = <span class="keyword">new</span> SslHandshakeListener()
+{
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> handshakeSucceeded(<span class="predefined-type">Event</span> event) <span class="directive">throws</span> <span class="exception">SSLException</span>
+    {
+        <span class="predefined-type">SSLEngine</span> sslEngine = event.getSSLEngine();
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">tls</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">TLS handshake successful to %s</span><span class="delimiter">&quot;</span></span>, sslEngine.getPeerHost());
+    }
+
+    <span class="annotation">@Override</span>
+    <span class="directive">public</span> <span class="type">void</span> handshakeFailed(<span class="predefined-type">Event</span> event, <span class="predefined-type">Throwable</span> failure)
+    {
+        <span class="predefined-type">SSLEngine</span> sslEngine = event.getSSLEngine();
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">tls</span><span class="delimiter">&quot;</span></span>).log(ERROR, <span class="string"><span class="delimiter">&quot;</span><span class="content">TLS handshake failure to %s</span><span class="delimiter">&quot;</span></span>, sslEngine.getPeerHost(), failure);
+    }
+};
+
+Server server = <span class="keyword">new</span> Server();
+ServerConnector connector = <span class="keyword">new</span> ServerConnector(server);
+server.addConnector(connector);
+
+<span class="comment">// Add the SslHandshakeListener as bean to ServerConnector.</span>
+<span class="comment">// The listener will be notified of TLS handshakes success and failure.</span>
+connector.addBean(listener);</code></pre>
+</div>
 </div>
 <div class="sect5">
 <h6 id="pg-server-http-connector-protocol-http11"><a class="anchor" href="#pg-server-http-connector-protocol-http11"></a><a class="link" href="#pg-server-http-connector-protocol-http11">Clear-Text HTTP/1.1</a></h6>
@@ -5681,7 +5949,7 @@ If no <code>ConnectionFactory</code> is specified then <code>HttpConnectionFacto
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -5707,7 +5975,7 @@ server.start();</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -5753,7 +6021,7 @@ Therefore, with HTTP/2, clients that connect to port <code>80</code> (or to a sp
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -5791,7 +6059,7 @@ When Jetty is behind a load balancer, you can always prepend the PROXY protocol 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -5906,7 +6174,7 @@ It is nowadays common to use the same port <code>443</code> for both HTTP/2 and 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
 sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
@@ -5916,11 +6184,11 @@ HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguratio
 httpConfig.addCustomizer(<span class="keyword">new</span> SecureRequestCustomizer());
 
 <span class="comment">// Create and configure the HTTP/3 connector.</span>
-HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, <span class="keyword">new</span> HTTP3ServerConnectionFactory(httpConfig));
+<span class="comment">// It is mandatory to configure the PEM directory.</span>
+Path pemWorkDir = Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>);
+ServerQuicConfiguration serverQuicConfig = <span class="keyword">new</span> ServerQuicConfiguration(sslContextFactory, pemWorkDir);
+QuicServerConnector connector = <span class="keyword">new</span> QuicServerConnector(server, serverQuicConfig, <span class="keyword">new</span> HTTP3ServerConnectionFactory(serverQuicConfig));
 connector.setPort(<span class="integer">843</span>);
-
-<span class="comment">// It is mandatory to set the PEM directory.</span>
-connector.getQuicConfiguration().setPemWorkDirectory(Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>));
 
 server.addConnector(connector);
 
@@ -5942,7 +6210,7 @@ server.start();</code></pre>
 </div>
 <div class="paragraph">
 <p>The PEM directory must also be adequately protected using file system permissions, because it stores the private key PEM file.
-You want to grant as few permissions as possible, typically only the equivalent of POSIX <code>rwx</code> to the user that runs the Jetty process. Using <code>/tmp</code> or any other directory accessible by any user is not a secure choice.</p>
+You want to grant as few permissions as possible, typically the equivalent of POSIX <code>rwx</code> only to the user that runs the Jetty process. Using <code>/tmp</code> or any other directory accessible by any user is not a secure choice.</p>
 </div>
 </td>
 </tr>
@@ -5976,14 +6244,14 @@ As Conscrypt eventually binds to a native library, there is a higher risk that a
 </table>
 </div>
 <div class="paragraph">
-<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.6.jar</code> in the class-path or module-path.</p>
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.7.jar</code> in the class-path or module-path.</p>
 </div>
 <div class="paragraph">
 <p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java"><span class="comment">// Configure the JDK with the Conscrypt provider.</span>
+<pre class="CodeRay highlight nowrap"><code data-lang="java"><span class="comment">// Configure the JDK with the Conscrypt provider.</span>
 <span class="predefined-type">Security</span>.addProvider(<span class="keyword">new</span> OpenSSLProvider());
 
 SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
@@ -6019,7 +6287,7 @@ The PROXY protocol is widely supported by load balancers such as <a href="http:/
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -6054,7 +6322,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+<pre class="CodeRay highlight nowrap"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
 
 <span class="comment">// The HTTP configuration object.</span>
 HttpConfiguration httpConfig = <span class="keyword">new</span> HttpConfiguration();
@@ -6551,7 +6819,7 @@ server.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -6859,7 +7127,7 @@ server.start();</code></pre>
 On the other hand, <code>AppEventsHandler</code> may record both the time it takes for the request to flow from <code>TotalEventsHandler</code> to <code>AppEventsHandler</code>, therefore effectively measuring the processing time due to <code>SlowHandler</code>, and the time it takes to process the request by the <code>ContextHandler</code>.</p>
 </div>
 <div class="paragraph">
-<p>Refer to the <code>EventsHandler</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/EventsHandler">javadocs</a> for further information.</p>
+<p>Refer to the <code>EventsHandler</code> <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/EventsHandler.html">javadocs</a> for further information.</p>
 </div>
 </div>
 <div class="sect5">
@@ -7032,7 +7300,7 @@ server.start();</code></pre>
 <p>This is common, for example, when you embed reusable components such as a chat component into a web page: the web page and the chat component files are downloaded from <code>http://domain.com</code>, but the chat server is at <code>http://chat.domain.com</code>, so the chat component must make cross-origin requests to the chat server.</p>
 </div>
 <div class="paragraph">
-<p>This kind of setup exposes to <a href="https://owasp.org/www-community/attacks/csrf">cross-site request forgery attacks</a>, and the CORS protocol has been established to protect against this kind of attacks.</p>
+<p>This kind of setup exposes to <a href="https://owasp.org/www-community/attacks/csrf">cross-site request forgery (CSRF) attacks</a>, and the CORS protocol has been established to protect against this kind of attacks.</p>
 </div>
 <div class="paragraph">
 <p>For security reasons, browsers by default do not allow cross-origin requests, unless the response from the cross domain contains the right CORS headers.</p>
@@ -7053,10 +7321,10 @@ You can set up your <code>Handler</code> tree with the <code>CrossOriginHandler<
 </div>
 </div>
 <div class="paragraph">
-<p>The most important <code>CrossOriginHandler</code> configuration parameter is <code>allowedOrigins</code>, which by default is <code>*</code>, allowing any origin.</p>
+<p>The most important <code>CrossOriginHandler</code> configuration parameter that must be configured is <code>allowedOrigins</code>, which by default is the empty set, therefore disallowing all origins.</p>
 </div>
 <div class="paragraph">
-<p>You may want to restrict your server to only origins you trust.
+<p>You want to restrict requests to your cross domain to only origins you trust.
 From the chat example above, the chat server at <code>http://chat.domain.com</code> knows that the chat component is downloaded from the origin server at <code>http://domain.com</code>, so the <code>CrossOriginHandler</code> is configured in this way:</p>
 </div>
 <div class="listingblock">
@@ -7067,7 +7335,7 @@ crossOriginHandler.setAllowedOriginPatterns(<span class="predefined-type">Set</s
 </div>
 </div>
 <div class="paragraph">
-<p>Browsers send cross-origin request in two ways:</p>
+<p>Browsers send cross-origin requests in two ways:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7084,6 +7352,13 @@ crossOriginHandler.setAllowedOriginPatterns(<span class="predefined-type">Set</s
 </div>
 <div class="paragraph">
 <p>By default, preflight requests are not delivered to the <code>CrossOriginHandler</code> child <code>Handler</code>, but it is possible to configure <code>CrossOriginHandler</code> by setting <code>deliverPreflightRequests=true</code> so that the web application can fine-tune the CORS response headers.</p>
+</div>
+<div class="paragraph">
+<p>Another important <code>CrossOriginHandler</code> configuration parameter is <code>allowCredentials</code>, which controls whether cookies and authentication headers that match the cross-origin request to the cross domain are sent in the cross-origin requests.
+By default, <code>allowCredentials=false</code> so that cookies and authentication headers are not sent in cross-origin requests.</p>
+</div>
+<div class="paragraph">
+<p>If the application deployed in the cross domain requires cookies or authentication, then you must set <code>allowCredentials=true</code>, but you also need to restrict the allowed origins only to the ones your trust, otherwise your cross domain application will be vulnerable to CSRF attacks.</p>
 </div>
 <div class="paragraph">
 <p>For more <code>CrossOriginHandler</code> configuration options, refer to the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/handler/CrossOriginHandler.html"><code>CrossOriginHandler</code> javadocs</a>.</p>
@@ -7182,12 +7457,12 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.6</code>.</p>
+<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.7</code>.</p>
 </div>
 <div class="paragraph">
 <p>Below you can find an example of how to set up a Jakarta EE 10 <code>ServletContextHandler</code>:</p>
@@ -7212,6 +7487,8 @@ server.addConnector(connector);
 
 <span class="comment">// Add the CrossOriginHandler to protect from CSRF attacks.</span>
 CrossOriginHandler crossOriginHandler = <span class="keyword">new</span> CrossOriginHandler();
+crossOriginHandler.setAllowedOriginPatterns(<span class="predefined-type">Set</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain.com</span><span class="delimiter">&quot;</span></span>));
+crossOriginHandler.setAllowCredentials(<span class="predefined-constant">true</span>);
 server.setHandler(crossOriginHandler);
 
 <span class="comment">// Create a ServletContextHandler with contextPath.</span>
@@ -7275,7 +7552,7 @@ Server applications must be careful when creating the <code>Handler</code> tree 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-webapp<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7344,7 +7621,7 @@ The features are similar, but <code>DefaultServlet</code> is more commonly used 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8229,7 +8506,7 @@ This makes the web application stateful, because a computation performed by a pr
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-session<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8408,7 +8685,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8932,7 +9209,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8962,14 +9239,16 @@ sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimite
 <span class="comment">// The listener for session events.</span>
 Session.Server.Listener sessionListener = <span class="keyword">new</span> Session.Server.Listener() {};
 
+ServerQuicConfiguration quicConfiguration = <span class="keyword">new</span> ServerQuicConfiguration(sslContextFactory, Path.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/pem/dir</span><span class="delimiter">&quot;</span></span>));
+<span class="comment">// Configure the max number of requests per QUIC connection.</span>
+quicConfiguration.setMaxBidirectionalRemoteStreams(<span class="integer">1024</span>);
+
 <span class="comment">// Create and configure the RawHTTP3ServerConnectionFactory.</span>
-RawHTTP3ServerConnectionFactory http3 = <span class="keyword">new</span> RawHTTP3ServerConnectionFactory(sessionListener);
+RawHTTP3ServerConnectionFactory http3 = <span class="keyword">new</span> RawHTTP3ServerConnectionFactory(quicConfiguration, sessionListener);
 http3.getHTTP3Configuration().setStreamIdleTimeout(<span class="integer">15000</span>);
 
-<span class="comment">// Create and configure the HTTP3ServerConnector.</span>
-HTTP3ServerConnector connector = <span class="keyword">new</span> HTTP3ServerConnector(server, sslContextFactory, http3);
-<span class="comment">// Configure the max number of requests per QUIC connection.</span>
-connector.getQuicConfiguration().setMaxBidirectionalRemoteStreams(<span class="integer">1024</span>);
+<span class="comment">// Create and configure the QuicServerConnector.</span>
+QuicServerConnector connector = <span class="keyword">new</span> QuicServerConnector(server, quicConfiguration, http3);
 
 <span class="comment">// Add the Connector to the Server.</span>
 server.addConnector(connector);
@@ -11373,7 +11652,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11708,7 +11987,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11720,7 +11999,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -12534,7 +12813,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.6<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.7<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12667,7 +12946,7 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld WebApp<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.6<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.7<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12806,7 +13085,7 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
@@ -13192,7 +13471,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13338,7 +13617,7 @@ Patterns are specified as a relative path using a glob-like syntax as described 
     <span class="tag">&lt;plugin&gt;</span>
       <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
       <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;configuration&gt;</span>
         <span class="tag">&lt;webApp&gt;</span>
           <span class="tag">&lt;contextPath&gt;</span>/<span class="tag">&lt;/contextPath&gt;</span>
@@ -13491,7 +13770,7 @@ For example to you can have Maven start your webapp at the beginning of your tes
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9999<span class="tag">&lt;/stopPort&gt;</span>
@@ -13788,7 +14067,7 @@ If false or not specified, the plugin does not wait for confirmation but exits a
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9966<span class="tag">&lt;/stopPort&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
@@ -13975,7 +14254,7 @@ WebAppY:
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>maven-war-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;overlays&gt;</span>
       <span class="tag">&lt;overlay&gt;</span>
@@ -14076,7 +14355,7 @@ Here&#8217;s an example of setting up the <code>HashLoginService</code> for a we
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14134,7 +14413,7 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14203,7 +14482,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14342,7 +14621,7 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14522,7 +14801,7 @@ All setters on the JspC class are available.</p>
       <span class="tag">&lt;plugin&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
         <span class="comment">&lt;!-- put your configuration in here --&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
@@ -14601,7 +14880,7 @@ Using the default settings, the <code>web.xml</code> merged with the jsp servlet
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -15595,10 +15874,10 @@ You can add as beans many <code>Connection.Listener</code> objects, each with it
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/ConnectionStatistics"><code>ConnectionStatistics</code></a></p>
+<p><a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/io/ConnectionStatistics.html"><code>ConnectionStatistics</code></a></p>
 </li>
 <li>
-<p><a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/ConnectionLimit"><code>ConnectionLimit</code></a></p>
+<p><a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/ConnectionLimit.html"><code>ConnectionLimit</code></a></p>
 </li>
 </ul>
 </div>
@@ -16487,6 +16766,9 @@ Applications can register listeners to these components to be notified of the ev
 <div class="paragraph">
 <p>This section lists the listeners available in the Jetty components, but the events and listener APIs are discussed in the component specific sections.</p>
 </div>
+<div class="paragraph">
+<p>Listeners common to both client and server:</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -16495,6 +16777,19 @@ Applications can register listeners to these components to be notified of the ev
 <li>
 <p><a href="#pg-arch-io-connection-listener">Jetty I/O: <code>Connection.Listener</code></a></p>
 </li>
+<li>
+<p><a href="#pg-client-http-configuration-tls-listener">HttpClient <code>SslHandshakeListener</code></a></p>
+</li>
+<li>
+<p><a href="#pg-server-http-connector-protocol">Configuring Protocols</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Listeners that are server specific:</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
 <p><a href="#pg-server-http-request-processing-events">Request Processing Events</a></p>
 </li>
@@ -16530,7 +16825,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.6<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -18562,8 +18857,8 @@ Note that this <code>Callback</code> interface is a different interface from the
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.6<br>
-Last updated 2023-10-24 09:23:54 -0500
+Version 12.0.7<br>
+Last updated 2024-02-23 11:53:50 -0600
 </div>
 </div>
 </body>
