@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="generator" content="Asciidoctor 2.0.20">
 <meta name="author" content="Jetty Developers">
 <title>Eclipse Jetty: Programming Guide</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.7,</span>
-<span id="revdate">2024-03-06</span>
+<span id="revnumber">version 12.0.8,</span>
+<span id="revdate">2024-03-29</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -1298,7 +1298,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -1679,7 +1679,8 @@ The implementation invokes these listeners in the same thread that is used to pr
 Therefore, if the application code in these listeners takes a long time to execute, the request or response processing is delayed until the listener returns.</p>
 </div>
 <div class="paragraph">
-<p>If you need to execute application code that takes long time inside a listener, you must spawn your own thread.</p>
+<p>If you need to execute application code that takes long time inside a listener, it is typically better to spawn your own thread to execute the code that takes long time.
+In this way you return from the listener as soon as possible and allow the implementation to resume the processing of the request or response (or of other requests/responses).</p>
 </div>
 <div class="paragraph">
 <p>Request and response processing are executed by two different threads and therefore may happen concurrently.
@@ -1769,6 +1770,37 @@ When such an event is fired, a (possibly different) thread taken from the <code>
 </div>
 <div class="paragraph">
 <p>This makes Jetty HTTP client suitable for HTTP load testing because, for example, you can accurately time every step of the request/response conversation (thus knowing where the request/response time is really spent).</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The code in request and response listeners <em>should not</em> block.</p>
+</div>
+<div class="paragraph">
+<p>It is allowed to call other blocking APIs, such as the Java file-system APIs.
+You should not call blocking APIs that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wait for other request or response events, such as receiving other request or response content chunks.</p>
+</li>
+<li>
+<p>Use wait/notify primitives such as those available in <code>java.lang.Object</code> or <code>java.util.concurrent.locks.Condition</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If the listener code blocks, the implementation also will be blocked and will not be able to advance the processing of the request or response that the listener code is likely waiting for, causing a deadlock.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Have a look at the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/client/api/Request.Listener.html"><code>Request.Listener</code></a> class to know about request events, and to the <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/client/api/Response.Listener.html"><code>Response.Listener</code></a> class to know about response events.</p>
@@ -1973,130 +2005,7 @@ Response response = listener.get(<span class="integer">5</span>, <span class="pr
 This allows the application to control precisely the read/demand loop: when to read a chunk, how to process it and when to demand the next one.</p>
 </div>
 <div class="paragraph">
-<p>You must provide a <code>ContentSourceListener</code> whose implementation reads a <code>Content.Chunk</code> from the provided <code>Content.Source</code>, as follows:
-Then the following cases may happen:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The read chunk ; you should process it by consuming its bytes and then releasing the chunk, then either trying to read another chunk, or demanding for another chunk (unless the current chunk is the last).</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">httpClient.newRequest(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://domain.com/path</span><span class="delimiter">&quot;</span></span>)
-    .onResponseContentSource(((response, contentSource) -&gt;
-    {
-        <span class="comment">// The function (as a Runnable) that reads the response content.</span>
-        <span class="predefined-type">Runnable</span> demander = <span class="keyword">new</span> <span class="predefined-type">Runnable</span>() <i class="conum" data-value="1"></i><b>(1)</b>
-        {
-            <span class="annotation">@Override</span>
-            <span class="directive">public</span> <span class="type">void</span> run()
-            {
-                <span class="keyword">while</span> (<span class="predefined-constant">true</span>) <i class="conum" data-value="2"></i><b>(2)</b>
-                {
-                    Content.Chunk chunk = contentSource.read(); <i class="conum" data-value="3"></i><b>(3)</b>
-
-                    <span class="comment">// No chunk of content, demand again and return.</span>
-                    <span class="keyword">if</span> (chunk == <span class="predefined-constant">null</span>)
-                    {
-                        contentSource.demand(<span class="local-variable">this</span>); <i class="conum" data-value="4"></i><b>(4)</b>
-                        <span class="keyword">return</span>;
-                    }
-
-                    <span class="comment">// A failure happened.</span>
-                    <span class="keyword">if</span> (Content.Chunk.isFailure(chunk)) <i class="conum" data-value="5"></i><b>(5)</b>
-                    {
-                        <span class="predefined-type">Throwable</span> failure = chunk.getFailure();
-                        <span class="keyword">if</span> (chunk.isLast())
-                        {
-                            <span class="comment">// A terminal failure, such as a network failure.</span>
-                            <span class="comment">// Your logic to handle terminal failures here.</span>
-                            <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">failure</span><span class="delimiter">&quot;</span></span>).log(ERROR, <span class="string"><span class="delimiter">&quot;</span><span class="content">Unexpected terminal failure</span><span class="delimiter">&quot;</span></span>, failure);
-                            <span class="keyword">return</span>;
-                        }
-                        <span class="keyword">else</span>
-                        {
-                            <span class="comment">// A transient failure such as a read timeout.</span>
-                            <span class="comment">// Your logic to handle transient failures here.</span>
-                            <span class="keyword">if</span> (ignoreTransientFailure(response, failure))
-                            {
-                                <span class="comment">// Try to read again.</span>
-                                <span class="keyword">continue</span>;
-                            }
-                            <span class="keyword">else</span>
-                            {
-                                <span class="comment">// The transient failure is treated as a terminal failure.</span>
-                                <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">failure</span><span class="delimiter">&quot;</span></span>).log(ERROR, <span class="string"><span class="delimiter">&quot;</span><span class="content">Unexpected transient failure</span><span class="delimiter">&quot;</span></span>, failure);
-                                <span class="keyword">return</span>;
-                            }
-                        }
-                    }
-
-                    <span class="comment">// A normal chunk of content.</span>
-                    consumeResponseContentChunk(response, chunk); <i class="conum" data-value="6"></i><b>(6)</b>
-                    <span class="comment">// Release the chunk.</span>
-                    chunk.release(); <i class="conum" data-value="7"></i><b>(7)</b>
-
-                    <span class="comment">// Loop around to read another response chunk.</span>
-                }
-            }
-        };
-
-        <span class="comment">// Initiate the reads.</span>
-        demander.run();
-    }))
-    .send(result -&gt;
-    {
-
-    });</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Using a <code>Runnable</code> anonymous class instead of a lambda in this example just for simplicity, and to be able to call <code>contentSource.demand(this)</code> passing <code>this</code> as parameter.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Read in a loop</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Read a <code>Content.Chunk</code> from the <code>Content.Source</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The read chunk is <code>null</code>, call <code>Content.Source.demand(Runnable)</code> to be called back when more chunks are available.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The read reported a failure, which may be transient or terminal; the application must handle them appropriately.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The read chunk is a normal chunk of content; the application should consume its <code>ByteBuffer</code> bytes.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>The chunk must be released.</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-Calling <code>Content.Chunk.release()</code> must be done only after the bytes in the <code>ByteBuffer</code> returned by <code>Content.Chunk.getByteBuffer()</code> have been consumed.
-When the <code>Content.Chunk</code> is released, the <code>HttpClient</code> implementation may reuse the <code>ByteBuffer</code> and overwrite the bytes with different bytes; if the application looks at the <code>ByteBuffer</code> <em>after</em> having released the <code>Content.Chunk</code> is may see other, unrelated, bytes.
-</td>
-</tr>
-</table>
+<p>You must provide a <code>ContentSourceListener</code> whose implementation reads a <code>Content.Chunk</code> from the provided <code>Content.Source</code>, as explained in <a href="#pg-arch-io-content-source">this section</a>.</p>
 </div>
 <div class="paragraph">
 <p>The invocation of <code>onContentSource(Request, Content.Source)</code> and of the demand callback passed to <code>contentSource.demand(Runnable)</code> are serialized with respect to asynchronous events such as timeouts or an asynchronous call to <code>Request.abort(Throwable)</code>.
@@ -2111,7 +2020,7 @@ With this model, applications should not worry too much about concurrent asynchr
 </div>
 <div class="paragraph">
 <p>If not done carefully, this may lead to excessive memory consumption, since the <code>ByteBuffer</code> bytes are not consumed.
-Releasing the `Content.Chunk`s will result in the <code>ByteBuffer</code>s to be disposed/recycled and may be performed at any time.</p>
+Releasing the <code>Content.Chunk</code>s will result in the <code>ByteBuffer</code>s to be disposed/recycled and may be performed at any time.</p>
 </div>
 <div class="paragraph">
 <p>An application can also read one chunk of content, consume it, release it, and then <em>not</em> demand for more content until a later time.</p>
@@ -2716,6 +2625,9 @@ ContentResponse response = httpClient.GET(<span class="string"><span class="deli
 <div class="paragraph">
 <p>Proxying is supported for any version of the HTTP protocol.</p>
 </div>
+<div class="paragraph">
+<p>The communication between the client and the proxy may be encrypted, so that it would not be possible for another party on the same network as the client to know what servers the client connects to.</p>
+</div>
 <div class="sect4">
 <h5 id="pg-client-http-proxy-socks5"><a class="anchor" href="#pg-client-http-proxy-socks5"></a><a class="link" href="#pg-client-http-proxy-socks5">SOCKS5 Proxy Support</a></h5>
 <div class="paragraph">
@@ -3167,7 +3079,7 @@ ContentResponse httpResponse = client.newRequest(<span class="string"><span clas
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3354,7 +3266,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.7</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.8</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3761,7 +3673,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3874,7 +3786,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.7</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.8</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -4051,7 +3963,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -4383,8 +4295,14 @@ Applications interested in this type of messages receive a <code>ByteBuffer</cod
 <p><a href="#pg-websocket-endpoints-annotated">Annotated endpoints</a> are notified of events by invoking the correspondent method annotated with the correspondent annotation from the <code>org.eclipse.jetty.websocket.api.annotations.*</code> package.</p>
 </div>
 <div class="paragraph">
-<p>Jetty uses <code>MethodHandle</code>s to instantiate WebSocket endpoints and invoke WebSocket event methods, so WebSocket endpoint classes and WebSocket event methods must be <code>public</code>.
-This guarantees that WebSocket endpoints can be accessed by the Jetty implementation without additional configuration also when your application uses the Java Module System (JPMS).</p>
+<p>Jetty uses <code>MethodHandle</code>s to instantiate WebSocket endpoints and invoke WebSocket event methods, so WebSocket endpoint classes and WebSocket event methods must be <code>public</code>.</p>
+</div>
+<div class="paragraph">
+<p>When using JPMS, your classes must be <code>public</code> and must be exported using the <code>exports</code> directive in your <code>module-info.java</code>.
+It is not recommended to use the <code>opens</code> directive in your <code>module-info.java</code> for your classes, as it would expose your classes to deep reflection, which is unnecessary, as the <code>exports</code> directive is sufficient.</p>
+</div>
+<div class="paragraph">
+<p>This guarantees that WebSocket endpoints can be accessed by the Jetty implementation without additional configuration, no matter whether you are using only the class-path, or the module-path.</p>
 </div>
 <div class="paragraph">
 <p>For both types of WebSocket endpoints, only one thread at a time will be delivering frame or message events to the corresponding methods; the next frame or message event will not be delivered until the previous call to the corresponding method has exited, and if there is <a href="#pg-websocket-endpoints-demand">demand</a> for it.
@@ -5414,7 +5332,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5858,21 +5776,18 @@ server.addConnector(http3Connector);
 
 <span class="comment">// Set up a listener so that when the secure connector starts,</span>
 <span class="comment">// it configures the other connectors that have not started yet.</span>
-secureConnector.addEventListener(<span class="keyword">new</span> LifeCycle.Listener()
+secureConnector.addEventListener(<span class="keyword">new</span> NetworkConnector.Listener()
 {
     <span class="annotation">@Override</span>
-    <span class="directive">public</span> <span class="type">void</span> lifeCycleStarted(LifeCycle lifeCycle)
+    <span class="directive">public</span> <span class="type">void</span> onOpen(NetworkConnector connector)
     {
-        <span class="keyword">if</span> (lifeCycle <span class="keyword">instanceof</span> NetworkConnector networkConnector)
-        {
-            <span class="type">int</span> port = networkConnector.getLocalPort();
+        <span class="type">int</span> port = connector.getLocalPort();
 
-            <span class="comment">// Configure the plain connector for secure redirects from http to https.</span>
-            plainConfig.setSecurePort(port);
+        <span class="comment">// Configure the plain connector for secure redirects from http to https.</span>
+        plainConfig.setSecurePort(port);
 
-            <span class="comment">// Configure the HTTP3 connector port to be the same as HTTPS/HTTP2.</span>
-            http3Connector.setPort(port);
-        }
+        <span class="comment">// Configure the HTTP3 connector port to be the same as HTTPS/HTTP2.</span>
+        http3Connector.setPort(port);
     }
 });
 
@@ -6244,7 +6159,7 @@ As Conscrypt eventually binds to a native library, there is a higher risk that a
 </table>
 </div>
 <div class="paragraph">
-<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.7.jar</code> in the class-path or module-path.</p>
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.8.jar</code> in the class-path or module-path.</p>
 </div>
 <div class="paragraph">
 <p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
@@ -6819,7 +6734,7 @@ server.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7075,14 +6990,14 @@ The request processing events can be used in conjunction with <code>Request</cod
     }
 
     <span class="annotation">@Override</span>
-    <span class="directive">protected</span> <span class="type">void</span> onComplete(Request request, <span class="predefined-type">Throwable</span> failure)
+    <span class="directive">protected</span> <span class="type">void</span> onComplete(Request request, <span class="type">int</span> status, HttpFields headers, <span class="predefined-type">Throwable</span> failure)
     {
         <span class="comment">// Retrieve the before handling nanoTime.</span>
         <span class="type">long</span> beforeHandlingNanoTime = (<span class="type">long</span>)request.getAttribute(<span class="string"><span class="delimiter">&quot;</span><span class="content">beforeHandlingNanoTime</span><span class="delimiter">&quot;</span></span>);
 
-        <span class="comment">// Record the request processing time.</span>
+        <span class="comment">// Record the request processing time and the status that was sent back to the client.</span>
         <span class="type">long</span> processingTime = NanoTime.millisSince(beforeHandlingNanoTime);
-        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">trackTime</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">processing request %s took %d ms</span><span class="delimiter">&quot;</span></span>, request, processingTime);
+        <span class="predefined-type">System</span>.getLogger(<span class="string"><span class="delimiter">&quot;</span><span class="content">trackTime</span><span class="delimiter">&quot;</span></span>).log(INFO, <span class="string"><span class="delimiter">&quot;</span><span class="content">processing request %s took %d ms and ended with status code %d</span><span class="delimiter">&quot;</span></span>, request, processingTime, status);
     }
 }
 
@@ -7457,12 +7372,12 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.7</code>.</p>
+<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.8</code>.</p>
 </div>
 <div class="paragraph">
 <p>Below you can find an example of how to set up a Jakarta EE 10 <code>ServletContextHandler</code>:</p>
@@ -7552,7 +7467,7 @@ Server applications must be careful when creating the <code>Handler</code> tree 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-webapp<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7621,7 +7536,7 @@ The features are similar, but <code>DefaultServlet</code> is more commonly used 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8506,7 +8421,7 @@ This makes the web application stateful, because a computation performed by a pr
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-session<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8685,7 +8600,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9174,7 +9089,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
                     <span class="comment">// Send the favicon &quot;response&quot;.</span>
                     MetaData.Response pushedResponse = <span class="keyword">new</span> MetaData.Response(HttpStatus.OK_200, <span class="predefined-constant">null</span>, HttpVersion.HTTP_2, HttpFields.EMPTY);
                     <span class="keyword">return</span> pushedStream.headers(<span class="keyword">new</span> HeadersFrame(pushedStream.getId(), pushedResponse, <span class="predefined-constant">null</span>, <span class="predefined-constant">false</span>))
-                        .thenCompose(pushed -&gt; pushed.data(<span class="keyword">new</span> DataFrame(pushed.getId(), faviconBuffer, <span class="predefined-constant">true</span>)));
+                        .thenCompose(pushed -&gt; pushed.data(<span class="keyword">new</span> DataFrame(pushed.getId(), faviconBuffer.slice(), <span class="predefined-constant">true</span>)));
                 });
         }
         <span class="comment">// Return a Stream.Listener to handle the request events.</span>
@@ -9209,7 +9124,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11652,7 +11567,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11987,7 +11902,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11999,7 +11914,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -12813,7 +12728,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.7<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.8<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12946,7 +12861,7 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld WebApp<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.7<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.8<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -13085,7 +13000,7 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
@@ -13471,7 +13386,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13617,7 +13532,7 @@ Patterns are specified as a relative path using a glob-like syntax as described 
     <span class="tag">&lt;plugin&gt;</span>
       <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
       <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;configuration&gt;</span>
         <span class="tag">&lt;webApp&gt;</span>
           <span class="tag">&lt;contextPath&gt;</span>/<span class="tag">&lt;/contextPath&gt;</span>
@@ -13770,7 +13685,7 @@ For example to you can have Maven start your webapp at the beginning of your tes
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9999<span class="tag">&lt;/stopPort&gt;</span>
@@ -14067,7 +13982,7 @@ If false or not specified, the plugin does not wait for confirmation but exits a
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9966<span class="tag">&lt;/stopPort&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
@@ -14254,7 +14169,7 @@ WebAppY:
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>maven-war-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;overlays&gt;</span>
       <span class="tag">&lt;overlay&gt;</span>
@@ -14355,7 +14270,7 @@ Here&#8217;s an example of setting up the <code>HashLoginService</code> for a we
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14413,7 +14328,7 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14482,7 +14397,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14621,7 +14536,7 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14801,7 +14716,7 @@ All setters on the JspC class are available.</p>
       <span class="tag">&lt;plugin&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
         <span class="comment">&lt;!-- put your configuration in here --&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
@@ -14880,7 +14795,7 @@ Using the default settings, the <code>web.xml</code> merged with the jsp servlet
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -16322,12 +16237,17 @@ Failure chunks <em>may</em> be released, but they do not <em>need</em> to be.
             <span class="type">boolean</span> fatal = chunk.isLast();
             <span class="keyword">if</span> (fatal)
             {
+                <span class="comment">// A fatal failure, such as a network failure.</span>
                 handleFatalFailure(chunk.getFailure());
+                <span class="comment">// No recovery is possible, stop reading</span>
+                <span class="comment">// by returning without demanding.</span>
                 <span class="keyword">return</span>;
             }
             <span class="keyword">else</span>
             {
+                <span class="comment">// A transient failure such as a read timeout.</span>
                 handleTransientFailure(chunk.getFailure());
+                <span class="comment">// Recovery is possible, try to read again.</span>
                 <span class="keyword">continue</span>;
             }
         }
@@ -16361,6 +16281,19 @@ Failure chunks <em>may</em> be released, but they do not <em>need</em> to be.
 </div>
 <div class="paragraph">
 <p>Note how the reads happen in a loop, consuming the <code>Content.Source</code> as soon as it has content available to be read, and therefore no backpressure is applied to the reads.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Calling <code>Content.Chunk.release()</code> must be done only after the bytes in the <code>ByteBuffer</code> returned by <code>Content.Chunk.getByteBuffer()</code> have been consumed.
+When the <code>Content.Chunk</code> is released, the implementation may reuse the <code>ByteBuffer</code> and overwrite the bytes with different bytes; if the application looks at the <code>ByteBuffer</code> <em>after</em> having released the <code>Content.Chunk</code> is may see other, unrelated, bytes.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>An alternative way to read from a <code>Content.Source</code>, to use when the chunk is consumed asynchronously, and you don&#8217;t want to read again until the <code>Content.Chunk</code> is consumed, is the following:</p>
@@ -16825,7 +16758,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.7<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -18857,8 +18790,8 @@ Note that this <code>Callback</code> interface is a different interface from the
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.7<br>
-Last updated 2024-02-23 11:53:50 -0600
+Version 12.0.8<br>
+Last updated 2023-12-05 12:42:05 -0600
 </div>
 </div>
 </body>
