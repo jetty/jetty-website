@@ -21,8 +21,8 @@
 <div class="details">
 <span id="author" class="author">Jetty Developers</span><br>
 <span id="email" class="email"><a href="mailto:jetty-dev@eclipse.org">jetty-dev@eclipse.org</a></span><br>
-<span id="revnumber">version 12.0.8,</span>
-<span id="revdate">2024-03-29</span>
+<span id="revnumber">version 12.0.10-SNAPSHOT,</span>
+<span id="revdate">2024-05-07</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Programming Guide</div>
@@ -172,6 +172,15 @@
 </ul>
 </li>
 <li><a href="#pg-server-http-request-logging">Request Logging</a></li>
+<li><a href="#pg-server-http-request-customizers">Request Customizers</a>
+<ul class="sectlevel4">
+<li><a href="#pg-server-http-request-customizer-forwarded"><code>ForwardedRequestCustomizer</code></a></li>
+<li><a href="#pg-server-http-request-customizer-host"><code>HostHeaderCustomizer</code></a></li>
+<li><a href="#pg-server-http-request-customizer-proxy"><code>ProxyCustomizer</code></a></li>
+<li><a href="#pg-server-http-request-customizer-rewrite"><code>RewriteCustomizer</code></a></li>
+<li><a href="#pg-server-http-request-customizer-secure"><code>SecureRequestCustomizer</code></a></li>
+</ul>
+</li>
 <li><a href="#pg-server-http-connector">Server Connectors</a>
 <ul class="sectlevel4">
 <li><a href="#pg-server-http-connector-acceptors">Acceptors</a></li>
@@ -345,6 +354,7 @@
 </li>
 </ul>
 </li>
+<li><a href="#pg-server-fastcgi">FastCGI Server Libraries</a></li>
 <li><a href="#pg-server-io-arch">Server I/O Architecture</a>
 <ul class="sectlevel3">
 <li><a href="#pg-server-io-arch-connection-factory">Creating Connections with <code>ConnectionFactory</code></a></li>
@@ -1298,7 +1308,7 @@ The Maven artifact coordinates are the following:</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3079,7 +3089,7 @@ ContentResponse httpResponse = client.newRequest(<span class="string"><span clas
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3266,7 +3276,7 @@ Session session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.8</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP2Client 12.0.10-SNAPSHOT</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8080/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_2, requestHeaders);
@@ -3673,7 +3683,7 @@ CompletableFuture&lt;Stream&gt; streamCF = session.newStream(headersFrame, <span
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -3786,7 +3796,7 @@ Session.Client session = sessionCF.get();
 
 <span class="comment">// Configure the request headers.</span>
 HttpFields requestHeaders = HttpFields.build()
-    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.8</span><span class="delimiter">&quot;</span></span>);
+    .put(HttpHeader.USER_AGENT, <span class="string"><span class="delimiter">&quot;</span><span class="content">Jetty HTTP3Client 12.0.10-SNAPSHOT</span><span class="delimiter">&quot;</span></span>);
 
 <span class="comment">// The request metadata with method, URI and headers.</span>
 MetaData.Request request = <span class="keyword">new</span> MetaData.Request(<span class="string"><span class="delimiter">&quot;</span><span class="content">GET</span><span class="delimiter">&quot;</span></span>, HttpURI.from(<span class="string"><span class="delimiter">&quot;</span><span class="content">http://localhost:8444/path</span><span class="delimiter">&quot;</span></span>), HttpVersion.HTTP_3, requestHeaders);
@@ -3963,7 +3973,7 @@ A synchronous, blocking, API is also offered for simpler cases.</p>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-client<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5332,7 +5342,7 @@ This result in your web applications to be available to HTTP clients as if you d
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -5423,10 +5433,16 @@ This event is converted to a call to <code>AbstractConnection.onFillable()</code
 </div>
 <div class="paragraph">
 <p>The parser emit events that are protocol specific; the HTTP/2 parser, for example, emits events for each HTTP/2 frame that has been parsed, and similarly does the HTTP/3 parser.
-The parser events are then converted to protocol independent events such as <em>"request start"</em>, <em>"request headers"</em>, <em>"request content chunk"</em>, etc.</p>
+The parser events are then converted to protocol independent events such as <em>"request start"</em>, <em>"request headers"</em>, <em>"request content chunk"</em>, etc. detailed in <a href="#pg-server-http-request-processing-events">this section</a>.</p>
 </div>
 <div class="paragraph">
-<p>When enough of the HTTP request is arrived, the <code>Connection</code> calls <code>HttpChannel.onRequest()</code> that calls the <code>Handler</code> chain starting from the <code>Server</code> instance, that eventually calls your web application code.</p>
+<p>When enough of the HTTP request is arrived, the <code>Connection</code> calls <code>HttpChannel.onRequest()</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>HttpChannel.onRequest()</code> calls the <a href="#pg-server-http-request-customizers">request customizers</a>, that allow to customize the request and/or the response headers on a per-<code>Connector</code> basis.</p>
+</div>
+<div class="paragraph">
+<p>After request customization, if any, the <code>Handler</code> chain is invoked, starting from the <code>Server</code> instance, and eventually your web application code is invoked.</p>
 </div>
 <div class="sect4">
 <h5 id="pg-server-http-request-processing-events"><a class="anchor" href="#pg-server-http-request-processing-events"></a><a class="link" href="#pg-server-http-request-processing-events">Request Processing Events</a></h5>
@@ -5503,6 +5519,179 @@ server.setRequestLog(<span class="keyword">new</span> CustomRequestLog(logWriter
 <div class="paragraph">
 <p>You can use <code>CustomRequestLog</code> with a custom <code>RequestLog.Writer</code> to direct the request logging output to your custom targets (for example, an RDBMS).
 You can implement your own <code>RequestLog</code> if you want to have functionalities that are not implemented by <code>CustomRequestLog</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pg-server-http-request-customizers"><a class="anchor" href="#pg-server-http-request-customizers"></a><a class="link" href="#pg-server-http-request-customizers">Request Customizers</a></h4>
+<div class="paragraph">
+<p>A request customizer is an instance of <code>HttpConfiguration.Customizer</code>, that can customize the HTTP request and/or the HTTP response headers <em>before</em> the <code>Handler</code> chain is invoked.</p>
+</div>
+<div class="paragraph">
+<p>Request customizers are added to a particular <code>HttpConfiguration</code> instance, and therefore are specific to a <code>Connector</code> instance: you can have two different <code>Connector</code>s configured with different request customizers.</p>
+</div>
+<div class="paragraph">
+<p>For example, it is common to configure a secure <code>Connector</code> with the <code>SecureRequestCustomizer</code> that customizes the HTTP request by adding attributes that expose TLS data associated with the secure communication.</p>
+</div>
+<div class="paragraph">
+<p>A request customizer may:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Inspect the received HTTP request method, URI, version and headers.</p>
+</li>
+<li>
+<p>Wrap the <code>Request</code> object to allow any method to be overridden and customized. Typically this is done to synthesize additional HTTP request headers, or to change the return value of overridden methods.</p>
+</li>
+<li>
+<p>Add or modify the HTTP response headers.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The out-of-the-box request customizers include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ForwardedRequestCustomizer</code>&#8201;&#8212;&#8201;to interpret the <code>Forwarded</code> (or the the obsolete <code>X-Forwarded-*</code>) HTTP header added by a reverse proxy; see <a href="#pg-server-http-request-customizer-forwarded">this section</a>.</p>
+</li>
+<li>
+<p><code>HostHeaderCustomizer</code>&#8201;&#8212;&#8201;to customize, or synthesize it when original absent, the HTTP <code>Host</code> header; see <a href="#pg-server-http-request-customizer-host">this section</a>.</p>
+</li>
+<li>
+<p><code>ProxyCustomizer</code>&#8201;&#8212;&#8201;to expose as <code>Request</code> attributes the <code>ip:port</code> information carried by the PROXY protocol; see <a href="#pg-server-http-request-customizer-proxy">this section</a>.</p>
+</li>
+<li>
+<p><code>RewriteCustomizer</code>&#8201;&#8212;&#8201;to rewrite the request URI; see <a href="#pg-server-http-request-customizer-rewrite">this section</a>.</p>
+</li>
+<li>
+<p><code>SecureRequestCustomizer</code>&#8201;&#8212;&#8201;to expose TLS data via <code>Request</code> attributes; see <a href="#pg-server-http-request-customizer-secure">this section</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can also write your own request customizers and add them to the <code>HttpConfiguration</code> instance along existing request customizers.
+Multiple request customizers will be invoked in the order they have been added.</p>
+</div>
+<div class="paragraph">
+<p>Below you can find an example of how to add a request customizer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">Server server = <span class="keyword">new</span> Server();
+
+<span class="comment">// Configure the secure connector.</span>
+HttpConfiguration httpsConfig = <span class="keyword">new</span> HttpConfiguration();
+
+<span class="comment">// Add the SecureRequestCustomizer.</span>
+httpsConfig.addCustomizer(<span class="keyword">new</span> SecureRequestCustomizer());
+
+<span class="comment">// Configure the SslContextFactory with the KeyStore information.</span>
+SslContextFactory.Server sslContextFactory = <span class="keyword">new</span> SslContextFactory.Server();
+sslContextFactory.setKeyStorePath(<span class="string"><span class="delimiter">&quot;</span><span class="content">/path/to/keystore</span><span class="delimiter">&quot;</span></span>);
+sslContextFactory.setKeyStorePassword(<span class="string"><span class="delimiter">&quot;</span><span class="content">secret</span><span class="delimiter">&quot;</span></span>);
+<span class="comment">// Configure the Connector to speak HTTP/1.1 and HTTP/2.</span>
+HttpConnectionFactory h1 = <span class="keyword">new</span> HttpConnectionFactory(httpsConfig);
+HTTP2ServerConnectionFactory h2 = <span class="keyword">new</span> HTTP2ServerConnectionFactory(httpsConfig);
+ALPNServerConnectionFactory alpn = <span class="keyword">new</span> ALPNServerConnectionFactory();
+alpn.setDefaultProtocol(h1.getProtocol());
+SslConnectionFactory ssl = <span class="keyword">new</span> SslConnectionFactory(sslContextFactory, alpn.getProtocol());
+ServerConnector connector = <span class="keyword">new</span> ServerConnector(server, ssl, alpn, h2, h1);
+server.addConnector(connector);
+
+server.start();</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-request-customizer-forwarded"><a class="anchor" href="#pg-server-http-request-customizer-forwarded"></a><a class="link" href="#pg-server-http-request-customizer-forwarded"><code>ForwardedRequestCustomizer</code></a></h5>
+<div class="paragraph">
+<p><code>ForwardedRequestCustomizer</code> should be added when Jetty receives requests from a reverse proxy on behalf of a remote client, and web applications need to access the remote client information.</p>
+</div>
+<div class="paragraph">
+<p>The reverse proxy adds the <code>Forwarded</code> (or the obsolete <code>X-Forwarded-*</code>) HTTP header to the request, and may offload TLS so that the request arrives in clear-text to Jetty.</p>
+</div>
+<div class="paragraph">
+<p>Applications deployed in Jetty may need to access information related to the remote client, for example the remote IP address and port, or whether the request was sent through a secure communication channel.
+However, the request is forwarded by the reverse proxy, so the direct information about the remote IP address is that of the proxy, not of the remote client.
+Furthermore, the proxy may offload TLS and forward the request in clear-text, so that the URI scheme would be <code>http</code> as forwarded by the reverse proxy, not <code>https</code> as sent by the remote client.</p>
+</div>
+<div class="paragraph">
+<p><code>ForwardedRequestCustomizer</code> reads the <code>Forwarded</code> header where the reverse proxy saved the remote client information, and wraps the original <code>Request</code> so that applications will transparently see the remote client information when calling methods such as <code>Request.isSecure()</code>, or <code>Request.getConnectionMetaData().getRemoteSocketAddress()</code>, etc.</p>
+</div>
+<div class="paragraph">
+<p>For more information about how to configure <code>ForwardedRequestCustomizer</code>, see also <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/ForwardedRequestCustomizer.html">the javadocs</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-request-customizer-host"><a class="anchor" href="#pg-server-http-request-customizer-host"></a><a class="link" href="#pg-server-http-request-customizer-host"><code>HostHeaderCustomizer</code></a></h5>
+<div class="paragraph">
+<p><code>HostHeaderCustomizer</code> should be added when Jetty receives requests that may lack the <code>Host</code> HTTP header, such as HTTP/1.0, HTTP/2 or HTTP/3 requests, and web applications have logic that depends on the value of the <code>Host</code> HTTP header.</p>
+</div>
+<div class="paragraph">
+<p>For HTTP/2 and HTTP/3, the <code>Host</code> HTTP header is missing because the authority information is carried by the <code>:authority</code> pseudo-header, as per the respective specifications.</p>
+</div>
+<div class="paragraph">
+<p><code>HostHeaderCustomizer</code> will look at the <code>:authority</code> pseudo-header, then wrap the original <code>Request</code> adding a <code>Host</code> HTTP header synthesized from the <code>:authority</code> pseudo-header.
+In this way, web applications that rely on the presence of the <code>Host</code> HTTP header will work seamlessly in any HTTP protocol version.</p>
+</div>
+<div class="paragraph">
+<p><code>HostHeaderCustomizer</code> works also for the WebSocket protocol.</p>
+</div>
+<div class="paragraph">
+<p>WebSocket over HTTP/2 or over HTTP/3 initiate the WebSocket communication with an HTTP request that only has the <code>:authority</code> pseudo-header.
+<code>HostHeaderCustomizer</code> synthesizes the <code>Host</code> HTTP header for such requests, so that WebSocket web applications that inspect the initial HTTP request before the WebSocket communication will work seamlessly in any HTTP protocol version.</p>
+</div>
+<div class="paragraph">
+<p>For more information about how to configure <code>HostHeaderCustomizer</code>, see also <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/HostHeaderCustomizer.html">the javadocs</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-request-customizer-proxy"><a class="anchor" href="#pg-server-http-request-customizer-proxy"></a><a class="link" href="#pg-server-http-request-customizer-proxy"><code>ProxyCustomizer</code></a></h5>
+<div class="paragraph">
+<p><code>ProxyCustomizer</code> should be added when Jetty receives requests from a reverse proxy on behalf of a remote client, prefixed by the PROXY protocol (see also this section about the <a href="#pg-server-http-connector-protocol-proxy-http11">PROXY protocol</a>).</p>
+</div>
+<div class="paragraph">
+<p><code>ProxyCustomizer</code> adds the reverse proxy IP address and port as <code>Request</code> attributes.
+Web applications may use these attributes in conjunction with the data exposed by <code>ForwardedRequestCustomizer</code> (see <a href="#pg-server-http-request-customizer-forwarded">this section</a>).</p>
+</div>
+<div class="paragraph">
+<p>For more information about how to configure <code>ProxyCustomizer</code>, see also <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/ProxyCustomizer.html">the javadocs</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-request-customizer-rewrite"><a class="anchor" href="#pg-server-http-request-customizer-rewrite"></a><a class="link" href="#pg-server-http-request-customizer-rewrite"><code>RewriteCustomizer</code></a></h5>
+<div class="paragraph">
+<p><code>RewriteCustomizer</code> is similar to <code>RewriteHandler</code> (see <a href="#pg-server-http-handler-use-rewrite">this section</a>), but a <code>RewriteCustomizer</code> cannot send a response or otherwise complete the request/response processing.</p>
+</div>
+<div class="paragraph">
+<p>A <code>RewriteCustomizer</code> is mostly useful if you want to rewrite the request URI <em>before</em> the <code>Handler</code> chain is invoked.
+However, a very similar effect can be achieved by having the <code>RewriteHandler</code> as the first <code>Handler</code> (the child <code>Handler</code> of the <code>Server</code> instance).</p>
+</div>
+<div class="paragraph">
+<p>Since <code>RewriteCustomizer</code> cannot send a response or complete the request/response processing, <code>Rule</code>s that do so such as redirect rules have no effect and are ignored; only <code>Rule</code>s that modify or wrap the <code>Request</code> will have effect and be applied.</p>
+</div>
+<div class="paragraph">
+<p>Due to this limitation, it is often a better choice to use <code>RewriteHandler</code> instead of <code>RewriteCustomizer</code>.</p>
+</div>
+<div class="paragraph">
+<p>For more information about how to configure <code>RewriteCustomizer</code>, see also <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/rewrite/RewriteCustomizer.html">the javadocs</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="pg-server-http-request-customizer-secure"><a class="anchor" href="#pg-server-http-request-customizer-secure"></a><a class="link" href="#pg-server-http-request-customizer-secure"><code>SecureRequestCustomizer</code></a></h5>
+<div class="paragraph">
+<p><code>SecureRequestCustomizer</code> should be added when Jetty receives requests over a secure <code>Connector</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>SecureRequestCustomizer</code> adds TLS information as request attributes, in particular an instance of <code>EndPoint.SslSessionData</code> that contains information about the negotiated TLS cipher suite and possibly client certificates, and an instance of <code>org.eclipse.jetty.util.ssl.X509</code> that contains information about the server certificate.</p>
+</div>
+<div class="paragraph">
+<p><code>SecureRequestCustomizer</code> also adds, if configured so, the <code>Strict-Transport-Security</code> HTTP response header (for more information about this header, see <a href="https://datatracker.ietf.org/doc/html/rfc6797">its specification</a>).</p>
+</div>
+<div class="paragraph">
+<p>For more information about how to configure <code>SecureRequestCustomizer</code>, see also <a href="https://eclipse.dev/jetty/javadoc/jetty-12/org/eclipse/jetty/server/SecureRequestCustomizer.html">the javadocs</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -6159,7 +6348,7 @@ As Conscrypt eventually binds to a native library, there is a higher risk that a
 </table>
 </div>
 <div class="paragraph">
-<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.8.jar</code> in the class-path or module-path.</p>
+<p>To use Conscrypt as TLS provider, you must have the Conscrypt jar and the Jetty dependency <code>jetty-alpn-conscrypt-server-12.0.10-SNAPSHOT.jar</code> in the class-path or module-path.</p>
 </div>
 <div class="paragraph">
 <p>Then, you must configure the JDK with the Conscrypt provider, and configure Jetty to use the Conscrypt provider, in this way:</p>
@@ -6734,7 +6923,7 @@ server.start();</code></pre>
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-rewrite<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7372,12 +7561,12 @@ Jetty will send an HTTP <code>404</code> response anyway if <code>DefaultHandler
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.8</code>.</p>
+<p>For example, for Jakarta EE 10 the coordinates are: <code>org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.10-SNAPSHOT</code>.</p>
 </div>
 <div class="paragraph">
 <p>Below you can find an example of how to set up a Jakarta EE 10 <code>ServletContextHandler</code>:</p>
@@ -7467,7 +7656,7 @@ Server applications must be careful when creating the <code>Handler</code> tree 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-webapp<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -7536,7 +7725,7 @@ The features are similar, but <code>DefaultServlet</code> is more commonly used 
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee{8,9,10}<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee{8,9,10}-servlet<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8421,7 +8610,7 @@ This makes the web application stateful, because a computation performed by a pr
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-session<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -8600,7 +8789,7 @@ If a request is received with the <code>Expect: 102-processing</code> header, th
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http2<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http2-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -9124,7 +9313,7 @@ ServerSessionListener sessionListener = <span class="keyword">new</span> ServerS
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.http3<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-http3-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11567,7 +11756,7 @@ However, at runtime you need to have an implementation of the standard APIs in y
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-websocket-jakarta-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11902,7 +12091,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-api<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -11914,7 +12103,7 @@ However, at runtime you need to have the <em>implementation</em> of the Jetty We
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.websocket<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-websocket-jetty-server<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -12167,6 +12356,12 @@ contextHandler.setHandler(webSocketHandler);</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="pg-server-fastcgi"><a class="anchor" href="#pg-server-fastcgi"></a><a class="link" href="#pg-server-fastcgi">FastCGI Server Libraries</a></h3>
+<div class="paragraph">
+<p>TODO</p>
 </div>
 </div>
 <div class="sect2">
@@ -12642,19 +12837,6 @@ Other popular tools include Ant and Gradle.</p>
 <div class="sect3">
 <h4 id="configuring-embedded-jetty-with-maven"><a class="anchor" href="#configuring-embedded-jetty-with-maven"></a><a class="link" href="#configuring-embedded-jetty-with-maven">Using Embedded Jetty with Maven</a></h4>
 <div class="paragraph">
-<p>To understand the basic operations of building and running against Jetty, first review:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="#advanced-embedding">Embedding with Jetty</a></p>
-</li>
-<li>
-<p><a href="#jetty-helloworld">Jetty HelloWorld example</a></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
 <p>Maven uses convention over configuration, so it is best to use the project structure Maven recommends.
 You can use <em><a href="#archetypes"><a href="http://maven.apache.org/guides/introduction/introduction-to-archetypes.html">archetypes</a></a></em> to quickly setup Maven projects, but we will set up the structure manually for this simple tutorial example:</p>
 </div>
@@ -12728,7 +12910,7 @@ Use an editor to create the file <code>pom.xml</code> in the <code>JettyMavenHel
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.8<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12861,7 +13043,7 @@ Use an editor to create the file <code>pom.xml</code> with the following content
   <span class="tag">&lt;name&gt;</span>Jetty HelloWorld WebApp<span class="tag">&lt;/name&gt;</span>
 
   <span class="tag">&lt;properties&gt;</span>
-      <span class="tag">&lt;jettyVersion&gt;</span>12.0.8<span class="tag">&lt;/jettyVersion&gt;</span>
+      <span class="tag">&lt;jettyVersion&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/jettyVersion&gt;</span>
   <span class="tag">&lt;/properties&gt;</span>
 
   <span class="tag">&lt;dependencies&gt;</span>
@@ -12916,7 +13098,7 @@ The full reference is at <a href="#jetty-maven-plugin">Configuring the Jetty Mav
 </div>
 </div>
 <div class="paragraph">
-<p>The resulting war file is in the <code>target</code> directory and may be deployed on any standard servlet server, including <a href="#configuring-deployment">Jetty</a>.</p>
+<p>The resulting war file is in the <code>target</code> directory and may be deployed on any standard servlet server, including <a href="#og-deploy">Jetty</a>.</p>
 </div>
 </div>
 </div>
@@ -12981,7 +13163,7 @@ However, <code>jetty:run-war</code> is designed to be run at the command line, w
 <div class="paragraph">
 <p>While the Jetty Maven Plugin can be very useful for development we do not recommend its use in a <em>production capacity</em>.
 In order for the plugin to work it needs to leverage many internal Maven APIs and Maven itself it not a production deployment tool.
-We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deployment approach or using <a href="#advanced-embedding">embedded Jetty</a>.</p>
+We recommend either the traditional xrefr:og-deploy[distribution] deployment approach or using <a href="#og-arch">embedded Jetty</a>.</p>
 </div>
 </td>
 </tr>
@@ -13000,7 +13182,7 @@ We recommend either the traditional <a href="{DISTGUIDE}">distribution</a> deplo
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/plugin&gt;</span></code></pre>
 </div>
 </div>
@@ -13115,13 +13297,13 @@ By default, all interfaces.</p>
 </dd>
 <dt class="hdlist1">name</dt>
 <dd>
-<p>The name of the connector, which is useful for <a href="#serving-webapp-from-particular-port">configuring contexts to respond only on particular connectors</a>.</p>
+<p>The name of the connector, which is useful for configuring contexts to respond only on particular connectors.</p>
 </dd>
 <dt class="hdlist1">idleTimeout</dt>
 <dd>
 <p>Maximum idle time for a connection.
-You could instead configure the connectors in a standard <a href="#jetty-xml-config">Jetty xml config file</a> and put its location into the <code>jettyXml</code> parameter.
-Note that since Jetty 9.0 it is no longer possible to configure a <a href="#maven-config-https">https connector</a> directly in the pom.xml: you need to <a href="#maven-config-https">use Jetty xml config files to do it</a>.</p>
+You could instead configure the connectors in a standard <a href="#og-xml">jetty xml config file</a> and put its location into the <code>jettyXml</code> parameter.
+Note that since Jetty 9.0 it is no longer possible to configure a https connector directly in the pom.xml: you need to use jetty xml config files to do it.</p>
 </dd>
 </dl>
 </div>
@@ -13153,7 +13335,7 @@ There are three other ways to configure the <code>RequestLog</code>:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>See <a href="#configuring-jetty-request-logs">Configuring Request Logs</a> for more information.</p>
+<p>See <a href="#pg-server-http-request-logging">Configuring Request Logs</a> for more information.</p>
 </div>
 </dd>
 <dt class="hdlist1">server</dt>
@@ -13386,7 +13568,7 @@ Any changes you make are immediately reflected in the running instance of Jetty,
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -13458,14 +13640,14 @@ See the section on <a href="#using-overlaid-wars">overlaid wars</a> for more inf
 <dd>
 <p>Defaults to <code>.<strong>/jetty-jakarta-servlet-api-[<sup>/]</strong>\.jar$|.<strong>jakarta.servlet.jsp.jstl-[</sup>/]</strong>\.jar|.<strong>taglibs-standard-impl-.</strong>\.jar</code>.
 This is a pattern that is applied to the names of the jars on the container&#8217;s classpath (ie the classpath of the plugin, not that of the webapp) that should be scanned for fragments, tlds, annotations etc.
-This is analogous to the context attribute <a href="#container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#container-include-jar-pattern">here</a>.
+This is analogous to the context attribute <a href="#og-container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#og-container-include-jar-pattern">here</a>.
 You can define extra patterns of jars that will be included in the scan.</p>
 </dd>
 <dt class="hdlist1">webInfIncludeJarPattern</dt>
 <dd>
 <p>Defaults to matching <em>all</em> of the dependency jars for the webapp (ie the equivalent of WEB-INF/lib).
 You can make this pattern more restrictive to only match certain jars by using this setter.
-This is analogous to the context attribute <a href="#web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#web-inf-include-jar-pattern">here</a>.</p>
+This is analogous to the context attribute <a href="#og-web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#og-web-inf-include-jar-pattern">here</a>.</p>
 </dd>
 </dl>
 </div>
@@ -13532,7 +13714,7 @@ Patterns are specified as a relative path using a glob-like syntax as described 
     <span class="tag">&lt;plugin&gt;</span>
       <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
       <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-      <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+      <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
       <span class="tag">&lt;configuration&gt;</span>
         <span class="tag">&lt;webApp&gt;</span>
           <span class="tag">&lt;contextPath&gt;</span>/<span class="tag">&lt;/contextPath&gt;</span>
@@ -13623,14 +13805,14 @@ You can use this to replace or add configuration.</p>
 <dd>
 <p>Defaults to <code>.<strong>/jetty-jakarta-servlet-api-[<sup>/]</strong>\.jar$|.<strong>jakarta.servlet.jsp.jstl-[</sup>/]</strong>\.jar|.<strong>taglibs-standard-impl-.</strong>\.jar</code>.
 This is a pattern that is applied to the names of the jars on the container&#8217;s classpath (ie the classpath of the plugin, not that of the webapp) that should be scanned for fragments, tlds, annotations etc.
-This is analogous to the context attribute <a href="#container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#container-include-jar-pattern">here</a>.
+This is analogous to the context attribute <a href="#og-container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#og-container-include-jar-pattern">here</a>.
 You can define extra patterns of jars that will be included in the scan.</p>
 </dd>
 <dt class="hdlist1">webInfIncludeJarPattern</dt>
 <dd>
 <p>Defaults to matching <em>all</em> of the dependency jars for the webapp (ie the equivalent of WEB-INF/lib).
 You can make this pattern more restrictive to only match certain jars by using this setter.
-This is analogous to the context attribute <a href="#web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#web-inf-include-jar-pattern">here</a>.</p>
+This is analogous to the context attribute <a href="#og-web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#og-web-inf-include-jar-pattern">here</a>.</p>
 </dd>
 <dt class="hdlist1">tempDirectory</dt>
 <dd>
@@ -13685,7 +13867,7 @@ For example to you can have Maven start your webapp at the beginning of your tes
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9999<span class="tag">&lt;/stopPort&gt;</span>
@@ -13776,14 +13958,14 @@ See the section on <a href="#using-overlaid-wars">overlaid wars</a> for more inf
 <dd>
 <p>Defaults to <code>.<strong>/jetty-jakarta-servlet-api-[<sup>/]</strong>\.jar$|.<strong>jakarta.servlet.jsp.jstl-[</sup>/]</strong>\.jar|.<strong>taglibs-standard-impl-.</strong>\.jar</code>.
 This is a pattern that is applied to the names of the jars on the container&#8217;s classpath (ie the classpath of the plugin, not that of the webapp) that should be scanned for fragments, tlds, annotations etc.
-This is analogous to the context attribute <a href="#container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#container-include-jar-pattern">here</a>.
+This is analogous to the context attribute <a href="#og-container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#og-container-include-jar-pattern">here</a>.
 You can define extra patterns of jars that will be included in the scan.</p>
 </dd>
 <dt class="hdlist1">webInfIncludeJarPattern</dt>
 <dd>
 <p>Defaults to matching <em>all</em> of the dependency jars for the webapp (ie the equivalent of WEB-INF/lib).
 You can make this pattern more restrictive to only match certain jars by using this setter.
-This is analogous to the context attribute <a href="#web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#web-inf-include-jar-pattern">here</a>.</p>
+This is analogous to the context attribute <a href="#og-web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#og-web-inf-include-jar-pattern">here</a>.</p>
 </dd>
 </dl>
 </div>
@@ -13894,14 +14076,14 @@ You can use this to replace or add configuration.</p>
 <dd>
 <p>Defaults to <code>.<strong>/jetty-jakarta-servlet-api-[<sup>/]</strong>\.jar$|.<strong>jakarta.servlet.jsp.jstl-[</sup>/]</strong>\.jar|.<strong>taglibs-standard-impl-.</strong>\.jar</code>.
 This is a pattern that is applied to the names of the jars on the container&#8217;s classpath (ie the classpath of the plugin, not that of the webapp) that should be scanned for fragments, tlds, annotations etc.
-This is analogous to the context attribute <a href="#container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#container-include-jar-pattern">here</a>.
+This is analogous to the context attribute <a href="#og-container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#og-container-include-jar-pattern">here</a>.
 You can define extra patterns of jars that will be included in the scan.</p>
 </dd>
 <dt class="hdlist1">webInfIncludeJarPattern</dt>
 <dd>
 <p>Defaults to matching <em>all</em> of the dependency jars for the webapp (ie the equivalent of WEB-INF/lib).
 You can make this pattern more restrictive to only match certain jars by using this setter.
-This is analogous to the context attribute <a href="#web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#web-inf-include-jar-pattern">here</a>.</p>
+This is analogous to the context attribute <a href="#og-web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#og-web-inf-include-jar-pattern">here</a>.</p>
 </dd>
 <dt class="hdlist1">tempDirectory</dt>
 <dd>
@@ -13982,7 +14164,7 @@ If false or not specified, the plugin does not wait for confirmation but exits a
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;stopPort&gt;</span>9966<span class="tag">&lt;/stopPort&gt;</span>
     <span class="tag">&lt;stopKey&gt;</span>foo<span class="tag">&lt;/stopKey&gt;</span>
@@ -14016,7 +14198,7 @@ No programmatic declarations of servlets, filters and listeners can be taken int
 </div>
 <div class="paragraph">
 <p>Other useful information about your webapp that is produced as part of the analysis is also stored as context parameters in the effective-web.xml.
-The effective-web.xml can be used in conjunction with the <a href="#quickstart-webapp">Quickstart</a> feature to quickly start your webapp (note that Quickstart is not appropriate for the mvn Jetty goals).</p>
+The effective-web.xml can be used in conjunction with the <a href="#og-quickstart">Quickstart</a> feature to quickly start your webapp (note that Quickstart is not appropriate for the mvn jetty goals).</p>
 </div>
 <div class="paragraph">
 <p>The effective web.xml from these combined sources is generated into a file, which by default is <code>target/effective-web.xml</code>, but can be changed by setting the <code>effectiveWebXml</code> configuration parameter.</p>
@@ -14058,14 +14240,14 @@ You can use this to replace or add configuration.</p>
 <dd>
 <p>Defaults to <code>.<strong>/jetty-jakarta-servlet-api-[<sup>/]</strong>\.jar$|.<strong>jakarta.servlet.jsp.jstl-[</sup>/]</strong>\.jar|.<strong>taglibs-standard-impl-.</strong>\.jar</code>.
 This is a pattern that is applied to the names of the jars on the container&#8217;s classpath (ie the classpath of the plugin, not that of the webapp) that should be scanned for fragments, tlds, annotations etc.
-This is analogous to the context attribute <a href="#container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#container-include-jar-pattern">here</a>.
+This is analogous to the context attribute <a href="#og-container-include-jar-pattern">org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern</a> that is documented <a href="#og-container-include-jar-pattern">here</a>.
 You can define extra patterns of jars that will be included in the scan.</p>
 </dd>
 <dt class="hdlist1">webInfIncludeJarPattern</dt>
 <dd>
 <p>Defaults to matching <em>all</em> of the dependency jars for the webapp (ie the equivalent of WEB-INF/lib).
 You can make this pattern more restrictive to only match certain jars by using this setter.
-This is analogous to the context attribute <a href="#web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#web-inf-include-jar-pattern">here</a>.</p>
+This is analogous to the context attribute <a href="#og-web-inf-include-jar-pattern">org.eclipse.jetty.server.webapp.WebInfIncludeJarPattern</a> that is documented <a href="#og-web-inf-include-jar-pattern">here</a>.</p>
 </dd>
 <dt class="hdlist1">tempDirectory</dt>
 <dd>
@@ -14169,7 +14351,7 @@ WebAppY:
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>maven-war-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;overlays&gt;</span>
       <span class="tag">&lt;overlay&gt;</span>
@@ -14270,7 +14452,7 @@ Here&#8217;s an example of setting up the <code>HashLoginService</code> for a we
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14328,7 +14510,7 @@ If you want to deploy webapp A, and webapps B and C in the same Jetty instance:<
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14397,7 +14579,7 @@ Copy the <code>jetty.xml</code> file from the Jetty distribution, and then add W
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
   <span class="tag">&lt;configuration&gt;</span>
     <span class="tag">&lt;scan&gt;</span>10<span class="tag">&lt;/scan&gt;</span>
     <span class="tag">&lt;webApp&gt;</span>
@@ -14536,7 +14718,7 @@ System properties you specify in this way <strong>do not</strong> override Syste
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -14716,7 +14898,7 @@ All setters on the JspC class are available.</p>
       <span class="tag">&lt;plugin&gt;</span>
         <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
         <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-        <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+        <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
         <span class="comment">&lt;!-- put your configuration in here --&gt;</span>
       <span class="tag">&lt;/plugin&gt;</span>
       <span class="tag">&lt;plugin&gt;</span>
@@ -14795,7 +14977,7 @@ Using the default settings, the <code>web.xml</code> merged with the jsp servlet
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;plugin&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty.ee10<span class="tag">&lt;/groupId&gt;</span>
    <span class="tag">&lt;artifactId&gt;</span>jetty-ee10-jspc-maven-plugin<span class="tag">&lt;/artifactId&gt;</span>
-   <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+   <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
    <span class="tag">&lt;executions&gt;</span>
      <span class="tag">&lt;execution&gt;</span>
        <span class="tag">&lt;id&gt;</span>jspc<span class="tag">&lt;/id&gt;</span>
@@ -16758,7 +16940,7 @@ Similarly, when a component is removed from the tree, <code>MBeanContainer</code
 <pre class="CodeRay highlight"><code data-lang="xml"><span class="tag">&lt;dependency&gt;</span>
   <span class="tag">&lt;groupId&gt;</span>org.eclipse.jetty<span class="tag">&lt;/groupId&gt;</span>
   <span class="tag">&lt;artifactId&gt;</span>jetty-jmx<span class="tag">&lt;/artifactId&gt;</span>
-  <span class="tag">&lt;version&gt;</span>12.0.8<span class="tag">&lt;/version&gt;</span>
+  <span class="tag">&lt;version&gt;</span>12.0.10-SNAPSHOT<span class="tag">&lt;/version&gt;</span>
 <span class="tag">&lt;/dependency&gt;</span></code></pre>
 </div>
 </div>
@@ -18790,8 +18972,8 @@ Note that this <code>Callback</code> interface is a different interface from the
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 12.0.8<br>
-Last updated 2023-12-05 12:42:05 -0600
+Version 12.0.10-SNAPSHOT<br>
+Last updated 2023-12-05 16:42:05 -0200
 </div>
 </div>
 </body>
